@@ -62,7 +62,7 @@ function CiteTemplate({
 
   const localizePath = useLocalizePath();
 
-  const [isSubscribed, setIsSubscribed] = useState();
+  const [isSubscribed, setIsSubscribed] = useState(false);
 
   const { data } = useQuery(FIND_USER_SUBSCRIPTIONS, {
     variables: {
@@ -169,37 +169,47 @@ function CiteTemplate({
       <div className={'titleWrapper'}>
         {incident.isTranslated && <TranslationBadge className="mt-2" />}
         <div
-          className="w-full flex justify-between flex-wrap lg:flex-nowrap gap-1 items-center"
+          className="flex flex-wrap justify-between items-center w-full xl:flex-nowrap gap-1 xl:gap-4"
           data-testid="incident-title-section"
         >
-          <h1 data-testid="incident-title" className="text-2xl inline">
+          <h1 data-testid="incident-title" className="flex-grow justify-between inline text-2xl">
             {incidentTitle}
           </h1>
-          <div className="inline-flex gap-2 lg:justify-end">
-            {incidentResponded && (
-              <div className="self-center">
-                <Badge color="success" data-cy="responded-badge">
-                  {t('Responded')}
-                </Badge>
-              </div>
-            )}
-            {isSubscribed && (
-              <div className="self-center">
-                <Badge color="success" data-cy="subscribed-badge">
-                  <Trans>Subscribed to Updates</Trans>
-                </Badge>
-              </div>
-            )}
+          <div className="flex flex-wrap sm:flex-nowrap gap-4 xl:justify-end">
+            <>
+              {(incidentResponded || isSubscribed) && (
+                <div className="flex flex-wrap gap-2 my-auto">
+                  {incidentResponded && (
+                    <div className="self-center">
+                      <Badge color="success" data-cy="responded-badge">
+                        {t('Responded')}
+                      </Badge>
+                    </div>
+                  )}
+                  {isSubscribed && (
+                    <div className="self-center">
+                      <Badge
+                        color="success"
+                        data-cy="subscribed-badge"
+                        className="whitespace-nowrap"
+                      >
+                        <Trans>Subscribed to Updates</Trans>
+                      </Badge>
+                    </div>
+                  )}
+                </div>
+              )}
+            </>
             {!readOnly && (
               <>
-                <div className="flex flex-wrap justify-end shrink">
+                <div className="flex justify-end items-start shrink flex-nowrap">
                   <SocialShareButtons
                     metaTitle={incidentTitle}
                     path={locationPathName}
                     page="cite"
                   ></SocialShareButtons>
 
-                  <div className="ml-4 text-lg flex flex-nowrap gap-1">
+                  <div className="flex flex-nowrap gap-1 ml-4 text-lg">
                     <a
                       data-cy="header-previous-incident-link"
                       title={t('Previous Incident')}
@@ -241,7 +251,7 @@ function CiteTemplate({
           </div>
         </div>
       </div>
-      <div className="flex mt-6 justify-between">
+      <div className="flex justify-between mt-6">
         <div className="shrink-1 max-w-screen-xl">
           <Row>
             <Col>
@@ -291,7 +301,7 @@ function CiteTemplate({
           <Container>
             <Row>
               <Col>
-                <Card className="border-1.5 border-border-light-gray rounded-5px shadow-card mt-6">
+                <Card className="mt-6 shadow-card border-1.5 border-border-light-gray rounded-5px">
                   <Card.Header className="items-center justify-between">
                     <h4 className="m-0">
                       <Trans ns="entities">Entities</Trans>
@@ -368,7 +378,7 @@ function CiteTemplate({
 
             <Row className="mt-6">
               <Col>
-                <Card className="max-w-3xl mx-auto">
+                <Card className="mx-auto max-w-3xl">
                   <ImageCarousel nodes={sortedReports} />
                 </Card>
               </Col>
@@ -384,7 +394,7 @@ function CiteTemplate({
                     size={'xs'}
                     color="light"
                     href={`/cite/edit?report_number=${report.report_number}&incident_id=${incident.incident_id}`}
-                    className="hover:no-underline "
+                    className="hover:no-underline"
                   >
                     <Trans>Edit</Trans>
                   </Button>
