@@ -89,6 +89,7 @@ const plugins = [
         'reports',
         'entities',
         'entity_relationships',
+        'incident_links',
       ],
       connectionString: config.mongodb.connectionString,
       ...(config.mongodb.replicaSet

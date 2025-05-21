@@ -206,6 +206,14 @@ const typeDefs = `
         created_at: Date
         pred: String
     }
+
+    # Expose the new incident_links collection
+    type mongodbAiidprodIncidentLinks implements Node {
+        incident_id: Int
+        sameAs: String
+        source_namespace: String
+    }
+
 `;
 
 module.exports = typeDefs;
