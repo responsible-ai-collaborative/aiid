@@ -17,6 +17,7 @@ import { RESPONSE_TAG } from 'utils/entities';
 import CitationFormat from './CitationFormat';
 import NotifyButton from './NotifyButton';
 import RemoveDuplicateModal from 'components/cite/RemoveDuplicateModal';
+import OecdLogo from '../ui/OecdLogo';
 
 function Tools({
   incident,
@@ -26,6 +27,7 @@ function Tools({
   subscribing,
   isLiveData,
   setIsLiveData,
+  linkRecords, // Changed from oecdId to linkRecords
 }) {
   const [showRemoveDuplicateModal, setShowRemoveDuplicateModal] = useState(false);
 
@@ -189,6 +191,23 @@ function Tools({
             />
           </div>
         )}
+        {linkRecords &&
+          linkRecords
+            .filter((link) => link.source_namespace === 'OECD')
+            .map((link) => (
+              <Button
+                key={link.sameAs}
+                color="gray"
+                href={link.sameAs}
+                className="hover:no-underline"
+                data-cy="oecd-btn"
+                as="a"
+                target="_blank"
+              >
+                <OecdLogo width={'20px'} className="mr-2" />
+                <Trans>See in OECD AIM</Trans>
+              </Button>
+            ))}
       </Card.Body>
     </Card>
   );
