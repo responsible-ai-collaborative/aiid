@@ -207,7 +207,6 @@ const typeDefs = `
         pred: String
     }
 
-    # Expose the new incident_links collection
     type mongodbAiidprodIncidentLinks implements Node {
         incident_id: Int
         sameAs: String
