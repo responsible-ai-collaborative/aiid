@@ -21,6 +21,7 @@ import authUsers from './seeds/auth/users';
 import reportsHistory from './seeds/history/reportsHistory';
 import incidentsHistory from './seeds/history/incidentsHistory';
 import checklists from './seeds/aiidprod/checklists';
+import incident_links from './seeds/aiidprod/incident_links';
 
 /**
  * Initializes a MongoDB database with predefined and optional custom seed data.
@@ -57,6 +58,7 @@ export const init = async (seed?: Record<string, Record<string, Record<string, u
             candidates,
             duplicates,
             checklists,
+            incident_links,
         },
         customData: {
             users,
