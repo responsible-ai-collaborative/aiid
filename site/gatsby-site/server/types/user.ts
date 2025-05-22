@@ -3,7 +3,7 @@ import { GraphQLDateTime } from "graphql-scalars";
 import { ObjectIdScalar } from "../scalars";
 import { getQueryResolver } from "../utils";
 import { Context } from "../interfaces";
-import { getUserAdminData, UserAdminData } from "../fields/common";
+import { UserCacheManager, UserAdminData } from "../fields/userCacheManager";
 
 const UserAdminDatumType = new GraphQLObjectType({
     name: 'UserAdminDatum',
@@ -14,6 +14,8 @@ const UserAdminDatumType = new GraphQLObjectType({
         lastAuthenticationDate: { type: GraphQLDateTime },
     },
 });
+
+const userCacheManager = new UserCacheManager();
 
 export const UserType = new GraphQLObjectType({
     name: 'User',
@@ -29,7 +31,7 @@ export const UserType = new GraphQLObjectType({
 
                 if (user!.id === source.userId || user!.roles.includes('admin')) {
 
-                    response = await getUserAdminData(source.userId, context) ?? {};
+                    response = await userCacheManager.getUserAdminData(source.userId, context) ?? {};
                 }
 
                 return response;
