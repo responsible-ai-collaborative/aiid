@@ -196,8 +196,8 @@ function Tools({
             <Button
               color="gray"
               className="hover:no-underline"
-              data-cy="oecd-btn"
-              as="adiv"
+              data-testid="oecd-btn"
+              as="div"
               target="_blank"
             >
               <Dropdown

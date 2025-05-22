@@ -1,5 +1,3 @@
-
-// filepath: /Users/cesarvarela/projects/dsri/aiid/site/gatsby-site/playwright/e2e/incidentLinks.spec.ts
 import { expect } from '@playwright/test';
 import { test } from '../utils';
 import incident_links from '../seeds/aiidprod/incident_links';
@@ -13,13 +11,18 @@ test.describe('Incident Links', () => {
 
         await page.goto(url);
 
-        const linksForIncident1 = incident_links.filter(link => link.incident_id === incidentId);
+        const linksForIncident1 = incident_links.filter(link => link.incident_id === incidentId && link.source_namespace === 'OECD');
 
-        expect(linksForIncident1.length).toBeGreaterThan(0);
+        await expect(async () => {
+            await page.locator('[data-testid="oecd-btn"] button').click();
+            await expect(page.locator('[data-testid="oecd-btn"] ul')).toHaveCount(1, { timeout: 2000 });
+        }).toPass();
 
         for (const link of linksForIncident1) {
             const linkSelector = `a[href="${link.sameAs}"]`;
-            await expect(page.locator(linkSelector)).toBeVisible();
+            const dropdownItem = page.locator(linkSelector);
+            await expect(dropdownItem).toBeVisible();
+            await expect(dropdownItem).toHaveText(link.sameAs.split('/').pop());
         }
     });
 });
