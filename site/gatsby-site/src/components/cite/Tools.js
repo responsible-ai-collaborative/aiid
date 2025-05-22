@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from 'contexts/UserContext';
 import { format } from 'date-fns';
 import Card from 'elements/Card';
-import { Button, ToggleSwitch } from 'flowbite-react';
+import { Button, ToggleSwitch, Dropdown } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
 import { RESPONSE_TAG } from 'utils/entities';
 import CitationFormat from './CitationFormat';
@@ -191,23 +191,37 @@ function Tools({
             />
           </div>
         )}
-        {linkRecords &&
-          linkRecords
-            .filter((link) => link.source_namespace === 'OECD')
-            .map((link) => (
-              <Button
-                key={link.sameAs}
-                color="gray"
-                href={link.sameAs}
-                className="hover:no-underline"
-                data-cy="oecd-btn"
-                as="a"
-                target="_blank"
+        {linkRecords && linkRecords.find((link) => link.source_namespace === 'OECD') && (
+          <>
+            <Button
+              color="gray"
+              className="hover:no-underline"
+              data-cy="oecd-btn"
+              as="adiv"
+              target="_blank"
+            >
+              <Dropdown
+                label={
+                  <>
+                    <OecdLogo width={'20px'} className="mr-2" />
+                    <Trans>See in OECD AIM</Trans>
+                  </>
+                }
+                inline={true}
+                className="-ml-3"
+                placement="right"
               >
-                <OecdLogo width={'20px'} className="mr-2" />
-                <Trans>See in OECD AIM</Trans>
-              </Button>
-            ))}
+                {linkRecords
+                  .filter((link) => link.source_namespace === 'OECD')
+                  .map((link) => (
+                    <Dropdown.Item key={link.sameAs} as={'a'} href={link.sameAs} target="_blank">
+                      {link.sameAs.split('/').pop()}
+                    </Dropdown.Item>
+                  ))}
+              </Dropdown>
+            </Button>
+          </>
+        )}
       </Card.Body>
     </Card>
   );
