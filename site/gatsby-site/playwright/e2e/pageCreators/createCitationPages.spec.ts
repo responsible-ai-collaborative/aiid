@@ -4,6 +4,7 @@ import createCitationPages from '../../../page-creators/createCitationPages';
 import { CreatePagesArgs } from 'gatsby';
 import { expect } from '@playwright/test';
 import { getLanguages, test } from '../../utils';
+import incident_links from '../../seeds/aiidprod/incident_links';
 
 test.describe('createCitationPages', () => {
   let graphql: sinon.SinonStub;
@@ -58,6 +59,9 @@ test.describe('createCitationPages', () => {
           },
         ],
       },
+      allMongodbAiidprodIncidentLinks: {
+        nodes: incident_links.filter(link => link.incident_id === 1), 
+      },
     },
     extensions: {},
   };
@@ -86,6 +90,7 @@ test.describe('createCitationPages', () => {
         path: language.code === 'en' ? '/cite/1/' : `/${language.code}/cite/1/`,
         context: {
           locale: language.code,
+          linkRecords: incident_links.filter(link => link.incident_id === 1),
         },
         component: sinon.match((value) => value.includes('/templates/cite.js')),
       })).toBe(true);
