@@ -117,7 +117,7 @@ class ReportTranslator {
     }
 
     // Insert the translated reports into the reports collection with the language field
-    const reportsTranslated = translated.map((t) => ({ ...t, language }));
+    const reportsTranslated = translated.map((t) => ({ ...t, language, created_at: new Date() }));
 
     return reportsTranslationsCollection.insertMany(reportsTranslated);
   }
