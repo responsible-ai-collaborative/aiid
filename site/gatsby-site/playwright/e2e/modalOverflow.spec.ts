@@ -51,4 +51,38 @@ test.describe('Modals should not leave body overflow hidden', () => {
     await modal.waitFor({ state: 'hidden' });
     await ensureBodyOverflowNotHidden(page);
   });
+
+  test('flag report modal', async ({ page }) => {
+    await init();
+    await page.goto('/cite/1#1');
+    await page.locator('[id="r1"] [data-cy="expand-report-button"]').click();
+    await page.locator('[id="r1"] [data-cy="flag-button"]').click();
+    const modal = page.locator('[data-cy="flag-report-1"]');
+    await modal.waitFor();
+    await modal.locator('[aria-label="Close"]').first().click();
+    await modal.waitFor({ state: 'hidden' });
+    await ensureBodyOverflowNotHidden(page);
+  });
+
+  test('authors modal', async ({ page }) => {
+    await page.goto('/cite/1#1');
+    await page.locator('[id="r1"] [data-cy="expand-report-button"]').click();
+    await page.getByRole('button', { name: 'Authors' }).click();
+    const modal = page.getByRole('dialog').filter({ hasText: 'Authors' });
+    await modal.waitFor();
+    await modal.locator('[aria-label="Close"]').first().click();
+    await modal.waitFor({ state: 'hidden' });
+    await ensureBodyOverflowNotHidden(page);
+  });
+
+  test('submitters modal', async ({ page }) => {
+    await page.goto('/cite/1#1');
+    await page.locator('[id="r1"] [data-cy="expand-report-button"]').click();
+    await page.getByRole('button', { name: 'Submitters' }).click();
+    const modal = page.getByRole('dialog').filter({ hasText: 'Submitters' });
+    await modal.waitFor();
+    await modal.locator('[aria-label="Close"]').first().click();
+    await modal.waitFor({ state: 'hidden' });
+    await ensureBodyOverflowNotHidden(page);
+  });
 });
