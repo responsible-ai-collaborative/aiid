@@ -10,8 +10,9 @@ test.describe('Test playwright utils', () => {
 
         await page.goto('/account');
 
-        await expect(page.getByText('Fula')).toBeVisible();
-        await expect(page.getByText('Nito')).toBeVisible();
-        await expect(page.getByText('sarasa')).toBeVisible();
+        const table = page.locator('[data-cy="details-table"]');
+        await expect(table.getByText('Fula')).toBeVisible();
+        await expect(table.getByText('Nito')).toBeVisible();
+        await expect(table.getByText('sarasa')).toBeVisible();
     });
 });
