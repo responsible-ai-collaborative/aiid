@@ -25,7 +25,7 @@ export const SelectEntity = ({ id, entities, onChange, selected }) => {
 };
 
 export default function AnyMerge() {
-  const { t } = useTranslation();
+  const { t } = useTranslation('entities');
 
   const addToast = useToastContext();
 
@@ -88,7 +88,7 @@ export default function AnyMerge() {
   return (
     <Card>
       <h2 className="text-xl font-semibold mb-0">
-        <Trans>Merge Any Two Entities</Trans>
+        <Trans ns="entities">Merge Any Two Entities</Trans>
       </h2>
       <p className="text-sm text-gray-600 mb-0 mt-0">
         {t(
@@ -102,7 +102,7 @@ export default function AnyMerge() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label htmlFor="entity1" className="block mb-1">
-                <Trans>Primary Entity (Kept)</Trans>
+                <Trans ns="entities">Primary Entity (Kept)</Trans>
               </label>
               <SelectEntity
                 id={'entity1'}
@@ -125,7 +125,7 @@ export default function AnyMerge() {
             </div>
             <div>
               <label htmlFor="entity2" className="block mb-1">
-                <Trans>Secondary Entity (Deleted)</Trans>
+                <Trans ns="entities">Secondary Entity (Deleted)</Trans>
               </label>
               <SelectEntity
                 id={'entity2'}
@@ -149,15 +149,15 @@ export default function AnyMerge() {
           </div>
           {primary.length > 0 && secondary.length > 0 && (
             <p className="font-medium text-red-600 mt-0">
-              <Trans>
-                Warning: This will delete entity &quot;{deletedEntityName}&quot; and update all
-                references to use &quot;{keptEntityName}&quot;.
-              </Trans>
+              {t(
+                'Warning: This will delete entity “{{deleted}}” and update all references to use “{{kept}}”.',
+                { deleted: deletedEntityName, kept: keptEntityName }
+              )}
             </p>
           )}
           <div className="flex space-x-2">
             <Button onClick={handleMergeClick} disabled={!primaryId || !secondaryId || merging}>
-              {merging ? <Spinner size="sm" /> : <Trans>Merge</Trans>}
+              {merging ? <Spinner size="sm" /> : <Trans ns="entities">Merge</Trans>}
             </Button>
           </div>
         </>

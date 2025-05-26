@@ -9,7 +9,7 @@ import SimilarMergeModal from 'components/entities/SimilarMergeModal';
 import AnyMerge from 'components/entities/AnyMerge';
 
 function MergeEntitiesPage() {
-  const { t } = useTranslation();
+  const { t } = useTranslation('entities');
 
   const addToast = useToastContext();
 
@@ -118,7 +118,7 @@ function MergeEntitiesPage() {
   return (
     <div className="w-full">
       <h1 className="text-2xl font-bold mb-5">
-        <Trans>Entity Merge Tool</Trans>
+        <Trans ns="entities">Entity Merge Tool</Trans>
       </h1>
       {loadingSimilar && pairs.length === 0 ? (
         <Spinner />
@@ -132,7 +132,7 @@ function MergeEntitiesPage() {
           <section className="mb-8">
             <Card className="mb-4">
               <h2 className="text-xl font-semibold mb-2">
-                <Trans>Potential Duplicate Entities</Trans>
+                <Trans ns="entities">Potential Duplicate Entities</Trans>
               </h2>
               <p className="text-sm text-gray-600 mb-0 mt-0">
                 {t(
@@ -184,7 +184,7 @@ function MergeEntitiesPage() {
                         {p.primary.label} ↔ {p.secondary.label} ({(p.score * 100).toFixed(1)}%)
                       </span>
                       <Button onClick={() => openModal(p)} className="ml-2">
-                        <Trans>Merge</Trans>
+                        <Trans ns="entities">Merge</Trans>
                       </Button>
                     </div>
                   ))
@@ -193,7 +193,7 @@ function MergeEntitiesPage() {
               {hasMore && (
                 <div className="m-auto mt-4">
                   <Button onClick={loadMore} disabled={loadingMore}>
-                    {loadingMore ? <Spinner size="sm" /> : <Trans>Load more</Trans>}
+                    {loadingMore ? <Spinner size="sm" /> : <Trans ns="entities">Load more</Trans>}
                   </Button>
                 </div>
               )}
@@ -201,15 +201,14 @@ function MergeEntitiesPage() {
           </section>
         </>
       )}
-      {modalOpen && modalPair && (
-        <SimilarMergeModal
-          show={modalOpen}
-          onClose={() => setModalOpen(false)}
-          primaryId={modalPair.primary.id}
-          secondaryId={modalPair.secondary.id}
-          onMergeComplete={handleMergeComplete}
-        />
-      )}
+
+      <SimilarMergeModal
+        show={modalOpen && modalPair}
+        onClose={() => setModalOpen(false)}
+        primaryId={modalPair?.primary.id}
+        secondaryId={modalPair?.secondary.id}
+        onMergeComplete={handleMergeComplete}
+      />
     </div>
   );
 }
