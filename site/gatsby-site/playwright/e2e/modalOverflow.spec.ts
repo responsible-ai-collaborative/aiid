@@ -50,11 +50,13 @@ test.describe('Modals should not leave body overflow hidden', () => {
     await init();
     await login();
     await page.goto('/incidents/history/?incident_id=1');
+
     await expect(async () => {
       await page.locator('[data-cy="history-row"]').first().locator('[data-cy="view-full-version-button"]').click();
       const modal = page.locator('[data-cy="version-view-modal"]');
       await modal.waitFor({ timeout: 2000 });
     }).toPass();
+
     const modal = page.locator('[data-cy="version-view-modal"]');
     await modal.locator('button').getByText('Close').click();
     await modal.waitFor({ state: 'hidden' });
@@ -64,12 +66,14 @@ test.describe('Modals should not leave body overflow hidden', () => {
   test('flag report modal', async ({ page }) => {
     await init();
     await page.goto('/cite/1#1');
-    await page.locator('[id="r1"] [data-cy="expand-report-button"]').click();
+
     await expect(async () => {
+      await page.locator('[id="r1"] [data-cy="expand-report-button"]').click();
       await page.locator('[id="r1"] [data-cy="flag-button"]').click();
       const modal = page.locator('[data-cy="flag-report-1"]');
       await modal.waitFor({ timeout: 2000 });
     }).toPass();
+
     const modal = page.locator('[data-cy="flag-report-1"]');
     await modal.locator('[aria-label="Close"]').first().click();
     await modal.waitFor({ state: 'hidden' });
@@ -78,12 +82,14 @@ test.describe('Modals should not leave body overflow hidden', () => {
 
   test('authors modal', async ({ page }) => {
     await page.goto('/cite/1#1');
-    await page.locator('[id="r1"] [data-cy="expand-report-button"]').click();
+
     await expect(async () => {
+      await page.locator('[id="r1"] [data-cy="expand-report-button"]').click();
       await page.getByRole('button', { name: 'Authors' }).click();
       const modal = page.getByRole('dialog').filter({ hasText: 'Authors' });
       await modal.waitFor({ timeout: 2000 });
     }).toPass();
+
     const modal = page.getByRole('dialog').filter({ hasText: 'Authors' });
     await modal.locator('[aria-label="Close"]').first().click();
     await modal.waitFor({ state: 'hidden' });
@@ -92,12 +98,14 @@ test.describe('Modals should not leave body overflow hidden', () => {
 
   test('submitters modal', async ({ page }) => {
     await page.goto('/cite/1#1');
-    await page.locator('[id="r1"] [data-cy="expand-report-button"]').click();
+
     await expect(async () => {
+      await page.locator('[id="r1"] [data-cy="expand-report-button"]').click();
       await page.getByRole('button', { name: 'Submitters' }).click();
       const modal = page.getByRole('dialog').filter({ hasText: 'Submitters' });
       await modal.waitFor({ timeout: 2000 });
     }).toPass();
+    
     const modal = page.getByRole('dialog').filter({ hasText: 'Submitters' });
     await modal.locator('[aria-label="Close"]').first().click();
     await modal.waitFor({ state: 'hidden' });
