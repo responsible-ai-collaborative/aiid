@@ -27,7 +27,7 @@ function Tools({
   subscribing,
   isLiveData,
   setIsLiveData,
-  linkRecords, // Changed from oecdId to linkRecords
+  linkRecords,
 }) {
   const [showRemoveDuplicateModal, setShowRemoveDuplicateModal] = useState(false);
 

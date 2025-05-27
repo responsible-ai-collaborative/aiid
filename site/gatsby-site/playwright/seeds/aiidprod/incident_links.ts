@@ -1,12 +1,10 @@
 
-// Define the shape of an incident link seed
 type DBIncidentLink = {
     incident_id: number;
     sameAs: string;
     source_namespace: string;
 }
 
-// Seed data for incident_links collection
 const incident_links: DBIncidentLink[] = [
     {
         incident_id: 1,
