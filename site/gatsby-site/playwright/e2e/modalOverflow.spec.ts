@@ -22,9 +22,12 @@ test.describe('Modals should not leave body overflow hidden', () => {
 
   test('citation info modal', async ({ page }) => {
     await page.goto('/cite/1');
-    await page.locator('button:has-text("Citation Info")').click();
+    await expect(async () => {
+      await page.locator('button:has-text("Citation Info")').click();
+      const modal = page.locator('[data-cy="citation-info-modal"]');
+      await modal.waitFor({ timeout: 2000 });
+    }).toPass();
     const modal = page.locator('[data-cy="citation-info-modal"]');
-    await modal.waitFor();
     await modal.getByText('Close').click();
     await modal.waitFor({ state: 'hidden' });
     await ensureBodyOverflowNotHidden(page);
@@ -33,8 +36,11 @@ test.describe('Modals should not leave body overflow hidden', () => {
   test('edit user modal', async ({ page, login }) => {
     await login();
     await page.goto('/account?askToCompleteProfile=1');
+    await expect(async () => {
+      const modal = page.getByTestId('edit-user-modal');
+      await modal.waitFor({ timeout: 2000 });
+    }).toPass();
     const modal = page.getByTestId('edit-user-modal');
-    await modal.waitFor();
     await page.locator('[aria-label="Close"]').click();
     await modal.waitFor({ state: 'hidden' });
     await ensureBodyOverflowNotHidden(page);
@@ -44,9 +50,12 @@ test.describe('Modals should not leave body overflow hidden', () => {
     await init();
     await login();
     await page.goto('/incidents/history/?incident_id=1');
-    await page.locator('[data-cy="history-row"]').first().locator('[data-cy="view-full-version-button"]').click();
+    await expect(async () => {
+      await page.locator('[data-cy="history-row"]').first().locator('[data-cy="view-full-version-button"]').click();
+      const modal = page.locator('[data-cy="version-view-modal"]');
+      await modal.waitFor({ timeout: 2000 });
+    }).toPass();
     const modal = page.locator('[data-cy="version-view-modal"]');
-    await modal.waitFor();
     await modal.locator('button').getByText('Close').click();
     await modal.waitFor({ state: 'hidden' });
     await ensureBodyOverflowNotHidden(page);
@@ -56,9 +65,12 @@ test.describe('Modals should not leave body overflow hidden', () => {
     await init();
     await page.goto('/cite/1#1');
     await page.locator('[id="r1"] [data-cy="expand-report-button"]').click();
-    await page.locator('[id="r1"] [data-cy="flag-button"]').click();
+    await expect(async () => {
+      await page.locator('[id="r1"] [data-cy="flag-button"]').click();
+      const modal = page.locator('[data-cy="flag-report-1"]');
+      await modal.waitFor({ timeout: 2000 });
+    }).toPass();
     const modal = page.locator('[data-cy="flag-report-1"]');
-    await modal.waitFor();
     await modal.locator('[aria-label="Close"]').first().click();
     await modal.waitFor({ state: 'hidden' });
     await ensureBodyOverflowNotHidden(page);
@@ -67,9 +79,12 @@ test.describe('Modals should not leave body overflow hidden', () => {
   test('authors modal', async ({ page }) => {
     await page.goto('/cite/1#1');
     await page.locator('[id="r1"] [data-cy="expand-report-button"]').click();
-    await page.getByRole('button', { name: 'Authors' }).click();
+    await expect(async () => {
+      await page.getByRole('button', { name: 'Authors' }).click();
+      const modal = page.getByRole('dialog').filter({ hasText: 'Authors' });
+      await modal.waitFor({ timeout: 2000 });
+    }).toPass();
     const modal = page.getByRole('dialog').filter({ hasText: 'Authors' });
-    await modal.waitFor();
     await modal.locator('[aria-label="Close"]').first().click();
     await modal.waitFor({ state: 'hidden' });
     await ensureBodyOverflowNotHidden(page);
@@ -78,9 +93,12 @@ test.describe('Modals should not leave body overflow hidden', () => {
   test('submitters modal', async ({ page }) => {
     await page.goto('/cite/1#1');
     await page.locator('[id="r1"] [data-cy="expand-report-button"]').click();
-    await page.getByRole('button', { name: 'Submitters' }).click();
+    await expect(async () => {
+      await page.getByRole('button', { name: 'Submitters' }).click();
+      const modal = page.getByRole('dialog').filter({ hasText: 'Submitters' });
+      await modal.waitFor({ timeout: 2000 });
+    }).toPass();
     const modal = page.getByRole('dialog').filter({ hasText: 'Submitters' });
-    await modal.waitFor();
     await modal.locator('[aria-label="Close"]').first().click();
     await modal.waitFor({ state: 'hidden' });
     await ensureBodyOverflowNotHidden(page);
