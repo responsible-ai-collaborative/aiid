@@ -11,6 +11,7 @@ import classifications from './seeds/aiidprod/classifications';
 import taxa from './seeds/aiidprod/taxa';
 import candidates from './seeds/aiidprod/candidates';
 import duplicates from './seeds/aiidprod/duplicates';
+import entity_duplicates from './seeds/aiidprod/entity_duplicates';
 
 import users from './seeds/customData/users';
 import entity_relationships from './seeds/aiidprod/entity_relationships';
@@ -26,7 +27,7 @@ import incident_links from './seeds/aiidprod/incident_links';
 /**
  * Initializes a MongoDB database with predefined and optional custom seed data.
  * 
- * @param {Record<string, Record<string, Record<string, unknown>[]>>} [seed] - Optional additional seed data
+ * @param {Record<string, Record<string, unknown[]>>} [seed] - Optional additional seed data
  *        organized as database -> collection -> documents structure.
  *        Example: { database1: { collection1: [ doc1, doc2 ] } }
  * @param {Object} [options={ drop: false }] - Configuration options
@@ -44,7 +45,7 @@ import incident_links from './seeds/aiidprod/incident_links';
  *   }
  * }, { drop: true });
  */
-export const init = async (seed?: Record<string, Record<string, Record<string, unknown>[]>>, { drop } = { drop: false }) => {
+export const init = async (seed?: Record<string, Record<string, unknown[]>>, { drop } = { drop: false }) => {
 
     await seedFixture({
         aiidprod: {
@@ -59,6 +60,7 @@ export const init = async (seed?: Record<string, Record<string, Record<string, u
             duplicates,
             checklists,
             incident_links,
+            entity_duplicates,
         },
         customData: {
             users,
@@ -85,7 +87,7 @@ export const init = async (seed?: Record<string, Record<string, Record<string, u
     console.log('Memory Mongo initialized');
 }
 
-export const seedCollection = async ({ name, docs, database = 'aiidprod', drop = true }: { name: string, database?: string, docs: Record<string, unknown>[], drop?: boolean }) => {
+export const seedCollection = async ({ name, docs, database = 'aiidprod', drop = true }: { name: string, database?: string, docs: unknown[], drop?: boolean }) => {
 
     // we require the connection string because the instance variable is not always available
     assert(process.env.MONGODB_CONNECTION_STRING?.includes('localhost') || process.env.MONGODB_CONNECTION_STRING?.includes('127.0.0.1'), 'Seeding is only allowed on localhost');
@@ -108,7 +110,7 @@ export const seedCollection = async ({ name, docs, database = 'aiidprod', drop =
     }
 }
 
-export const seedFixture = async (seeds: Record<string, Record<string, Record<string, unknown>[]>>, drop = true) => {
+export const seedFixture = async (seeds: Record<string, Record<string, unknown[]>>, drop = true) => {
 
     for (const [database, collection] of Object.entries(seeds)) {
 

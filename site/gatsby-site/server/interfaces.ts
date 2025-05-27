@@ -1,4 +1,4 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 import { Classification, Duplicate, Entity, Incident, Report, Submission, Subscription, User, Notification, History_Report, History_Incident, Checklist } from './generated/graphql';
 import { IncomingMessage } from 'http';
 
@@ -43,13 +43,19 @@ export type DBSubmission = Omit<Submission, 'developers' | 'deployers' | 'harmed
   & { implicated_systems: string[] }
 
 
-export type SubscriptionTypes = 'incident' | 'new-incidents' | 'entity' | 'submission-promoted';
+export type SubscriptionTypes = 'incident' | 'new-incidents' | 'entity' | 'submission-promoted' | 'ai-briefing';
 
 export type DBSubscription = Omit<Subscription, 'entityId' | 'incident_id' | 'userId' | 'type'>
   & { entityId?: string, incident_id?: number, userId: string, type: SubscriptionTypes };
 
-export type NotificationTypes = 'new-report-incident' | 'incident-updated' | 'entity' | 'new-incidents' | 'submission-promoted'
+export type NotificationTypes = 'new-report-incident' | 'incident-updated' | 'entity' | 'new-incidents' | 'submission-promoted' | 'ai-briefing'
 
 export type DBNotification = Omit<Notification, 'userId'> & { userId?: string, type: NotificationTypes }
 
 export type DBChecklist = Checklist;
+
+export type DBEntityDuplicate = {
+  _id: ObjectId;
+  duplicate_entity_id: string;
+  true_entity_id: string;
+}

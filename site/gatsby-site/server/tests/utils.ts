@@ -63,6 +63,7 @@ type DeepPartial<T> = T extends object ? { [P in keyof T]?: DeepPartial<T[P]> } 
 
 export interface Fixture<T, U, I = any> {
     name: string;
+    fieldName?: string ;
     query: string;
     seeds: { [database: string]: { [collection: string]: Record<string, unknown>[] } };
     testSingular: {
@@ -180,3 +181,5 @@ export const getCollection = (databaseName: string, collectionName: string) => {
 
     return collection;
 }
+
+export const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);

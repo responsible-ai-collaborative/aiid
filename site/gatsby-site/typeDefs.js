@@ -213,6 +213,10 @@ const typeDefs = `
         source_namespace: String
     }
 
+    type mongodbAiidprodEntityDuplicates implements Node {
+        duplicate_entity_id: String
+        true_entity_id: String
+    }
 `;
 
 module.exports = typeDefs;
