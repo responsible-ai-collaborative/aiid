@@ -79,7 +79,6 @@ async function notificationsToBriefingIncidents(context: Context) {
     }
 
     const reportImageUrl = firstReport?.image_url;
-    console.log(reportImageUrl);
     return {
       id: i.incident_id,
       title: i.title,
