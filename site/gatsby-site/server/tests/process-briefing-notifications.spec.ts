@@ -737,7 +737,7 @@ describe(`Briefing Notifications`, () => {
 
       await processBriefingNotifications();
 
-      expect(sendEmailMock).toHaveBeenCalledTimes(1);
+      expect(sendEmailMock).toHaveBeenCalledTimes(2);
       const dynamicData = sendEmailMock.mock.calls[0][0].dynamicData;
       const renderedHtml = nunjucks.renderString(
         templates.AIIncidentBriefing,
