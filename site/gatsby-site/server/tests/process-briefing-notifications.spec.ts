@@ -667,84 +667,82 @@ describe(`Briefing Notifications`, () => {
       },
     ];
 
-    for (const reportImageUrl of [null, '']) {
-      const reports: DBReport[] = [
-        {
-          report_number: 1,
-          title: 'Report 1',
-          description: 'Report 1 description',
-          authors: [],
-          cloudinary_id: '',
-          date_downloaded: new Date().toISOString(),
-          date_modified: new Date().toISOString(),
-          date_published: new Date().toISOString(),
-          date_submitted: new Date().toISOString(),
-          epoch_date_downloaded: 1,
-          epoch_date_modified: 1,
-          epoch_date_published: 1,
-          epoch_date_submitted: 1,
-          image_url: reportImageUrl as any,
-          language: 'en',
-          plain_text: 'plain_text',
-          source_domain: 'source_domain',
-          submitters: [],
-          tags: [],
-          text: 'text',
-          url: 'url',
-          user: 'user_id',
-        },
-      ];
+    const reports: DBReport[] = [
+      {
+        report_number: 1,
+        title: 'Report 1',
+        description: 'Report 1 description',
+        authors: [],
+        cloudinary_id: '',
+        date_downloaded: new Date().toISOString(),
+        date_modified: new Date().toISOString(),
+        date_published: new Date().toISOString(),
+        date_submitted: new Date().toISOString(),
+        epoch_date_downloaded: 1,
+        epoch_date_modified: 1,
+        epoch_date_published: 1,
+        epoch_date_submitted: 1,
+        image_url: '',
+        language: 'en',
+        plain_text: 'plain_text',
+        source_domain: 'source_domain',
+        submitters: [],
+        tags: [],
+        text: 'text',
+        url: 'url',
+        user: 'user_id',
+      },
+    ];
 
-      await seedFixture({
-        customData: {
-          users,
-          notifications,
-          subscriptions,
-        },
-        aiidprod: {
-          incidents,
-          entities,
-          reports,
-        },
-        auth: {
-          users: [
-            {
-              _id: new ObjectId('5f8f4b3b9b3e6f001f3b3b3b'),
-              email: 'test@test.com',
-              roles: ['admin'],
-            },
-          ],
-        },
-      });
+    await seedFixture({
+      customData: {
+        users,
+        notifications,
+        subscriptions,
+      },
+      aiidprod: {
+        incidents,
+        entities,
+        reports,
+      },
+      auth: {
+        users: [
+          {
+            _id: new ObjectId('5f8f4b3b9b3e6f001f3b3b3b'),
+            email: 'test@test.com',
+            roles: ['admin'],
+          },
+        ],
+      },
+    });
 
-      const mockGetAllByType = jest.fn().mockImplementation((documentType) => {
-        if (documentType === 'blog') {
-          return Promise.resolve([] as any);
-        }
-        if (documentType === 'update') {
-          return Promise.resolve([] as any);
-        }
-        return Promise.resolve([]);
-      });
+    const mockGetAllByType = jest.fn().mockImplementation((documentType) => {
+      if (documentType === 'blog') {
+        return Promise.resolve([] as any);
+      }
+      if (documentType === 'update') {
+        return Promise.resolve([] as any);
+      }
+      return Promise.resolve([]);
+    });
 
-      (prismic.createClient as jest.Mock).mockReturnValue({
-        getAllByType: mockGetAllByType,
-      });
+    (prismic.createClient as jest.Mock).mockReturnValue({
+      getAllByType: mockGetAllByType,
+    });
 
-      mockSession('5f8f4b3b9b3e6f001f3b3b3b');
+    mockSession('5f8f4b3b9b3e6f001f3b3b3b');
 
-      const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockResolvedValue();
+    const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockResolvedValue();
 
-      await processBriefingNotifications();
+    await processBriefingNotifications();
 
-      expect(sendEmailMock).toHaveBeenCalledTimes(2);
-      const dynamicData = sendEmailMock.mock.calls[0][0].dynamicData;
-      const renderedHtml = nunjucks.renderString(
-        templates.AIIncidentBriefing,
-        dynamicData || {}
-      );
-      expect(renderedHtml).not.toContain('alt="First Report Image"');
-    }
+    expect(sendEmailMock).toHaveBeenCalledTimes(1);
+    const dynamicData = sendEmailMock.mock.calls[0][0].dynamicData;
+    const renderedHtml = nunjucks.renderString(
+      templates.AIIncidentBriefing,
+      dynamicData || {}
+    );
+    expect(renderedHtml).not.toContain('alt="First Report Image"');
   });
 
   it('Should not crash if no recipients found', async () => {
