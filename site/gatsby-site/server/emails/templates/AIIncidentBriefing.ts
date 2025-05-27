@@ -53,7 +53,7 @@ const getEmailTemplate = () => {
               {% endif %}
             ">
               <div style="float: left; width: 30%;">
-                {% if incident.reportImageUrl and incident.reportImageUrl != '' %}
+                {% if incident.reportImageUrl %}
                   <img src="{{ incident.reportImageUrl }}" alt="First Report Image" style="${incidentImageStyle}">
                 {% endif %}
               </div>
