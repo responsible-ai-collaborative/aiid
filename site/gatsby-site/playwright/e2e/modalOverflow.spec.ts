@@ -68,10 +68,14 @@ test.describe('Modals should not leave body overflow hidden', () => {
     await page.goto('/cite/1#1');
 
     await expect(async () => {
+
       await page.locator('[id="r1"] [data-cy="expand-report-button"]').click();
+      await expect(page.locator('[id="r1"] [data-cy="flag-button"]')).toBeVisible({ timeout: 2000 });
+
       await page.locator('[id="r1"] [data-cy="flag-button"]').click();
       const modal = page.locator('[data-cy="flag-report-1"]');
       await modal.waitFor({ timeout: 2000 });
+
     }).toPass();
 
     const modal = page.locator('[data-cy="flag-report-1"]');
@@ -85,6 +89,8 @@ test.describe('Modals should not leave body overflow hidden', () => {
 
     await expect(async () => {
       await page.locator('[id="r1"] [data-cy="expand-report-button"]').click();
+      await expect(page.getByRole('button', { name: 'Authors' })).toBeVisible({ timeout: 2000 });
+
       await page.getByRole('button', { name: 'Authors' }).click();
       const modal = page.getByRole('dialog').filter({ hasText: 'Authors' });
       await modal.waitFor({ timeout: 2000 });
@@ -105,7 +111,7 @@ test.describe('Modals should not leave body overflow hidden', () => {
       const modal = page.getByRole('dialog').filter({ hasText: 'Submitters' });
       await modal.waitFor({ timeout: 2000 });
     }).toPass();
-    
+
     const modal = page.getByRole('dialog').filter({ hasText: 'Submitters' });
     await modal.locator('[aria-label="Close"]').first().click();
     await modal.waitFor({ state: 'hidden' });
