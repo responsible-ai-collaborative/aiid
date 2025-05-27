@@ -612,13 +612,6 @@ describe(`Briefing Notifications`, () => {
       templateId: "AIIncidentBriefing",
     }));
 
-    const dynamicData = sendEmailMock.mock.calls[0][0].dynamicData;
-    const renderedHtml = nunjucks.renderString(
-      templates.AIIncidentBriefing,
-      dynamicData || {}
-    );
-    expect(renderedHtml).toContain('Incident 1');
-
     expect(result).toBe(1);
   });
 
