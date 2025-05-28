@@ -49,8 +49,12 @@ const RolesTable = ({ roles }) => (
   </table>
 );
 
-export default function UserEditModal({ onClose, userId, alertTitle = '', alertText = '' }) {
-  const { data: userData, loading } = useQuery(FIND_USER, {
+export default function UserEditModal({ show, onClose, userId, alertTitle = '', alertText = '' }) {
+  const {
+    data: userData,
+    loading,
+    error,
+  } = useQuery(FIND_USER, {
     variables: { filter: { userId: { EQ: userId } } },
   });
 
@@ -92,10 +96,19 @@ export default function UserEditModal({ onClose, userId, alertTitle = '', alertT
   };
 
   return (
-    <Modal show={true} onClose={onClose} data-testid="edit-user-modal" size="lg">
+    <Modal show={show} onClose={onClose} data-testid="edit-user-modal" size="lg">
       <Modal.Header>
         <Trans>Edit</Trans>
       </Modal.Header>
+
+      {error && (
+        <Modal.Body>
+          <Alert color="failure">
+            <h5 className="font-bold">Error</h5>
+            <span>{error.message}</span>
+          </Alert>
+        </Modal.Body>
+      )}
 
       {loading && (
         <Modal.Body>

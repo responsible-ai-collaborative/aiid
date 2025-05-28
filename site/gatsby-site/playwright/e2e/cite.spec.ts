@@ -127,7 +127,7 @@ test.describe('Cite pages', () => {
 
         await expect(modal.locator('[data-cy="flag-toggle"]')).toBeDisabled();
 
-        await page.locator('[aria-label="Close"]').click();
+        await modal.locator('[aria-label="Close"]').click();
 
         await expect(modal).not.toBeVisible();
 
