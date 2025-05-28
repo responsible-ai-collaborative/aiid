@@ -1,6 +1,5 @@
 import { query, setEditorText, getEditorText, test } from '../utils';
 import { expect } from '@playwright/test';
-import config from '../config';
 import { init } from '../memory-mongo';
 import reports from '../seeds/aiidprod/reports';
 import reportsTranslations from '../seeds/translations/reports';
