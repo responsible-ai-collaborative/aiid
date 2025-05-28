@@ -30,6 +30,7 @@ function MergeEntitiesPage() {
     loading: loadingSimilar,
     error: loadingError,
     fetchMore,
+    refetch,
   } = useQuery(SIMILAR_ENTITIES, {
     variables: { threshold, offset: 0, limit: PAGE_SIZE },
     notifyOnNetworkStatusChange: true,
@@ -73,15 +74,12 @@ function MergeEntitiesPage() {
     setModalOpen(true);
   };
 
-  const handleMergeComplete = () => {
-    if (modalPair) {
-      setPairs((prev) =>
-        prev.filter(
-          (p) =>
-            !(p.primary.id === modalPair.primary.id && p.secondary.id === modalPair.secondary.id)
-        )
-      );
-    }
+  const handleMergeComplete = async () => {
+    setPairs([]);
+    setHasMore(true);
+
+    await refetch({ threshold, offset: 0, limit: PAGE_SIZE });
+
     setModalOpen(false);
     setModalPair(null);
   };

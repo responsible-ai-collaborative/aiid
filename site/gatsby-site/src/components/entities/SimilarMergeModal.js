@@ -50,10 +50,6 @@ export default function SimilarMergeModal({
   const deletedEntityName = keepSide === 'left' ? secondaryEntityName : primaryEntityName;
 
   const confirmMerge = async () => {
-    const primaryId = primaryId;
-
-    const secondaryId = secondaryId;
-
     const keepEntityInt = keepSide === 'left' ? 1 : 2;
 
     try {
@@ -70,10 +66,18 @@ export default function SimilarMergeModal({
       if (onMergeComplete) {
         onMergeComplete(primaryId, secondaryId);
       }
-
-      onClose();
     } catch (error) {
-      addToast({ message: t('Error merging entities'), severity: SEVERITY.danger, error });
+      if (error instanceof Error) {
+        addToast({
+          message: t('Error merging entities') + `:${error.message}`,
+          severity: SEVERITY.danger,
+          error,
+        });
+      } else {
+        addToast({ message: t('Error merging entities'), severity: SEVERITY.danger, error });
+      }
+    } finally {
+      onClose();
     }
   };
 
