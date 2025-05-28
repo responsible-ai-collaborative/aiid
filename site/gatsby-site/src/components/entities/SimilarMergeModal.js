@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Spinner, Button } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
-import { MERGE_ENTITIES, FIND_ENTITIES } from '../../graphql/entities';
-import { useQuery, useMutation } from '@apollo/client/react/hooks';
+import { MERGE_ENTITIES, FIND_ENTITY } from '../../graphql/entities';
+import { useLazyQuery, useMutation } from '@apollo/client/react/hooks';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { ExternalLink } from 'react-feather';
 
@@ -17,30 +17,42 @@ export default function SimilarMergeModal({
 
   const addToast = useToastContext();
 
-  const [selectedPrimary] = useState(primaryId);
-
-  const [selectedSecondary] = useState(secondaryId);
-
   const [keepSide, setKeepSide] = useState('left');
 
-  const { data: allEntitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES);
+  const [loadPrimary, { data: primaryData, loading: loadingPrimary }] = useLazyQuery(FIND_ENTITY);
+
+  const [loadSecondary, { data: secondaryData, loading: loadingSecondary }] =
+    useLazyQuery(FIND_ENTITY);
+
+  useEffect(() => {
+    if (primaryId) {
+      console.log('Loading primary entity with ID:', primaryId);
+      loadPrimary({ variables: { filter: { entity_id: { EQ: primaryId } } } });
+    }
+  }, [primaryId, loadPrimary]);
+
+  useEffect(() => {
+    if (secondaryId) {
+      loadSecondary({ variables: { filter: { entity_id: { EQ: secondaryId } } } });
+    }
+  }, [secondaryId, loadSecondary]);
+
+  const loadingEntities = loadingPrimary || loadingSecondary;
 
   const [mergeEntities, { loading: merging }] = useMutation(MERGE_ENTITIES);
 
-  const entities = allEntitiesData?.entities || [];
+  const primaryEntityName = primaryData?.entity?.name || '';
 
-  const primaryEntityName = entities.find((e) => e.entity_id === selectedPrimary)?.name || '';
-
-  const secondaryEntityName = entities.find((e) => e.entity_id === selectedSecondary)?.name || '';
+  const secondaryEntityName = secondaryData?.entity?.name || '';
 
   const keptEntityName = keepSide === 'left' ? primaryEntityName : secondaryEntityName;
 
   const deletedEntityName = keepSide === 'left' ? secondaryEntityName : primaryEntityName;
 
   const confirmMerge = async () => {
-    const primaryId = selectedPrimary;
+    const primaryId = primaryId;
 
-    const secondaryId = selectedSecondary;
+    const secondaryId = secondaryId;
 
     const keepEntityInt = keepSide === 'left' ? 1 : 2;
 
@@ -109,12 +121,12 @@ export default function SimilarMergeModal({
                   <span className="font-medium">{primaryEntityName}</span>
                 </div>
                 <a
-                  href={`/entities/${selectedPrimary}`}
+                  href={`/entities/${primaryId}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs text-gray-600 mt-2 hover:underline flex items-center"
                 >
-                  {`/${selectedPrimary}`}
+                  {`/${primaryId}`}
                   <ExternalLink size={14} className="ml-1" />
                 </a>
               </label>
@@ -135,12 +147,12 @@ export default function SimilarMergeModal({
                   <span className="font-medium">{secondaryEntityName}</span>
                 </div>
                 <a
-                  href={`/entities/${selectedSecondary}`}
+                  href={`/entities/${secondaryId}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs text-gray-600 mt-2 hover:underline flex items-center"
                 >
-                  {`/${selectedSecondary}`}
+                  {`/${secondaryId}`}
                   <ExternalLink size={14} className="ml-1" />
                 </a>
               </label>
