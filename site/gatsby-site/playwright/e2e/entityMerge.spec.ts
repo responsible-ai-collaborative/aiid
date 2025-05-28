@@ -170,4 +170,45 @@ test.describe('Entity Merge Page', () => {
 
     await expect(page.locator('div.flex.justify-between.items-center', { hasText: `${primary.name} ↔ ${secondary.name}` })).not.toBeVisible();
   });
+
+  test('SimilarMergeModal shows error toast on merge error', async ({ page, login }) => {
+    
+    await login();
+    await page.goto(url);
+
+    await page.locator('input[type="number"]').fill('0');
+    await page.getByRole('button', { name: 'Update' }).click();
+
+    const { data: entities } = await query({ query: gql`query { entities { entity_id name } }` });
+    
+    expect(entities.entities.length).toBeGreaterThanOrEqual(2);
+
+    const primary = entities.entities[0];
+    const secondary = entities.entities[1];
+
+    const pairLocator = page.locator('div.flex.justify-between.items-center', { hasText: `${primary.name} ↔ ${secondary.name}` });
+    await pairLocator.getByRole('button', { name: 'Merge' }).click();
+    const dialog = page.getByRole('dialog');
+
+    await expect(dialog).toBeVisible();
+
+    await page.route('**/graphql', async route => {
+      const req = route.request();
+      const body = await req.postDataJSON();
+      if (body.operationName === 'MergeEntities') {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({ errors: [{ message: 'Test merge error' }] }),
+        });
+      } else {
+        await route.continue();
+      }
+    });
+
+    page.on('dialog', dlg => dlg.accept());
+    await dialog.getByRole('button', { name: 'Merge' }).click();
+
+    await expect(page.locator('[data-cy="toast"]')).toContainText('Error merging entities:Test merge error');
+  });
 });
