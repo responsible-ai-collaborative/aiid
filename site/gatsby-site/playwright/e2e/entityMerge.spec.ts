@@ -36,12 +36,10 @@ test.describe('Entity Merge Page', () => {
     await fillAutoComplete(page, '#entity1-input', 'Entity', 'Entity 1');
     await fillAutoComplete(page, '#entity2-input', 'Entity', 'Entity 2');
 
-    await expect(page.locator('.text-red-600')).toBeVisible();
+    await expect(page.locator('.text-red-600').first()).toBeVisible();
 
-
-    await expect(page.locator('.text-red-600')).toBeVisible();
-    await expect(page.locator('.text-red-600')).toContainText(`delete entity "Entity 2"`);
-    await expect(page.locator('.text-red-600')).toContainText(`use "Entity 1"`);
+    await expect(page.locator('.text-red-600').first()).toContainText(`delete entity “Entity 2”`);
+    await expect(page.locator('.text-red-600').first()).toContainText(`to use “Entity 1”`);
   });
 
   test('Confirm button should be disabled when entities are not selected', async ({ page, login }) => {
@@ -172,7 +170,7 @@ test.describe('Entity Merge Page', () => {
   });
 
   test('SimilarMergeModal shows error toast on merge error', async ({ page, login }) => {
-    
+
     await login();
     await page.goto(url);
 
@@ -180,7 +178,7 @@ test.describe('Entity Merge Page', () => {
     await page.getByRole('button', { name: 'Update' }).click();
 
     const { data: entities } = await query({ query: gql`query { entities { entity_id name } }` });
-    
+
     expect(entities.entities.length).toBeGreaterThanOrEqual(2);
 
     const primary = entities.entities[0];
