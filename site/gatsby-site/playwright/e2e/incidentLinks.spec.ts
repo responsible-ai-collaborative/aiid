@@ -7,7 +7,9 @@ test.describe('Incident Links', () => {
     const incidentId = 1;
     const url = `/cite/${incidentId}`;
 
-    test('Successfully loads and displays incident links', async ({ page }) => {
+    test('Successfully loads and displays incident links', async ({ page, login }) => {
+
+        await login();
 
         await page.goto(url);
 
