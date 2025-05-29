@@ -191,35 +191,45 @@ function Tools({
             />
           </div>
         )}
-        {linkRecords && linkRecords.find((link) => link.source_namespace === 'OECD') && (
+
+        {!loading && user && isRole('incident_editor') && (
           <>
-            <Button
-              color="gray"
-              className="hover:no-underline"
-              data-testid="oecd-btn"
-              as="div"
-              target="_blank"
-            >
-              <Dropdown
-                label={
-                  <>
-                    <OecdLogo width={'20px'} className="mr-2" />
-                    <Trans>See in OECD AIM</Trans>
-                  </>
-                }
-                inline={true}
-                className="-ml-3"
-                placement="right"
-              >
-                {linkRecords
-                  .filter((link) => link.source_namespace === 'OECD')
-                  .map((link) => (
-                    <Dropdown.Item key={link.sameAs} as={'a'} href={link.sameAs} target="_blank">
-                      {link.sameAs.split('/').pop()}
-                    </Dropdown.Item>
-                  ))}
-              </Dropdown>
-            </Button>
+            {linkRecords && linkRecords.find((link) => link.source_namespace === 'OECD') && (
+              <>
+                <Button
+                  color="gray"
+                  className="hover:no-underline"
+                  data-testid="oecd-btn"
+                  as="div"
+                  target="_blank"
+                >
+                  <Dropdown
+                    label={
+                      <>
+                        <OecdLogo width={'20px'} className="mr-2" />
+                        <Trans>See in OECD AIM</Trans>
+                      </>
+                    }
+                    inline={true}
+                    className="-ml-3"
+                    placement="right"
+                  >
+                    {linkRecords
+                      .filter((link) => link.source_namespace === 'OECD')
+                      .map((link) => (
+                        <Dropdown.Item
+                          key={link.sameAs}
+                          as={'a'}
+                          href={link.sameAs}
+                          target="_blank"
+                        >
+                          {link.sameAs.split('/').pop()}
+                        </Dropdown.Item>
+                      ))}
+                  </Dropdown>
+                </Button>
+              </>
+            )}
           </>
         )}
       </Card.Body>
