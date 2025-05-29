@@ -53,6 +53,7 @@ function CiteTemplate({
   liveVersion = false,
   setIsLiveData,
   readOnly = false,
+  linkRecords,
 }) {
   const { loading, isRole, user } = useUserContext();
 
@@ -288,6 +289,7 @@ function CiteTemplate({
                   subscribing={subscribing}
                   isLiveData={liveVersion}
                   setIsLiveData={setIsLiveData}
+                  linkRecords={linkRecords}
                 />
               </Col>
             </Row>

@@ -20,6 +20,7 @@ function CiteDynamicTemplate({
   editor_dissimilar_incidents,
   locationPathName,
   setIsLiveData,
+  linkRecords,
 }) {
   const { locale: language, config: availableLanguages } = useLocalization();
 
@@ -168,6 +169,7 @@ function CiteDynamicTemplate({
             editor_dissimilar_incidents={editor_dissimilar_incidents}
             liveVersion={true}
             setIsLiveData={setIsLiveData}
+            linkRecords={linkRecords}
           />
         )
       )}
