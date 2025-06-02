@@ -245,7 +245,7 @@ Example:
 SKIP_PAGE_CREATOR=createTsneVisualizationPage,createCitationPages npm run start
 ```
 
-In general, skipping the TSNE visualization has the most significant reduction in build time.
+In general, skipping the TSNE visualization has the most significant reduction in build time. You can also reduce the time to build the TSNE visualization by setting the `TSNE_NITER` environment variable to a value lower than the default `1000`. A value of `100` produces visually acceptable results in about 1/10th the build time.
 
 
 ### Restoring Production database to Staging

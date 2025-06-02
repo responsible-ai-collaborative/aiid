@@ -26,39 +26,11 @@ export default function IncidentVersionViewModal({
   const [timeline, setTimeline] = useState(null);
 
   const { data: reportsData } = useQuery(FIND_REPORTS, {
-    variables: { filter: { report_number: { IN: version.reports || [] } } },
+    variables: { filter: { report_number: { IN: version?.reports || [] } } },
   });
-
-  const incidentEntitiesFields = {
-    Alleged_deployer_of_AI_system: version.AllegedDeployerOfAISystem,
-    Alleged_developer_of_AI_system: version.AllegedDeveloperOfAISystem,
-    Alleged_harmed_or_nearly_harmed_parties: version.AllegedHarmedOrNearlyHarmedParties,
-    implicated_systems: version.implicated_systems,
-  };
-
-  const incidentEntities = computeEntities({
-    incidents: [incidentEntitiesFields],
-    entities: entities,
-    responses: [],
-  });
-
-  if (version.editors && version.editors.length > 0 && !version.editors[0]?.userId) {
-    const editorsUsers = [];
-
-    for (const editorId of version.editors) {
-      const editorUser = users.find((user) => user.userId === editorId);
-
-      if (editorUser) {
-        editorsUsers.push(editorUser);
-      }
-    }
-    version.editors = editorsUsers;
-  }
-
-  const variants = sortedReports.filter((report) => !isCompleteReport(report));
 
   useEffect(() => {
-    if (reportsData?.reports) {
+    if (reportsData?.reports && version) {
       const reports = reportsData?.reports.map((report) => {
         return { ...report };
       });
@@ -87,11 +59,37 @@ export default function IncidentVersionViewModal({
       setTimeline(timeline);
       setLoading(false);
     }
-  }, [reportsData]);
+  }, [reportsData, version]);
 
-  if (!show) {
-    return null;
+  const incidentEntitiesFields = version
+    ? {
+        Alleged_deployer_of_AI_system: version.AllegedDeployerOfAISystem,
+        Alleged_developer_of_AI_system: version.AllegedDeveloperOfAISystem,
+        Alleged_harmed_or_nearly_harmed_parties: version.AllegedHarmedOrNearlyHarmedParties,
+        implicated_systems: version.implicated_systems,
+      }
+    : {};
+
+  const incidentEntities = computeEntities({
+    incidents: [incidentEntitiesFields],
+    entities: entities,
+    responses: [],
+  });
+
+  if (version && version.editors && version.editors.length > 0 && !version.editors[0]?.userId) {
+    const editorsUsers = [];
+
+    for (const editorId of version.editors) {
+      const editorUser = users.find((user) => user.userId === editorId);
+
+      if (editorUser) {
+        editorsUsers.push(editorUser);
+      }
+    }
+    version.editors = editorsUsers;
   }
+
+  const variants = sortedReports.filter((report) => !isCompleteReport(report));
 
   return (
     <Modal
@@ -101,26 +99,29 @@ export default function IncidentVersionViewModal({
       size="4xl"
       data-cy="version-view-modal"
     >
-      <Modal.Header>
-        <Trans>View Version details</Trans>
-        <div className="flex gap-5 text-base mt-2">
-          {version.modifiedByUser && (
-            <div>
-              <strong>Modified by</strong>: {version.modifiedByUser.first_name}{' '}
-              {version.modifiedByUser.last_name}
-            </div>
-          )}
-          {version.epoch_date_modified && (
-            <div>
-              <strong>Modified on</strong>:{' '}
-              {format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}
-            </div>
-          )}
-        </div>
-      </Modal.Header>
+      {version && (
+        <Modal.Header>
+          <Trans>View Version details</Trans>
+          <div className="flex gap-5 text-base mt-2">
+            {version.modifiedByUser && (
+              <div>
+                <strong>Modified by</strong>: {version.modifiedByUser.first_name}{' '}
+                {version.modifiedByUser.last_name}
+              </div>
+            )}
+            {version.epoch_date_modified && (
+              <div>
+                <strong>Modified on</strong>:{' '}
+                {format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}
+              </div>
+            )}
+          </div>
+        </Modal.Header>
+      )}
+
       <Modal.Body>
-        {loading && <DefaultSkeleton />}
-        {!loading && (
+        {loading && version && <DefaultSkeleton />}
+        {!loading && version && (
           <CiteTemplate
             incident={version}
             sortedReports={sortedReports}
@@ -141,6 +142,7 @@ export default function IncidentVersionViewModal({
           />
         )}
       </Modal.Body>
+
       <Modal.Footer>
         <Button color="gray" onClick={onClose}>
           <Trans>Close</Trans>

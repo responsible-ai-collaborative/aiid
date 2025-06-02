@@ -3,36 +3,41 @@ const path = require('path');
 const { switchLocalizedPath } = require('../i18n');
 
 const createCitationPages = async (graphql, createPage, { languages }) => {
-  const result = await graphql(
-    `
-      query IncidentIDs {
-        allMongodbAiidprodIncidents(sort: { incident_id: ASC }) {
-          nodes {
-            incident_id
+  const result = await graphql(`
+    query IncidentsAndLinks {
+      allMongodbAiidprodIncidents(sort: { incident_id: ASC }) {
+        nodes {
+          incident_id
+          title
+          date
+          reports {
             title
-            date
-            reports {
-              title
-              report_number
-              language
-              image_url
-              cloudinary_id
-            }
-            editor_similar_incidents
-            editor_dissimilar_incidents
-            flagged_dissimilar_incidents
-            description
-            nlp_similar_incidents {
-              incident_id
-              similarity
-            }
+            report_number
+            language
+            image_url
+            cloudinary_id
+          }
+          editor_similar_incidents
+          editor_dissimilar_incidents
+          flagged_dissimilar_incidents
+          description
+          nlp_similar_incidents {
+            incident_id
+            similarity
           }
         }
       }
-    `
-  );
+      allMongodbAiidprodIncidentLinks {
+        nodes {
+          incident_id
+          sameAs
+          source_namespace
+        }
+      }
+    }
+  `);
 
-  const { allMongodbAiidprodIncidents } = result.data;
+  const { allMongodbAiidprodIncidents, allMongodbAiidprodIncidentLinks } = result.data;
 
   const pageContexts = [];
 
@@ -56,6 +61,10 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
       ...allMongodbAiidprodIncidents.nodes.find((incident) => incident.incident_id === incident_id),
     }));
 
+    const linkRecords = allMongodbAiidprodIncidentLinks.nodes.filter(
+      (l) => l.incident_id === incident_id
+    );
+
     pageContexts.push({
       incident,
       incident_id,
@@ -68,6 +77,7 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
       nlp_similar_incidents,
       editor_similar_incidents,
       editor_dissimilar_incidents,
+      linkRecords,
     });
   });
 

@@ -104,14 +104,13 @@ export default function UserDetails({ userId }) {
         </Button>
       </div>
 
-      {showEditModal && (
-        <UserEditModal
-          userId={userId}
-          onClose={() => setShowEditModal(false)}
-          alertTitle={t('completeInfoAlertTitle')}
-          alertText={t('completeInfoAlertMessage')}
-        />
-      )}
+      <UserEditModal
+        show={showEditModal && userId}
+        userId={userId}
+        onClose={() => setShowEditModal(false)}
+        alertTitle={t('completeInfoAlertTitle')}
+        alertText={t('completeInfoAlertMessage')}
+      />
     </>
   );
 }
