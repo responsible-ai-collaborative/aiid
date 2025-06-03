@@ -12,6 +12,7 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useUserContext } from 'contexts/UserContext';
 import Link from 'components/ui/Link';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
+import { FIND_USER } from '../graphql/users';
 
 const UserSubscriptions = () => {
   const { user } = useUserContext();
@@ -26,13 +27,22 @@ const UserSubscriptions = () => {
 
   const [isSubscribeToNewIncidents, setIsSubscribeToNewIncidents] = useState(false);
 
+  const [isSubscribeToAiIncidentBriefing, setIsSubscribeToAiIncidentBriefing] = useState(false);
+
   const { data, loading } = useQuery(FIND_USER_SUBSCRIPTIONS, {
+    variables: { filter: { userId: { EQ: user.id } } },
+  });
+
+  const { data: userData } = useQuery(FIND_USER, {
     variables: { filter: { userId: { EQ: user.id } } },
   });
 
   const [deleteSubscriptions, { loading: deleting }] = useMutation(DELETE_SUBSCRIPTIONS);
 
   const [subscribeToNewIncidentsMutation, { loading: subscribingToNewIncidents }] =
+    useMutation(UPSERT_SUBSCRIPTION);
+
+  const [subscribeToAiIncidentBriefingMutation, { loading: subscribingToAiIncidentBriefing }] =
     useMutation(UPSERT_SUBSCRIPTION);
 
   const handleDeleteSubscription = async (subscriptionId) => {
@@ -78,6 +88,26 @@ const UserSubscriptions = () => {
     );
 
     setIsSubscribeToNewIncidents(hasSubscription);
+
+    let hasAiIncidentBriefingSubscription = data?.subscriptions.some(
+      (s) => s.type == SUBSCRIPTION_TYPE.aiBriefing
+    );
+
+    if (!hasAiIncidentBriefingSubscription) {
+      subscribeToAiIncidentBriefingMutation({
+        variables: {
+          filter: { type: { EQ: SUBSCRIPTION_TYPE.aiBriefing }, userId: { EQ: user.id } },
+          update: {
+            type: SUBSCRIPTION_TYPE.aiBriefing,
+            userId: { link: user.id },
+          },
+        },
+      });
+      hasAiIncidentBriefingSubscription = true;
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+
+    setIsSubscribeToAiIncidentBriefing(hasAiIncidentBriefingSubscription);
   }, [user, data]);
 
   const onSusbcribeToggle = async (checked) => {
@@ -106,8 +136,43 @@ const UserSubscriptions = () => {
     setIsSubscribeToNewIncidents(checked);
   };
 
+  const onSusbcribeAiIncidentBriefingToggle = async (checked) => {
+    if (checked) {
+      await subscribeToAiIncidentBriefingMutation({
+        variables: {
+          filter: { type: { EQ: SUBSCRIPTION_TYPE.aiBriefing }, userId: { EQ: user.id } },
+          update: {
+            type: SUBSCRIPTION_TYPE.aiBriefing,
+            userId: { link: user.id },
+          },
+        },
+      });
+    } else {
+      await deleteSubscriptions({
+        variables: {
+          filter: { type: { EQ: SUBSCRIPTION_TYPE.aiBriefing }, userId: { EQ: user.id } },
+        },
+      });
+    }
+    setIsSubscribeToAiIncidentBriefing(checked);
+  };
+
   return (
     <div className="mt-4">
+      <div className={`my-2 -ml-2`}>
+        {(userData?.user?.roles.includes('admin') || userData?.user?.roles.includes('editor')) && (
+          <div className={`p-2`}>
+            <ToggleSwitch
+              id="subscribe-ai-briefing"
+              checked={isSubscribeToAiIncidentBriefing}
+              label={t('Receive AI Incident Briefing', { ns: 'login' })}
+              onChange={onSusbcribeAiIncidentBriefingToggle}
+              name="subscribe-ai-briefing"
+              disabled={loading || deleting || subscribingToAiIncidentBriefing}
+            />
+          </div>
+        )}
+      </div>
       <div className="my-4">
         <ToggleSwitch
           id="subscribe-all"
