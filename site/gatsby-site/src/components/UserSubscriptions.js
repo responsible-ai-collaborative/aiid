@@ -93,20 +93,6 @@ const UserSubscriptions = () => {
       (s) => s.type == SUBSCRIPTION_TYPE.aiBriefing
     );
 
-    if (!hasAiIncidentBriefingSubscription) {
-      subscribeToAiIncidentBriefingMutation({
-        variables: {
-          filter: { type: { EQ: SUBSCRIPTION_TYPE.aiBriefing }, userId: { EQ: user.id } },
-          update: {
-            type: SUBSCRIPTION_TYPE.aiBriefing,
-            userId: { link: user.id },
-          },
-        },
-      });
-      hasAiIncidentBriefingSubscription = true;
-      window.history.replaceState({}, '', window.location.pathname);
-    }
-
     setIsSubscribeToAiIncidentBriefing(hasAiIncidentBriefingSubscription);
   }, [user, data]);
 
