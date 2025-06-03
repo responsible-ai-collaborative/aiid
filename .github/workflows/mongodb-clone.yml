@@ -46,7 +46,7 @@ jobs:
 
       - name: "Restore Staging database collection: customData.users"
         shell: bash
-        run: mongorestore --uri "${{ secrets.DB_STAGING_CONNECTION_STRING }}/customData" ./dump/customData --upsert --noOptionsRestore 
+        run: mongorestore --uri "${{ secrets.DB_STAGING_CONNECTION_STRING }}/customData" ./dump/customData --noOptionsRestore 
 
       - name: "Anonymize customData.users first and last names"
         shell: bash
