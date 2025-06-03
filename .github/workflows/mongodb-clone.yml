@@ -32,16 +32,20 @@ jobs:
         run: mongodump --uri="${{ secrets.DB_PRODUCTION_CONNECTION_STRING }}" --db=customData --collection=users
 
       - name: "Restore Staging database collection: aiidprod"
-        run: mongorestore ${{ secrets.DB_STAGING_CONNECTION_STRING }}/aiidprod ./dump/aiidprod --drop --noOptionsRestore
+        shell: bash
+        run: mongorestore --uri "${{ secrets.DB_STAGING_CONNECTION_STRING }}/aiidprod" ./dump/aiidprod --drop --noOptionsRestore
 
       - name: "Restore Staging database collection: translations"
-        run: mongorestore ${{ secrets.DB_STAGING_CONNECTION_STRING }}/translations ./dump/translations --drop --noOptionsRestore
+        shell: bash
+        run: mongorestore --uri "${{ secrets.DB_STAGING_CONNECTION_STRING }}/translations" ./dump/translations --drop --noOptionsRestore
 
       - name: "Restore Staging database collection: history"
-        run: mongorestore ${{ secrets.DB_STAGING_CONNECTION_STRING }}/history ./dump/history --drop --noOptionsRestore
+        shell: bash
+        run: mongorestore --uri "${{ secrets.DB_STAGING_CONNECTION_STRING }}/history" ./dump/history --drop --noOptionsRestore
 
       - name: "Restore Staging database collection: customData.users"
-        run: mongorestore ${{ secrets.DB_STAGING_CONNECTION_STRING }}/customData ./dump/customData --drop --noOptionsRestore
+        shell: bash
+        run: mongorestore --uri "${{ secrets.DB_STAGING_CONNECTION_STRING }}/customData" ./dump/customData --drop --noOptionsRestore
 
       - name: "Anonymize customData.users first and last names"
         shell: bash
