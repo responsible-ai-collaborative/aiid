@@ -92,6 +92,8 @@ test.describe('Subscriptions', () => {
 
     test('New Incidents: Should display the switch toggle off if user does not have a subscription', async ({ page, login }) => {
 
+        await init();
+
         await login({ customData: { roles: ['subscriber'], first_name: 'John', last_name: 'Doe' } });
 
         await page.goto(url);
