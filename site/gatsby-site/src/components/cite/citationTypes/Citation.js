@@ -41,7 +41,7 @@ const Citation = ({ nodes, incidentDate, incident_id, incidentTitle, editors }) 
     setRetrievalString(text);
   }, []);
 
-  const [firstEditor] = editors;
+  const firstEditor = editors[0] || { first_name: 'Sean', last_name: 'McGregor' };
 
   const { first_name, last_name: editorLastName } = firstEditor;
 

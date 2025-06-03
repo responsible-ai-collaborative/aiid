@@ -22,7 +22,7 @@ const BibTex = ({ nodes, incidentDate, incident_id, incidentTitle, editors }) =>
   // Only return the earliest submitter
   let submitterCite = getFormattedName(docs[0]['submitters'][0]);
 
-  const [firstEditor] = editors;
+  const firstEditor = editors[0] || { first_name: 'Sean', last_name: 'McGregor' };
 
   const { first_name, last_name } = firstEditor;
 
