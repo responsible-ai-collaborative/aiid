@@ -78,6 +78,8 @@ jobs:
         working-directory: site/gatsby-site
         env:
           MONGODB_MIGRATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_MIGRATIONS_CONNECTION_STRING }}
+          GATSBY_SITE_URL: ${{ inputs.site-url || vars.SITE_URL }}
+          GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
 
       - name: Use deploy specific netlify.toml
         run: mv deploy-netlify.toml netlify.toml
