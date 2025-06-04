@@ -233,7 +233,7 @@ test.describe('Subscriptions', () => {
 
       await init();
 
-      await login({ customData: { roles: ['editor'], first_name: 'John', last_name: 'Doe' } });
+      await login({ customData: { roles: ['incident_editor'], first_name: 'John', last_name: 'Doe' } });
 
       await page.goto(url);
 
@@ -257,7 +257,7 @@ test.describe('Subscriptions', () => {
 
     await init();
 
-    const [userId] = await login({ customData: { roles: ['editor'], first_name: 'John', last_name: 'Doe' } });
+    const [userId] = await login({ customData: { roles: ['incident_editor'], first_name: 'John', last_name: 'Doe' } });
 
     const subscriptions: DBSubscription[] = [
         {
@@ -279,7 +279,7 @@ test.describe('Subscriptions', () => {
 
     await init();
 
-    const [userId, accessToken] = await login({ customData: { roles: ['editor'], first_name: 'John', last_name: 'Doe' } });
+    const [userId, accessToken] = await login({ customData: { roles: ['incident_editor'], first_name: 'John', last_name: 'Doe' } });
 
     await page.goto(url);
 

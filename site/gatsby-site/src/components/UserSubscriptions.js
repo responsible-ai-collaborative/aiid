@@ -12,10 +12,9 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useUserContext } from 'contexts/UserContext';
 import Link from 'components/ui/Link';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
-import { FIND_USER } from '../graphql/users';
 
 const UserSubscriptions = () => {
-  const { user } = useUserContext();
+  const { user, isRole } = useUserContext();
 
   const { t } = useTranslation(['account']);
 
@@ -30,10 +29,6 @@ const UserSubscriptions = () => {
   const [isSubscribeToAiIncidentBriefing, setIsSubscribeToAiIncidentBriefing] = useState(false);
 
   const { data, loading } = useQuery(FIND_USER_SUBSCRIPTIONS, {
-    variables: { filter: { userId: { EQ: user.id } } },
-  });
-
-  const { data: userData } = useQuery(FIND_USER, {
     variables: { filter: { userId: { EQ: user.id } } },
   });
 
@@ -146,7 +141,7 @@ const UserSubscriptions = () => {
   return (
     <div className="mt-4">
       <div className={`my-2 -ml-2`}>
-        {(userData?.user?.roles.includes('admin') || userData?.user?.roles.includes('editor')) && (
+        {(isRole('admin') || isRole('incident_editor')) && (
           <div className={`p-2`}>
             <ToggleSwitch
               id="subscribe-ai-briefing"
