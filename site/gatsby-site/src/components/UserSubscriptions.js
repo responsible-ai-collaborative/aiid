@@ -28,9 +28,15 @@ const UserSubscriptions = () => {
 
   const [isSubscribeToAiIncidentBriefing, setIsSubscribeToAiIncidentBriefing] = useState(false);
 
-  const { data, loading } = useQuery(FIND_USER_SUBSCRIPTIONS, {
-    variables: { filter: { userId: { EQ: user.id } } },
-  });
+  const { data, loading } = useQuery(
+    FIND_USER_SUBSCRIPTIONS,
+    {
+      variables: { filter: { userId: { EQ: user.id } } },
+    },
+    {
+      fetchPolicy: 'network-only',
+    }
+  );
 
   const [deleteSubscriptions, { loading: deleting }] = useMutation(DELETE_SUBSCRIPTIONS);
 
