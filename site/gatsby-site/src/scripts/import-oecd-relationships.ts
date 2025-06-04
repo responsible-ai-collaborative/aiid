@@ -75,7 +75,16 @@ function processMatchesJson(data: AiidMatchEntry[]): IncidentRelationship[] {
     }
   }
 
-  return relationships;
+  const uniqueRelationships: IncidentRelationship[] = [];
+  const seen = new Set<string>();
+  for (const rel of relationships) {
+    const key = `${rel.incident_id}|${rel.sameAs}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      uniqueRelationships.push(rel);
+    }
+  }
+  return uniqueRelationships;
 }
 
 async function writeRelationshipsToFile(relationships: IncidentRelationship[], outputFilePath: string): Promise<void> {
