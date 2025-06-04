@@ -45,6 +45,8 @@ export default function RiskSection({
     precedent.tags.some((tag) => risk.tags.includes(tag))
   );
 
+  console.log(`risk precedents`, risk, precedents);
+
   const debouncedUpdateRisk = useRef(debounce(updateRisk, 2000)).current;
 
   const progress =
