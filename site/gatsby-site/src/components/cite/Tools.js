@@ -11,12 +11,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from 'contexts/UserContext';
 import { format } from 'date-fns';
 import Card from 'elements/Card';
-import { Button, ToggleSwitch } from 'flowbite-react';
+import { Button, ToggleSwitch, Dropdown } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
 import { RESPONSE_TAG } from 'utils/entities';
 import CitationFormat from './CitationFormat';
 import NotifyButton from './NotifyButton';
 import RemoveDuplicateModal from 'components/cite/RemoveDuplicateModal';
+import OecdLogo from '../ui/OecdLogo';
 
 function Tools({
   incident,
@@ -26,6 +27,7 @@ function Tools({
   subscribing,
   isLiveData,
   setIsLiveData,
+  linkRecords,
 }) {
   const [showRemoveDuplicateModal, setShowRemoveDuplicateModal] = useState(false);
 
@@ -188,6 +190,47 @@ function Tools({
               data-cy="toogle-live-data"
             />
           </div>
+        )}
+
+        {!loading && user && isRole('incident_editor') && (
+          <>
+            {linkRecords && linkRecords.find((link) => link.source_namespace === 'OECD') && (
+              <>
+                <Button
+                  color="gray"
+                  className="hover:no-underline"
+                  data-testid="oecd-btn"
+                  as="div"
+                  target="_blank"
+                >
+                  <Dropdown
+                    label={
+                      <>
+                        <OecdLogo width={'20px'} className="mr-2" />
+                        <Trans>See in OECD AIM</Trans>
+                      </>
+                    }
+                    inline={true}
+                    className="-ml-3"
+                    placement="right"
+                  >
+                    {linkRecords
+                      .filter((link) => link.source_namespace === 'OECD')
+                      .map((link) => (
+                        <Dropdown.Item
+                          key={link.sameAs}
+                          as={'a'}
+                          href={link.sameAs}
+                          target="_blank"
+                        >
+                          {link.sameAs.split('/').pop()}
+                        </Dropdown.Item>
+                      ))}
+                  </Dropdown>
+                </Button>
+              </>
+            )}
+          </>
         )}
       </Card.Body>
     </Card>
