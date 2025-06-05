@@ -581,7 +581,6 @@
   "Submitting...": "En cours de soumission...",
   "View Less": "Voir moins",
   "View ({{hidden}}) more": "Voir ({{hidden}}) de plus",
-  "and": "et",
   "List of taxonomies": "Liste des taxonomies",
   "This is the list of taxonomies supported in AIID": "Ceci est la liste des taxonomies prises en charge dans AIID",
   "Incident {{number}}": "Incident {{number}}",
@@ -592,5 +591,6 @@
   "Subscribe": "S'abonner",
   "Tags": "Étiquettes",
   "Sign Up": "S'inscrire",
-  "See in OECD AIM": "Voir dans OECD AIM"
+  "See in OECD AIM": "Voir dans OECD AIM",
+  "The OECD AI Incidents and Hazards Monitor (AIM) automatically collects and classifies AI-related incidents and hazards in real time from reputable news sources worldwide.": "Le Moniteur des incidents et risques liés à l'IA de l'OCDE (AIM) collecte et classe automatiquement les incidents et risques liés à l'IA en temps réel à partir de sources d'information réputées dans le monde entier."
 }

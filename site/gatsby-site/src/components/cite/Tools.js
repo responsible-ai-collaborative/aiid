@@ -205,7 +205,15 @@ function Tools({
                   target="_blank"
                 >
                   <Tooltip
-                    content={<div className="w-60">Tooltip content something.</div>}
+                    content={
+                      <div className="w-60">
+                        <Trans>
+                          The OECD AI Incidents and Hazards Monitor (AIM) automatically collects and
+                          classifies AI-related incidents and hazards in real time from reputable
+                          news sources worldwide.
+                        </Trans>
+                      </div>
+                    }
                     placement="top"
                   >
                     <FontAwesomeIcon
@@ -236,7 +244,7 @@ function Tools({
                           href={link.sameAs}
                           target="_blank"
                         >
-                          {link.sameAs.split('/').pop()}
+                          Report {link.sameAs.split('/').pop()}
                         </Dropdown.Item>
                       ))}
                   </Dropdown>
