@@ -102,6 +102,7 @@
   "Did <strong>our</strong> AI mess up? Flag <3></3> the unrelated incidents": "Est-ce que <strong>notre</strong> IA s'est trompée ? Marquer <3></3> incidents non liés",
   "reports": "rapports",
   "report": "rapport",
+  "Report": "Rapport",
   "Flag reverted.": "Signalement annulé",
   "Incident flagged successfully. Our editors will remove it from this list if it not relevant.": "Incident signalé avec succès. Nos éditeurs le supprimeront de la liste s'il n'est pas pertinent.",
   "Color by editor’s classification": "Couleur par classification de l'éditeur",
@@ -236,7 +237,7 @@
   "Export items from the current page to a CSV file.<br/>To download the full data set, please follow this  <4>link</4>.": "Exporter des éléments de la page actuelle vers un fichier CSV.<br/>Pour télécharger l'ensemble de données complet, veuillez suivre ce  <4>lien</4>.",
   "Relevance": "Pertinence",
   "Newest Incident Date": "Date de l'incident plus récente",
-  "Oldest Incident Date": "Date de l'incident plus ancienne", 
+  "Oldest Incident Date": "Date de l'incident plus ancienne",
   "Newest Published Date": "Date de publication plus récente",
   "Oldest Published Date": "Date de publication plus ancienne",
   "Newest Submitted Date": "Date de soumission plus récente",
@@ -320,7 +321,7 @@
   "Use ID": "Utiliser l'ID",
   "Most Semantically Similar Incidents (Experimental)": "Incidents les plus similaires sémantiquement (expérimental)",
   "Reports must have at least {{minLength}} non-space characters to compute semantic similarity.": "Les rapports doivent comporter au moins {{minLength}} caractères autres que des espaces pour calculer la similarité sémantique.",
-  "No related reports found." : "Aucun rapport connexe trouvé.",
+  "No related reports found.": "Aucun rapport connexe trouvé.",
   "No related incidents found.": "Aucun incident connexe trouvé.",
   "<0>Center for Security and Emerging Technology (CSETv1)</0> The CSET AI Harm Taxonomy characterizes AI incidents and classifies harms of relevance to the public policy community.": "<0>Center for Security and Emerging Technology (CSET)</0> La taxonomie des dommages causés par l'IA de CSET caractérise les incidents d'IA et classe les préjudices pertinents pour la communauté des politiques publiques.",
   "Known AI Goal": "Objectif d'IA connu",
@@ -581,7 +582,6 @@
   "Submitting...": "En cours de soumission...",
   "View Less": "Voir moins",
   "View ({{hidden}}) more": "Voir ({{hidden}}) de plus",
-  "and": "et",
   "List of taxonomies": "Liste des taxonomies",
   "This is the list of taxonomies supported in AIID": "Ceci est la liste des taxonomies prises en charge dans AIID",
   "Incident {{number}}": "Incident {{number}}",
@@ -592,5 +592,6 @@
   "Subscribe": "S'abonner",
   "Tags": "Étiquettes",
   "Sign Up": "S'inscrire",
-  "See in OECD AIM": "Voir dans OECD AIM"
+  "See in OECD AIM": "Voir dans OECD AIM",
+  "The OECD AI Incidents and Hazards Monitor (AIM) automatically collects and classifies AI-related incidents and hazards in real time from reputable news sources worldwide.": "Le Moniteur des incidents et risques liés à l'IA de l'OCDE (AIM) collecte et classe automatiquement les incidents et risques liés à l'IA en temps réel à partir de sources d'information réputées dans le monde entier."
 }

@@ -6,12 +6,13 @@ import {
   faClone,
   faTrash,
   faClockRotateLeft,
+  faQuestionCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from 'contexts/UserContext';
 import { format } from 'date-fns';
 import Card from 'elements/Card';
-import { Button, ToggleSwitch, Dropdown } from 'flowbite-react';
+import { Button, ToggleSwitch, Dropdown, Tooltip } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
 import { RESPONSE_TAG } from 'utils/entities';
 import CitationFormat from './CitationFormat';
@@ -203,6 +204,26 @@ function Tools({
                   as="div"
                   target="_blank"
                 >
+                  <Tooltip
+                    content={
+                      <div className="w-60">
+                        <Trans>
+                          The OECD AI Incidents and Hazards Monitor (AIM) automatically collects and
+                          classifies AI-related incidents and hazards in real time from reputable
+                          news sources worldwide.
+                        </Trans>
+                      </div>
+                    }
+                    placement="top"
+                  >
+                    <FontAwesomeIcon
+                      icon={faQuestionCircle}
+                      style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
+                      className="far fa-question-circle mr-2"
+                      size="lg"
+                    />
+                  </Tooltip>
+
                   <Dropdown
                     label={
                       <>
@@ -212,7 +233,7 @@ function Tools({
                     }
                     inline={true}
                     className="-ml-3"
-                    placement="right"
+                    placement="bottom"
                   >
                     {linkRecords
                       .filter((link) => link.source_namespace === 'OECD')
@@ -223,7 +244,7 @@ function Tools({
                           href={link.sameAs}
                           target="_blank"
                         >
-                          {link.sameAs.split('/').pop()}
+                          <Trans>Report</Trans> {link.sameAs.split('/').pop()}
                         </Dropdown.Item>
                       ))}
                   </Dropdown>
