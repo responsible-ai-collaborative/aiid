@@ -1303,6 +1303,7 @@ export type Mutation = {
   insertOneReport?: Maybe<Report>;
   insertOneSubmission?: Maybe<Submission>;
   linkReportsToIncidents?: Maybe<Array<Maybe<Incident>>>;
+  mergeEntities: Entity;
   promoteSubmissionToReport: PromoteSubmissionToReportPayload;
   updateEntityAndRelationships: UpdateOneEntityPayload;
   updateManyCandidates?: Maybe<UpdateManyPayload>;
@@ -1478,6 +1479,13 @@ export type MutationInsertOneSubmissionArgs = {
 
 export type MutationLinkReportsToIncidentsArgs = {
   input: LinkReportsToIncidentsInput;
+};
+
+
+export type MutationMergeEntitiesArgs = {
+  keepEntity: Scalars['Int']['input'];
+  primaryId: Scalars['String']['input'];
+  secondaryId: Scalars['String']['input'];
 };
 
 
@@ -1819,6 +1827,7 @@ export type Query = {
   report?: Maybe<Report>;
   reports?: Maybe<Array<Maybe<Report>>>;
   risks?: Maybe<Array<Maybe<Risks>>>;
+  similarEntities?: Maybe<SimilarEntitiesResult>;
   submission?: Maybe<Submission>;
   submissions?: Maybe<Array<Maybe<Submission>>>;
   subscription?: Maybe<Subscription>;
@@ -2014,6 +2023,13 @@ export type QueryReportsArgs = {
 
 export type QueryRisksArgs = {
   input?: InputMaybe<RisksInput>;
+};
+
+
+export type QuerySimilarEntitiesArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  threshold: Scalars['Int']['input'];
 };
 
 
@@ -2377,6 +2393,21 @@ export type RisksObjectFilterType = {
   tags?: InputMaybe<StringFilter>;
   title?: InputMaybe<StringFilter>;
   touched?: InputMaybe<BooleanFilter>;
+};
+
+export type SimilarEntitiesResult = {
+  __typename?: 'SimilarEntitiesResult';
+  hasMore: Scalars['Boolean']['output'];
+  pairs: Array<Maybe<SimilarEntityPair>>;
+};
+
+export type SimilarEntityPair = {
+  __typename?: 'SimilarEntityPair';
+  entityId1: Scalars['String']['output'];
+  entityId2: Scalars['String']['output'];
+  entityName1: Scalars['String']['output'];
+  entityName2: Scalars['String']['output'];
+  similarity: Scalars['Float']['output'];
 };
 
 export enum SortType {
@@ -2969,6 +3000,24 @@ export type UpdateEntityMutationVariables = Exact<{
 
 export type UpdateEntityMutation = { __typename?: 'Mutation', updateEntityAndRelationships: { __typename?: 'UpdateOneEntityPayload', entity_id: string } };
 
+export type MergeEntitiesMutationVariables = Exact<{
+  primaryId: Scalars['String']['input'];
+  secondaryId: Scalars['String']['input'];
+  keepEntity: Scalars['Int']['input'];
+}>;
+
+
+export type MergeEntitiesMutation = { __typename?: 'Mutation', mergeEntities: { __typename?: 'Entity', entity_id: string, name: string } };
+
+export type SimilarEntitiesQueryVariables = Exact<{
+  threshold: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
+  limit: Scalars['Int']['input'];
+}>;
+
+
+export type SimilarEntitiesQuery = { __typename?: 'Query', similarEntities?: { __typename?: 'SimilarEntitiesResult', hasMore: boolean, pairs: Array<{ __typename?: 'SimilarEntityPair', entityId1: string, entityName1: string, entityId2: string, entityName2: string, similarity: number } | null> } | null };
+
 export type FindEntity_RelationshipsQueryVariables = Exact<{
   filter?: InputMaybe<Entity_RelationshipFilterType>;
 }>;
@@ -3331,6 +3380,8 @@ export const UpsertEntityDocument = {"kind":"Document","definitions":[{"kind":"O
 export const FindEntitiesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindEntities"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entities"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<FindEntitiesQuery, FindEntitiesQueryVariables>;
 export const FindEntityDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindEntity"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"EntityFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"date_modified"}}]}}]}}]} as unknown as DocumentNode<FindEntityQuery, FindEntityQueryVariables>;
 export const UpdateEntityDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateEntity"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateOneEntityInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateEntityAndRelationships"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}}]}}]}}]} as unknown as DocumentNode<UpdateEntityMutation, UpdateEntityMutationVariables>;
+export const MergeEntitiesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"MergeEntities"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"primaryId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"secondaryId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"keepEntity"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"mergeEntities"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"primaryId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"primaryId"}}},{"kind":"Argument","name":{"kind":"Name","value":"secondaryId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"secondaryId"}}},{"kind":"Argument","name":{"kind":"Name","value":"keepEntity"},"value":{"kind":"Variable","name":{"kind":"Name","value":"keepEntity"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<MergeEntitiesMutation, MergeEntitiesMutationVariables>;
+export const SimilarEntitiesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"SimilarEntities"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"threshold"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"offset"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"limit"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"similarEntities"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"threshold"},"value":{"kind":"Variable","name":{"kind":"Name","value":"threshold"}}},{"kind":"Argument","name":{"kind":"Name","value":"offset"},"value":{"kind":"Variable","name":{"kind":"Name","value":"offset"}}},{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limit"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pairs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entityId1"}},{"kind":"Field","name":{"kind":"Name","value":"entityName1"}},{"kind":"Field","name":{"kind":"Name","value":"entityId2"}},{"kind":"Field","name":{"kind":"Name","value":"entityName2"}},{"kind":"Field","name":{"kind":"Name","value":"similarity"}}]}},{"kind":"Field","name":{"kind":"Name","value":"hasMore"}}]}}]}}]} as unknown as DocumentNode<SimilarEntitiesQuery, SimilarEntitiesQueryVariables>;
 export const FindEntity_RelationshipsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindEntity_relationships"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Entity_relationshipFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_relationships"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"pred"}},{"kind":"Field","name":{"kind":"Name","value":"sub"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"obj"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"is_symmetric"}}]}}]}}]} as unknown as DocumentNode<FindEntity_RelationshipsQuery, FindEntity_RelationshipsQueryVariables>;
 export const UpdateEntity_RelationshipDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateEntity_relationship"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Entity_relationshipFilterType"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"update"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Entity_relationshipUpdateType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateOneEntity_relationship"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}},{"kind":"Argument","name":{"kind":"Name","value":"update"},"value":{"kind":"Variable","name":{"kind":"Name","value":"update"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pred"}},{"kind":"Field","name":{"kind":"Name","value":"sub"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"obj"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateEntity_RelationshipMutation, UpdateEntity_RelationshipMutationVariables>;
 export const UpdateIncidentTranslationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateIncidentTranslation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateOneIncidentTranslationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateOneIncidentTranslation"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}}]}}]}}]} as unknown as DocumentNode<UpdateIncidentTranslationMutation, UpdateIncidentTranslationMutationVariables>;
