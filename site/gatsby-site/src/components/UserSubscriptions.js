@@ -90,7 +90,7 @@ const UserSubscriptions = () => {
     UPSERT_SUBSCRIPTION,
     {
       update(cache, { data }) {
-        addSubscriptionToCache(cache, data, user.id);
+        addSubscriptionToCache(cache, data);
       },
     }
   );
@@ -98,7 +98,7 @@ const UserSubscriptions = () => {
   const [subscribeToAiIncidentBriefingMutation, { loading: subscribingToAiIncidentBriefing }] =
     useMutation(UPSERT_SUBSCRIPTION, {
       update(cache, { data }) {
-        addSubscriptionToCache(cache, data, user.id);
+        addSubscriptionToCache(cache, data);
       },
     });
 
