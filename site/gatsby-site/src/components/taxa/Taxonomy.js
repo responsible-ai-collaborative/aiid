@@ -98,7 +98,7 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
             <FontAwesomeIcon icon={faHand} title="Human-Classified" />
           )}
         </div>
-        <a style={{ order: 2 }} href={`/taxonomy/${taxonomy.namespace.toLowerCase()}`}>
+        <a style={{ order: 2 }} href={`/taxonomies/${taxonomy.namespace.toLowerCase()}`}>
           <Trans>Taxonomy Details</Trans>
         </a>
       </div>
