@@ -244,7 +244,7 @@ function Tools({
                           href={link.sameAs}
                           target="_blank"
                         >
-                          Report {link.sameAs.split('/').pop()}
+                          <Trans>Report</Trans> {link.sameAs.split('/').pop()}
                         </Dropdown.Item>
                       ))}
                   </Dropdown>
