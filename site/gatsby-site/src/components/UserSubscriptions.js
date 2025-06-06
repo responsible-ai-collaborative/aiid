@@ -28,23 +28,84 @@ const UserSubscriptions = () => {
 
   const [isSubscribeToAiIncidentBriefing, setIsSubscribeToAiIncidentBriefing] = useState(false);
 
-  const { data, loading } = useQuery(
-    FIND_USER_SUBSCRIPTIONS,
-    {
-      variables: { filter: { userId: { EQ: user.id } } },
+  const { data, loading } = useQuery(FIND_USER_SUBSCRIPTIONS, {
+    variables: { filter: { userId: { EQ: user.id } } },
+  });
+
+  const [deleteSubscriptions, { loading: deleting }] = useMutation(DELETE_SUBSCRIPTIONS, {
+    update(cache, _result, { variables }) {
+      const deletedType = variables?.filter?.type?.EQ;
+
+      const deletedUserId = variables?.filter?.userId?.EQ;
+
+      cache.modify({
+        fields: {
+          subscriptions(existingRefs = [], { readField }) {
+            return existingRefs.filter((ref) => {
+              const type = readField('type', ref);
+
+              const userIdObj = readField('userId', ref);
+
+              let userId;
+
+              if (userIdObj && typeof userIdObj === 'object' && userIdObj.__ref) {
+                const refString = userIdObj.__ref;
+
+                const jsonString = refString.substring(refString.indexOf(':') + 1);
+
+                try {
+                  userId = JSON.parse(jsonString).userId;
+                } catch {
+                  userId = undefined;
+                }
+              } else {
+                userId = userIdObj;
+              }
+              return !(type === deletedType && userId === deletedUserId);
+            });
+          },
+        },
+      });
     },
+  });
+
+  function addSubscriptionToCache(cache, data, userId) {
+    const newSubscription = data?.upsertOneSubscription;
+
+    if (!newSubscription) return;
+
+    const existing = cache.readQuery({
+      query: FIND_USER_SUBSCRIPTIONS,
+      variables: { filter: { userId: { EQ: userId } } },
+    });
+
+    const updated = [
+      ...(existing?.subscriptions || []).filter((sub) => sub._id !== newSubscription._id),
+      newSubscription,
+    ];
+
+    cache.writeQuery({
+      query: FIND_USER_SUBSCRIPTIONS,
+      variables: { filter: { userId: { EQ: userId } } },
+      data: { subscriptions: updated },
+    });
+  }
+
+  const [subscribeToNewIncidentsMutation, { loading: subscribingToNewIncidents }] = useMutation(
+    UPSERT_SUBSCRIPTION,
     {
-      fetchPolicy: 'network-only',
+      update(cache, { data }) {
+        addSubscriptionToCache(cache, data, user.id);
+      },
     }
   );
 
-  const [deleteSubscriptions, { loading: deleting }] = useMutation(DELETE_SUBSCRIPTIONS);
-
-  const [subscribeToNewIncidentsMutation, { loading: subscribingToNewIncidents }] =
-    useMutation(UPSERT_SUBSCRIPTION);
-
   const [subscribeToAiIncidentBriefingMutation, { loading: subscribingToAiIncidentBriefing }] =
-    useMutation(UPSERT_SUBSCRIPTION);
+    useMutation(UPSERT_SUBSCRIPTION, {
+      update(cache, { data }) {
+        addSubscriptionToCache(cache, data, user.id);
+      },
+    });
 
   const handleDeleteSubscription = async (subscriptionId) => {
     if (confirm(t('Do you want to delete this subscription?'))) {
