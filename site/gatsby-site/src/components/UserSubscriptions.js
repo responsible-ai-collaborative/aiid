@@ -69,25 +69,20 @@ const UserSubscriptions = () => {
     },
   });
 
-  function addSubscriptionToCache(cache, data, userId) {
+  function addSubscriptionToCache(cache, data) {
     const newSubscription = data?.upsertOneSubscription;
 
     if (!newSubscription) return;
 
-    const existing = cache.readQuery({
-      query: FIND_USER_SUBSCRIPTIONS,
-      variables: { filter: { userId: { EQ: userId } } },
-    });
-
-    const updated = [
-      ...(existing?.subscriptions || []).filter((sub) => sub._id !== newSubscription._id),
-      newSubscription,
-    ];
-
-    cache.writeQuery({
-      query: FIND_USER_SUBSCRIPTIONS,
-      variables: { filter: { userId: { EQ: userId } } },
-      data: { subscriptions: updated },
+    cache.modify({
+      fields: {
+        subscriptions(existingRefs = [], { readField, toReference }) {
+          if (existingRefs.some((ref) => readField('_id', ref) === newSubscription._id)) {
+            return existingRefs;
+          }
+          return [...existingRefs, toReference(newSubscription)];
+        },
+      },
     });
   }
 
