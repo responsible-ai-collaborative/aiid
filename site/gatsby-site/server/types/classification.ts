@@ -22,6 +22,9 @@ const AttributeType = new GraphQLObjectType({
     }
 });
 
+//@ts-ignore 
+AttributeType.getFields().value.dependencies = ['value_json'];
+
 export const ClassificationType = new GraphQLObjectType({
     name: 'Classification',
     fields: {
