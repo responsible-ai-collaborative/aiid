@@ -956,6 +956,40 @@ test.describe('The Submit form', () => {
         await expect(page.locator('text=Please review. Some data is missing.')).toBeVisible();
     });
 
+    test('Should display an error messages for each missing field on step 1', async ({ page }) => {
+
+        await page.goto(url);
+
+        const valuesStep1 = {
+          url: '',
+          title: '',
+          authors: '',
+          date_published: '',
+          incident_date: '',
+      };
+
+      for (const key in valuesStep1) {
+          await page.locator(`input[name="${key}"]`).fill(valuesStep1[key]);
+      }
+
+      await setEditorText(
+          page,
+          ''
+      );
+
+      await expect(page.locator('.form-has-errors')).toBeVisible();
+
+      await expect(page.locator('text=*URL required')).toBeVisible();
+
+      await expect(page.locator('text=*Title is required')).toBeVisible();
+
+      await expect(page.locator('text=*Author is required. Anonymous or the publication can be entered.')).toBeVisible();
+
+      await expect(page.locator('text=*Text is required')).toBeVisible();
+
+      await expect(page.locator('text=*Date published is required')).toBeVisible();
+    });
+
     test('Should submit a new report response', async ({ page }) => {
         const values = {
             url: 'https://incidentdatabase.ai',
