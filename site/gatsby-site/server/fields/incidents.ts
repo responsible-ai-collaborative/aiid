@@ -5,6 +5,7 @@ import { Context, DBIncident } from "../interfaces";
 import { isRole } from "../rules";
 import { createNotificationsOnNewIncident, createNotificationsOnUpdatedIncident, hasRelevantUpdates, linkReportsToIncidents, logIncidentHistory } from "./common";
 import { IncidentType } from "../types/incidents";
+import { GraphQLDateTime } from "graphql-scalars";
 
 export const queryFields: GraphQLFieldConfigMap<any, Context> = {
 
@@ -130,6 +131,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                 description: args.input.description,
                 language: args.input.language,
                 dirty: args.input.dirty,
+                modified_at: new Date(),
             };
 
             await translationsCollection.updateOne(

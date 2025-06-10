@@ -72,8 +72,17 @@ class ReportTranslator {
     const alreadyTranslated = await this.getTranslatedReports({ items, language: to });
 
     for (const entry of items) {
-      if (!alreadyTranslated.find((item) => item.report_number == entry.report_number)) {
+      const alreadyTranslatedEntry = alreadyTranslated.find(
+        (item) => item.report_number == entry.report_number
+      );
+
+      // If the report is not already translated, translate it
+      if (!alreadyTranslatedEntry) {
         q.push({ entry, to });
+      }
+      // If the report is already translated but is dirty, translate it again
+      else if (alreadyTranslatedEntry.dirty) {
+        q.push({ entry: { ...entry, dirty: alreadyTranslatedEntry.dirty }, to });
       }
     }
 
@@ -97,7 +106,7 @@ class ReportTranslator {
     };
 
     const translated = await reportsTranslatedCollection
-      .find(query, { projection: { report_number: 1 } })
+      .find(query, { projection: { report_number: 1, dirty: 1 } })
       .toArray();
 
     return translated;
