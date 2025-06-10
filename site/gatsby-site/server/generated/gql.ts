@@ -65,6 +65,7 @@ type Documents = {
     "\n  query FindSubscriptions($filter: SubscriptionFilterType!) {\n    subscriptions(filter: $filter) {\n      userId {\n        userId\n      }\n    }\n  }\n": typeof types.FindSubscriptionsDocument,
     "\n  query FindSubscriptionsFull($filter: SubscriptionFilterType!) {\n    subscriptions(filter: $filter) {\n      _id\n      incident_id {\n        incident_id\n        title\n      }\n      entityId {\n        entity_id\n        name\n      }\n      type\n      userId {\n        userId\n      }\n    }\n  }\n": typeof types.FindSubscriptionsFullDocument,
     "\n  mutation DeleteSubscriptions($filter: SubscriptionFilterType!) {\n    deleteManySubscriptions(filter: $filter) {\n      deletedCount\n    }\n  }\n": typeof types.DeleteSubscriptionsDocument,
+    "\n  mutation DeleteSubscription($filter: SubscriptionFilterType!) {\n    deleteOneSubscription(filter: $filter) {\n      _id\n    }\n  }\n": typeof types.DeleteSubscriptionDocument,
     "\n  query FindUserSubscriptions($filter: SubscriptionFilterType!) {\n    subscriptions(filter: $filter) {\n      _id\n      incident_id {\n        incident_id\n        title\n      }\n      entityId {\n        entity_id\n        name\n      }\n      userId {\n        userId\n      }\n      type\n    }\n  }\n": typeof types.FindUserSubscriptionsDocument,
     "\n  query FindUsers {\n    users {\n      roles\n      userId\n      first_name\n      last_name\n    }\n  }\n": typeof types.FindUsersDocument,
     "\n  query FindUser($filter: UserFilterType!) {\n    user(filter: $filter) {\n      roles\n      userId\n      first_name\n      last_name\n      adminData {\n        email\n        disabled\n        creationDate\n        lastAuthenticationDate\n      }\n    }\n  }\n": typeof types.FindUserDocument,
@@ -130,6 +131,7 @@ const documents: Documents = {
     "\n  query FindSubscriptions($filter: SubscriptionFilterType!) {\n    subscriptions(filter: $filter) {\n      userId {\n        userId\n      }\n    }\n  }\n": types.FindSubscriptionsDocument,
     "\n  query FindSubscriptionsFull($filter: SubscriptionFilterType!) {\n    subscriptions(filter: $filter) {\n      _id\n      incident_id {\n        incident_id\n        title\n      }\n      entityId {\n        entity_id\n        name\n      }\n      type\n      userId {\n        userId\n      }\n    }\n  }\n": types.FindSubscriptionsFullDocument,
     "\n  mutation DeleteSubscriptions($filter: SubscriptionFilterType!) {\n    deleteManySubscriptions(filter: $filter) {\n      deletedCount\n    }\n  }\n": types.DeleteSubscriptionsDocument,
+    "\n  mutation DeleteSubscription($filter: SubscriptionFilterType!) {\n    deleteOneSubscription(filter: $filter) {\n      _id\n    }\n  }\n": types.DeleteSubscriptionDocument,
     "\n  query FindUserSubscriptions($filter: SubscriptionFilterType!) {\n    subscriptions(filter: $filter) {\n      _id\n      incident_id {\n        incident_id\n        title\n      }\n      entityId {\n        entity_id\n        name\n      }\n      userId {\n        userId\n      }\n      type\n    }\n  }\n": types.FindUserSubscriptionsDocument,
     "\n  query FindUsers {\n    users {\n      roles\n      userId\n      first_name\n      last_name\n    }\n  }\n": types.FindUsersDocument,
     "\n  query FindUser($filter: UserFilterType!) {\n    user(filter: $filter) {\n      roles\n      userId\n      first_name\n      last_name\n      adminData {\n        email\n        disabled\n        creationDate\n        lastAuthenticationDate\n      }\n    }\n  }\n": types.FindUserDocument,
@@ -362,6 +364,10 @@ export function gql(source: "\n  query FindSubscriptionsFull($filter: Subscripti
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation DeleteSubscriptions($filter: SubscriptionFilterType!) {\n    deleteManySubscriptions(filter: $filter) {\n      deletedCount\n    }\n  }\n"): (typeof documents)["\n  mutation DeleteSubscriptions($filter: SubscriptionFilterType!) {\n    deleteManySubscriptions(filter: $filter) {\n      deletedCount\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation DeleteSubscription($filter: SubscriptionFilterType!) {\n    deleteOneSubscription(filter: $filter) {\n      _id\n    }\n  }\n"): (typeof documents)["\n  mutation DeleteSubscription($filter: SubscriptionFilterType!) {\n    deleteOneSubscription(filter: $filter) {\n      _id\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

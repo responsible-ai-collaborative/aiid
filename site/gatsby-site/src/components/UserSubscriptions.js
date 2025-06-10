@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { Trans, useTranslation } from 'react-i18next';
 import {
-  DELETE_SUBSCRIPTIONS,
+  DELETE_SUBSCRIPTION,
   FIND_USER_SUBSCRIPTIONS,
   UPSERT_SUBSCRIPTION,
 } from '../graphql/subscriptions';
@@ -32,40 +32,16 @@ const UserSubscriptions = () => {
     variables: { filter: { userId: { EQ: user.id } } },
   });
 
-  const [deleteSubscriptions, { loading: deleting }] = useMutation(DELETE_SUBSCRIPTIONS, {
-    update(cache, _result, { variables }) {
-      const deletedType = variables?.filter?.type?.EQ;
+  const [deleteSubscription, { loading: deletingSubscription }] = useMutation(DELETE_SUBSCRIPTION, {
+    update(cache, { data }) {
+      const deletedSubscription = data?.deleteOneSubscription;
 
-      const deletedUserId = variables?.filter?.userId?.EQ;
-
-      cache.modify({
-        fields: {
-          subscriptions(existingRefs = [], { readField }) {
-            return existingRefs.filter((ref) => {
-              const type = readField('type', ref);
-
-              const userIdObj = readField('userId', ref);
-
-              let userId;
-
-              if (userIdObj && typeof userIdObj === 'object' && userIdObj.__ref) {
-                const refString = userIdObj.__ref;
-
-                const jsonString = refString.substring(refString.indexOf(':') + 1);
-
-                try {
-                  userId = JSON.parse(jsonString).userId;
-                } catch {
-                  userId = undefined;
-                }
-              } else {
-                userId = userIdObj;
-              }
-              return !(type === deletedType && userId === deletedUserId);
-            });
-          },
-        },
-      });
+      if (deletedSubscription && deletedSubscription._id) {
+        cache.evict({
+          id: cache.identify({ __typename: 'Subscription', _id: deletedSubscription._id }),
+        });
+        cache.gc();
+      }
     },
   });
 
@@ -106,7 +82,7 @@ const UserSubscriptions = () => {
     if (confirm(t('Do you want to delete this subscription?'))) {
       setDeletingId(subscriptionId);
 
-      await deleteSubscriptions({ variables: { filter: { _id: { EQ: subscriptionId } } } });
+      await deleteSubscription({ variables: { filter: { _id: { EQ: subscriptionId } } } });
 
       const newIncidentSubscriptionList = incidentSubscriptions.filter(
         (subscription) =>
@@ -170,7 +146,7 @@ const UserSubscriptions = () => {
         },
       });
     } else {
-      await deleteSubscriptions({
+      await deleteSubscription({
         variables: {
           filter: { type: { EQ: SUBSCRIPTION_TYPE.newIncidents }, userId: { EQ: user.id } },
         },
@@ -191,7 +167,7 @@ const UserSubscriptions = () => {
         },
       });
     } else {
-      await deleteSubscriptions({
+      await deleteSubscription({
         variables: {
           filter: { type: { EQ: SUBSCRIPTION_TYPE.aiBriefing }, userId: { EQ: user.id } },
         },
@@ -211,7 +187,7 @@ const UserSubscriptions = () => {
               label={t('Receive AI Incident Briefing', { ns: 'login' })}
               onChange={onSusbcribeAiIncidentBriefingToggle}
               name="subscribe-ai-briefing"
-              disabled={loading || deleting || subscribingToAiIncidentBriefing}
+              disabled={loading || deletingSubscription || subscribingToAiIncidentBriefing}
             />
           </div>
         )}
@@ -223,7 +199,7 @@ const UserSubscriptions = () => {
           label={t('Notify me of new Incidents')}
           onChange={onSusbcribeToggle}
           name="subscribe-all"
-          disabled={loading || deleting || subscribingToNewIncidents}
+          disabled={loading || deletingSubscription || subscribingToNewIncidents}
         />
       </div>
       {loading ? (
@@ -258,11 +234,11 @@ const UserSubscriptions = () => {
                       <Button
                         size={'xs'}
                         color={'failure'}
-                        disabled={deleting && deletingId === subscription.id}
+                        disabled={deletingSubscription && deletingId === subscription.id}
                         onClick={() => handleDeleteSubscription(subscription.id)}
                         data-cy="incident-delete-btn"
                       >
-                        {deleting && deletingId === subscription.id ? (
+                        {deletingSubscription && deletingId === subscription.id ? (
                           <Spinner size={'xs'} />
                         ) : (
                           <FontAwesomeIcon icon={faTrash} />
@@ -305,11 +281,11 @@ const UserSubscriptions = () => {
                         <Button
                           size={'xs'}
                           color={'failure'}
-                          disabled={deleting && deletingId === subscription.id}
+                          disabled={deletingSubscription && deletingId === subscription.id}
                           onClick={() => handleDeleteSubscription(subscription.id)}
                           data-cy="entity-delete-btn"
                         >
-                          {deleting && deletingId === subscription.id ? (
+                          {deletingSubscription && deletingId === subscription.id ? (
                             <Spinner size={'xs'} />
                           ) : (
                             <FontAwesomeIcon icon={faTrash} />
