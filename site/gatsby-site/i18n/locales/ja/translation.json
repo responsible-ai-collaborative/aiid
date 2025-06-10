@@ -100,6 +100,7 @@
   "Did <strong>our</strong> AI mess up? Flag <3></3> the unrelated incidents": "<strong>私たちの</strong>AIが混乱していますか？無関係のインシデントとしてフラグを立ててください",
   "reports": "レポート",
   "report": "レポート",
+  "Report": "レポート",
   "Flag reverted.": "フラグ反転",
   "Incident flagged successfully. Our editors will remove it from this list if it not relevant.": "インシデントのフラグ付けに成功しました。エディタが不適切だと判断するとリストから削除されます",
   "Color by incident classifications from taxonomies": "分類法に基づいてインシデントクラスによって色付け",
@@ -588,5 +589,6 @@
   "Project and Community": "プロジェクトとコミュニティ",
   "Submission Queue": "登録待ち一覧",
   "Sign Up": "サインアップ",
-  "See in OECD AIM": "OECD AIMで表示"
+  "See in OECD AIM": "OECD AIMで表示",
+  "The OECD AI Incidents and Hazards Monitor (AIM) automatically collects and classifies AI-related incidents and hazards in real time from reputable news sources worldwide.": "OECD AIインシデントおよびハザードモニター（AIM）は、世界中の信頼できるニュースソースからリアルタイムでAI関連のインシデントやハザードを自動的に収集・分類します。"
 }

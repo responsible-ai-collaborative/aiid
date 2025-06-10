@@ -24,7 +24,7 @@ test.describe('Incident Links', () => {
             const linkSelector = `a[href="${link.sameAs}"]`;
             const dropdownItem = page.locator(linkSelector);
             await expect(dropdownItem).toBeVisible();
-            await expect(dropdownItem).toHaveText(link.sameAs.split('/').pop());
+            await expect(dropdownItem).toHaveText(`Report ${link.sameAs.split('/').pop()}`);
         }
     });
 });
