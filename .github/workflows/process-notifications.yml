@@ -45,4 +45,6 @@ jobs:
           NEXTAUTH_SECRET: dummy # unless we want to send emails with the magic link from this workflow, we don't need the actual secret
           GOOGLE_TRANSLATE_API_KEY: dummy
           MONGODB_TRANSLATIONS_CONNECTION_STRING: dummy
+          GATSBY_PRISMIC_REPO_NAME: ${{ vars.GATSBY_PRISMIC_REPO_NAME }}
+          PRISMIC_ACCESS_TOKEN: ${{ secrets.PRISMIC_ACCESS_TOKEN }}
         run: npm run process-notifications:ci

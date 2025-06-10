@@ -10,7 +10,8 @@ jobs:
           wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc |  gpg --dearmor | sudo tee /usr/share/keyrings/mongodb.gpg > /dev/null
           echo "deb [ arch=amd64 signed-by=/usr/share/keyrings/mongodb.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
           sudo apt update
-          sudo apt install mongodb-database-tools
+          sudo apt install -y mongodb-database-tools mongodb-mongosh
+          mongosh --version
           mongodump --version
           mongorestore --version
         shell: bash
@@ -27,14 +28,30 @@ jobs:
         shell: bash
         run: mongodump --uri="${{ secrets.DB_PRODUCTION_CONNECTION_STRING }}" --db=history
 
+      - name: "Dump Production customData.users collection"
+        shell: bash
+        run: mongodump --uri="${{ secrets.DB_PRODUCTION_CONNECTION_STRING }}" --db=customData --collection=users
+
       - name: "Restore Staging database collection: aiidprod"
-        run: mongorestore ${{ secrets.DB_STAGING_CONNECTION_STRING }}/aiidprod ./dump/aiidprod --drop --noOptionsRestore
+        shell: bash
+        run: mongorestore --uri "${{ secrets.DB_STAGING_CONNECTION_STRING }}/aiidprod" ./dump/aiidprod --drop --noOptionsRestore
 
       - name: "Restore Staging database collection: translations"
-        run: mongorestore ${{ secrets.DB_STAGING_CONNECTION_STRING }}/translations ./dump/translations --drop --noOptionsRestore
+        shell: bash
+        run: mongorestore --uri "${{ secrets.DB_STAGING_CONNECTION_STRING }}/translations" ./dump/translations --drop --noOptionsRestore
 
       - name: "Restore Staging database collection: history"
-        run: mongorestore ${{ secrets.DB_STAGING_CONNECTION_STRING }}/history ./dump/history --drop --noOptionsRestore
+        shell: bash
+        run: mongorestore --uri "${{ secrets.DB_STAGING_CONNECTION_STRING }}/history" ./dump/history --drop --noOptionsRestore
+
+      - name: "Restore Staging database collection: customData.users"
+        shell: bash
+        run: mongorestore --uri "${{ secrets.DB_STAGING_CONNECTION_STRING }}/customData" ./dump/customData --noOptionsRestore 
+
+      - name: "Anonymize customData.users first and last names"
+        shell: bash
+        run: |
+          mongosh "${{ secrets.DB_STAGING_CONNECTION_STRING }}/customData" --eval 'db.users.updateMany({}, {$set: {first_name: "Dummy", last_name: "Dummy"}})'
 
       - name: Trigger Staging Netlify build
         run: curl -X POST -d {} ${{ secrets.NETLIFY_BUILD_STAGING_URL }}

@@ -53,6 +53,7 @@ function CiteTemplate({
   liveVersion = false,
   setIsLiveData,
   readOnly = false,
+  linkRecords,
 }) {
   const { loading, isRole, user } = useUserContext();
 
@@ -164,6 +165,8 @@ function CiteTemplate({
     (report) => report.tags && report.tags.includes(RESPONSE_TAG)
   );
 
+  const displayBadges = incident.isTranslated || incidentResponded || isSubscribed;
+
   return (
     <>
       <div className={'titleWrapper'}>
@@ -177,8 +180,13 @@ function CiteTemplate({
           </h1>
           <div className="flex flex-wrap sm:flex-nowrap gap-4 xl:justify-end">
             <>
-              {(incidentResponded || isSubscribed) && (
+              {displayBadges && (
                 <div className="flex flex-wrap gap-2 my-auto">
+                  {incident.isTranslated && (
+                    <div className="self-center">
+                      <TranslationBadge className="whitespace-nowrap" />
+                    </div>
+                  )}
                   {incidentResponded && (
                     <div className="self-center">
                       <Badge color="success" data-cy="responded-badge">
@@ -293,6 +301,7 @@ function CiteTemplate({
                   subscribing={subscribing}
                   isLiveData={liveVersion}
                   setIsLiveData={setIsLiveData}
+                  linkRecords={linkRecords}
                 />
               </Col>
             </Row>

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { formatISO, format, parse } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFlag, faQuestionCircle, faEdit } from '@fortawesome/free-solid-svg-icons';
@@ -17,11 +17,13 @@ import Link from 'components/ui/Link';
 const blogPostUrl = '/blog/using-ai-to-connect-ai-incidents';
 
 const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncident }) => {
+  const [incidentTitle, setIncidentTitle] = useState(incident.title);
+
   const parsedDate = incident.date ? parse(incident.date, 'yyyy-MM-dd', new Date()) : null;
 
   const { isRole, user } = useUserContext();
 
-  const { locale } = useLocalization();
+  const { config: availableLanguages, locale: language } = useLocalization();
 
   const { t } = useTranslation();
 
@@ -29,11 +31,32 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
 
   const [flagSimilarity] = useMutation(FLAG_INCIDENT_SIMILARITY);
 
+  const { data: parentIncidentData } = useQuery(FIND_FULL_INCIDENT, {
+    variables: {
+      filter: { incident_id: { EQ: parentIncident.incident_id } },
+      translationLanguages: availableLanguages.filter((c) => c.code !== 'en').map((c) => c.code), // Exclude English since it's the default language
+    },
+  });
+
   const { data: incidentData } = useQuery(FIND_FULL_INCIDENT, {
-    variables: { filter: { incident_id: { EQ: parentIncident.incident_id } } },
+    variables: {
+      filter: { incident_id: { EQ: incident.incident_id } },
+      translationLanguages: availableLanguages.filter((c) => c.code !== 'en').map((c) => c.code), // Exclude English since it's the default language
+    },
   });
 
   const addToast = useToastContext();
+
+  useEffect(() => {
+    if (incidentData?.incident) {
+      // set translated incident
+      const translation = incidentData?.incident?.translations.find((t) => t.language === language);
+
+      if (translation && translation.title && translation.description) {
+        setIncidentTitle(translation.title);
+      }
+    }
+  }, [incidentData]);
 
   const flagIncident = useCallback(async () => {
     const flagged_dissimilar_incidents = isFlagged
@@ -42,7 +65,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
           ?.filter((e) => e != incident.incident_id)
           .concat([incident.incident_id]);
 
-    const editors = incidentData.incident.editors.map((e) => e.userId);
+    const editors = parentIncidentData.incident.editors.map((e) => e.userId);
 
     // Add the current user to the list of editors
     if (user && user.providerType != 'anon-user' && !editors.includes(user.id)) {
@@ -65,7 +88,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
       severity: SEVERITY.success,
     });
     setFlagged(!isFlagged);
-  }, [incidentData]);
+  }, [parentIncidentData]);
 
   return (
     <div
@@ -85,7 +108,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
                 `legacy/${md5(incident.reports[0]?.image_url)}`
               }
               transformation={fill().height(480)}
-              alt={incident.title}
+              alt={incidentTitle}
               itemIdentifier={t('Incident {{id}}', { id: incident.incident_id }).replace(' ', '.')}
               className="rounded-t-lg"
             />
@@ -93,7 +116,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
         )}
 
         <h3 className="text-base m-4 text-gray-900 hover:text-primary-blue">
-          {locale == 'en' && incident.title ? incident.title : incident.reports[0].title}
+          {incidentTitle ? incidentTitle : incident.reports[0].title}
         </h3>
       </LocalizedLink>
       <div className="flex w-full flex-row items-center mt-0 pr-4 bottom-4">
@@ -109,7 +132,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
         </div>
         <div className="inline-block ml-auto mr-auto" />
 
-        {flaggable && incidentData && (
+        {flaggable && parentIncidentData && (
           <Button
             variant="link"
             className={`p-0 hover:text-gray-500 ${

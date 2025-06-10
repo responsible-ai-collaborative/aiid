@@ -211,6 +211,44 @@ test.describe('Submitted reports', () => {
         expect(reports.find((r) => r.report_number === 9)).toBeDefined();
     });
 
+    test('Promotes a submission to a new issue without Incident Data', async ({ page, login }) => {
+
+        await init();
+
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+        await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
+
+        await page.locator('input[name="incident_title"]').fill('');
+        await page.locator('input[name="incident_date"]').fill('');
+        await page.locator('textarea[name="description"]').fill('');
+        await page.locator('[data-cy="developers-input"] .rbt-close').click();
+        await page.locator('[data-cy="deployers-input"] .rbt-close').click();
+        await page.locator('[data-cy="implicated_systems-input"] .rbt-close').click();
+        await page.locator('[data-cy="harmed_parties-input"] .rbt-close').click();
+
+        await page.locator('select[data-cy="promote-select"]').selectOption('Issue');
+
+        await expect(page.locator('[data-cy="incident-data-section"]')).not.toBeVisible();
+
+        page.on('dialog', dialog => dialog.accept());
+
+        await page.locator('[data-cy="promote-button"]').click();
+
+        await expect(page.locator('[data-cy="toast"]').first()).toContainText('Successfully promoted submission to Issue 10');
+
+        const { data: { reports } } = await query({
+            query: gql`{
+                reports {
+                    report_number
+                }
+            }
+        `,
+        });
+
+        expect(reports.find((r) => r.report_number === 9)).toBeDefined();
+    });
+
     test('Rejects a submission', async ({ page, login }) => {
 
         await init();
@@ -352,6 +390,8 @@ test.describe('Submitted reports', () => {
 
         await page.locator('select[data-cy="promote-select"]').selectOption('Issue');
 
+        await expect(page.locator('[data-cy="incident-data-section"]')).not.toBeVisible();
+
         await page.locator('[data-cy="promote-button"]').click();
 
         await expect(page.locator('[data-cy="toast"]').first()).toContainText('*Title must have at least 6 characters');
@@ -381,6 +421,77 @@ test.describe('Submitted reports', () => {
         await page.fill('input[name="date_downloaded"]', '3000-01-01');
 
         await expect(page.locator('[data-cy="submission-form"]')).toContainText('Date must be in the past');
+    });
+
+
+    test('Edits a submission - submitters are Anonymous if left blank', async ({ page, login }) => {
+
+        await init();
+
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+        await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
+
+        // Deletes submitters tags
+        await page.locator('[data-cy="submitters-input"] .rbt-close').first().click();
+        await page.locator('[data-cy="submitters-input"] .rbt-close').first().click();
+
+        // Expects the submitters input to be empty
+        await expect(page.locator('[data-cy="submitters-input"]')).toHaveText('');
+
+        await expect(page.locator('[data-cy="saving-status"]')).toHaveText('Changes saved');
+
+        const { data: { submissions } } = await query({
+          query: gql`{
+              submissions {
+                  _id
+                  submitters
+              }
+          }
+      `,
+      });
+
+      expect(submissions.find((s) => s._id === '6140e4b4b9b4f7b3b3b1b1b1').submitters).toEqual(['Anonymous']);
+    });
+
+    test('Edits a submission - should not allow empty entities', async ({ page, login }) => {
+
+      await init();
+
+      await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+      await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
+
+      await page.locator('input[name="deployers"]').fill('');
+      await page.keyboard.press('Enter');
+
+      await page.locator('input[name="developers"]').fill('');
+      await page.keyboard.press('Enter');
+
+      await page.locator('input[name="harmed_parties"]').fill('');
+      await page.keyboard.press('Enter');
+
+      const { data: { submissions } } = await query({
+        query: gql`{
+            submissions {
+                _id
+                deployers {
+                    entity_id
+                }
+                developers {
+                    entity_id
+                }
+                harmed_parties {
+                    entity_id
+                }
+            }
+        }
+    `,
+      });
+
+      expect(submissions.find((s) => s._id === '6140e4b4b9b4f7b3b3b1b1b1').deployers).toHaveLength(1);
+      expect(submissions.find((s) => s._id === '6140e4b4b9b4f7b3b3b1b1b1').developers).toHaveLength(1);
+      expect(submissions.find((s) => s._id === '6140e4b4b9b4f7b3b3b1b1b1').harmed_parties).toHaveLength(1);
     });
 
     test('Claims a submission', async ({ page, login }) => {

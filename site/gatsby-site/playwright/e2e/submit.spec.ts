@@ -956,6 +956,40 @@ test.describe('The Submit form', () => {
         await expect(page.locator('text=Please review. Some data is missing.')).toBeVisible();
     });
 
+    test('Should display an error messages for each missing field on step 1', async ({ page }) => {
+
+        await page.goto(url);
+
+        const valuesStep1 = {
+          url: '',
+          title: '',
+          authors: '',
+          date_published: '',
+          incident_date: '',
+      };
+
+      for (const key in valuesStep1) {
+          await page.locator(`input[name="${key}"]`).fill(valuesStep1[key]);
+      }
+
+      await setEditorText(
+          page,
+          ''
+      );
+
+      await expect(page.locator('.form-has-errors')).toBeVisible();
+
+      await expect(page.locator('text=*URL required')).toBeVisible();
+
+      await expect(page.locator('text=*Title is required')).toBeVisible();
+
+      await expect(page.locator('text=*Author is required. Anonymous or the publication can be entered.')).toBeVisible();
+
+      await expect(page.locator('text=*Text is required')).toBeVisible();
+
+      await expect(page.locator('text=*Date published is required')).toBeVisible();
+    });
+
     test('Should submit a new report response', async ({ page }) => {
         const values = {
             url: 'https://incidentdatabase.ai',
@@ -1692,6 +1726,58 @@ test.describe('The Submit form', () => {
         await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
     });
 
+    test('Should set submitters to Anonymous if they are not provided', async ({ page }) => {
+      await init();
+
+      await conditionalIntercept(
+        page,
+        '**/parseNews**',
+        () => true,
+        parseNews,
+        'parseNews'
+      );
+
+      await trackRequest(
+        page,
+        '**/graphql',
+        (req) => req.postDataJSON().operationName == 'FindSubmissions',
+        'findSubmissions'
+      );
+
+      await page.goto(url);
+
+      await waitForRequest('findSubmissions');
+
+      await page.locator('input[name="url"]').fill(
+        `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+      );
+
+      await page.locator('[data-cy="fetch-info"]').click();
+
+      await waitForRequest('parseNews');
+
+      await page.locator('input[name="authors"]').fill('Something');
+
+      await page.locator('[name="incident_date"]').fill('2020-01-01');
+
+      await page.locator('[data-cy="submit-step-1"]').click();
+
+      await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
+
+      const { data } = await query({
+        query: gql`
+            query {
+              submission(sort: { _id: DESC }){
+                  _id
+                  submitters
+              }
+            }
+          `,
+      });
+
+      expect(data.submission.submitters).toEqual(['Anonymous']);
+    });
+      
     test('Should allow commas in developers, deployers, harmed_parties, and implicated_systems', async ({ page }) => {
       await init();
       await conditionalIntercept(
@@ -1752,5 +1838,88 @@ test.describe('The Submit form', () => {
       await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
       await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
     });
-  
+
+    test('Should not add empty entities in developers, deployers, harmed_parties, and implicated_systems', async ({ page }) => {
+      await init();
+      await conditionalIntercept(
+        page,
+        '**/parseNews**',
+        () => true,
+        parseNews,
+        'parseNews'
+      );
+
+      await trackRequest(
+        page,
+        '**/graphql',
+        (req) => req.postDataJSON().operationName == 'FindSubmissions',
+        'findSubmissions'
+      );
+
+      await page.goto(url);
+
+      await waitForRequest('findSubmissions');
+
+      await page.locator('input[name="url"]').fill(
+        `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+      );
+
+      await page.locator('button:has-text("Fetch info")').click();
+
+      await waitForRequest('parseNews');
+
+      await page.locator('[name="incident_date"]').fill('2020-01-01');
+
+      await expect(page.locator('.form-has-errors')).not.toBeVisible();
+
+      await page.locator('[data-cy="to-step-2"]').click();
+
+      await page.locator('[data-cy="to-step-3"]').click();
+
+      await page.locator('input[name="developers"]').fill('');
+      await page.keyboard.press('Enter');
+      await page.locator('body').click();
+
+      await page.locator('input[name="deployers"]').fill('');
+      await page.keyboard.press('Enter');
+      await page.locator('body').click();
+
+      await page.locator('input[name="harmed_parties"]').fill('');
+      await page.keyboard.press('Enter');
+      await page.locator('body').click();
+
+      await page.locator('input[name="implicated_systems"]').fill('');
+      await page.keyboard.press('Enter');
+      await page.locator('body').click();
+
+      await page.locator('button[type="submit"]').click();
+      await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
+
+      const { data } = await query({
+        query: gql`
+            query {
+              submission(sort: { _id: DESC }){
+                  _id
+                  developers {
+                    entity_id
+                  }
+                  deployers {
+                    entity_id
+                  }
+                  harmed_parties {
+                    entity_id
+                  }
+                  implicated_systems {
+                    entity_id
+                  }
+              }
+            }
+          `,
+      });
+
+      expect(data.submission.developers).toEqual([]);
+      expect(data.submission.deployers).toEqual([]);
+      expect(data.submission.harmed_parties).toEqual([]);
+      expect(data.submission.implicated_systems).toEqual([]);
+    });
 });
