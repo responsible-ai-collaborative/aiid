@@ -189,7 +189,7 @@ function CiteTemplate({
           className="flex flex-wrap justify-between items-center w-full xl:flex-nowrap gap-1 xl:gap-4"
           data-testid="incident-title-section"
         >
-          <h1 data-testid="incident-title" className="flex-grow justify-between inline text-2xl">
+          <h1 data-testid="incident-title" className="flex-grow inline text-2xl">
             {incidentTitle}
           </h1>
           <div className="flex flex-wrap sm:flex-nowrap gap-4 xl:justify-end">
