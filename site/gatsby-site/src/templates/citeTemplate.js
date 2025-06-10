@@ -35,6 +35,22 @@ import {
 import ClassificationsEditor from 'components/taxa/ClassificationsEditor';
 import ClassificationsDisplay from 'components/taxa/ClassificationsDisplay';
 
+const IncidentBadges = ({ badges }) => {
+  if (!badges || badges.length === 0) return null;
+  return (
+    <div className="flex flex-wrap gap-2 my-auto">
+      {badges.map(
+        ({ show, key, content, className = 'self-center' }) =>
+          show && (
+            <div className={className} key={key}>
+              {content}
+            </div>
+          )
+      )}
+    </div>
+  );
+};
+
 function CiteTemplate({
   incident,
   sortedReports,
@@ -165,8 +181,6 @@ function CiteTemplate({
     (report) => report.tags && report.tags.includes(RESPONSE_TAG)
   );
 
-  const displayBadges = incident.isTranslated || incidentResponded || isSubscribed;
-
   return (
     <>
       <div className={'titleWrapper'}>
@@ -179,35 +193,33 @@ function CiteTemplate({
             {incidentTitle}
           </h1>
           <div className="flex flex-wrap sm:flex-nowrap gap-4 xl:justify-end">
-            <>
-              {displayBadges && (
-                <div className="flex flex-wrap gap-2 my-auto">
-                  {incident.isTranslated && (
-                    <div className="self-center">
-                      <TranslationBadge className="whitespace-nowrap" />
-                    </div>
-                  )}
-                  {incidentResponded && (
-                    <div className="self-center">
-                      <Badge color="success" data-cy="responded-badge">
-                        {t('Responded')}
-                      </Badge>
-                    </div>
-                  )}
-                  {isSubscribed && (
-                    <div className="self-center">
-                      <Badge
-                        color="success"
-                        data-cy="subscribed-badge"
-                        className="whitespace-nowrap"
-                      >
-                        <Trans>Subscribed to Updates</Trans>
-                      </Badge>
-                    </div>
-                  )}
-                </div>
-              )}
-            </>
+            <IncidentBadges
+              badges={[
+                {
+                  key: 'translation',
+                  show: incident.isTranslated,
+                  content: <TranslationBadge className="whitespace-nowrap" />,
+                },
+                {
+                  key: 'responded',
+                  show: incidentResponded,
+                  content: (
+                    <Badge color="success" data-cy="responded-badge">
+                      {t('Responded')}
+                    </Badge>
+                  ),
+                },
+                {
+                  key: 'subscribed',
+                  show: isSubscribed,
+                  content: (
+                    <Badge color="success" data-cy="subscribed-badge" className="whitespace-nowrap">
+                      <Trans>Subscribed to Updates</Trans>
+                    </Badge>
+                  ),
+                },
+              ]}
+            />
             {!readOnly && (
               <>
                 <div className="flex justify-end items-start shrink flex-nowrap">
