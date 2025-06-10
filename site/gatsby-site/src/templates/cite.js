@@ -23,6 +23,7 @@ function CitePage(props) {
       nlp_similar_incidents,
       editor_similar_incidents,
       editor_dissimilar_incidents,
+      linkRecords,
     },
     data: {
       allMongodbAiidprodTaxa,
@@ -98,6 +99,7 @@ function CitePage(props) {
           editor_dissimilar_incidents={editor_dissimilar_incidents}
           locationPathName={props.location.pathname}
           setIsLiveData={setIsLiveData}
+          linkRecords={linkRecords}
         />
       ) : (
         <CiteTemplate
@@ -116,6 +118,7 @@ function CitePage(props) {
           editor_similar_incidents={editor_similar_incidents}
           editor_dissimilar_incidents={editor_dissimilar_incidents}
           setIsLiveData={setIsLiveData}
+          linkRecords={linkRecords}
         />
       )}
     </div>

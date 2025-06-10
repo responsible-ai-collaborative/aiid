@@ -168,7 +168,7 @@ export default function UsersTable({ data, className = '', ...props }) {
   return (
     <>
       <Table table={table} className={className} {...props} />
-      {userEditId && <UserEditModal userId={userEditId} onClose={() => setUserEditId(null)} />}
+      <UserEditModal show={userEditId} userId={userEditId} onClose={() => setUserEditId(null)} />
     </>
   );
 }

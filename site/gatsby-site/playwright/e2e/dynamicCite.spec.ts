@@ -99,4 +99,19 @@ test.describe('Dynamic Cite pages', () => {
     expect(noImagesErrors).toBe(true);
 
   });
+
+  test('Should display the Incident translated title and description', async ({ page, login, skipOnEmptyEnvironment }) => {
+    const [userId] = await login();
+    await init();
+
+    await seedCollection({ name: 'users', docs: [{ userId: userId, roles: ['admin'], first_name: 'John', last_name: 'Doe' }], drop: false });
+
+    await page.goto('/es/cite/1/');
+
+    await page.locator('[data-cy="toogle-live-data"]').click();;
+
+    await expect(page.getByTestId('incident-title')).toContainText('Incidente 1: Título del Incidente 1');
+
+    await expect(page.getByText(`Descripción del incidente 1`)).toBeVisible();
+  });
 });

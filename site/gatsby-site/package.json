@@ -159,6 +159,7 @@
     "magic-link": "npx tsx --env-file=.env src/scripts/magic-link.ts $1 $2",
     "restore-mongodb": "npx tsx --env-file=.env src/scripts/restore-mongodb.ts",
     "import-classifications-csv": "npx tsx --env-file=.env src/scripts/import-classifications-csv.ts",
+    "generate-oecd-relationships": "npx tsx --env-file=.env src/scripts/import-oecd-relationships.ts",
     "algolia-update": "npx tsx --env-file=.env src/scripts/algolia-update.ts",
     "algolia-update:ci": "npx tsx src/scripts/algolia-update.ts",
     "db:migrator": "npx tsx migrator"

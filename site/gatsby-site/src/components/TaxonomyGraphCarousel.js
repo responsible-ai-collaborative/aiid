@@ -144,7 +144,9 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
                   <div key={index} className="h-96">
                     <h3 className="text-base text-center">{t(axis)}</h3>
                     <LocalizedLink
-                      to={`/taxonomy/${namespace.toLowerCase()}#field-${encodeURIComponent(axis)}`}
+                      to={`/taxonomies/${namespace.toLowerCase()}#field-${encodeURIComponent(
+                        axis
+                      )}`}
                       className="h-96"
                     >
                       <BillboardJS bb={bb} options={{ ...options }} />
