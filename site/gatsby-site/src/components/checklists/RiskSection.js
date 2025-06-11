@@ -36,6 +36,7 @@ export default function RiskSection({
   open,
   setOpenSections,
   generated,
+  risks,
 }) {
   const { t } = useTranslation();
 
@@ -79,7 +80,7 @@ export default function RiskSection({
           />
           <EditableLabel
             title={risk.title}
-            onChange={(event) => debouncedUpdateRisk(risk, { title: event.target.value })}
+            onChange={(event) => debouncedUpdateRisk(risk, { title: event.target.value }, risks)}
             textClasses={`text-lg font-500 text-${
               generated ? 'gray' : 'red'
             }-700 pl-2 pr-1 whitespace-nowrap truncate max-w-full overflow-hidden inline-block`}
@@ -181,7 +182,7 @@ export default function RiskSection({
               <Tags
                 id="risk_query"
                 value={risk.tags}
-                onChange={(value) => updateRisk(risk, { tags: value })}
+                onChange={(value) => updateRisk(risk, { tags: value }, risks)}
                 options={tags}
                 disabled={!userIsOwner}
                 allowNew={false}
@@ -233,7 +234,7 @@ export default function RiskSection({
           <Select
             id="risk_status"
             value={risk.risk_status}
-            onChange={(event) => updateRisk(risk, { risk_status: event.target.value })}
+            onChange={(event) => updateRisk(risk, { risk_status: event.target.value }, risks)}
             disabled={!userIsOwner}
           >
             {['Not Mitigated', 'Mitigated', 'Prevented', 'Not Applicable', 'Unclear'].map(
@@ -244,16 +245,16 @@ export default function RiskSection({
               )
             )}
           </Select>
-          <RiskSeverity {...{ risk, debouncedUpdateRisk, userIsOwner }} />
-          <RiskLikelihood {...{ risk, debouncedUpdateRisk, userIsOwner }} />
-          <RiskNotes {...{ risk, debouncedUpdateRisk, userIsOwner }} />
+          <RiskSeverity {...{ risk, debouncedUpdateRisk, userIsOwner, risks }} />
+          <RiskLikelihood {...{ risk, debouncedUpdateRisk, userIsOwner, risks }} />
+          <RiskNotes {...{ risk, debouncedUpdateRisk, userIsOwner, risks }} />
         </RiskFields>
       </RiskBody>
     </RiskDetails>
   );
 }
 
-const RiskSeverity = ({ risk, debouncedUpdateRisk, userIsOwner }) => {
+const RiskSeverity = ({ risk, debouncedUpdateRisk, userIsOwner, risks }) => {
   const { t } = useTranslation();
 
   const [displaySeverity, setDisplaySeverity] = useState(risk.severity);
@@ -269,14 +270,14 @@ const RiskSeverity = ({ risk, debouncedUpdateRisk, userIsOwner }) => {
         disabled={!userIsOwner}
         onChange={(event) => {
           setDisplaySeverity(event.target.value);
-          debouncedUpdateRisk(risk, { severity: event.target.value });
+          debouncedUpdateRisk(risk, { severity: event.target.value }, risks);
         }}
       />
     </div>
   );
 };
 
-const RiskLikelihood = ({ risk, debouncedUpdateRisk, userIsOwner }) => {
+const RiskLikelihood = ({ risk, debouncedUpdateRisk, userIsOwner, risks }) => {
   const { t } = useTranslation();
 
   const [displayLikelihood, setDisplayLikelihood] = useState(risk.likelihood);
@@ -292,14 +293,14 @@ const RiskLikelihood = ({ risk, debouncedUpdateRisk, userIsOwner }) => {
         disabled={!userIsOwner}
         onChange={(event) => {
           setDisplayLikelihood(event.target.value);
-          debouncedUpdateRisk(risk, { likelihood: event.target.value });
+          debouncedUpdateRisk(risk, { likelihood: event.target.value }, risks);
         }}
       />
     </div>
   );
 };
 
-const RiskNotes = ({ risk, debouncedUpdateRisk, userIsOwner }) => {
+const RiskNotes = ({ risk, debouncedUpdateRisk, userIsOwner, risks }) => {
   const { t } = useTranslation();
 
   const [displayNotes, setDisplayNotes] = useState(risk.risk_notes);
@@ -316,7 +317,7 @@ const RiskNotes = ({ risk, debouncedUpdateRisk, userIsOwner }) => {
         disabled={!userIsOwner}
         onChange={(event) => {
           setDisplayNotes(event.target.value);
-          debouncedUpdateRisk(risk, { risk_notes: event.target.value });
+          debouncedUpdateRisk(risk, { risk_notes: event.target.value }, risks);
         }}
       />
     </div>
