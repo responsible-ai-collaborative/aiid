@@ -27,14 +27,14 @@ const incidents = [
   },
 ];
 
-test('Incident Translations - Should translate all incidents', async ({ page }) => {
-  // mock new Date()
-  const mockDate = new Date('2025-01-01');
-  const dateStub = sinon.stub(global, 'Date') as any;
-  dateStub.returns(mockDate);
-  dateStub.now = () => mockDate.getTime();
-  dateStub.parse = () => mockDate.getTime();
+// mock new Date()
+const mockDate = new Date('2025-01-01');
+const dateStub = sinon.stub(global, 'Date') as any;
+dateStub.returns(mockDate);
+dateStub.now = () => mockDate.getTime();
+dateStub.parse = () => mockDate.getTime();
 
+test('Incident Translations - Should translate all incidents', async ({ page }) => {
   const translatedIncidents = [];
 
   const reporter = { log: sinon.stub(), error: sinon.stub(), warn: sinon.stub() };
@@ -101,6 +101,7 @@ test('Incident Translations - Should translate all incidents', async ({ page }) 
       description: 'test-es-Description of incident 1',
       language: 'es',
       created_at: new Date(),
+      dirty: undefined,
     },
     {
       incident_id: 2,
@@ -108,6 +109,7 @@ test('Incident Translations - Should translate all incidents', async ({ page }) 
       description: 'test-es-Description of incident 2',
       language: 'es',
       created_at: new Date(),
+      dirty: undefined,
     },
     {
       incident_id: 3,
@@ -115,6 +117,7 @@ test('Incident Translations - Should translate all incidents', async ({ page }) 
       description: 'test-es-Description of incident 3',
       language: 'es',
       created_at: new Date(),
+      dirty: undefined,
     },
   ]);
   sinon.assert.calledWith(incidentsTranslationsCollection.insertMany, [
@@ -124,12 +127,14 @@ test('Incident Translations - Should translate all incidents', async ({ page }) 
       description: 'test-fr-Description of incident 1',
       language: 'fr',
       created_at: new Date(),
+      dirty: undefined,
     }, {
       incident_id: 2,
       title: 'test-fr-Incident 2 title',
       description: 'test-fr-Description of incident 2',
       language: 'fr',
       created_at: new Date(),
+      dirty: undefined,
     },
     {
       incident_id: 3,
@@ -137,6 +142,7 @@ test('Incident Translations - Should translate all incidents', async ({ page }) 
       description: 'test-fr-Description of incident 3',
       language: 'fr',
       created_at: new Date(),
+      dirty: undefined,
     },
   ]);
   sinon.assert.calledOnce(mongoClient.close);
@@ -145,13 +151,6 @@ test('Incident Translations - Should translate all incidents', async ({ page }) 
 });
 
 test("Incident Translations - Shouldn't call Google's translate api and use translation placeholders if dryRun is true", async ({ page }) => {
-  // mock new Date()
-  const mockDate = new Date('2025-01-01');
-  const dateStub = sinon.stub(global, 'Date') as any;
-  dateStub.returns(mockDate);
-  dateStub.now = () => mockDate.getTime();
-  dateStub.parse = () => mockDate.getTime();
-
   const translatedIncidents = [];
 
   const reporter = { log: sinon.stub(), error: sinon.stub(), warn: sinon.stub() };
@@ -218,6 +217,7 @@ test("Incident Translations - Shouldn't call Google's translate api and use tran
       description: 'translated-es-Description of incident 1',
       language: 'es',
       created_at: new Date(),
+      dirty: undefined,
     },
     {
       incident_id: 2,
@@ -225,6 +225,7 @@ test("Incident Translations - Shouldn't call Google's translate api and use tran
       description: 'translated-es-Description of incident 2',
       language: 'es',
       created_at: new Date(),
+      dirty: undefined,
     },
     {
       incident_id: 3,
@@ -232,6 +233,7 @@ test("Incident Translations - Shouldn't call Google's translate api and use tran
       description: 'translated-es-Description of incident 3',
       language: 'es',
       created_at: new Date(),
+      dirty: undefined,
     }
   ]);
   sinon.assert.calledWith(incidentsTranslationsCollection.insertMany, [
@@ -241,12 +243,14 @@ test("Incident Translations - Shouldn't call Google's translate api and use tran
       description: 'translated-fr-Description of incident 1',
       language: 'fr',
       created_at: new Date(),
+      dirty: undefined,
     }, {
       incident_id: 2,
       title: 'translated-fr-Incident 2 title',
       description: 'translated-fr-Description of incident 2',
       language: 'fr',
       created_at: new Date(),
+      dirty: undefined,
     },
     {
       incident_id: 3,
@@ -254,10 +258,10 @@ test("Incident Translations - Shouldn't call Google's translate api and use tran
       description: 'translated-fr-Description of incident 3',
       language: 'fr',
       created_at: new Date(),
+      dirty: undefined,
     },
   ]);
   sinon.assert.calledOnce(mongoClient.close);
-  dateStub.restore();
 });
 
 test('Incident Translations - Should only translate incidents with creation date greater than specified date', async ({ page }) => {
@@ -337,6 +341,7 @@ test('Incident Translations - Should only translate incidents with creation date
       description: 'test-es-Description of incident 3',
       language: 'es',
       created_at: new Date(),
+      dirty: undefined,
     }
   ]);
   sinon.assert.calledWith(incidentsTranslationsCollection.insertMany, [
@@ -346,6 +351,7 @@ test('Incident Translations - Should only translate incidents with creation date
       description: 'test-fr-Description of incident 3',
       language: 'fr',
       created_at: new Date(),
+      dirty: undefined,
     }
   ]);
   sinon.assert.calledOnce(mongoClient.close);
@@ -506,6 +512,7 @@ test("Incident Translations - Should not insert incident translation if the Goog
       description: 'test-fr-Description of incident 1',
       language: 'fr',
       created_at: new Date(),
+      dirty: undefined,
     },
     {
       incident_id: 2,
@@ -513,6 +520,7 @@ test("Incident Translations - Should not insert incident translation if the Goog
       description: 'test-fr-Description of incident 2',
       language: 'fr',
       created_at: new Date(),
+      dirty: undefined,
     },
     {
       incident_id: 3,
@@ -520,8 +528,151 @@ test("Incident Translations - Should not insert incident translation if the Goog
       description: 'test-fr-Description of incident 3',
       language: 'fr',
       created_at: new Date(),
+      dirty: undefined,
     },
   ]);
   sinon.assert.callCount(reporter.error, 6);
   sinon.assert.calledOnce(mongoClient.close);
-}); 
+});
+
+test('Incident Translations - Should translate dirty incidents translations', async ({ page }) => {
+  const translatedIncidents = [
+    {
+      incident_id: 2,
+      language: "es",
+      title: "Título del incidente 2 actualizado. Listo para volver a traducir.",
+      description: "Descripción del incidente 2 actualizado. Listo para volver a traducir.",
+      created_at: new Date(2024, 0, 3),
+      dirty: true,
+    }
+  ];
+
+  const reporter = { log: sinon.stub(), error: sinon.stub(), warn: sinon.stub() };
+
+  const incidentsCollection = {
+    find: sinon.stub().returns({
+      toArray: sinon.stub().resolves(incidents),
+    }),
+  };
+
+  const incidentsTranslationsCollection = {
+    find: sinon.stub().returns({
+      toArray: sinon.stub().resolves(translatedIncidents),
+    }),
+    insertMany: sinon.stub().resolves({ insertedCount: 1 }),
+    updateOne: sinon.stub().resolves(),
+  };
+
+  const mongoClient = {
+    connect: sinon.stub().resolves(),
+    close: sinon.stub().resolves(),
+    db: sinon.stub().callsFake((dbName: string) => {
+      if (dbName === 'aiidprod') {
+        return {
+          collection: (name: string) => {
+            if (name === 'incidents') return incidentsCollection;
+            return null;
+          },
+        };
+      } else if (dbName === 'translations') {
+        return {
+          collection: (name: string) => {
+            if (name === 'incidents') return incidentsTranslationsCollection;
+            return null;
+          },
+        };
+      } else {
+        throw new Error(`Unexpected database name: ${dbName}`);
+      }
+    }),
+  };
+
+  const translateClient = {
+    translate: sinon.stub().callsFake((payload, { to }) => [payload.map((p: string) => `test-${to}-${p}`)]),
+  };
+
+  const translator = new IncidentTranslator({
+    mongoClient,
+    translateClient,
+    languages: ['es', 'fr'],
+    reporter,
+    dryRun: false,
+  });
+
+  await translator.run();
+  
+  sinon.assert.calledOnce(mongoClient.connect);
+  sinon.assert.calledOnce(incidentsCollection.find);
+  sinon.assert.callCount(translateClient.translate, 6);
+  sinon.assert.calledTwice(incidentsTranslationsCollection.updateOne);
+  sinon.assert.calledWith(incidentsTranslationsCollection.updateOne,
+    { 
+      incident_id: 2,
+      language: 'es'
+    },
+    { 
+      $set: {
+        incident_id: 2,
+        title: 'test-es-Incident 2 title',
+        description: 'test-es-Description of incident 2',
+        language: 'es',
+        created_at: new Date(),
+        dirty: false,
+    },
+    }
+  );
+  sinon.assert.calledWith(incidentsTranslationsCollection.updateOne,
+    { 
+      incident_id: 2,
+      language: 'fr'
+    },
+    { 
+      $set: {
+        incident_id: 2,
+        title: 'test-fr-Incident 2 title',
+        description: 'test-fr-Description of incident 2',
+        language: 'fr',
+        created_at: new Date(),
+        dirty: false,
+    },
+    }
+  );
+  sinon.assert.calledTwice(incidentsTranslationsCollection.insertMany);
+  sinon.assert.calledWith(incidentsTranslationsCollection.insertMany, [
+    {
+      incident_id: 1,
+      title: 'test-es-Incident 1 title',
+      description: 'test-es-Description of incident 1',
+      language: 'es',
+      created_at: new Date(),
+      dirty: undefined,
+    },
+    {
+      incident_id: 3,
+      title: 'test-es-Incident 3 title',
+      description: 'test-es-Description of incident 3',
+      language: 'es',
+      created_at: new Date(),
+      dirty: undefined,
+    },
+  ]);
+  sinon.assert.calledWith(incidentsTranslationsCollection.insertMany, [
+    {
+      incident_id: 1,
+      title: 'test-fr-Incident 1 title',
+      description: 'test-fr-Description of incident 1',
+      language: 'fr',
+      created_at: new Date(),
+      dirty: undefined,
+    },
+    {
+      incident_id: 3,
+      title: 'test-fr-Incident 3 title',
+      description: 'test-fr-Description of incident 3',
+      language: 'fr',
+      created_at: new Date(),
+      dirty: undefined,
+    },
+  ]);
+  sinon.assert.calledOnce(mongoClient.close);
+});
