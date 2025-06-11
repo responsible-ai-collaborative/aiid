@@ -4,10 +4,15 @@ import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Button, Spinner } from 'flowbite-react';
 import { FIND_FULL_INCIDENT, UPDATE_INCIDENT, UPDATE_INCIDENTS } from '../../graphql/incidents';
+import {
+  UPDATE_INCIDENT_TRANSLATION,
+  translationsFields,
+} from '../../graphql/incident_translations';
 import { FIND_ENTITIES, UPSERT_ENTITY } from '../../graphql/entities';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Formik } from 'formik';
-import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
+import pick from 'lodash/pick';
+import { LocalizedLink, useLocalization } from 'plugins/gatsby-theme-i18n';
 import { useTranslation, Trans } from 'react-i18next';
 import { Link } from 'gatsby';
 import { processEntities } from '../../utils/entities';
@@ -20,23 +25,32 @@ function EditCitePage(props) {
 
   const { t, i18n } = useTranslation();
 
+  const { config: availableLanguages } = useLocalization();
+
   const [incident, setIncident] = useState(null);
 
   const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, 1));
 
   const { data: incidentData, loading: loadingIncident } = useQuery(FIND_FULL_INCIDENT, {
-    variables: { filter: { incident_id: { EQ: incidentId } } },
+    variables: {
+      filter: { incident_id: { EQ: incidentId } },
+      translationLanguages: availableLanguages.filter((c) => c.code !== 'en').map((c) => c.code), // Exclude English since it's the default language
+    },
   });
 
   const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES);
 
-  const loading = loadingIncident || loadingEntities;
+  const [incidentTranslations, setIncidentTranslations] = useState(null);
 
   const [updateIncident] = useMutation(UPDATE_INCIDENT);
 
   const [updateIncidents] = useMutation(UPDATE_INCIDENTS);
 
   const [createEntityMutation] = useMutation(UPSERT_ENTITY);
+
+  const [updateIncidentTranslation] = useMutation(UPDATE_INCIDENT_TRANSLATION);
+
+  const loading = loadingIncident || loadingEntities || incidentTranslations === null;
 
   const addToast = useToastContext();
 
@@ -58,6 +72,27 @@ function EditCitePage(props) {
 
   useEffect(() => {
     if (incidentData?.incident) {
+      const translations = availableLanguages
+        .map((c) => c.code)
+        .reduce((acc, languageCode) => {
+          // Find existing translation for this language
+          const existingTranslation = incidentData.incident.translations?.find(
+            (t) => t.language === languageCode && t.title !== null && t.description !== null
+          );
+
+          // If translation exists use its values, otherwise use empty values
+          acc[`translations_${languageCode}`] = existingTranslation
+            ? pick(existingTranslation, translationsFields)
+            : translationsFields.reduce((obj, field) => {
+                obj[field] = '';
+                return obj;
+              }, {});
+
+          return acc;
+        }, {});
+
+      setIncidentTranslations(translations);
+
       setIncident({
         ...incidentData.incident,
       });
@@ -115,6 +150,13 @@ function EditCitePage(props) {
         updated.editors.link.push(user.id);
       }
 
+      // remove "translations" field from updated
+      delete updated.translations;
+      // remove "translations_${code}" fields from updated
+      for (const { code } of availableLanguages.filter((c) => c.code !== values.language)) {
+        delete updated[`translations_${code}`];
+      }
+
       await updateIncident({
         variables: {
           filter: {
@@ -127,6 +169,28 @@ function EditCitePage(props) {
           },
         },
       });
+
+      // update incident translations
+      for (const { code } of availableLanguages.filter((c) => c.code !== 'en')) {
+        const updatedTranslation = pick(values[`translations_${code}`], translationsFields);
+
+        // check if at least one of the translationsFields is not empty
+        const shouldUpdateTranslation = translationsFields.some(
+          (field) => updatedTranslation[field] && updatedTranslation[field] !== ''
+        );
+
+        if (shouldUpdateTranslation) {
+          await updateIncidentTranslation({
+            variables: {
+              input: {
+                ...updatedTranslation,
+                language: code,
+                incident_id: incidentId,
+              },
+            },
+          });
+        }
+      }
 
       await updateSimilarIncidentsReciprocal(
         updated.editor_similar_incidents,
@@ -183,7 +247,7 @@ function EditCitePage(props) {
       {loading && <DefaultSkeleton />}
       {incident === null && !loading && <div>Incident not found</div>}
 
-      {incident && (
+      {!loading && incident && (
         <Formik
           validationSchema={schema}
           onSubmit={handleSubmit}
@@ -206,6 +270,7 @@ function EditCitePage(props) {
               incident.implicated_systems === null
                 ? []
                 : incident.implicated_systems.map((item) => item.name),
+            ...incidentTranslations,
           }}
         >
           {({ isValid, isSubmitting, submitForm, errors }) => (

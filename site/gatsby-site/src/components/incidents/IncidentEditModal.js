@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { FIND_FULL_INCIDENT, UPDATE_INCIDENT } from '../../graphql/incidents';
+import {
+  UPDATE_INCIDENT_TRANSLATION,
+  translationsFields,
+} from '../../graphql/incident_translations';
 import { FIND_ENTITIES, UPSERT_ENTITY } from '../../graphql/entities';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Spinner, Modal, Button } from 'flowbite-react';
@@ -11,16 +15,25 @@ import { useTranslation, Trans } from 'react-i18next';
 import { processEntities } from '../../utils/entities';
 import { getUnixTime } from 'date-fns';
 import { useUserContext } from 'contexts/UserContext';
+import { useLocalization } from 'plugins/gatsby-theme-i18n';
+import pick from 'lodash/pick';
 
 export default function IncidentEditModal({ show, onClose, incidentId }) {
   const { user } = useUserContext();
 
   const { t, i18n } = useTranslation();
 
+  const { config: availableLanguages } = useLocalization();
+
   const [incident, setIncident] = useState(null);
 
+  const [incidentTranslations, setIncidentTranslations] = useState(null);
+
   const { data: incidentData } = useQuery(FIND_FULL_INCIDENT, {
-    variables: { filter: { incident_id: { EQ: incidentId } } },
+    variables: {
+      filter: { incident_id: { EQ: incidentId } },
+      translationLanguages: availableLanguages.filter((c) => c.code !== 'en').map((c) => c.code), // Exclude English since it's the default language
+    },
   });
 
   const { data: entitiesData } = useQuery(FIND_ENTITIES);
@@ -29,10 +42,32 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
 
   const [createEntityMutation] = useMutation(UPSERT_ENTITY);
 
+  const [updateIncidentTranslation] = useMutation(UPDATE_INCIDENT_TRANSLATION);
+
   const addToast = useToastContext();
 
   useEffect(() => {
     if (incidentData?.incident) {
+      const translations = availableLanguages
+        .map((c) => c.code)
+        .reduce((acc, languageCode) => {
+          // Find existing translation for this language
+          const existingTranslation = incidentData.incident.translations?.find(
+            (t) => t.language === languageCode && t.title !== null && t.description !== null
+          );
+
+          // If translation exists use its values, otherwise use empty values
+          acc[`translations_${languageCode}`] = existingTranslation
+            ? pick(existingTranslation, translationsFields)
+            : translationsFields.reduce((obj, field) => {
+                obj[field] = '';
+                return obj;
+              }, {});
+
+          return acc;
+        }, {});
+
+      setIncidentTranslations(translations);
       setIncident({ ...incidentData.incident });
     } else {
       setIncident(undefined);
@@ -103,6 +138,13 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
         updated.editors.link.push(user.id);
       }
 
+      // remove "translations" field from updated
+      delete updated.translations;
+      // remove "translations_${code}" fields from updated
+      for (const { code } of availableLanguages.filter((c) => c.code !== values.language)) {
+        delete updated[`translations_${code}`];
+      }
+
       await updateIncident({
         variables: {
           filter: {
@@ -115,6 +157,28 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
           },
         },
       });
+
+      // update incident translations
+      for (const { code } of availableLanguages.filter((c) => c.code !== 'en')) {
+        const updatedTranslation = pick(values[`translations_${code}`], translationsFields);
+
+        // check if at least one of the translationsFields is not empty
+        const shouldUpdateTranslation = translationsFields.some(
+          (field) => updatedTranslation[field] && updatedTranslation[field] !== ''
+        );
+
+        if (shouldUpdateTranslation) {
+          await updateIncidentTranslation({
+            variables: {
+              input: {
+                ...updatedTranslation,
+                language: code,
+                incident_id: incidentId,
+              },
+            },
+          });
+        }
+      }
 
       addToast(updateSuccessToast({ incidentId }));
 
@@ -170,6 +234,7 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
                 ? []
                 : incident.implicated_systems.map((item) => item.name),
             editors: incident.editors.map((editor) => editor.userId),
+            ...incidentTranslations,
           }}
         >
           {({ isValid, isSubmitting, submitForm }) => (

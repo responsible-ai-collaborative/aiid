@@ -20,8 +20,9 @@ function CiteDynamicTemplate({
   editor_dissimilar_incidents,
   locationPathName,
   setIsLiveData,
+  linkRecords,
 }) {
-  const { locale: language } = useLocalization();
+  const { locale: language, config: availableLanguages } = useLocalization();
 
   const [loadingIncident, setLoadingIncident] = useState(true);
 
@@ -44,7 +45,10 @@ function CiteDynamicTemplate({
   const [incidentTitle, setIncidentTitle] = useState(null);
 
   const { data: incidentData, loading } = useQuery(FIND_FULL_INCIDENT, {
-    variables: { filter: { incident_id: { EQ: parseInt(incident_id) } } },
+    variables: {
+      filter: { incident_id: { EQ: parseInt(incident_id) } },
+      translationLanguages: availableLanguages.filter((c) => c.code !== 'en').map((c) => c.code), // Exclude English since it's the default language
+    },
   });
 
   const { data: prevIncident } = useQuery(FIND_INCIDENT, {
@@ -115,6 +119,14 @@ function CiteDynamicTemplate({
 
       const variantsTemp = sortedIncidentReports.filter((report) => !isCompleteReport(report));
 
+      // set translated incident
+      const translation = incidentData?.incident?.translations.find((t) => t.language === language);
+
+      if (translation && translation.title && translation.description) {
+        incidentTemp.title = translation.title;
+        incidentTemp.description = translation.description;
+      }
+
       setEntities(entities);
       setIncidentTitle(`${t('Incident')} ${incidentTemp.incident_id}: ${incidentTemp.title}`);
       setTimeline(timelineTemp);
@@ -157,6 +169,7 @@ function CiteDynamicTemplate({
             editor_dissimilar_incidents={editor_dissimilar_incidents}
             liveVersion={true}
             setIsLiveData={setIsLiveData}
+            linkRecords={linkRecords}
           />
         )
       )}

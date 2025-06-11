@@ -36,3 +36,27 @@ export const UPDATE_ENTITY = gql(`
     }
   }
 `);
+
+export const MERGE_ENTITIES = gql(`
+  mutation MergeEntities($primaryId: String!, $secondaryId: String!, $keepEntity: Int!) {
+    mergeEntities(primaryId: $primaryId, secondaryId: $secondaryId, keepEntity: $keepEntity){
+      entity_id
+      name
+    }
+  }
+`);
+
+export const SIMILAR_ENTITIES = gql(`
+  query SimilarEntities($threshold: Int!, $offset: Int!, $limit: Int!) {
+    similarEntities(threshold: $threshold, offset: $offset, limit: $limit) {
+      pairs {
+        entityId1
+        entityName1
+        entityId2
+        entityName2
+        similarity
+      }
+      hasMore
+    }
+  }
+`);
