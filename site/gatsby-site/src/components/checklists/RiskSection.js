@@ -205,26 +205,29 @@ export default function RiskSection({
             </button>
           </div>
           <PrecedentsList>
-            {precedents.map((precedent) => (
-              <Card key={precedent.incident_id}>
-                <div>
-                  <LocalizedLink to={`/cite/${precedent.incident_id}`}>
-                    <h3 className="mt-0">{precedent.title}</h3>
-                  </LocalizedLink>
-                  <p>{precedent.description}</p>
-                  {precedent.tags
-                    .filter((tag) => searchTags.includes(tag))
-                    .map(
-                      (tag) => (
-                        <span className="bootstrap rbt-token" key={tag}>
-                          {tag}
-                        </span>
-                      ),
-                      []
-                    )}
-                </div>
-              </Card>
-            ))}
+            {precedents.map((precedent) => {
+              console.log(`precedent`, precedent);
+              return (
+                <Card key={precedent.incident_id}>
+                  <div>
+                    <LocalizedLink to={`/cite/${precedent.incident_id}`}>
+                      <h3 className="mt-0">{precedent.title}</h3>
+                    </LocalizedLink>
+                    <p>{precedent.description}</p>
+                    {precedent.tags
+                      .filter((tag) => searchTags.includes(tag))
+                      .map(
+                        (tag) => (
+                          <span className="bootstrap rbt-token" key={tag}>
+                            {tag}
+                          </span>
+                        ),
+                        []
+                      )}
+                  </div>
+                </Card>
+              );
+            })}
           </PrecedentsList>
         </Precedents>
         <RiskFields>
@@ -427,25 +430,28 @@ const RiskFields = (props) => (
   </div>
 );
 
-const PrecedentsList = (props) => (
-  <div
-    {...{
-      ...props,
-      className: `
-    flex flex-col gap-3 p-2  
-    h-full w-full max-w-full max-h-[30rem]
-    overflow-y-auto
-    bg-gray-100
-    border-1 border-gray-200 
-    rounded 
-    shadow-inner
-    ${props.className || ''}
-  `,
-    }}
-  >
-    {props.children}
-  </div>
-);
+const PrecedentsList = (props) => {
+  console.log(`props.children`, props.children);
+  return (
+    <div
+      {...{
+        ...props,
+        className: `
+      flex flex-col gap-3 p-2  
+      h-full w-full max-w-full max-h-[30rem]
+      overflow-y-auto
+      bg-gray-100
+      border-1 border-gray-200 
+      rounded 
+      shadow-inner
+      ${props.className || ''}
+    `,
+      }}
+    >
+      {props.children}
+    </div>
+  );
+};
 
 function ProgressCircle({ progress, className }) {
   const r = 20;
