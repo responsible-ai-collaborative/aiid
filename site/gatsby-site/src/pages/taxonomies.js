@@ -25,7 +25,7 @@ export default function Taxonomies({ data }) {
           <li>
             <p>
               <Trans>
-                <LocalizedLink to="/taxonomy/csetv1">
+                <LocalizedLink to="/taxonomies/csetv1">
                   Center for Security and Emerging Technology (CSETv1)
                 </LocalizedLink>{' '}
                 The CSET AI Harm Taxonomy characterizes AI incidents and classifies harms of
@@ -41,7 +41,7 @@ export default function Taxonomies({ data }) {
           <li>
             <p>
               <Trans>
-                <LocalizedLink to="/taxonomy/gmf/">
+                <LocalizedLink to="/taxonomies/gmf/">
                   Goals, Methods, and Failures (GMF)
                 </LocalizedLink>
                 . This is a taxonomy detailing the technological and process factors producing an
@@ -57,8 +57,8 @@ export default function Taxonomies({ data }) {
           <li>
             <p>
               <Trans>
-                <LocalizedLink to="/taxonomy/mit">MIT AI Risk Repository</LocalizedLink> The MIT AI
-                Risk Repository contains detailed records of AI-related risks extracted from a
+                <LocalizedLink to="/taxonomies/mit">MIT AI Risk Repository</LocalizedLink> The MIT
+                AI Risk Repository contains detailed records of AI-related risks extracted from a
                 variety of sources, categorized into high-level and mid-level taxonomies. Its
                 high-level Causal Taxonomy includes attributes such as the entity responsible for
                 the risk (human, AI, or other), the intent (intentional, unintentional, or other),

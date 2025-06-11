@@ -62,6 +62,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
     ['/apps/newsSearch', '/apps/newsdigest'],
     ['/research/related-work', '/research/4-related-work'],
     ['/blog/incident-report-2022-january', '/blog/incident-report-2023-january'],
+    ['/taxonomy/*', '/taxonomies/*'],
   ];
 
   redirects.forEach((pair) => {

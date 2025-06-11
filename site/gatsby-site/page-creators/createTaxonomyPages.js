@@ -34,7 +34,7 @@ const createTaxonomyPages = (graphql, createPage) => {
         // We can add here a redirect to the template with the right classification fragment
         result.data.allMongodbAiidprodTaxa.nodes.forEach((taxonomy) => {
           createPage({
-            path: '/taxonomy/' + taxonomy.namespace.toLowerCase(),
+            path: '/taxonomies/' + taxonomy.namespace.toLowerCase(),
             component: path.resolve('./src/templates/taxonomy.js'),
             context: {
               namespace: taxonomy.namespace,

@@ -34,5 +34,8 @@
   "The sequence of data inputs into the intelligent system and outputs produced by the system involved in the incident. For a chatbot, this will generally present a back and forth between a human and the chatbot's responses.": "La séquence des entrées de données dans le système intelligent et des sorties produites par le système impliqué dans l'incident. Pour un chatbot, cela présentera généralement un va-et-vient entre un humain et les réponses du chatbot.",
   "Add Row": "Ajouter une ligne",
   "Delete Row": "Supprimer la ligne",
-  "View all the variants in the database.": "Voir toutes les variantes dans la base de données."
+  "View all the variants in the database.": "Voir toutes les variantes dans la base de données.",
+  "A \"variant\" is an AI incident similar to a known case—it has the same causes, harms, and AI system. Instead of listing it separately, we group it under the first reported incident. Unlike other incidents, variants do not need to have been reported outside the AIID. <2>Learn more from the research paper.</2>": "Une \"Variante\" est un incident de l'IA similaire à un cas connu—il a les mêmes causes, les mêmes dommages et le même système intelligent. Plutôt que de l'énumérer séparément, nous l'incluons sous le premier incident signalé. Contrairement aux autres incidents, les variantes n'ont pas besoin d'avoir été signalées en dehors de la base de données des incidents. <2>En savoir plus sur le document de recherche.</2>",
+  "Seen something similar?": "Vous avez vu quelque chose de similaire ?",
+  "Submit a Variant": "Soumettre une Variante"
 }
