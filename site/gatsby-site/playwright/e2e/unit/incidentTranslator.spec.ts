@@ -27,14 +27,14 @@ const incidents = [
   },
 ];
 
-// mock new Date()
-const mockDate = new Date('2025-01-01');
-const dateStub = sinon.stub(global, 'Date') as any;
-dateStub.returns(mockDate);
-dateStub.now = () => mockDate.getTime();
-dateStub.parse = () => mockDate.getTime();
-
 test('Incident Translations - Should translate all incidents', async ({ page }) => {
+  // mock new Date()
+  const mockDate = new Date('2025-01-01');
+  const dateStub = sinon.stub(global, 'Date') as any;
+  dateStub.returns(mockDate);
+  dateStub.now = () => mockDate.getTime();
+  dateStub.parse = () => mockDate.getTime();
+
   const translatedIncidents = [];
 
   const reporter = { log: sinon.stub(), error: sinon.stub(), warn: sinon.stub() };
@@ -151,6 +151,13 @@ test('Incident Translations - Should translate all incidents', async ({ page }) 
 });
 
 test("Incident Translations - Shouldn't call Google's translate api and use translation placeholders if dryRun is true", async ({ page }) => {
+  // mock new Date()
+  const mockDate = new Date('2025-01-01');
+  const dateStub = sinon.stub(global, 'Date') as any;
+  dateStub.returns(mockDate);
+  dateStub.now = () => mockDate.getTime();
+  dateStub.parse = () => mockDate.getTime();
+
   const translatedIncidents = [];
 
   const reporter = { log: sinon.stub(), error: sinon.stub(), warn: sinon.stub() };
@@ -262,11 +269,14 @@ test("Incident Translations - Shouldn't call Google's translate api and use tran
     },
   ]);
   sinon.assert.calledOnce(mongoClient.close);
+
+  dateStub.restore();
 });
 
 test('Incident Translations - Should only translate incidents with creation date greater than specified date', async ({ page }) => {
   const creationDateStart = '2021-01-01';
 
+  // mock new Date()
   const mockDate = new Date(creationDateStart);
   const dateStub = sinon.stub(global, 'Date') as any;
   dateStub.returns(mockDate);
@@ -355,9 +365,18 @@ test('Incident Translations - Should only translate incidents with creation date
     }
   ]);
   sinon.assert.calledOnce(mongoClient.close);
+
+  dateStub.restore();
 });
 
 test('Incident Translations - Should not translate if the incident was already translated', async ({ page }) => {
+  // mock new Date()
+  const mockDate = new Date('2025-01-01');
+  const dateStub = sinon.stub(global, 'Date') as any;
+  dateStub.returns(mockDate);
+  dateStub.now = () => mockDate.getTime();
+  dateStub.parse = () => mockDate.getTime();
+
   const translatedIncidents = [
     {
       incident_id: 1,
@@ -440,9 +459,18 @@ test('Incident Translations - Should not translate if the incident was already t
   sinon.assert.notCalled(translateClient.translate);
   sinon.assert.notCalled(incidentsTranslationsCollection.insertMany);
   sinon.assert.calledOnce(mongoClient.close);
+
+  dateStub.restore();
 });
 
 test("Incident Translations - Should not insert incident translation if the Google's translate API returns empty translations", async ({ page }) => {
+  // mock new Date()
+  const mockDate = new Date('2025-01-01');
+  const dateStub = sinon.stub(global, 'Date') as any;
+  dateStub.returns(mockDate);
+  dateStub.now = () => mockDate.getTime();
+  dateStub.parse = () => mockDate.getTime();
+
   const translatedIncidents = [];
 
   const reporter = { log: sinon.stub(), error: sinon.stub(), warn: sinon.stub() };
@@ -533,9 +561,18 @@ test("Incident Translations - Should not insert incident translation if the Goog
   ]);
   sinon.assert.callCount(reporter.error, 6);
   sinon.assert.calledOnce(mongoClient.close);
+
+  dateStub.restore();
 });
 
 test('Incident Translations - Should translate dirty incidents translations', async ({ page }) => {
+  // mock new Date()
+  const mockDate = new Date('2025-01-01');
+  const dateStub = sinon.stub(global, 'Date') as any;
+  dateStub.returns(mockDate);
+  dateStub.now = () => mockDate.getTime();
+  dateStub.parse = () => mockDate.getTime();
+
   const translatedIncidents = [
     {
       incident_id: 2,
@@ -675,4 +712,6 @@ test('Incident Translations - Should translate dirty incidents translations', as
     },
   ]);
   sinon.assert.calledOnce(mongoClient.close);
+
+  dateStub.restore();
 });
