@@ -612,4 +612,57 @@ test.describe('Cite pages', () => {
         await expect(page.locator('[data-testid="incident-title"]')).toHaveText('Incidente 1: Título del Incidente 1');
         await expect(page.locator('[data-testid="incident-description-section"]').getByText('Descripción del incidente 1')).toBeVisible();
     });
+
+    test('Should not query user subscriptions when not logged in', async ({ page }) => {
+        await page.goto(url);
+
+        // Intercept GraphQL calls
+        const graphqlCalls = [];
+        page.on('request', request => {
+            if (request.url().includes('/graphql')) {
+                const postData = request.postData();
+                if (postData) {
+                    const data = JSON.parse(postData);
+                    if (data.operationName === 'FindUserSubscriptions') {
+                        graphqlCalls.push(data);
+                    }
+                }
+            }
+        });
+
+        // Wait a reasonable time to ensure no calls are made
+        await page.waitForTimeout(2000);
+
+        // Verify that FindUserSubscriptions query was not made
+        expect(graphqlCalls).toHaveLength(0);
+    });
+
+    test('Should query user subscriptions when logged in', async ({ page, login }) => {
+
+        await init();
+
+        await login();
+
+        await page.goto(url);
+
+        // Intercept GraphQL calls
+        const graphqlCalls = [];
+        page.on('request', request => {
+            if (request.url().includes('/graphql')) {
+                const postData = request.postData();
+                if (postData) {
+                    const data = JSON.parse(postData);
+                    if (data.operationName === 'FindUserSubscriptions') {
+                        graphqlCalls.push(data);
+                    }
+                }
+            }
+        });
+
+        // Wait a reasonable time to ensure no calls are made
+        await page.waitForTimeout(2000);
+
+        // Verify that FindUserSubscriptions query was made
+        expect(graphqlCalls).toHaveLength(1);
+    });
 });

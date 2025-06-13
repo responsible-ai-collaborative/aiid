@@ -69,6 +69,7 @@ function CiteTemplate({
     variables: {
       filter: { userId: { EQ: user?.id }, incident_id: { EQ: incident.incident_id } },
     },
+    skip: !user || loading,
   });
 
   const visibleClassifications = {
