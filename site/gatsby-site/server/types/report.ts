@@ -13,6 +13,7 @@ const ReportTranslationsType = new GraphQLObjectType({
         title: { type: GraphQLString },
         plain_text: { type: GraphQLString },
         language: { type: new GraphQLNonNull(GraphQLString) },
+        dirty: { type: GraphQLBoolean },
     }
 });
 
@@ -69,6 +70,7 @@ export const ReportType = new GraphQLObjectType({
                         text: translation.text,
                         title: translation.title,
                         plain_text: translation.plain_text,
+                        dirty: translation.dirty,
                         language: language,
                     } : {
                         text: null,

@@ -153,6 +153,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, any> = {
                         report_number: { type: new GraphQLNonNull(GraphQLInt) },
                         text: { type: new GraphQLNonNull(GraphQLString) },
                         title: { type: new GraphQLNonNull(GraphQLString) },
+                        dirty: { type: GraphQLBoolean },
                     },
                 }))
             }
@@ -167,6 +168,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, any> = {
                 text: args.input.text,
                 plain_text: args.input.plain_text,
                 language: args.input.language,
+                dirty: args.input.dirty,
             };
             
             await translationsCollection.updateOne(

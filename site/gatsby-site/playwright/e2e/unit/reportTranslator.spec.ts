@@ -75,6 +75,13 @@ const reports = [
   },
 ];
 
+// mock new Date()
+const mockDate = new Date('2025-01-01');
+const dateStub = sinon.stub(global, 'Date') as any;
+dateStub.returns(mockDate);
+dateStub.now = () => mockDate.getTime();
+dateStub.parse = () => mockDate.getTime();
+
 test('Report Translations - Should translate languages only if report language differs from target language', async ({ page }) => {
   const translatedReports = [];
 
@@ -142,6 +149,8 @@ test('Report Translations - Should translate languages only if report language d
       title: 'test-en-Título del reporte 2',
       plain_text: 'test-en-Reporte 2 texto\n',
       language: 'en',
+      dirty: undefined,
+      created_at: new Date(),
     },
     {
       report_number: 3,
@@ -149,6 +158,8 @@ test('Report Translations - Should translate languages only if report language d
       title: 'test-en-Título del reporte 3',
       plain_text: 'test-en-Reporte 3 texto\n',
       language: 'en',
+      dirty: undefined,
+      created_at: new Date(),
     }
   ]);
   sinon.assert.calledWith(reportsTranslationsCollection.insertMany, [{
@@ -157,6 +168,8 @@ test('Report Translations - Should translate languages only if report language d
     title: 'test-es-Report 1 title',
     plain_text: 'test-es-Report 1 text\n',
     language: 'es',
+    dirty: undefined,
+    created_at: new Date(),
   }]);
 
   sinon.assert.calledOnce(mongoClient.close);
@@ -230,6 +243,8 @@ test("Report Translations - Shouldn't call Google's translate api and use transl
       title: 'translated-en-Título del reporte 2',
       plain_text: 'translated-en-Reporte 2 texto\n',
       language: 'en',
+      dirty: undefined,
+      created_at: new Date(),
     },
     {
       report_number: 3,
@@ -237,6 +252,8 @@ test("Report Translations - Shouldn't call Google's translate api and use transl
       title: 'translated-en-Título del reporte 3',
       plain_text: 'translated-en-Reporte 3 texto\n',
       language: 'en',
+      dirty: undefined,
+      created_at: new Date(),
     }
   ]);
   sinon.assert.calledWith(reportsTranslationsCollection.insertMany, [{
@@ -245,6 +262,8 @@ test("Report Translations - Shouldn't call Google's translate api and use transl
     title: 'translated-es-Report 1 title',
     plain_text: 'translated-es-Report 1 text\n',
     language: 'es',
+    dirty: undefined,
+    created_at: new Date(),
   }]);
 
   sinon.assert.calledOnce(mongoClient.close);
@@ -321,6 +340,8 @@ test('Report Translations - Should translate reports with submission date greate
       title: 'test-en-Título del reporte 3',
       plain_text: 'test-en-Reporte 3 texto\n',
       language: 'en',
+      dirty: undefined,
+      created_at: new Date(),
     }
   ]);
 
@@ -486,7 +507,119 @@ test("Report Translations - Should not insert report translation if the Google's
     title: 'test-es-Report 1 title',
     plain_text: 'test-es-Report 1 text\n',
     language: 'es',
+    dirty: undefined,
+    created_at: new Date(),
   }]);
   sinon.assert.callCount(reporter.error, 4);
   sinon.assert.calledOnce(mongoClient.close);
+});
+
+test('Report Translations - Should translate dirty reports translations', async ({ page }) => {
+  const translatedReports = [
+    {
+      report_number: 1,
+      text: 'Texto del reporte desactualizado',
+      title: 'Título del reporte desactualizado',
+      plain_text: 'Texto del reporte desactualizado\n',
+      language: 'es',
+      dirty: true,
+    }
+  ];
+
+  const reporter = { log: sinon.stub(), error: sinon.stub(), warn: sinon.stub() };
+
+  const reportsCollection = {
+    find: sinon.stub().returns({
+      toArray: sinon.stub().resolves(reports),
+    }),
+  };
+
+  const reportsTranslationsCollection = {
+    find: sinon.stub().returns({
+      toArray: sinon.stub().resolves(translatedReports),
+    }),
+    insertMany: sinon.stub().resolves({ insertedCount: 1 }),
+    updateOne: sinon.stub().resolves(),
+  };
+
+  const mongoClient = {
+    connect: sinon.stub().resolves(),
+    close: sinon.stub().resolves(),
+    db: sinon.stub().callsFake((dbName: string) => {
+      if (dbName === 'aiidprod') {
+        return {
+          collection: (name: string) => {
+            if (name === 'reports') return reportsCollection;
+            return null;
+          },
+        };
+      } else if (dbName === 'translations') {
+        return {
+          collection: (name: string) => {
+            if (name === 'reports') return reportsTranslationsCollection;
+            return null;
+          },
+        };
+      } else {
+        throw new Error(`Unexpected database name: ${dbName}`);
+      }
+    }),
+  };
+
+  const translateClient = {
+    translate: sinon.stub().callsFake((payload, { to }) => [payload.map((p: any) => `test-${to}-${p}`)]),
+  };
+
+  const translator = new Translator({
+    mongoClient,
+    translateClient,
+    languages: [{ code: 'es' }, { code: 'en' }],
+    reporter,
+    dryRun: false,
+  });
+
+  await translator.run();
+  
+  sinon.assert.calledOnce(mongoClient.connect);
+  sinon.assert.calledOnce(reportsCollection.find);
+  sinon.assert.calledThrice(translateClient.translate);
+  sinon.assert.calledOnce(reportsTranslationsCollection.insertMany);
+  sinon.assert.calledWith(reportsTranslationsCollection.insertMany, [
+    {
+      report_number: 2,
+      text: 'test-en-Reporte 2 **texto**',
+      title: 'test-en-Título del reporte 2',
+      plain_text: 'test-en-Reporte 2 texto\n',
+      language: 'en',
+      dirty: undefined,
+      created_at: new Date(),
+    },
+    {
+      report_number: 3,
+      text: 'test-en-Reporte 3 **texto**',
+      title: 'test-en-Título del reporte 3',
+      plain_text: 'test-en-Reporte 3 texto\n',
+      language: 'en',
+      dirty: undefined,
+      created_at: new Date(),
+    }
+  ]);
+  sinon.assert.calledOnce(reportsTranslationsCollection.updateOne);
+  sinon.assert.calledWith(reportsTranslationsCollection.updateOne, 
+    { report_number: 1 },
+    {
+      $set: { 
+        report_number: 1,
+        text: 'test-es-Report 1 **text**',
+        title: 'test-es-Report 1 title',
+        plain_text: 'test-es-Report 1 text\n',
+        language: 'es',
+        dirty: false,
+        created_at: new Date(),
+      },
+    }
+  );
+
+  sinon.assert.calledOnce(mongoClient.close);
+
 });
