@@ -46,6 +46,14 @@ export const DELETE_SUBSCRIPTIONS = gql(`
   }
 `);
 
+export const DELETE_SUBSCRIPTION = gql(`
+  mutation DeleteSubscription($filter: SubscriptionFilterType!) {
+    deleteOneSubscription(filter: $filter) {
+      _id
+    }
+  }
+`);
+
 export const FIND_USER_SUBSCRIPTIONS = gql(`
   query FindUserSubscriptions($filter: SubscriptionFilterType!) {
     subscriptions(filter: $filter) {

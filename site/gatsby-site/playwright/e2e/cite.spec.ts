@@ -127,7 +127,7 @@ test.describe('Cite pages', () => {
 
         await expect(modal.locator('[data-cy="flag-toggle"]')).toBeDisabled();
 
-        await page.locator('[aria-label="Close"]').click();
+        await modal.locator('[aria-label="Close"]').click();
 
         await expect(modal).not.toBeVisible();
 
@@ -307,6 +307,9 @@ test.describe('Cite pages', () => {
             const count = await page.locator('[data-cy="similar-incident-card"]').count();
             await expect(count).toBeGreaterThanOrEqual(0);
         }).toPass();
+
+        // expect the incident title to be localized
+        await expect(page.locator('[data-cy="similar-incident-card"]').first().locator('h3')).toHaveText('Título del Incidente 1');
 
         await expect(async () => {
             const similarIncidentLinks = await page.locator('.tw-main-container [data-cy="similar-incident-card"] > [data-cy="cite-link"]');

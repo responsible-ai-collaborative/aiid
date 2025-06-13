@@ -27,7 +27,7 @@ test.describe('The Landing page', () => {
     await page.goto('/');
     await page.locator('[data-cy="Waking Up Foundation-image"]').scrollIntoViewIfNeeded();
     await page.locator('[data-cy="Waking Up Foundation-image"]').click();
-    await expect(page.locator('[data-cy="sponsor-modal"]')).toBeVisible();
+    await expect(page.locator('[data-cy="sponsor-modal"] h5', { hasText: 'Waking Up Foundation' })).toBeVisible();
   });
 
   test('Should submit a report through the Quick Add form', async ({ page }) => {

@@ -339,17 +339,16 @@ function IncidentHistoryPage(props) {
           )}
         </>
       )}
-      {incidentVersionDetails && (
-        <IncidentVersionViewModal
-          show={true}
-          onClose={() => setIncidentVersionDetails(null)}
-          entities={entitiesData?.entities}
-          users={usersData?.users}
-          version={incidentVersionDetails}
-          incidentClassifications={incidentClassifications}
-          allMongodbAiidprodTaxa={allMongodbAiidprodTaxa}
-        />
-      )}
+
+      <IncidentVersionViewModal
+        show={incidentVersionDetails?.reports}
+        onClose={() => setIncidentVersionDetails(null)}
+        entities={entitiesData?.entities}
+        users={usersData?.users}
+        version={incidentVersionDetails}
+        incidentClassifications={incidentClassifications}
+        allMongodbAiidprodTaxa={allMongodbAiidprodTaxa}
+      />
     </div>
   );
 }

@@ -533,7 +533,10 @@ export default function ClassificationsDbView(props) {
             <Trans>taxonomy</Trans>
             {loading && <Spinner />}
           </div>
-          <Link to={`/taxonomy/${currentTaxonomy.toLowerCase()}`} style={{ paddingBottom: '1em' }}>
+          <Link
+            to={`/taxonomies/${currentTaxonomy.toLowerCase()}`}
+            style={{ paddingBottom: '1em' }}
+          >
             <Trans>{{ currentTaxonomy }} taxonomy page</Trans>
           </Link>
           <Button onClick={() => table.setAllFilters([])}>
@@ -551,18 +554,16 @@ export default function ClassificationsDbView(props) {
       </div>
       <CustomModal {...fullTextModal} />
 
-      {showModal && (
-        <Modal
-          show={showModal}
-          onClose={() => {
-            setShowModal(false);
-            setModalContent({ title: '', content: '' });
-          }}
-        >
-          <Modal.Header>{modalContent.title}</Modal.Header>
-          <Modal.Body>{modalContent.content}</Modal.Body>
-        </Modal>
-      )}
+      <Modal
+        show={showModal}
+        onClose={() => {
+          setShowModal(false);
+          setModalContent({ title: '', content: '' });
+        }}
+      >
+        <Modal.Header>{modalContent.title}</Modal.Header>
+        <Modal.Body>{modalContent.content}</Modal.Body>
+      </Modal>
     </div>
   );
 }

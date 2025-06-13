@@ -26,7 +26,7 @@ const updateTsneInDatabase = async () => {
     perplexity: 30.0,
     earlyExaggeration: 3.0,
     learningRate: 100.0,
-    nIter: 1000,
+    nIter: process.env.TSNE_NITER || 1000,
     metric: 'euclidean',
   });
 
@@ -34,13 +34,7 @@ const updateTsneInDatabase = async () => {
   // alternatively, it can be an array of coordinates (second argument should be specified as 'sparse')
   model.init({ data: embeddings, type: 'dense' });
 
-  // `error`,  `iter`: final error and iteration number
-  // note: computation-heavy action happens here
-  const [err, iter] = model.run();
-
-  if (err) {
-    console.error(err, iter);
-  }
+  model.run();
 
   // `outputScaled` is `output` scaled to a range of [-1, 1]
   const outputScaled = model.getOutputScaled();

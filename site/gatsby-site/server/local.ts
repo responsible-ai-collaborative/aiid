@@ -95,6 +95,10 @@ import {
     permissions as checklistsPermissions
 } from './fields/checklists';
 
+import {
+    queryFields as entityDuplicatesQueryFields,
+    permissions as entityDuplicatesPermissions
+} from './fields/entityDuplicates';
 
 export const getSchema = () => {
 
@@ -121,6 +125,7 @@ export const getSchema = () => {
             ...reportsHistoryQueryFields,
             ...incidentsHistoryQueryFields,
             ...checklistsQueryFields,
+            ...entityDuplicatesQueryFields,
         }
     });
 
@@ -181,6 +186,7 @@ export const getSchema = () => {
                 ...reportsHistoryPermissions.Query,
                 ...incidentsHistoryPermissions.Query,
                 ...checklistsPermissions.Query,
+                ...entityDuplicatesPermissions.Query,
             },
             Mutation: {
                 "*": deny,

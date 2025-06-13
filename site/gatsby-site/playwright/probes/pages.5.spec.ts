@@ -12,8 +12,8 @@ test.describe('Pages 4', () => {
     paths.push('/cite/1/');
     paths.push('/entities/facebook/');
     paths.push('/blog/incident-report-2023-january/');
-    paths.push('/taxonomy/csetv0/');
-    paths.push('/taxonomy/csetv1/');
+    paths.push('/taxonomies/csetv0/');
+    paths.push('/taxonomies/csetv1/');
   }
 
   testPages(paths);

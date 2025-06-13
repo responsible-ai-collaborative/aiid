@@ -92,6 +92,8 @@ test.describe('Subscriptions', () => {
 
     test('New Incidents: Should display the switch toggle off if user does not have a subscription', async ({ page, login }) => {
 
+        await init();
+
         await login({ customData: { roles: ['subscriber'], first_name: 'John', last_name: 'Doe' } });
 
         await page.goto(url);
@@ -226,4 +228,102 @@ test.describe('Subscriptions', () => {
 
         expect(subscriptionsData).not.toMatchObject([{ _id: "619b47eb5eed5334edfa3bd7" }]);
     });
+
+    test('AI Briefing: Should display the switch for admins and editors and not for subscribers', async ({ page, login }) => {
+
+      await init();
+
+      await login({ customData: { roles: ['incident_editor'], first_name: 'John', last_name: 'Doe' } });
+
+      await page.goto(url);
+
+      await expect(page.locator('#subscribe-ai-briefing')).not.toBeDisabled();
+      
+      await login({ customData: { roles: ['admin'], first_name: 'John', last_name: 'Doe' } });
+
+      await page.goto(url);
+
+      await expect(page.locator('#subscribe-ai-briefing')).not.toBeDisabled();
+
+      await login({ customData: { roles: ['subscriber'], first_name: 'John', last_name: 'Doe' } });
+
+      await page.goto(url);
+
+      await expect(page.locator('#subscribe-ai-briefing')).not.toBeVisible();
+
+  });
+
+  test('AI Briefing: Should display the switch toggle on if user has a subscription', async ({ page, login }) => {
+
+    await init();
+
+    const [userId] = await login({ customData: { roles: ['incident_editor'], first_name: 'John', last_name: 'Doe' } });
+
+    const subscriptions: DBSubscription[] = [
+        {
+            _id: new ObjectId("62f40cd14016f5858d72385d"),
+            type: SUBSCRIPTION_TYPE.aiBriefing,
+            userId: userId,
+        },
+    ]
+
+    await seedFixture({ customData: { subscriptions } }, false);
+
+    await page.goto(url);
+
+    await expect(page.locator('input[name=subscribe-ai-briefing]')).toBeChecked();
+    await expect(page.locator('#subscribe-ai-briefing[role=switch][aria-checked=true]')).toBeVisible();
+  });
+
+  test('AI Briefing: Should toggle the switch on and off', async ({ page, login }) => {
+
+    await init();
+
+    const [userId, accessToken] = await login({ customData: { roles: ['incident_editor'], first_name: 'John', last_name: 'Doe' } });
+
+    await page.goto(url);
+
+    await expect(page.locator('#subscribe-ai-briefing')).not.toBeDisabled();
+
+    await page.locator('#subscribe-ai-briefing').click();
+
+    await expect(page.locator('input[name=subscribe-ai-briefing]')).toBeChecked();
+
+    const { data: { subscriptions: subscriptionsData } } = await query({
+      query: gql`
+      query {
+          subscriptions(filter: {userId: {EQ:"${userId}"}, type: {EQ: "${SUBSCRIPTION_TYPE.aiBriefing}"}}) {
+              _id
+              userId {
+                  userId
+              }
+              type
+          }
+      }`,
+    }, {
+      Cookie: `next-auth.session-token=${encodeURIComponent(accessToken)};`
+
+    });
+
+    expect(subscriptionsData).toHaveLength(1);
+
+    await page.locator('#subscribe-ai-briefing').click();
+
+    const { data: { subscriptions: subscriptionsData2 } } = await query({
+      query: gql`
+      query {
+          subscriptions(filter: {userId: {EQ:"${userId}"}, type: {EQ: "${SUBSCRIPTION_TYPE.aiBriefing}"}}) {
+              _id
+              userId {
+                  userId
+              }
+          }
+      }`,
+    }, {
+      Cookie: `next-auth.session-token=${encodeURIComponent(accessToken)};`
+
+    });
+
+    expect(subscriptionsData2).toHaveLength(0);
+  });
 });

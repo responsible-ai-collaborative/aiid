@@ -6,17 +6,19 @@ import {
   faClone,
   faTrash,
   faClockRotateLeft,
+  faQuestionCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUserContext } from 'contexts/UserContext';
 import { format } from 'date-fns';
 import Card from 'elements/Card';
-import { Button, ToggleSwitch } from 'flowbite-react';
+import { Button, ToggleSwitch, Dropdown, Tooltip } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
 import { RESPONSE_TAG } from 'utils/entities';
 import CitationFormat from './CitationFormat';
 import NotifyButton from './NotifyButton';
 import RemoveDuplicateModal from 'components/cite/RemoveDuplicateModal';
+import OecdLogo from '../ui/OecdLogo';
 
 function Tools({
   incident,
@@ -26,6 +28,7 @@ function Tools({
   subscribing,
   isLiveData,
   setIsLiveData,
+  linkRecords,
 }) {
   const [showRemoveDuplicateModal, setShowRemoveDuplicateModal] = useState(false);
 
@@ -188,6 +191,67 @@ function Tools({
               data-cy="toogle-live-data"
             />
           </div>
+        )}
+
+        {!loading && user && isRole('incident_editor') && (
+          <>
+            {linkRecords && linkRecords.find((link) => link.source_namespace === 'OECD') && (
+              <>
+                <Button
+                  color="gray"
+                  className="hover:no-underline"
+                  data-testid="oecd-btn"
+                  as="div"
+                  target="_blank"
+                >
+                  <Tooltip
+                    content={
+                      <div className="w-60">
+                        <Trans>
+                          The OECD AI Incidents and Hazards Monitor (AIM) automatically collects and
+                          classifies AI-related incidents and hazards in real time from reputable
+                          news sources worldwide.
+                        </Trans>
+                      </div>
+                    }
+                    placement="top"
+                  >
+                    <FontAwesomeIcon
+                      icon={faQuestionCircle}
+                      style={{ color: 'rgb(210, 210, 210)', cursor: 'pointer' }}
+                      className="far fa-question-circle mr-2"
+                      size="lg"
+                    />
+                  </Tooltip>
+
+                  <Dropdown
+                    label={
+                      <>
+                        <OecdLogo width={'20px'} className="mr-2" />
+                        <Trans>See in OECD AIM</Trans>
+                      </>
+                    }
+                    inline={true}
+                    className="-ml-3"
+                    placement="bottom"
+                  >
+                    {linkRecords
+                      .filter((link) => link.source_namespace === 'OECD')
+                      .map((link) => (
+                        <Dropdown.Item
+                          key={link.sameAs}
+                          as={'a'}
+                          href={link.sameAs}
+                          target="_blank"
+                        >
+                          <Trans>Report</Trans> {link.sameAs.split('/').pop()}
+                        </Dropdown.Item>
+                      ))}
+                  </Dropdown>
+                </Button>
+              </>
+            )}
+          </>
         )}
       </Card.Body>
     </Card>
