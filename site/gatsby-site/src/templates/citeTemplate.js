@@ -252,6 +252,7 @@ function CiteTemplate({
           <Row>
             <Col>
               <div
+                style={{ 'overflow-wrap': 'anywhere' }}
                 className={`${incident.isTranslated ? 'flex flex-wrap' : ''}`}
                 data-testid="incident-description-section"
               >
@@ -271,7 +272,7 @@ function CiteTemplate({
           {incident.editor_notes && incident.editor_notes !== '' && (
             <Row className="mt-2">
               <Col>
-                <div>
+                <div style={{ 'overflow-wrap': 'anywhere' }}>
                   <strong>Editor Notes</strong>: {incident.editor_notes}
                 </div>
               </Col>
