@@ -174,8 +174,8 @@ export default function CheckListForm({
     setFieldValue('risks', [...values.risks].sort(sortFunction));
   };
 
-  const updateRisk = (risk, attributeValueMap, risks) => {
-    const updatedRisks = cloneDeep(risks);
+  const updateRisk = (risk, attributeValueMap, currentRisks) => {
+    const updatedRisks = cloneDeep(currentRisks);
 
     const oldRisk = updatedRisks.find((r) => r.id == risk.id);
 

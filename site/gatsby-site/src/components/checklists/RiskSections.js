@@ -64,7 +64,7 @@ const RiskSections = ({
     changeSort,
     updateRisk,
     userIsOwner,
-    risks,
+    allRisks: risks,
   };
 
   return (
