@@ -61,37 +61,33 @@ const Image = ({
   if (transformation) tmpImage.addTransformation(transformation);
   image.transformation = tmpImage.transformation.toString();
 
+  if (!imageHasLoaded && !imageHasFailed) {
+    return (
+      <div className="flex justify-center items-center h-full w-full">
+        <Spinner />
+      </div>
+    );
+  }
+
   return (
     <div data-cy="cloudinary-image-wrapper" className={`h-full w-full aspect-[16/9]`}>
-      {/* Only show AdvancedImage if report's image preloaded successfully */}
-      {imageHasLoaded && (
-        <AdvancedImage
-          data-cy={'cloudinary-image'}
-          alt={alt}
-          className={`${className} h-full w-full object-cover`}
-          cldImg={image}
-          plugins={plugins}
-          style={style}
-        />
-      )}
-      {/* Only show placeholder if report image failed to load */}
-      {!imageHasLoaded && imageHasFailed && (
-        <PlaceholderImage
-          siteName="IncidentDatabase.AI"
-          itemIdentifier={itemIdentifier}
-          title={alt}
-          className={`${className} h-full w-full object-cover`}
-          height={height}
-          style={style}
-          data-cy="cloudinary-image-placeholder"
-        />
-      )}
-      {/* Show spinner while loading, so no broken image is displayed */}
-      {!imageHasLoaded && !imageHasFailed && (
-        <div className="flex justify-center items-center h-full w-full">
-          <Spinner />
-        </div>
-      )}
+      <AdvancedImage
+        data-cy={'cloudinary-image'}
+        alt={alt}
+        className={`${className} h-full w-full object-cover ${imageHasLoaded ? '' : 'hidden'}`}
+        cldImg={image}
+        plugins={plugins}
+        style={style}
+      />
+      <PlaceholderImage
+        siteName="IncidentDatabase.AI"
+        itemIdentifier={itemIdentifier}
+        title={alt}
+        className={`${className} h-full w-full object-cover ${imageHasFailed ? '' : 'hidden'}`}
+        height={height}
+        style={style}
+        data-cy="cloudinary-image-placeholder"
+      />
     </div>
   );
 };
