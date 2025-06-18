@@ -173,6 +173,7 @@
     "@graphql-codegen/typescript-resolvers": "^4.0.6",
     "@netlify/plugin-gatsby": "^3.8.1",
     "@playwright/test": "^1.47.2",
+    "@sentry/webpack-plugin": "^3.5.0",
     "@tailwindcss/typography": "^0.5.8",
     "@types/async": "^3.2.24",
     "@types/jest": "^29.5.12",
