@@ -314,9 +314,9 @@ test.describe('Edit report', () => {
     await login();
     await page.goto(url);
 
-    await page.locator('[data-cy="image-preview-figure"] img').waitFor();
+    await page.locator('[data-cy="image-preview-figure"] [data-cy="cloudinary-image"]').waitFor();
 
-    const imgSrc = await page.locator('[data-cy="image-preview-figure"] img').getAttribute('src');
+    const imgSrc = await page.locator('[data-cy="image-preview-figure"] [data-cy="cloudinary-image"]').getAttribute('src');
 
     expect(imgSrc).toBe('https://res.cloudinary.com/pai/image/upload/f_auto/q_auto/v1/reports/static01.nyt.com/images/2014/08/13/us/worker-hours-1407960684740/worker-hours-1407960684740-articleLarge.jpg');
   });

@@ -6,7 +6,7 @@ import { auto } from '@cloudinary/base/qualifiers/format';
 import { auto as qAuto } from '@cloudinary/base/qualifiers/quality';
 import config from '../../config';
 import PlaceholderImage from 'components/PlaceholderImage';
-import { Spinner } from 'flowbite-react';
+import ImageSkeleton from '../elements/Skeletons/Image';
 
 const getCloudinaryPublicID = (url) => {
   // https://cloudinary.com/documentation/fetch_remote_images#auto_upload_remote_files
@@ -64,7 +64,7 @@ const Image = ({
   if (!imageHasLoaded && !imageHasFailed) {
     return (
       <div className="flex justify-center items-center h-full w-full">
-        <Spinner />
+        <ImageSkeleton />
       </div>
     );
   }

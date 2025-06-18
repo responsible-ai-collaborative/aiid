@@ -22,7 +22,7 @@ export default function PreviewImageInputGroup({
   alt = '',
   icon,
 }) {
-  const [cloudinaryID, setCloudinaryID] = useState(cloudinary_id);
+  const [cloudinaryID, setCloudinaryID] = useState(cloudinary_id || values.cloudinary_id);
 
   const [imageLoadedFailed, setImageLoadedFailed] = useState(false);
 
