@@ -71,6 +71,8 @@ test.describe('Login', () => {
 
       await page.goto(magicLink);
 
+      await page.getByRole('button', { name: 'Continue' }).click();
+
       await expect(page).toHaveURL(redirectTo);
     }
   );
