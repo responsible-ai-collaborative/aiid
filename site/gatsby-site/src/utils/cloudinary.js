@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { AdvancedImage, lazyload } from '@cloudinary/react';
 import { CloudinaryImage } from '@cloudinary/base';
 import { format, quality } from '@cloudinary/base/actions/delivery';
@@ -25,68 +25,99 @@ const Image = ({
   style = null,
   height = 800,
   itemIdentifier,
+  onImageLoaded = (_loadFailed) => {}, // eslint-disable-line no-unused-vars
 }) => {
-  const [imageHasLoaded, setImageHasLoaded] = useState(false);
+  const imageElement = useRef(null);
 
-  const [imageHasFailed, setImageHasFailed] = useState(false);
+  const [placeholderReady, setPlaceholderReady] = useState(false);
 
-  const cloudName = config.cloudinary.cloudName;
+  const [imageLoaded, setImageLoaded] = useState(false);
 
-  const cloudinaryUrl = publicID
-    ? `https://res.cloudinary.com/${cloudName}/image/upload/${publicID}`
-    : '';
+  const [loadFailed, setLoadFailed] = useState(!publicID || publicID.includes('placeholder.svg'));
 
   useEffect(() => {
-    if (!publicID) {
-      setImageHasFailed(true);
-      return;
+    setLoadFailed(false);
+    const img = imageElement.current?.imageRef.current;
+
+    // In order for the error event to fire, the image must be in the document.
+    if (img) {
+      const errorListener = img.addEventListener('error', () => {
+        setLoadFailed(true);
+      });
+
+      return () => img.removeEventListener('error', errorListener);
     }
-    setImageHasLoaded(false);
-    setImageHasFailed(false);
 
-    const img = new window.Image();
+    if (publicID && publicID.includes('placeholder.svg')) {
+      setLoadFailed(true);
+    }
+  }, [publicID, imageElement.current?.imageRef.current]);
 
-    img.onload = () => setImageHasLoaded(true);
-    img.onerror = () => setImageHasFailed(true);
-    img.src = cloudinaryUrl;
-  }, [cloudinaryUrl, publicID]);
+  useEffect(() => {
+    onImageLoaded(loadFailed);
+  }, [loadFailed, onImageLoaded]);
 
-  const image = new CloudinaryImage(publicID, { cloudName });
+  const image = new CloudinaryImage(publicID, {
+    cloudName: config.cloudinary.cloudName,
+  });
 
   //TODO: this is a fix for this issue: https://github.com/PartnershipOnAI/aiid/issues/260
   // Setting transformation as a string skips the safe url check here: https://github.com/cloudinary/js-url-gen/blob/9a3d0a29ea77ddfd6f7181251615f34c2d8a6c5d/src/assets/CloudinaryFile.ts#L279
   const tmpImage = new CloudinaryImage();
 
   tmpImage.delivery(format(auto())).delivery(quality(qAuto()));
-  if (transformation) tmpImage.addTransformation(transformation);
+
+  if (transformation) {
+    tmpImage.addTransformation(transformation);
+  }
+
   image.transformation = tmpImage.transformation.toString();
 
-  if (!imageHasLoaded && !imageHasFailed) {
-    return (
-      <div className="flex justify-center items-center h-full w-full">
-        <ImageSkeleton />
-      </div>
-    );
-  }
+  console.log('loadFailed', loadFailed, 'placeholderReady', placeholderReady, 'publicID', publicID);
 
   return (
     <div data-cy="cloudinary-image-wrapper" className={`h-full w-full aspect-[16/9]`}>
-      <AdvancedImage
-        data-cy={'cloudinary-image'}
-        alt={alt}
-        className={`${className} h-full w-full object-cover ${imageHasLoaded ? '' : 'hidden'}`}
-        cldImg={image}
-        plugins={plugins}
-        style={style}
-      />
+      <div
+        className={`flex justify-center items-center h-full w-full ${
+          (loadFailed && !placeholderReady) || (!placeholderReady && !imageLoaded) ? '' : 'hidden'
+        }`}
+        data-testid="cloudinary-image-skeleton"
+      >
+        <ImageSkeleton />
+      </div>
+
       <PlaceholderImage
         siteName="IncidentDatabase.AI"
         itemIdentifier={itemIdentifier}
         title={alt}
-        className={`${className} h-full w-full object-cover ${imageHasFailed ? '' : 'hidden'}`}
+        className={`${className || ''} ${
+          loadFailed && placeholderReady ? '' : 'hidden'
+        } h-full w-full object-cover`}
         height={height}
         style={style}
         data-cy="cloudinary-image-placeholder"
+        onPlaceholderReady={() => {
+          setPlaceholderReady(true);
+        }}
+      />
+
+      <AdvancedImage
+        data-cy={'cloudinary-image'}
+        ref={imageElement}
+        alt={alt}
+        className={`${className || ''} ${
+          !loadFailed && imageLoaded ? '' : 'hidden'
+        } h-full w-full object-cover`}
+        cldImg={image}
+        plugins={plugins}
+        style={style}
+        onError={() => {
+          setLoadFailed(true);
+        }}
+        onLoad={() => {
+          setLoadFailed(false);
+          setImageLoaded(true);
+        }}
       />
     </div>
   );
