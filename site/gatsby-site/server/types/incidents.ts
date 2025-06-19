@@ -1,4 +1,4 @@
-import { GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
+import { GraphQLBoolean, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
 import { ObjectIdScalar } from "../scalars";
 import { EntityType } from "./entity";
 import { getListRelationshipConfig, getListRelationshipExtension, getListRelationshipResolver, getRelationshipConfig } from "../utils";
@@ -14,6 +14,7 @@ const IncidentTranslationsType = new GraphQLObjectType({
         language: { type: GraphQLString },
         title: { type: GraphQLString },
         description: { type: GraphQLString },
+        dirty: { type: GraphQLBoolean },
     }
 });
 
@@ -81,8 +82,6 @@ export const IncidentType = new GraphQLObjectType({
                     language: { $in: args.languages }
                 }).toArray();
 
-                console.log('translations', translations)
-
                 return args.languages.map((language: string) => {
                     const translation = translations.find(t => t.language === language);
 
@@ -90,6 +89,7 @@ export const IncidentType = new GraphQLObjectType({
                         language: language,
                         title: translation.title || "",
                         description: translation.description || "",
+                        dirty: translation.dirty || false,                        
                     } : {
                         language: language,
                         title: null,

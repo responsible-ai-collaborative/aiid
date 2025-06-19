@@ -151,7 +151,7 @@ test.describe('The Landing page', () => {
     // Incident 1 has a spanish translation
     await expect(page.locator('[data-testid="latest-incident-title"]').nth(0)).toHaveText('Incidente 1: Título del Incidente 1');
     // Incident 2 does not have a spanish translation
-    await expect(page.locator('[data-testid="latest-incident-title"]').nth(1)).toHaveText('Incidente 2: Incident 2');
+    await expect(page.locator('[data-testid="latest-incident-title"]').nth(1)).toHaveText('Incidente 2: Título del incidente 2 actualizado. Listo para volver a traducir.');
     // Incident 3 does not have a spanish translation
     await expect(page.locator('[data-testid="latest-incident-title"]').nth(2)).toHaveText('Incidente 3: Kronos Scheduling Algorithm Allegedly Caused Financial Issues for Starbucks Employees');
   });

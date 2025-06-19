@@ -170,6 +170,12 @@ function EditCitePage(props) {
         },
       });
 
+      const hasTitleChanged = values.title !== incident.title;
+
+      const hasDescriptionChanged = values.description !== incident.description;
+
+      const hasDirty = hasTitleChanged || hasDescriptionChanged;
+
       // update incident translations
       for (const { code } of availableLanguages.filter((c) => c.code !== 'en')) {
         const updatedTranslation = pick(values[`translations_${code}`], translationsFields);
@@ -179,7 +185,11 @@ function EditCitePage(props) {
           (field) => updatedTranslation[field] && updatedTranslation[field] !== ''
         );
 
-        if (shouldUpdateTranslation) {
+        if (hasDirty) {
+          updatedTranslation.dirty = true;
+        }
+
+        if (shouldUpdateTranslation || hasDirty) {
           await updateIncidentTranslation({
             variables: {
               input: {

@@ -53,7 +53,7 @@ test.describe('Translation Badges', () => {
   });
 
   test('Should not be visible on the incident page if it was not translated', async ({ page }) => {
-    await page.goto('/es/cite/2');
+    await page.goto('/es/cite/3');
     await expect(page.locator('[data-testid="incident-title-section"]').locator('[data-cy="translation-badge"]').getByText('Traducido por IA')).not.toBeVisible();
     await expect(page.locator('[data-testid="incident-description-section"]').locator('[data-cy="translation-badge"]').getByText('Traducido por IA')).not.toBeVisible();
   });
@@ -63,7 +63,7 @@ test.describe('Translation Badges', () => {
     // Incident 1 has a spanish translation
     await expect(page.locator('[data-testid="carousel-item"]').nth(0).locator('[data-cy="translation-badge"]').getByText('Traducido por IA')).toBeVisible();
     // Incident 2 does not have a spanish translation
-    await expect(page.locator('[data-testid="carousel-item"]').nth(1).locator('[data-cy="translation-badge"]').getByText('Traducido por IA')).not.toBeVisible();
+    await expect(page.locator('[data-testid="carousel-item"]').nth(1).locator('[data-cy="translation-badge"]').getByText('Traducido por IA')).toBeVisible();
     // Incident 3 does not have a spanish translation
     await expect(page.locator('[data-testid="carousel-item"]').nth(2).locator('[data-cy="translation-badge"]').getByText('Traducido por IA')).not.toBeVisible();
   });

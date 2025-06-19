@@ -105,8 +105,17 @@ export default class IncidentTranslator {
 
     // Only queue incidents that have not been translated yet
     for (const entry of items) {
-      if (!alreadyTranslated.find((item) => item.incident_id === entry.incident_id)) {
+      const alreadyTranslatedEntry = alreadyTranslated.find(
+        (item) => item.incident_id == entry.incident_id
+      );
+
+      // If the incident is not already translated, translate it
+      if (!alreadyTranslatedEntry) {
         q.push({ entry, to });
+      }
+      // If the incident is already translated but is dirty, translate it again
+      else if (alreadyTranslatedEntry.dirty) {
+        q.push({ entry: { ...entry, dirty: alreadyTranslatedEntry.dirty }, to });
       }
     }
 
@@ -139,7 +148,7 @@ export default class IncidentTranslator {
     };
 
     const translated = await incidentsTranslatedCollection
-      .find(query, { projection: { incident_id: 1 } })
+      .find(query, { projection: { incident_id: 1, dirty: 1 } })
       .toArray();
 
     return translated;
@@ -159,6 +168,7 @@ export default class IncidentTranslator {
         incident_id: t.incident_id,
         language,
         created_at: new Date(),
+        dirty: t.dirty,
       };
 
       for (const key of keys) {
@@ -168,7 +178,23 @@ export default class IncidentTranslator {
       return translated;
     });
 
-    return incidentsTranslationsCollection.insertMany(incidentsTranslated);
+
+    const incidentsTranslatedToUpdate = incidentsTranslated.filter((t) => t.dirty);
+
+    for (const incidentTranslatedToUpdate of incidentsTranslatedToUpdate) {
+      await incidentsTranslationsCollection.updateOne(
+        { incident_id: incidentTranslatedToUpdate.incident_id, language },
+        { $set: { ...incidentTranslatedToUpdate, dirty: false } }
+      );
+    }
+
+    const incidentsTranslatedToInsert = incidentsTranslated.filter((t) => !t.dirty);
+
+    if (incidentsTranslatedToInsert.length > 0) {
+      await incidentsTranslationsCollection.insertMany(incidentsTranslatedToInsert);
+    }
+
+    return { insertedCount: incidentsTranslatedToInsert.length + incidentsTranslatedToUpdate.length };
   }
 
   /**
