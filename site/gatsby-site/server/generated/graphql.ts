@@ -2344,6 +2344,7 @@ export type ReportSortType = {
 
 export type ReportTranslations = {
   __typename?: 'ReportTranslations';
+  dirty?: Maybe<Scalars['Boolean']['output']>;
   language: Scalars['String']['output'];
   plain_text?: Maybe<Scalars['String']['output']>;
   text?: Maybe<Scalars['String']['output']>;
@@ -2868,6 +2869,7 @@ export type UpdateOneIncidentTranslationInput = {
 };
 
 export type UpdateOneReportTranslationInput = {
+  dirty?: InputMaybe<Scalars['Boolean']['input']>;
   language: Scalars['String']['input'];
   plain_text: Scalars['String']['input'];
   report_number: Scalars['Int']['input'];
