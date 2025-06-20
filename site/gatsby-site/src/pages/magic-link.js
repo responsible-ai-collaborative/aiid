@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Button } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
 import HeadContent from 'components/HeadContent';
@@ -14,6 +14,16 @@ const MagicLink = ({ location }) => {
     }
   }, [link]);
 
+  useEffect(() => {
+    if (link) {
+      const timer = setTimeout(() => {
+        window.location.href = decodeURIComponent(link);
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [link]);
+
   if (!link) {
     return (
       <div>
@@ -26,6 +36,9 @@ const MagicLink = ({ location }) => {
     <div className="flex flex-col gap-4 items-center">
       <p>
         <Trans>Click the button below to continue.</Trans>
+      </p>
+      <p>
+        <Trans>You will be redirected in 5 seconds.</Trans>
       </p>
       <Button onClick={handleClick} data-cy="magic-link-btn">
         <Trans>Continue</Trans>

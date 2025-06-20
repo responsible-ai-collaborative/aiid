@@ -71,11 +71,21 @@ test.describe('Login', () => {
 
       await page.goto(magicLink);
 
-      await page.getByRole('button', { name: 'Continue' }).click();
+      await expect(page.getByText('You will be redirected in 5 seconds.')).toBeVisible();
 
-      await expect(page).toHaveURL(redirectTo);
+      await page.waitForURL(redirectTo, { timeout: 7000 });
     }
   );
+
+  test('Should redirect immediately when clicking Continue button on magic-link interstitial', async ({ page }) => {
+    const redirectTo = '/cite/1/';
+    const magicLink = await generateMagicLink('test.user@incidentdatabase.ai', redirectTo);
+
+    await page.goto(magicLink);
+    await page.locator('[data-cy="magic-link-btn"]').click();
+
+    await expect(page).toHaveURL(redirectTo);
+  });
 
   test('Should disable Login button if email address is not valid', async ({ page }) => {
     await page.goto(url);
