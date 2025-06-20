@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import debounce from 'lodash/debounce';
-import { Spinner } from 'flowbite-react';
 import { Trans } from 'react-i18next';
 import TextInputGroup from './TextInputGroup';
 import { Image } from 'utils/cloudinary';
@@ -22,7 +21,7 @@ export default function PreviewImageInputGroup({
   alt = '',
   icon,
 }) {
-  const [cloudinaryID, setCloudinaryID] = useState(cloudinary_id);
+  const [cloudinaryID, setCloudinaryID] = useState(cloudinary_id || values.cloudinary_id);
 
   const [imageLoadedFailed, setImageLoadedFailed] = useState(false);
 
@@ -76,9 +75,6 @@ export default function PreviewImageInputGroup({
           className="grid grid-cols-1 grid-rows-1 items-center justify-center mt-4"
           style={{ height: '20vh' }}
         >
-          <div style={{ gridRowStart: '1', gridColumnStart: '1', maxHeight: '100%', zIndex: 1 }}>
-            <Spinner size="xl" />
-          </div>
           <div
             style={{
               gridRowStart: '1',

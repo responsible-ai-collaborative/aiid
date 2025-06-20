@@ -6,6 +6,7 @@ import { auto } from '@cloudinary/base/qualifiers/format';
 import { auto as qAuto } from '@cloudinary/base/qualifiers/quality';
 import config from '../../config';
 import PlaceholderImage from 'components/PlaceholderImage';
+import ImageSkeleton from '../elements/Skeletons/Image';
 
 const getCloudinaryPublicID = (url) => {
   // https://cloudinary.com/documentation/fetch_remote_images#auto_upload_remote_files
@@ -27,6 +28,10 @@ const Image = ({
   onImageLoaded = (_loadFailed) => {}, // eslint-disable-line no-unused-vars
 }) => {
   const imageElement = useRef(null);
+
+  const [placeholderReady, setPlaceholderReady] = useState(false);
+
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const [loadFailed, setLoadFailed] = useState(!publicID || publicID.includes('placeholder.svg'));
 
@@ -68,31 +73,50 @@ const Image = ({
 
   image.transformation = tmpImage.transformation.toString();
 
+  console.log('loadFailed', loadFailed, 'placeholderReady', placeholderReady, 'publicID', publicID);
+
   return (
     <div data-cy="cloudinary-image-wrapper" className={`h-full w-full aspect-[16/9]`}>
+      <div
+        className={`flex justify-center items-center h-full w-full ${
+          (loadFailed && !placeholderReady) || (!placeholderReady && !imageLoaded) ? '' : 'hidden'
+        }`}
+        data-testid="cloudinary-image-skeleton"
+      >
+        <ImageSkeleton />
+      </div>
+
       <PlaceholderImage
         siteName="IncidentDatabase.AI"
         itemIdentifier={itemIdentifier}
         title={alt}
         className={`${className || ''} ${
-          !publicID || publicID == '' || loadFailed ? '' : 'hidden'
+          loadFailed && placeholderReady ? '' : 'hidden'
         } h-full w-full object-cover`}
         height={height}
         style={style}
         data-cy="cloudinary-image-placeholder"
+        onPlaceholderReady={() => {
+          setPlaceholderReady(true);
+        }}
       />
+
       <AdvancedImage
         data-cy={'cloudinary-image'}
         ref={imageElement}
         alt={alt}
         className={`${className || ''} ${
-          !publicID || publicID == '' || loadFailed ? 'hidden' : ''
+          !loadFailed && imageLoaded ? '' : 'hidden'
         } h-full w-full object-cover`}
         cldImg={image}
         plugins={plugins}
         style={style}
         onError={() => {
           setLoadFailed(true);
+        }}
+        onLoad={() => {
+          setLoadFailed(false);
+          setImageLoaded(true);
         }}
       />
     </div>

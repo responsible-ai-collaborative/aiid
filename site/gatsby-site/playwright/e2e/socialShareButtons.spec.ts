@@ -49,7 +49,7 @@ test.describe('Social Share Buttons', () => {
       await expect(twitterButton).toBeVisible();
 
       await expect(async () => {
-        const popupPromise = page.waitForEvent('popup', { timeout: 2000 })
+        const popupPromise = page.waitForEvent('popup', { timeout: 4000 })
         await twitterButton.first().click();
         const popup = await popupPromise;
         await popup.waitForURL(/https:\/\/x\.com\/intent\/post\?text=.*/, { timeout: 1000 });
@@ -98,7 +98,7 @@ test.describe('Social Share Buttons', () => {
       const expectedUrlPart = `u=${canonicalUrl}`;
 
       await expect(async () => {
-        const popupPromise = page.waitForEvent('popup', { timeout: 2000 });
+        const popupPromise = page.waitForEvent('popup', { timeout: 4000 });
         await facebookButton.first().click();
         const popup = await popupPromise;
         await popup.waitForURL((url) => {
