@@ -71,7 +71,7 @@ test.describe('Login', () => {
 
       await page.goto(magicLink);
 
-      await expect(page.getByText('You will be redirected in 5 seconds.')).toBeVisible();
+      await expect(page.getByText('You will be redirected automatically in 5 seconds, or click the button below to continue now.')).toBeVisible();
 
       await page.waitForURL(redirectTo, { timeout: 7000 });
     }

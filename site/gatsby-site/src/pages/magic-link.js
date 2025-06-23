@@ -1,12 +1,21 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Button } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
 import HeadContent from 'components/HeadContent';
 
 const MagicLink = ({ location }) => {
-  const params = new URLSearchParams(location.search);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const link = params.get('link');
+  const [link, setLink] = useState(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+
+    const linkParam = params.get('link');
+
+    setLink(linkParam);
+    setIsLoading(false);
+  }, [location.search]);
 
   const handleClick = useCallback(() => {
     if (link) {
@@ -24,10 +33,22 @@ const MagicLink = ({ location }) => {
     }
   }, [link]);
 
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-4 items-center">
+        <p>
+          <Trans>Loading...</Trans>
+        </p>
+      </div>
+    );
+  }
+
   if (!link) {
     return (
-      <div>
-        <Trans>Invalid link</Trans>
+      <div className="flex flex-col gap-4 items-center">
+        <p>
+          <Trans>Invalid link</Trans>
+        </p>
       </div>
     );
   }
@@ -35,10 +56,10 @@ const MagicLink = ({ location }) => {
   return (
     <div className="flex flex-col gap-4 items-center">
       <p>
-        <Trans>Click the button below to continue.</Trans>
-      </p>
-      <p>
-        <Trans>You will be redirected in 5 seconds.</Trans>
+        <Trans>
+          You will be redirected automatically in 5 seconds, or click the button below to continue
+          now.
+        </Trans>
       </p>
       <Button onClick={handleClick} data-cy="magic-link-btn">
         <Trans>Continue</Trans>
