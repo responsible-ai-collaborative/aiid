@@ -294,7 +294,7 @@ You can also run this in dry-run mode to see what would be copied without making
 
 ## Further Reading
 
-For more information on the project structure, how to deploy the project, and other useful information, refer to the [Project Documentation](../docs/README.md), [Frontend Documentation](../docs/FRONTEND.md), [API Documentation](../docs/API.md) and [AI Briefing email](../docs/BRIEFING.md).
+For more information on the project structure, how to deploy the project, and other useful information, refer to the [Project Documentation](../docs/README.md), [Frontend Documentation](../docs/FRONTEND.md), and [API Documentation](../docs/API.md).
 
 ## Deployment
 
