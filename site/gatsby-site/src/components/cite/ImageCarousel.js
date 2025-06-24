@@ -56,11 +56,21 @@ const ImageCarousel = ({ nodes }) => {
 };
 
 const CloudinaryImage = (value) => {
+  let publicID;
+
+  if (value.cloudinary_id) {
+    publicID = value.cloudinary_id;
+  } else if (value.image_url) {
+    publicID = `legacy/${md5(value.image_url)}`;
+  } else {
+    publicID = 'legacy/placeholder'; // Use a static, deterministic fallback
+  }
+
   return (
     <Image
       className="h-[320px] object-cover w-full"
-      publicID={value.cloudinary_id ? value.cloudinary_id : `legacy/${md5(value.image_url)}`}
-      alt={value.title}
+      publicID={publicID}
+      alt={value.title || 'Image'}
       transformation={fill().height(640)}
       plugins={[]}
       itemIdentifier={value.itemIdentifier}
