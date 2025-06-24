@@ -52,6 +52,7 @@ const HeadContent = ({
         <>
           <link rel="canonical" href={canonicalUrl} />
           <meta property="og:url" content={canonicalUrl} />
+          <meta property="twitter:url" content={canonicalUrl} />
         </>
       )}
 
