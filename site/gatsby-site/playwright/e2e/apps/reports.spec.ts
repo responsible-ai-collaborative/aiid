@@ -47,8 +47,8 @@ test.describe('Reports App', () => {
 
       // Check image
       if (report.cloudinary_id) {
-        //Wait for data-testid="image-skeleton" to be not visible (It means the image has loaded successfully or fallback is displayed)
-        await expect(reportCard.getByTestId('image-skeleton')).not.toBeVisible();
+        //Wait for data-testid="cloudinary-image-skeleton" to be not visible (It means the image has loaded successfully or fallback is displayed)
+        await expect(reportCard.getByTestId('cloudinary-image-skeleton')).not.toBeVisible();
         // Checks if placeholder exists, to know if the image has loaded successfully
         const placeHolderExists = await reportCard.locator('[data-cy="cloudinary-image-placeholder"]').isVisible();
         if (!placeHolderExists) {
