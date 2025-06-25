@@ -9,6 +9,7 @@ export default function PlaceholderImage({
   style,
   className,
   onPlaceholderReady,
+  onLoad,
   ...props
 }) {
   const canvasRef = useRef();
@@ -121,7 +122,10 @@ export default function PlaceholderImage({
     if (onPlaceholderReady) {
       onPlaceholderReady(canvas);
     }
-  }, [title, siteName, itemIdentifier, height, onPlaceholderReady]);
+    if (onLoad) {
+      onLoad();
+    }
+  }, [title, siteName, itemIdentifier, height, onPlaceholderReady, onLoad]);
 
   return (
     <canvas ref={canvasRef} width={w} height={h} {...{ className, style }} {...props}></canvas>

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AdvancedImage, lazyload } from '@cloudinary/react';
 import { CloudinaryImage } from '@cloudinary/base';
 import { format, quality } from '@cloudinary/base/actions/delivery';
@@ -6,6 +6,7 @@ import { auto } from '@cloudinary/base/qualifiers/format';
 import { auto as qAuto } from '@cloudinary/base/qualifiers/quality';
 import config from '../../config';
 import PlaceholderImage from 'components/PlaceholderImage';
+import ImageSkeleton from '../elements/Skeletons/Image';
 
 const getCloudinaryPublicID = (url) => {
   // https://cloudinary.com/documentation/fetch_remote_images#auto_upload_remote_files
@@ -26,27 +27,25 @@ const Image = ({
   itemIdentifier,
   onImageLoaded = (_loadFailed) => {}, // eslint-disable-line no-unused-vars
 }) => {
-  const imageElement = useRef(null);
-
   const [loadFailed, setLoadFailed] = useState(!publicID || publicID.includes('placeholder.svg'));
+
+  const [placeholderReady, setPlaceholderReady] = useState(false);
+
+  const [imageReady, setImageReady] = useState(false);
+
+  const [preflightChecked, setPreflightChecked] = useState(false);
 
   useEffect(() => {
     setLoadFailed(false);
-    const img = imageElement.current?.imageRef.current;
-
-    // In order for the error event to fire, the image must be in the document.
-    if (img) {
-      const errorListener = img.addEventListener('error', () => {
-        setLoadFailed(true);
-      });
-
-      return () => img.removeEventListener('error', errorListener);
-    }
-
+    setPlaceholderReady(false);
+    setImageReady(false);
+    setPreflightChecked(false);
     if (publicID && publicID.includes('placeholder.svg')) {
       setLoadFailed(true);
+      setPlaceholderReady(true);
+      setPreflightChecked(true);
     }
-  }, [publicID, imageElement.current?.imageRef.current]);
+  }, [publicID]);
 
   useEffect(() => {
     onImageLoaded(loadFailed);
@@ -68,8 +67,53 @@ const Image = ({
 
   image.transformation = tmpImage.transformation.toString();
 
+  // --- Preflight check: hidden native <img> ---
+  // Purpose: Work around delays in Cloudinary's AdvancedImage onLoad/onError events.
+  // Mechanism: We create a native <img> in memory (not in the DOM) with the same Cloudinary URL.
+  //            This allows us to immediately detect if the image is available or fails to load,
+  //            regardless of Cloudinary SDK/plugin delays or lazy loading.
+  //            As soon as the browser loads or errors the image, we update our state to hide the skeleton.
+  //            This ensures the skeleton disappears as soon as possible, even if AdvancedImage is still processing.
+  const cloudinaryUrl = image.toURL();
+
+  useEffect(() => {
+    // Only run if we have a URL and haven't already checked
+    if (!cloudinaryUrl || preflightChecked) return;
+    // Create a native <img> in memory
+    const img = new window.Image();
+
+    img.src = cloudinaryUrl;
+    // If the image loads, mark as ready and not failed
+    img.onload = () => {
+      setImageReady(true);
+      setLoadFailed(false);
+      setPreflightChecked(true);
+    };
+    // If the image fails, mark as ready and failed
+    img.onerror = () => {
+      setImageReady(true);
+      setLoadFailed(true);
+      setPreflightChecked(true);
+    };
+    // Clean up event handlers on unmount
+    return () => {
+      img.onload = null;
+      img.onerror = null;
+    };
+  }, [cloudinaryUrl, preflightChecked]);
+
+  const showSkeleton = !placeholderReady && !imageReady;
+
   return (
     <div data-cy="cloudinary-image-wrapper" className={`h-full w-full aspect-[16/9]`}>
+      {showSkeleton && (
+        <ImageSkeleton
+          className={`${className || ''} h-full w-full object-cover`}
+          height={height}
+          style={style}
+          data-cy="cloudinary-image-skeleton"
+        />
+      )}
       <PlaceholderImage
         siteName="IncidentDatabase.AI"
         itemIdentifier={itemIdentifier}
@@ -80,10 +124,11 @@ const Image = ({
         height={height}
         style={style}
         data-cy="cloudinary-image-placeholder"
+        onLoad={() => setPlaceholderReady(true)}
+        onError={() => setPlaceholderReady(true)}
       />
       <AdvancedImage
         data-cy={'cloudinary-image'}
-        ref={imageElement}
         alt={alt}
         className={`${className || ''} ${
           !publicID || publicID == '' || loadFailed ? 'hidden' : ''
@@ -93,8 +138,15 @@ const Image = ({
         style={style}
         onError={() => {
           setLoadFailed(true);
+          setImageReady(true);
+        }}
+        onLoad={() => {
+          setLoadFailed(false);
+          setImageReady(true);
         }}
       />
+      {/* Hidden native <img> for preflight check (for debugging, can be removed) */}
+      {/* <img src={cloudinaryUrl} style={{ display: 'none' }} alt="preflight" /> */}
     </div>
   );
 };
