@@ -28,7 +28,7 @@ const ImageCarousel = ({ nodes }) => {
       {nodes.map((value, index) => {
         const itemIdentifier = t('Report {{report_number}}', {
           report_number: value.report_number,
-        }).replace(' ', '.');
+        }).replace(/\s+/g, '.');
 
         return (
           <div className="relative" key={`report-carousel-item-${index}`}>
