@@ -1,5 +1,3 @@
-const languages = require('../i18n/config.json');
-
 /**
  *
  * @param {{context: {client: import('mongodb').MongoClient}}} context
@@ -8,17 +6,11 @@ const languages = require('../i18n/config.json');
 exports.up = async ({ context: { client } }) => {
   const db = client.db('translations');
 
-  for (const language of languages) {
-    const name = `reports_${language.code}`;
+  const translations = db.collection('reports');
 
-    console.log(`Deleting empty translations from ${name}`);
+  const result = await translations.deleteMany({
+    title: '',
+  });
 
-    const translations = db.collection(name);
-
-    const result = await translations.deleteMany({
-      title: '',
-    });
-
-    console.log(`Deleted ${result.deletedCount} empty translations for ${language.code}`);
-  }
+  console.log(`Deleted ${result.deletedCount} empty translations`);
 };
