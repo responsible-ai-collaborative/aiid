@@ -63,7 +63,7 @@ const CloudinaryImage = (value) => {
   } else if (value.image_url) {
     publicID = `legacy/${md5(value.image_url)}`;
   } else {
-    publicID = 'legacy/placeholder'; // Use a static, deterministic fallback
+    publicID = 'legacy/placeholder';
   }
 
   return (
