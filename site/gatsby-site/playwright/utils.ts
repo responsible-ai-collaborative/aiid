@@ -209,8 +209,6 @@ export const test = base.extend<TestFixtures>({
 
             await page.goto(magicLink);
 
-            await page.getByRole('button', { name: 'Continue' }).click();
-
             const sessionToken = await getSessionToken(userId);
 
             return [userId!, sessionToken!];
