@@ -13,8 +13,6 @@ import { CarouselLeftArrow, CarouselRightArrow } from 'elements/Carousel';
  * @return {jsx} The HTML to render to the page.
  */
 const ImageCarousel = ({ nodes }) => {
-  const { t } = useTranslation();
-
   const shouldNavigate = nodes.length > 1;
 
   return (
@@ -26,13 +24,9 @@ const ImageCarousel = ({ nodes }) => {
       rightControl={shouldNavigate ? <CarouselRightArrow /> : <></>}
     >
       {nodes.map((value, index) => {
-        const itemIdentifier = t('Report {{report_number}}', {
-          report_number: value.report_number,
-        }).replace(/\s+/g, '.');
-
         return (
           <div className="relative" key={`report-carousel-item-${index}`}>
-            <CloudinaryImage {...value} itemIdentifier={itemIdentifier} />
+            <CloudinaryImage {...value} />
             <div className="absolute bottom-10 flex flex-col justify-center items-center px-10 w-full">
               <h3 className="bg-black/50 px-1 rounded text-center">
                 <a
@@ -56,25 +50,21 @@ const ImageCarousel = ({ nodes }) => {
 };
 
 const CloudinaryImage = (value) => {
-  let publicID;
-
-  if (value.cloudinary_id) {
-    publicID = value.cloudinary_id;
-  } else if (value.image_url) {
-    publicID = `legacy/${md5(value.image_url)}`;
-  } else {
-    publicID = 'legacy/placeholder';
-  }
+  const { t } = useTranslation();
 
   return (
-    <Image
-      className="h-[320px] object-cover w-full"
-      publicID={publicID}
-      alt={value.title || 'Image'}
-      transformation={fill().height(640)}
-      plugins={[]}
-      itemIdentifier={value.itemIdentifier}
-    />
+    <>
+      <Image
+        className="h-[320px] object-cover w-full"
+        publicID={value.cloudinary_id ? value.cloudinary_id : `legacy/${md5(value.image_url)}`}
+        alt={value.title}
+        transformation={fill().height(640)}
+        plugins={[]}
+        itemIdentifier={t('Report {{report_number}}', {
+          report_number: value.report_number,
+        }).replace(' ', '.')}
+      />
+    </>
   );
 };
 
