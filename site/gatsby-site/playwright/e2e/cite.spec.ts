@@ -637,7 +637,7 @@ test.describe('Cite pages', () => {
         expect(graphqlCalls).toHaveLength(0);
     });
 
-    test('Should query user subscriptions when logged in', async ({ page, login }) => {
+    test('Should query user subscriptions when logged in', async ({ page, login }: { page: any, login: any }) => {
 
         await init();
 
@@ -659,8 +659,12 @@ test.describe('Cite pages', () => {
             }
         });
 
-        // Wait a reasonable time to ensure no calls are made
-        await page.waitForTimeout(2000);
+        // Wait for the FindUserSubscriptions GraphQL request instead of a fixed timeout
+        await page.waitForRequest(request =>
+            request.url().includes('/graphql') &&
+            request.postData() &&
+            JSON.parse(request.postData()).operationName === 'FindUserSubscriptions'
+        );
 
         // Verify that FindUserSubscriptions query was made
         expect(graphqlCalls).toHaveLength(1);
