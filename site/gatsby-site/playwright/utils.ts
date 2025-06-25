@@ -209,6 +209,8 @@ export const test = base.extend<TestFixtures>({
 
             await page.goto(magicLink);
 
+            await page.waitForURL(url => !url.pathname.includes('/magic-link'), { timeout: 10000 });
+
             const sessionToken = await getSessionToken(userId);
 
             return [userId!, sessionToken!];
