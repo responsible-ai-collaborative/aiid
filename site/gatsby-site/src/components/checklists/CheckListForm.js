@@ -5,6 +5,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import debounce from 'lodash/debounce';
+import { cloneDeep } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faEnvelope,
@@ -173,8 +174,8 @@ export default function CheckListForm({
     setFieldValue('risks', [...values.risks].sort(sortFunction));
   };
 
-  const updateRisk = (risk, attributeValueMap) => {
-    const updatedRisks = JSON.parse(JSON.stringify(values.risks));
+  const updateRisk = (risk, attributeValueMap, currentRisks) => {
+    const updatedRisks = cloneDeep(currentRisks);
 
     const oldRisk = updatedRisks.find((r) => r.id == risk.id);
 
@@ -193,6 +194,7 @@ export default function CheckListForm({
     }
 
     setFieldValue('risks', updatedRisks);
+
     submitForm();
   };
 
