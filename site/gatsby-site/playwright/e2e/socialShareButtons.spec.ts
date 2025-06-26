@@ -47,9 +47,12 @@ test.describe('Social Share Buttons', () => {
       await page.goto(url);
       const twitterButton = page.locator('[data-cy=btn-share-twitter]');
       await expect(twitterButton).toBeVisible();
+      await expect(twitterButton).toBeEnabled();
+
+      await page.waitForLoadState('networkidle');
 
       await expect(async () => {
-        const popupPromise = page.waitForEvent('popup', { timeout: 4000 })
+        const popupPromise = page.waitForEvent('popup', { timeout: 4000 });
         await twitterButton.first().click();
         const popup = await popupPromise;
         await popup.waitForURL(/https:\/\/x\.com\/intent\/post\?text=.*/, { timeout: 1000 });

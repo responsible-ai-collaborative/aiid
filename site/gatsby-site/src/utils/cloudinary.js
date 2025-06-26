@@ -35,15 +35,20 @@ const Image = ({
 
   const [preflightChecked, setPreflightChecked] = useState(false);
 
+  const prevPublicID = React.useRef(publicID);
+
   useEffect(() => {
-    setLoadFailed(false);
-    setPlaceholderReady(false);
-    setImageReady(false);
-    setPreflightChecked(false);
-    if (publicID && publicID.includes('placeholder.svg')) {
-      setLoadFailed(true);
-      setPlaceholderReady(true);
-      setPreflightChecked(true);
+    if (prevPublicID.current !== publicID) {
+      setLoadFailed(false);
+      setPlaceholderReady(false);
+      setImageReady(false);
+      setPreflightChecked(false);
+      prevPublicID.current = publicID;
+      if (publicID && publicID.includes('placeholder.svg')) {
+        setLoadFailed(true);
+        setPlaceholderReady(true);
+        setPreflightChecked(true);
+      }
     }
   }, [publicID]);
 
@@ -85,15 +90,15 @@ const Image = ({
     img.src = cloudinaryUrl;
     // If the image loads, mark as ready and not failed
     img.onload = () => {
-      setImageReady(true);
-      setLoadFailed(false);
-      setPreflightChecked(true);
+      setImageReady((prev) => (prev ? prev : true));
+      setLoadFailed((prev) => (prev ? false : prev));
+      setPreflightChecked((prev) => (prev ? prev : true));
     };
     // If the image fails, mark as ready and failed
     img.onerror = () => {
-      setImageReady(true);
-      setLoadFailed(true);
-      setPreflightChecked(true);
+      setImageReady((prev) => (prev ? prev : true));
+      setLoadFailed((prev) => (prev ? prev : true));
+      setPreflightChecked((prev) => (prev ? prev : true));
     };
     // Clean up event handlers on unmount
     return () => {
@@ -119,34 +124,32 @@ const Image = ({
         itemIdentifier={itemIdentifier}
         title={alt}
         className={`${className || ''} ${
-          !publicID || publicID == '' || loadFailed ? '' : 'hidden'
+          (!publicID || publicID == '' || loadFailed) && !showSkeleton ? '' : 'hidden'
         } h-full w-full object-cover`}
         height={height}
         style={style}
         data-cy="cloudinary-image-placeholder"
-        onLoad={() => setPlaceholderReady(true)}
-        onError={() => setPlaceholderReady(true)}
+        onLoad={() => setPlaceholderReady((prev) => (prev ? prev : true))}
+        onError={() => setPlaceholderReady((prev) => (prev ? prev : true))}
       />
       <AdvancedImage
         data-cy={'cloudinary-image'}
         alt={alt}
         className={`${className || ''} ${
-          !publicID || publicID == '' || loadFailed ? 'hidden' : ''
+          !publicID || publicID == '' || loadFailed || showSkeleton ? 'hidden' : ''
         } h-full w-full object-cover`}
         cldImg={image}
         plugins={plugins}
         style={style}
         onError={() => {
-          setLoadFailed(true);
-          setImageReady(true);
+          setLoadFailed((prev) => (prev ? prev : true));
+          setImageReady((prev) => (prev ? prev : true));
         }}
         onLoad={() => {
-          setLoadFailed(false);
-          setImageReady(true);
+          setLoadFailed((prev) => (prev ? false : prev));
+          setImageReady((prev) => (prev ? prev : true));
         }}
       />
-      {/* Hidden native <img> for preflight check (for debugging, can be removed) */}
-      {/* <img src={cloudinaryUrl} style={{ display: 'none' }} alt="preflight" /> */}
     </div>
   );
 };
