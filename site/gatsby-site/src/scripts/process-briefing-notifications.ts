@@ -26,7 +26,7 @@ async function notificationsToBriefingIncidents(context: Context) {
 
   if (briefingSubscribers.length === 0) {
     console.log("No briefing subscribers found.");
-    return;
+    return 0;
   }
 
   const allEntities = await entitiesCollection.find({}).toArray();
