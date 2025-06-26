@@ -25,5 +25,8 @@
   "Subscribe to Major Updates": "主な更新を購読します",
   "Subscribe to New Incidents": "新しいインシデントを購読します",
   "Receive AI Incident Briefing": "AIインシデントの概要を受信します",
-  "<0>Subscribe</0> to the \"AI Incident Briefing\" and receive notifications about new incidents and other updates.": "<0>AIインシデントの概要</0>を購読して、新しいインシデントやその他の更新について通知を受け取ります。"
+  "<0>Subscribe</0> to the \"AI Incident Briefing\" and receive notifications about new incidents and other updates.": "<0>AIインシデントの概要</0>を購読して、新しいインシデントやその他の更新について通知を受け取ります。",
+  "Loading...": "読み込み中...",
+  "Invalid link": "無効なリンク",
+  "Redirecting...": "リダイレクト中..."
 }

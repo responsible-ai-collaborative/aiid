@@ -130,7 +130,9 @@ export const generateMagicLink = async (email: string, callbackUrl = '/', roles:
     const baseUrl = config.NEXTAUTH_URL;
     const magicLink = `${baseUrl}/api/auth/callback/http-email?callbackUrl=${encodeURIComponent(baseUrl + callbackUrl)}&token=${token}&email=${encodeURIComponent(email)}`;
 
-    return magicLink;
+    const interstitialLink = `${baseUrl}/magic-link?link=${encodeURIComponent(magicLink)}`;
+
+    return interstitialLink;
 }
 
 async function getUserIdFromAuth(email: string) {
@@ -206,6 +208,8 @@ export const test = base.extend<TestFixtures>({
             await page.context().clearCookies();
 
             await page.goto(magicLink);
+
+            await page.waitForURL(url => !url.pathname.includes('/magic-link'), { timeout: 10000 });
 
             const sessionToken = await getSessionToken(userId);
 
