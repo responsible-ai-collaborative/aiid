@@ -164,7 +164,7 @@ jobs:
           SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
         with:
           environment: ${{ inputs.environment }}
-          sourcemaps: "site/gatsby-site/public"
+          sourcemaps: "site/gatsby-site/public site/gatsby-site/.netlify"
           ignore_missing: true
 
       - name: Upload to netlify
