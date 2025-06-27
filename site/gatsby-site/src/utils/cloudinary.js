@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { AdvancedImage, lazyload } from '@cloudinary/react';
 import { CloudinaryImage } from '@cloudinary/base';
 import { format, quality } from '@cloudinary/base/actions/delivery';
@@ -6,6 +6,7 @@ import { auto } from '@cloudinary/base/qualifiers/format';
 import { auto as qAuto } from '@cloudinary/base/qualifiers/quality';
 import config from '../../config';
 import PlaceholderImage from 'components/PlaceholderImage';
+import ImageSkeleton from '../elements/Skeletons/Image';
 
 const getCloudinaryPublicID = (url) => {
   // https://cloudinary.com/documentation/fetch_remote_images#auto_upload_remote_files
@@ -26,73 +27,105 @@ const Image = ({
   itemIdentifier,
   onImageLoaded = (_loadFailed) => {}, // eslint-disable-line no-unused-vars
 }) => {
-  const imageElement = useRef(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const [loadFailed, setLoadFailed] = useState(!publicID || publicID.includes('placeholder.svg'));
 
+  const prevPublicID = useRef(publicID);
+
   useEffect(() => {
-    setLoadFailed(false);
-    const img = imageElement.current?.imageRef.current;
+    if (prevPublicID.current !== publicID) {
+      setIsLoaded(false);
+      setLoadFailed(!publicID || publicID.includes('placeholder.svg'));
+      prevPublicID.current = publicID;
+    }
+  }, [publicID]);
 
-    // In order for the error event to fire, the image must be in the document.
-    if (img) {
-      const errorListener = img.addEventListener('error', () => {
+  // Preflight check: only for non-placeholder images, only when not loaded/failed
+  useEffect(() => {
+    if (!publicID || publicID.includes('placeholder.svg') || isLoaded || loadFailed) return;
+    const image = new CloudinaryImage(publicID, { cloudName: config.cloudinary.cloudName });
+
+    image.delivery(format(auto())).delivery(quality(qAuto()));
+    const url = image.toURL();
+
+    let cancelled = false;
+
+    const img = new window.Image();
+
+    img.src = url;
+    img.onload = () => {
+      if (!cancelled) {
+        setIsLoaded(true);
+        setLoadFailed(false);
+      }
+    };
+    img.onerror = () => {
+      if (!cancelled) {
+        setIsLoaded(true);
         setLoadFailed(true);
-      });
-
-      return () => img.removeEventListener('error', errorListener);
-    }
-
-    if (publicID && publicID.includes('placeholder.svg')) {
-      setLoadFailed(true);
-    }
-  }, [publicID, imageElement.current?.imageRef.current]);
+      }
+    };
+    return () => {
+      cancelled = true;
+    };
+  }, [publicID, isLoaded, loadFailed]);
 
   useEffect(() => {
     onImageLoaded(loadFailed);
   }, [loadFailed, onImageLoaded]);
 
-  const image = new CloudinaryImage(publicID, {
-    cloudName: config.cloudinary.cloudName,
-  });
+  // Prepare Cloudinary image for AdvancedImage
+  const image = new CloudinaryImage(publicID, { cloudName: config.cloudinary.cloudName });
 
-  //TODO: this is a fix for this issue: https://github.com/PartnershipOnAI/aiid/issues/260
-  // Setting transformation as a string skips the safe url check here: https://github.com/cloudinary/js-url-gen/blob/9a3d0a29ea77ddfd6f7181251615f34c2d8a6c5d/src/assets/CloudinaryFile.ts#L279
   const tmpImage = new CloudinaryImage();
 
   tmpImage.delivery(format(auto())).delivery(quality(qAuto()));
-
-  if (transformation) {
-    tmpImage.addTransformation(transformation);
-  }
-
+  if (transformation) tmpImage.addTransformation(transformation);
   image.transformation = tmpImage.transformation.toString();
 
+  const showSkeleton =
+    !isLoaded && !loadFailed && publicID && !publicID.includes('placeholder.svg');
+
   return (
-    <div data-cy="cloudinary-image-wrapper" className={`h-full w-full aspect-[16/9]`}>
+    <div data-cy="cloudinary-image-wrapper" className="h-full w-full aspect-[16/9]">
+      {showSkeleton && (
+        <ImageSkeleton
+          className={`${className} h-full w-full object-cover`}
+          height={height}
+          style={style}
+          data-cy="cloudinary-image-skeleton"
+        />
+      )}
       <PlaceholderImage
         siteName="IncidentDatabase.AI"
         itemIdentifier={itemIdentifier}
         title={alt}
-        className={`${className || ''} ${
-          !publicID || publicID == '' || loadFailed ? '' : 'hidden'
+        className={`${className} ${
+          (!publicID || publicID === '' || loadFailed) && !showSkeleton ? '' : 'hidden'
         } h-full w-full object-cover`}
         height={height}
         style={style}
         data-cy="cloudinary-image-placeholder"
+        onLoad={() => setIsLoaded(true)}
+        onError={() => setIsLoaded(true)}
       />
       <AdvancedImage
-        data-cy={'cloudinary-image'}
-        ref={imageElement}
+        data-cy="cloudinary-image"
         alt={alt}
-        className={`${className || ''} ${
-          !publicID || publicID == '' || loadFailed ? 'hidden' : ''
+        className={`${className} ${
+          !publicID || publicID === '' || loadFailed || showSkeleton ? 'hidden' : ''
         } h-full w-full object-cover`}
         cldImg={image}
         plugins={plugins}
         style={style}
         onError={() => {
+          setIsLoaded(true);
           setLoadFailed(true);
+        }}
+        onLoad={() => {
+          setIsLoaded(true);
+          setLoadFailed(false);
         }}
       />
     </div>
