@@ -95,6 +95,14 @@ npm run codegen
   }
   ```
 
+- **AI Briefing**: Users that are subscribed to `ai-briefing` will receive weekly notifications that include new incidents created in the past week, new blog posts and site updates published in the last week.
+``` 
+{
+  "userId": "63320ce63ec803072c9f529c",
+  "type": "ai-briefing"
+}
+```
+
 These subscription types are also documented in [subscriptions.js](..//gatsby-site/src/utils/subscriptions.js) file.
 
 ### Sending Email Notifications
@@ -104,6 +112,7 @@ These subscription types are also documented in [subscriptions.js](..//gatsby-si
 Email notifications to New Incidents (subscription type **New Incident**), Incident updates (subscription type **Incident**) and Submission Promoted (subscription type **Submission Promoted**) are sent when the next build finishes. This is because we have to wait until the new Incident page is generated and accessible.
 When a new Incident is created or updates, a pending notification item is saved into the `notifications` DB collection with `processed=false` field.
 And finally, as part of the site build process, we processed all pending notifications (`processed=false`), send the emails to all recipients, and update the items with `processed=true` and `sentDate=[now]`.
+Email notifications for **AI Briefing** is sent once a week, on Sunday at 15:00 UTC and triggered by a Github action. For more information refer to [AI Briefing email](./BRIEFING.md)
 
 #### Notifications collection definition
 
@@ -151,6 +160,15 @@ And finally, as part of the site build process, we processed all pending notific
       "processed": false
   }
   ```
+
+- **AI Briefing**
+
+  ```
+  {
+    "type": "ai-briefing",
+    "incident_id": 374,
+    "processed": false
+  }
 
 ## User Roles
 

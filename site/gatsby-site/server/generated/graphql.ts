@@ -1085,6 +1085,7 @@ export type IncidentTranslations = {
   description?: Maybe<Scalars['String']['output']>;
   language?: Maybe<Scalars['String']['output']>;
   title?: Maybe<Scalars['String']['output']>;
+  dirty?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type IncidentTsne = {
@@ -2344,6 +2345,7 @@ export type ReportSortType = {
 
 export type ReportTranslations = {
   __typename?: 'ReportTranslations';
+  dirty?: Maybe<Scalars['Boolean']['output']>;
   language: Scalars['String']['output'];
   plain_text?: Maybe<Scalars['String']['output']>;
   text?: Maybe<Scalars['String']['output']>;
@@ -2865,9 +2867,11 @@ export type UpdateOneIncidentTranslationInput = {
   incident_id: Scalars['Int']['input'];
   language: Scalars['String']['input'];
   title: Scalars['String']['input'];
+  dirty?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UpdateOneReportTranslationInput = {
+  dirty?: InputMaybe<Scalars['Boolean']['input']>;
   language: Scalars['String']['input'];
   plain_text: Scalars['String']['input'];
   report_number: Scalars['Int']['input'];

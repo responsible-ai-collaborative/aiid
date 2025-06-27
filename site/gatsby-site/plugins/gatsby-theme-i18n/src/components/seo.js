@@ -21,10 +21,20 @@ const SEO = ({ location, pageContext }) => {
 
   const { pathname } = location;
 
+  const defaultPath = switchLocalizedPath({
+    currentLang: locale,
+    newLang: 'en',
+    path: pageContext.originalPath,
+  });
+
   return (
     <Helmet>
       <html lang={pageContext.hrefLang} />
-      <link rel="alternate" hrefLang="x-default" href={defaultSiteUrl} />
+      <link
+        rel="alternate"
+        hrefLang="x-default"
+        href={`${defaultSiteUrl}${withPrefix(defaultPath)}`}
+      />
       <link
         rel="alternate"
         hrefLang={pageContext.hrefLang}

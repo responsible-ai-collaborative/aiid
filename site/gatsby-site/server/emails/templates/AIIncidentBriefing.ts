@@ -68,7 +68,7 @@ const getEmailTemplate = () => {
                   </h1>
                   <p style="font-size: 85%;">{{ incident.date }}</p>
                   <p style="font-size: 85%;">{{ incident.description }}</p>
-                  <p style="margin-bottom: 0px; line-height: 1.75%;">
+                  <p style="margin-bottom: 0px; line-height: 1.75;">
                     <strong>Alleged</strong>:
                     <span style="${entityStyle}">{{ incident.developers }}</span> developed an AI system deployed by
                     <span style="${entityStyle}">{{ incident.deployers }}</span> which harmed 
