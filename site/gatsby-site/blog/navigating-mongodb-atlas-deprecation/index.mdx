@@ -1,0 +1,35 @@
+---
+title: 'Navigating Change: Our Journey Through MongoDB Atlas Deprecation'
+metaTitle: 'Navigating Change: Our Journey Through MongoDB Atlas Deprecation'
+metaDescription: 'How the AIID team adapted to MongoDB Atlas service deprecations and built resilient alternatives'
+date: '2025-03-20'
+image: '../user-story-spotlights/images/entities.png'
+author: 'Cesar Varela'
+slug: '/blog/navigating-mongodb-atlas-deprecation'
+---
+
+When MongoDB announced the deprecation of their Atlas GraphQL and Hosting services ([official announcement](https://www.mongodb.com/developer/products/atlas/deprecating-mongodb-atlas-graphql-hosting-services/)), our team at the AI Incident Database (AIID) faced an unexpected challenge. This post shares our journey through this transition, highlighting our decisions, challenges, and the valuable lessons we learned.
+
+## Act One: Saying Goodbye to GraphQL
+
+The announcement of MongoDB's Atlas GraphQL service deprecation meant we had to quickly find a reliable alternative. Initially, we considered popular solutions like Hasura and Apollo. However, our past experiences with external dependencies made us cautious. Given our relatively straightforward API requirements, we decided that another external dependency wasn't justified.
+
+Instead, we built our own GraphQL solution tailored specifically to our needs. This decision allowed us greater control and flexibility, ensuring our API remains stable and reliable. The transition was smoother than expected, and our new in-house GraphQL API now serves our users effectively without the risk of future disruptions.
+
+## Act Two: Streamlining Authentication
+
+The next challenge was migrating our authentication system. We initially considered third-party providers such as Clerk and Auth0, but quickly realized our authentication requirements were simple enough to manage internally.
+
+We chose NextAuth, a lightweight authentication library that integrates seamlessly with our existing Gatsby infrastructure. This solution proved ideal, offering simplicity, security, and ease of maintenance, perfectly aligning with our needs.
+
+## Reflections and Lessons Learned
+
+This migration experience reinforced several important insights:
+
+- **Evaluate Dependencies Carefully**: Always consider the trade-offs between external dependencies and in-house solutions.
+- **Prioritize Stability and Control**: Solutions within our control significantly reduce future risks and enhance stability.
+- **Simplicity is Key**: Simple solutions often lead to more maintainable and resilient systems.
+
+At AIID, we remain dedicated to providing a robust and user-friendly platform for exploring AI incidents. This migration has strengthened our infrastructure and positioned us well for future growth.
+
+We welcome your thoughts and feedback on our experience or any aspect of the AIID platform! If you have suggestions or questions, please [contact us](/contact). 
