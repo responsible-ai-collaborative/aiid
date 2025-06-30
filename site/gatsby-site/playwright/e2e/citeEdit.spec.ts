@@ -1,6 +1,5 @@
 import { query, setEditorText, getEditorText, test } from '../utils';
 import { expect } from '@playwright/test';
-import config from '../config';
 import { init } from '../memory-mongo';
 import reports from '../seeds/aiidprod/reports';
 import reportsTranslations from '../seeds/translations/reports';
@@ -320,5 +319,108 @@ test.describe('Edit report', () => {
     const imgSrc = await page.locator('[data-cy="image-preview-figure"] img').getAttribute('src');
 
     expect(imgSrc).toBe('https://res.cloudinary.com/pai/image/upload/f_auto/q_auto/v1/reports/static01.nyt.com/images/2014/08/13/us/worker-hours-1407960684740/worker-hours-1407960684740-articleLarge.jpg');
+  });
+
+  test("Should mark the report translations as dirty if the report's title is changed", async ({ page, login }) => {
+
+    await login();
+
+    await page.goto(url);
+    
+    const titleLocator = page.locator('[name=title]');
+    await titleLocator.fill('');
+    await titleLocator.fill('Test Title');
+
+    await page.getByRole('button', { name: 'Submit' }).click();
+
+    await expect(page.getByText('Incident report 3 updated successfully.')).toBeVisible();
+
+    const { data } = await query({
+      query: gql`{
+        report(filter: { report_number: { EQ: 3 } }) {
+          report_number
+          title
+          translations(languages: ["es"]) {
+            dirty
+          }
+        }
+      }`,
+    });
+
+    expect(data.report).toMatchObject({
+      report_number: 3,
+      title: 'Test Title',
+      translations: [{
+        dirty: true,
+      }],
+    })
+  });
+
+  test("Should mark the report translations as dirty if the report's text is changed", async ({ page, login }) => {
+
+    await login();
+
+    await page.goto(url);
+    
+    await setEditorText(page, '## This is text in English\n\nthat is longer that eighty characters, yes eighty characters!');
+
+    await page.getByRole('button', { name: 'Submit' }).click();
+
+    await expect(page.getByText('Incident report 3 updated successfully.')).toBeVisible();
+
+    const { data } = await query({
+      query: gql`{
+        report(filter: { report_number: { EQ: 3 } }) {
+          report_number
+          text
+          translations(languages: ["es"]) {
+            dirty
+          }
+        }
+      }`,
+    });
+
+    expect(data.report).toMatchObject({
+      report_number: 3,
+      text: '## This is text in English\n\nthat is longer that eighty characters, yes eighty characters!',
+      translations: [{
+        dirty: true,
+      }],
+    })
+  });
+
+  test("Should not mark the report translations as dirty if the report's text or title are not changed", async ({ page, login }) => {
+
+    await login();
+
+    await page.goto(url);
+
+    const authorsLocator = page.locator('[name=authors]');
+    await authorsLocator.fill('');
+    await authorsLocator.fill('Test Author');
+
+    await page.getByRole('button', { name: 'Submit' }).click();
+
+    await expect(page.getByText('Incident report 3 updated successfully.')).toBeVisible();
+
+    const { data } = await query({
+      query: gql`{
+        report(filter: { report_number: { EQ: 3 } }) {
+          report_number
+          authors
+          translations(languages: ["es"]) {
+            dirty
+          }
+        }
+      }`,
+    });
+
+    expect(data.report).toMatchObject({
+      report_number: 3,
+      authors: ['Test Author'],
+      translations: [{
+        dirty: null,
+      }],
+    })
   });
 });

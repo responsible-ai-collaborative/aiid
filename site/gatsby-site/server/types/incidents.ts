@@ -1,4 +1,4 @@
-import { GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
+import { GraphQLBoolean, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
 import { ObjectIdScalar } from "../scalars";
 import { EntityType } from "./entity";
 import { getListRelationshipConfig, getListRelationshipExtension, getListRelationshipResolver, getRelationshipConfig } from "../utils";
@@ -14,12 +14,13 @@ const IncidentTranslationsType = new GraphQLObjectType({
         language: { type: GraphQLString },
         title: { type: GraphQLString },
         description: { type: GraphQLString },
+        dirty: { type: GraphQLBoolean },
     }
 });
 
 export const IncidentType = new GraphQLObjectType({
     name: 'Incident',
-    fields: {
+    fields: () => ({
         _id: { type: ObjectIdScalar },
         date: { type: new GraphQLNonNull(GraphQLString) },
         description: { type: GraphQLString },
@@ -51,6 +52,13 @@ export const IncidentType = new GraphQLObjectType({
                 dbMapping: 'Alleged harmed or nearly harmed parties',
             },
         },
+        classifications: {
+            type: new GraphQLList(require('./classification').ClassificationType),
+            resolve: async (incident, args, context) => {
+                const classificationsCollection = context.client.db('aiidprod').collection('classifications');
+                return classificationsCollection.find({ incidents: incident.incident_id }).toArray();
+            },
+        },
         implicated_systems: getListRelationshipConfig(EntityType, GraphQLString, 'implicated_systems', 'entity_id', 'entities', 'aiidprod'),
         editor_dissimilar_incidents: { type: new GraphQLList(GraphQLInt) },
         editor_similar_incidents: { type: new GraphQLList(GraphQLInt) },
@@ -68,21 +76,20 @@ export const IncidentType = new GraphQLObjectType({
             },
             resolve: async (source, args, context: Context) => {
                 const translationsCollection = context.client.db('translations').collection("incidents");
-            
+
                 const translations = await translationsCollection.find({
                     incident_id: source.incident_id,
                     language: { $in: args.languages }
                 }).toArray();
 
-                console.log('translations', translations)
-            
                 return args.languages.map((language: string) => {
                     const translation = translations.find(t => t.language === language);
-                
+
                     return translation ? {
                         language: language,
                         title: translation.title || "",
                         description: translation.description || "",
+                        dirty: translation.dirty || false,                        
                     } : {
                         language: language,
                         title: null,
@@ -91,7 +98,7 @@ export const IncidentType = new GraphQLObjectType({
                 });
             },
         },
-    },
+    }),
 });
 
 // dependencies property gets ignored by newest graphql package so we have to add it manually after the type is created

@@ -75,10 +75,15 @@ const reports = [
   },
 ];
 
-test('Translations - Should translate languages only if report language differs from target language', async ({ page }) => {
-  const translatedReportsEN = [];
+// mock new Date()
+const mockDate = new Date('2025-01-01');
+const dateStub = sinon.stub(global, 'Date') as any;
+dateStub.returns(mockDate);
+dateStub.now = () => mockDate.getTime();
+dateStub.parse = () => mockDate.getTime();
 
-  const translatedReportsES = [];
+test('Report Translations - Should translate languages only if report language differs from target language', async ({ page }) => {
+  const translatedReports = [];
 
   const reporter = { log: sinon.stub(), error: sinon.stub(), warn: sinon.stub() };
 
@@ -88,21 +93,10 @@ test('Translations - Should translate languages only if report language differs 
     }),
   };
 
-  const reportsENCollection = {
-    find: sinon.stub().returns({
-      toArray: sinon.stub().resolves(translatedReportsEN),
-    }),
-    insertMany: sinon.stub().resolves({ insertedCount: 1 }),
-  };
-
-  const reportsESCollection = {
-    find: sinon.stub().returns({
-      toArray: sinon.stub().resolves(translatedReportsES),
-    }),
-    insertMany: sinon.stub().resolves({ insertedCount: 1 }),
-  };
-
   const reportsTranslationsCollection = {
+    find: sinon.stub().returns({
+      toArray: sinon.stub().resolves(translatedReports),
+    }),
     insertMany: sinon.stub().resolves({ insertedCount: 1 }),
   };
 
@@ -120,8 +114,6 @@ test('Translations - Should translate languages only if report language differs 
       } else if (dbName === 'translations') {
         return {
           collection: (name: string) => {
-            if (name === 'reports_en') return reportsENCollection;
-            if (name === 'reports_es') return reportsESCollection;
             if (name === 'reports') return reportsTranslationsCollection;
             return null;
           },
@@ -149,29 +141,6 @@ test('Translations - Should translate languages only if report language differs 
   sinon.assert.calledOnce(mongoClient.connect);
   sinon.assert.calledOnce(reportsCollection.find);
   sinon.assert.calledThrice(translateClient.translate);
-  sinon.assert.calledOnce(reportsENCollection.insertMany);
-  sinon.assert.calledWith(reportsENCollection.insertMany, [
-    {
-      report_number: 2,
-      text: 'test-en-Reporte 2 **texto**',
-      title: 'test-en-Título del reporte 2',
-      plain_text: 'test-en-Reporte 2 texto\n',
-    },
-    {
-      report_number: 3,
-      text: 'test-en-Reporte 3 **texto**',
-      title: 'test-en-Título del reporte 3',
-      plain_text: 'test-en-Reporte 3 texto\n'
-    }
-  ]);
-  sinon.assert.calledOnce(reportsESCollection.insertMany);
-  sinon.assert.calledWith(reportsESCollection.insertMany, [{
-    report_number: 1,
-    text: 'test-es-Report 1 **text**',
-    title: 'test-es-Report 1 title',
-    plain_text: 'test-es-Report 1 text\n',
-  }]);
-
   sinon.assert.calledTwice(reportsTranslationsCollection.insertMany);
   sinon.assert.calledWith(reportsTranslationsCollection.insertMany, [
     {
@@ -180,6 +149,8 @@ test('Translations - Should translate languages only if report language differs 
       title: 'test-en-Título del reporte 2',
       plain_text: 'test-en-Reporte 2 texto\n',
       language: 'en',
+      dirty: undefined,
+      created_at: new Date(),
     },
     {
       report_number: 3,
@@ -187,6 +158,8 @@ test('Translations - Should translate languages only if report language differs 
       title: 'test-en-Título del reporte 3',
       plain_text: 'test-en-Reporte 3 texto\n',
       language: 'en',
+      dirty: undefined,
+      created_at: new Date(),
     }
   ]);
   sinon.assert.calledWith(reportsTranslationsCollection.insertMany, [{
@@ -195,15 +168,15 @@ test('Translations - Should translate languages only if report language differs 
     title: 'test-es-Report 1 title',
     plain_text: 'test-es-Report 1 text\n',
     language: 'es',
+    dirty: undefined,
+    created_at: new Date(),
   }]);
 
   sinon.assert.calledOnce(mongoClient.close);
 });
 
-test("Translations - Shouldn't call Google's translate api and use translation placeholders if dryRun is true", async ({ page }) => {
-  const translatedReportsEN = [];
-
-  const translatedReportsES = [];
+test("Report Translations - Shouldn't call Google's translate api and use translation placeholders if dryRun is true", async ({ page }) => {
+  const translatedReports = [];
 
   const reporter = { log: sinon.stub(), error: sinon.stub(), warn: sinon.stub() };
 
@@ -213,21 +186,10 @@ test("Translations - Shouldn't call Google's translate api and use translation p
     }),
   };
 
-  const reportsENCollection = {
-    find: sinon.stub().returns({
-      toArray: sinon.stub().resolves(translatedReportsEN),
-    }),
-    insertMany: sinon.stub().resolves({ insertedCount: 1 }),
-  };
-
-  const reportsESCollection = {
-    find: sinon.stub().returns({
-      toArray: sinon.stub().resolves(translatedReportsES),
-    }),
-    insertMany: sinon.stub().resolves({ insertedCount: 1 }),
-  };
-
   const reportsTranslationsCollection = {
+    find: sinon.stub().returns({
+      toArray: sinon.stub().resolves(translatedReports),
+    }),
     insertMany: sinon.stub().resolves({ insertedCount: 1 }),
   };
 
@@ -245,8 +207,6 @@ test("Translations - Shouldn't call Google's translate api and use translation p
       } else if (dbName === 'translations') {
         return {
           collection: (name: string) => {
-            if (name === 'reports_en') return reportsENCollection;
-            if (name === 'reports_es') return reportsESCollection;
             if (name === 'reports') return reportsTranslationsCollection;
             return null;
           },
@@ -274,28 +234,6 @@ test("Translations - Shouldn't call Google's translate api and use translation p
   sinon.assert.calledOnce(mongoClient.connect);
   sinon.assert.calledOnce(reportsCollection.find);
   sinon.assert.notCalled(translateClient.translate);
-  sinon.assert.calledOnce(reportsENCollection.insertMany);
-  sinon.assert.calledWith(reportsENCollection.insertMany, [
-    {
-      report_number: 2,
-      text: 'translated-en-Reporte 2 **texto**',
-      title: 'translated-en-Título del reporte 2',
-      plain_text: 'translated-en-Reporte 2 texto\n',
-    },
-    {
-      report_number: 3,
-      text: 'translated-en-Reporte 3 **texto**',
-      title: 'translated-en-Título del reporte 3',
-      plain_text: 'translated-en-Reporte 3 texto\n'
-    }
-  ]);
-  sinon.assert.calledOnce(reportsESCollection.insertMany);
-  sinon.assert.calledWith(reportsESCollection.insertMany, [{
-    report_number: 1,
-    text: 'translated-es-Report 1 **text**',
-    title: 'translated-es-Report 1 title',
-    plain_text: 'translated-es-Report 1 text\n',
-  }]);
 
   sinon.assert.calledTwice(reportsTranslationsCollection.insertMany);
   sinon.assert.calledWith(reportsTranslationsCollection.insertMany, [
@@ -305,6 +243,8 @@ test("Translations - Shouldn't call Google's translate api and use translation p
       title: 'translated-en-Título del reporte 2',
       plain_text: 'translated-en-Reporte 2 texto\n',
       language: 'en',
+      dirty: undefined,
+      created_at: new Date(),
     },
     {
       report_number: 3,
@@ -312,6 +252,8 @@ test("Translations - Shouldn't call Google's translate api and use translation p
       title: 'translated-en-Título del reporte 3',
       plain_text: 'translated-en-Reporte 3 texto\n',
       language: 'en',
+      dirty: undefined,
+      created_at: new Date(),
     }
   ]);
   sinon.assert.calledWith(reportsTranslationsCollection.insertMany, [{
@@ -320,17 +262,17 @@ test("Translations - Shouldn't call Google's translate api and use translation p
     title: 'translated-es-Report 1 title',
     plain_text: 'translated-es-Report 1 text\n',
     language: 'es',
+    dirty: undefined,
+    created_at: new Date(),
   }]);
 
   sinon.assert.calledOnce(mongoClient.close);
 });
 
-test('Translations - Should translate reports with submission date greater than an specific report submission date', async ({ page }) => {
+test('Report Translations - Should translate reports with submission date greater than an specific report submission date', async ({ page }) => {
   const submissionDateStart = '2021-01-01';
 
-  const translatedReportsES = [];
-
-  const translatedReportsEN = [];
+  const translatedReports = [];
 
   const reporter = { log: sinon.stub(), error: sinon.stub(), warn: sinon.stub() };
 
@@ -340,21 +282,10 @@ test('Translations - Should translate reports with submission date greater than 
     }),
   };
 
-  const reportsENCollection = {
-    find: sinon.stub().returns({
-      toArray: sinon.stub().resolves(translatedReportsEN),
-    }),
-    insertMany: sinon.stub().resolves({ insertedCount: 1 }),
-  };
-
-  const reportsESCollection = {
-    find: sinon.stub().returns({
-      toArray: sinon.stub().resolves(translatedReportsES),
-    }),
-    insertMany: sinon.stub().resolves({ insertedCount: 1 }),
-  };
-
   const reportsTranslationsCollection = {
+    find: sinon.stub().returns({
+      toArray: sinon.stub().resolves(translatedReports),
+    }),
     insertMany: sinon.stub().resolves({ insertedCount: 1 }),
   };
 
@@ -372,8 +303,6 @@ test('Translations - Should translate reports with submission date greater than 
       } else if (dbName === 'translations') {
         return {
           collection: (name: string) => {
-            if (name === 'reports_en') return reportsENCollection;
-            if (name === 'reports_es') return reportsESCollection;
             if (name === 'reports') return reportsTranslationsCollection;
             return null;
           },
@@ -403,17 +332,6 @@ test('Translations - Should translate reports with submission date greater than 
   sinon.assert.calledOnce(reportsCollection.find);
   sinon.assert.calledWith(reportsCollection.find, { date_submitted: { $gte: new Date(submissionDateStart) } });
   sinon.assert.calledOnce(translateClient.translate);
-  sinon.assert.calledOnce(reportsENCollection.insertMany);
-  sinon.assert.calledWith(reportsENCollection.insertMany, [
-    {
-      report_number: 3,
-      text: 'test-en-Reporte 3 **texto**',
-      title: 'test-en-Título del reporte 3',
-      plain_text: 'test-en-Reporte 3 texto\n'
-    }
-  ]);
-  sinon.assert.notCalled(reportsESCollection.insertMany);
-
   sinon.assert.calledOnce(reportsTranslationsCollection.insertMany);
   sinon.assert.calledWith(reportsTranslationsCollection.insertMany, [
     {
@@ -422,30 +340,31 @@ test('Translations - Should translate reports with submission date greater than 
       title: 'test-en-Título del reporte 3',
       plain_text: 'test-en-Reporte 3 texto\n',
       language: 'en',
+      dirty: undefined,
+      created_at: new Date(),
     }
   ]);
 
   sinon.assert.calledOnce(mongoClient.close);
 });
 
-test('Translations - Should not translate if the report was already translated', async ({ page }) => {
-  const translatedReportsES = [
+test('Report Translations - Should not translate if the report was already translated', async ({ page }) => {
+  const translatedReports = [
     {
       _id: '61d5ad9f102e6e30fca90ddf',
       report_number: 1,
       title: 'Título del reporte 1',
       text: 'Reporte 1 **texto**',
       plain_text: 'Reporte 1 texto',
+      language: 'es',
     },
-  ];
-
-  const translatedReportsEN = [
     {
       _id: '61d5ad9f102e6e30fca90dde',
       report_number: 2,
       title: 'Report 2 title',
       text: 'Report 2 **text**',
       plain_text: 'Report 2 text',
+      language: 'en',
     },
     {
       _id: '61d5ad9f102e6e30fca90ddf',
@@ -453,6 +372,7 @@ test('Translations - Should not translate if the report was already translated',
       title: 'Report 3 title',
       text: 'Report 3 **text**',
       plain_text: 'Report 3 text',
+      language: 'en',
     },
   ];
 
@@ -464,21 +384,10 @@ test('Translations - Should not translate if the report was already translated',
     }),
   };
 
-  const reportsENCollection = {
-    find: sinon.stub().returns({
-      toArray: sinon.stub().resolves(translatedReportsEN),
-    }),
-    insertMany: sinon.stub().resolves({ insertedCount: 1 }),
-  };
-
-  const reportsESCollection = {
-    find: sinon.stub().returns({
-      toArray: sinon.stub().resolves(translatedReportsES),
-    }),
-    insertMany: sinon.stub().resolves({ insertedCount: 1 }),
-  };
-
   const reportsTranslationsCollection = {
+    find: sinon.stub().returns({
+      toArray: sinon.stub().resolves(translatedReports),
+    }),
     insertMany: sinon.stub().resolves({ insertedCount: 1 }),
   };
 
@@ -496,8 +405,6 @@ test('Translations - Should not translate if the report was already translated',
       } else if (dbName === 'translations') {
         return {
           collection: (name: string) => {
-            if (name === 'reports_en') return reportsENCollection;
-            if (name === 'reports_es') return reportsESCollection;
             if (name === 'reports') return reportsTranslationsCollection;
             return null;
           },
@@ -525,16 +432,12 @@ test('Translations - Should not translate if the report was already translated',
   sinon.assert.calledOnce(mongoClient.connect);
   sinon.assert.calledOnce(reportsCollection.find);
   sinon.assert.notCalled(translateClient.translate);
-  sinon.assert.notCalled(reportsENCollection.insertMany);
-  sinon.assert.notCalled(reportsESCollection.insertMany);
   sinon.assert.notCalled(reportsTranslationsCollection.insertMany);
   sinon.assert.calledOnce(mongoClient.close);
 });
 
-test("Translations - Should not insert report translation if the Google's translate API returns empty translations", async ({ page }) => {
-  const translatedReportsEN = [];
-
-  const translatedReportsES = [];
+test("Report Translations - Should not insert report translation if the Google's translate API returns empty translations", async ({ page }) => {
+  const translatedReports = [];
 
   const reporter = { log: sinon.stub(), error: sinon.stub(), warn: sinon.stub() };
 
@@ -544,16 +447,9 @@ test("Translations - Should not insert report translation if the Google's transl
     }),
   };
 
-  const reportsENCollection = {
+  const reportsTranslationsCollection = {
     find: sinon.stub().returns({
-      toArray: sinon.stub().resolves(translatedReportsEN),
-    }),
-    insertMany: sinon.stub().resolves({ insertedCount: 1 }),
-  };
-
-  const reportsESCollection = {
-    find: sinon.stub().returns({
-      toArray: sinon.stub().resolves(translatedReportsES),
+      toArray: sinon.stub().resolves(translatedReports),
     }),
     insertMany: sinon.stub().resolves({ insertedCount: 1 }),
   };
@@ -561,13 +457,24 @@ test("Translations - Should not insert report translation if the Google's transl
   const mongoClient = {
     connect: sinon.stub().resolves(),
     close: sinon.stub().resolves(),
-    db: sinon.stub().returns({
-      collection: (name: string) => {
-        if (name === 'reports') return reportsCollection;
-        if (name === 'reports_en') return reportsENCollection;
-        if (name === 'reports_es') return reportsESCollection;
-        return null;
-      },
+    db: sinon.stub().callsFake((dbName: string) => {
+      if (dbName === 'aiidprod') {
+        return {
+          collection: (name: string) => {
+            if (name === 'reports') return reportsCollection;
+            return null;
+          },
+        };
+      } else if (dbName === 'translations') {
+        return {
+          collection: (name: string) => {
+            if (name === 'reports') return reportsTranslationsCollection;
+            return null;
+          },
+        };
+      } else {
+        throw new Error(`Unexpected database name: ${dbName}`);
+      }
     }),
   };
 
@@ -593,14 +500,126 @@ test("Translations - Should not insert report translation if the Google's transl
   sinon.assert.calledOnce(mongoClient.connect);
   sinon.assert.calledOnce(reportsCollection.find);
   sinon.assert.calledThrice(translateClient.translate);
-  sinon.assert.calledOnce(reportsESCollection.insertMany);
-  sinon.assert.calledWith(reportsESCollection.insertMany, [{
+  sinon.assert.calledOnce(reportsTranslationsCollection.insertMany);
+  sinon.assert.calledWith(reportsTranslationsCollection.insertMany, [{
     report_number: 1,
     text: 'test-es-Report 1 **text**',
     title: 'test-es-Report 1 title',
     plain_text: 'test-es-Report 1 text\n',
+    language: 'es',
+    dirty: undefined,
+    created_at: new Date(),
   }]);
-  sinon.assert.notCalled(reportsENCollection.insertMany);
   sinon.assert.callCount(reporter.error, 4);
   sinon.assert.calledOnce(mongoClient.close);
+});
+
+test('Report Translations - Should translate dirty reports translations', async ({ page }) => {
+  const translatedReports = [
+    {
+      report_number: 1,
+      text: 'Texto del reporte desactualizado',
+      title: 'Título del reporte desactualizado',
+      plain_text: 'Texto del reporte desactualizado\n',
+      language: 'es',
+      dirty: true,
+    }
+  ];
+
+  const reporter = { log: sinon.stub(), error: sinon.stub(), warn: sinon.stub() };
+
+  const reportsCollection = {
+    find: sinon.stub().returns({
+      toArray: sinon.stub().resolves(reports),
+    }),
+  };
+
+  const reportsTranslationsCollection = {
+    find: sinon.stub().returns({
+      toArray: sinon.stub().resolves(translatedReports),
+    }),
+    insertMany: sinon.stub().resolves({ insertedCount: 1 }),
+    updateOne: sinon.stub().resolves(),
+  };
+
+  const mongoClient = {
+    connect: sinon.stub().resolves(),
+    close: sinon.stub().resolves(),
+    db: sinon.stub().callsFake((dbName: string) => {
+      if (dbName === 'aiidprod') {
+        return {
+          collection: (name: string) => {
+            if (name === 'reports') return reportsCollection;
+            return null;
+          },
+        };
+      } else if (dbName === 'translations') {
+        return {
+          collection: (name: string) => {
+            if (name === 'reports') return reportsTranslationsCollection;
+            return null;
+          },
+        };
+      } else {
+        throw new Error(`Unexpected database name: ${dbName}`);
+      }
+    }),
+  };
+
+  const translateClient = {
+    translate: sinon.stub().callsFake((payload, { to }) => [payload.map((p: any) => `test-${to}-${p}`)]),
+  };
+
+  const translator = new Translator({
+    mongoClient,
+    translateClient,
+    languages: [{ code: 'es' }, { code: 'en' }],
+    reporter,
+    dryRun: false,
+  });
+
+  await translator.run();
+  
+  sinon.assert.calledOnce(mongoClient.connect);
+  sinon.assert.calledOnce(reportsCollection.find);
+  sinon.assert.calledThrice(translateClient.translate);
+  sinon.assert.calledOnce(reportsTranslationsCollection.insertMany);
+  sinon.assert.calledWith(reportsTranslationsCollection.insertMany, [
+    {
+      report_number: 2,
+      text: 'test-en-Reporte 2 **texto**',
+      title: 'test-en-Título del reporte 2',
+      plain_text: 'test-en-Reporte 2 texto\n',
+      language: 'en',
+      dirty: undefined,
+      created_at: new Date(),
+    },
+    {
+      report_number: 3,
+      text: 'test-en-Reporte 3 **texto**',
+      title: 'test-en-Título del reporte 3',
+      plain_text: 'test-en-Reporte 3 texto\n',
+      language: 'en',
+      dirty: undefined,
+      created_at: new Date(),
+    }
+  ]);
+  sinon.assert.calledOnce(reportsTranslationsCollection.updateOne);
+  sinon.assert.calledWith(reportsTranslationsCollection.updateOne, 
+    { report_number: 1 },
+    {
+      $set: { 
+        report_number: 1,
+        text: 'test-es-Report 1 **text**',
+        title: 'test-es-Report 1 title',
+        plain_text: 'test-es-Report 1 text\n',
+        language: 'es',
+        dirty: false,
+        created_at: new Date(),
+      },
+    }
+  );
+
+  sinon.assert.calledOnce(mongoClient.close);
+
 });

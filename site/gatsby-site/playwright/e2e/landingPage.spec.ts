@@ -27,7 +27,7 @@ test.describe('The Landing page', () => {
     await page.goto('/');
     await page.locator('[data-cy="Waking Up Foundation-image"]').scrollIntoViewIfNeeded();
     await page.locator('[data-cy="Waking Up Foundation-image"]').click();
-    await expect(page.locator('[data-cy="sponsor-modal"]')).toBeVisible();
+    await expect(page.locator('[data-cy="sponsor-modal"] h5', { hasText: 'Waking Up Foundation' })).toBeVisible();
   });
 
   test('Should submit a report through the Quick Add form', async ({ page }) => {
@@ -144,5 +144,15 @@ test.describe('The Landing page', () => {
     await expect(page.getByTestId('sidebar-desktop').locator('[data-testid="flowbite-tooltip"]', { hasText: 'Welcome to the AIID' }))
       .toBeVisible();
 
+  });
+
+  test('Should display the latest incident title translation', async ({ page }) => {
+    await page.goto('/es/');
+    // Incident 1 has a spanish translation
+    await expect(page.locator('[data-testid="latest-incident-title"]').nth(0)).toHaveText('Incidente 1: Título del Incidente 1');
+    // Incident 2 does not have a spanish translation
+    await expect(page.locator('[data-testid="latest-incident-title"]').nth(1)).toHaveText('Incidente 2: Título del incidente 2 actualizado. Listo para volver a traducir.');
+    // Incident 3 does not have a spanish translation
+    await expect(page.locator('[data-testid="latest-incident-title"]').nth(2)).toHaveText('Incidente 3: Kronos Scheduling Algorithm Allegedly Caused Financial Issues for Starbucks Employees');
   });
 });

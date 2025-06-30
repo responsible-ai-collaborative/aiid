@@ -206,6 +206,17 @@ const typeDefs = `
         created_at: Date
         pred: String
     }
+
+    type mongodbAiidprodIncidentLinks implements Node {
+        incident_id: Int
+        sameAs: String
+        source_namespace: String
+    }
+
+    type mongodbAiidprodEntityDuplicates implements Node {
+        duplicate_entity_id: String
+        true_entity_id: String
+    }
 `;
 
 module.exports = typeDefs;

@@ -2,6 +2,8 @@ import { expect } from '@playwright/test';
 import { test, fillAutoComplete, query } from '../../utils';
 import { init } from '../../memory-mongo';
 import gql from 'graphql-tag';
+import incidentsTranslations from '../../seeds/translations/incidents';
+import config from '../../config';
 
 test.describe('Incidents', () => {
   const url = '/incidents/edit?incident_id=3';
@@ -129,5 +131,208 @@ test.describe('Incidents', () => {
 
     // Verify that the tags in the database remain unchanged after cancellation
     expect(data.report.tags).toEqual(['Test Tag']);
+  });
+
+  test('Should successfully edit incident translations', async ({ page, login }) => {
+
+    await init();
+
+    await login();
+
+    await page.goto('/incidents/edit?incident_id=1');
+
+    // iterate over all the translations
+    for (const language of config.AVAILABLE_LANGUAGES.split(',').filter((l) => l !== 'en')) {
+      const incidentTranslation = incidentsTranslations.find((r) => r.incident_id === 1 && r.language === language);
+
+      await expect(page.locator(`[data-testid="translation-${language}-title"]`)).toHaveValue(incidentTranslation ? incidentTranslation.title : '');
+      await expect(page.locator(`[data-testid="translation-${language}-description"]`)).toHaveValue(incidentTranslation ? incidentTranslation.description : '');
+    }
+
+    await page.locator(`[data-testid="translation-es-title"]`).fill('Nuevo Título en español');
+    await page.locator(`[data-testid="translation-es-description"]`).fill('Nuevo Descripción en español');
+
+    await page.getByText('Save', { exact: true }).click();
+
+    await expect(page.locator('.tw-toast:has-text("Incident 1 updated successfully.")')).toBeVisible();
+
+    const { data } = await query({
+      query: gql`{
+        incident(filter: { incident_id: { EQ: 1 } }) {
+          incident_id
+          translations(languages: ["es", "fr", "ja"]) {
+            title
+            description
+            language
+          }
+        }
+      }`,
+    });
+
+    expect(data.incident).toMatchObject({
+      incident_id: 1,
+      translations: [
+        {
+          language: 'es',
+          title: 'Nuevo Título en español',
+          description: 'Nuevo Descripción en español',
+        },
+        {
+          language: "fr",
+          title: "Titre de l'incident 1",
+          description: "Description de l'incident 1",
+        },
+        {
+          language: 'ja',
+          title: null,
+          description: null,
+        },
+      ],
+    });
+  });
+
+  test("Should mark the incident translations as dirty if the incident's title is changed", async ({ page, login }) => {
+
+    await init();
+
+    await login();
+
+    await page.goto('/incidents/edit?incident_id=1');
+
+    await page.locator(`[name=title]`).fill('New Incident 1 Title');
+
+    await page.getByText('Save', { exact: true }).click();
+
+    await expect(page.locator('.tw-toast:has-text("Incident 1 updated successfully.")')).toBeVisible();
+
+    const { data } = await query({
+      query: gql`{
+        incident(filter: { incident_id: { EQ: 1 } }) {
+          incident_id
+          translations(languages: ["es", "fr", "ja"]) {
+            title
+            description
+            language
+            dirty
+          }
+        }
+      }`
+    });
+
+    expect(data.incident).toMatchObject({
+      incident_id: 1,
+      translations: [
+        {
+          language: "es",
+          title: "Título del Incidente 1",
+          description: "Descripción del incidente 1",
+          dirty: true,
+        },
+        {
+          language: "fr",
+          title: "Titre de l'incident 1",
+          description: "Description de l'incident 1",
+          dirty: true,
+        },
+        {
+          language: 'ja',
+          title: "",
+          description: "",
+          dirty: true,
+        },
+      ],
+    });
+  });
+
+  test("Should mark the incident translations as dirty if the incident's description is changed", async ({ page, login }) => {
+
+    await init();
+
+    await login();
+
+    await page.goto('/incidents/edit?incident_id=1');
+
+    await page.locator(`[name=description]`).fill('New Incident 1 Description');
+
+    await page.getByText('Save', { exact: true }).click();
+
+    await expect(page.locator('.tw-toast:has-text("Incident 1 updated successfully.")')).toBeVisible();
+
+    const { data } = await query({
+      query: gql`{
+        incident(filter: { incident_id: { EQ: 1 } }) {
+          incident_id
+          translations(languages: ["es", "fr", "ja"]) {
+            title
+            description
+            language
+            dirty
+          }
+        }
+      }`
+    });
+
+    expect(data.incident).toMatchObject({
+      incident_id: 1,
+      translations: [
+        {
+          language: "es",
+          title: "Título del Incidente 1",
+          description: "Descripción del incidente 1",
+          dirty: true,
+        },
+        {
+          language: "fr",
+          title: "Titre de l'incident 1",
+          description: "Description de l'incident 1",
+          dirty: true,
+        },
+        {
+          language: 'ja',
+          title: "",
+          description: "",
+          dirty: true,
+        },
+      ],
+    });
+  });
+
+  test("Should not mark the incident translations as dirty if the incident's title or description are not changed", async ({ page, login }) => {
+
+    await init();
+
+    await login();
+
+    await page.goto('/incidents/edit?incident_id=1');
+
+    await page.locator(`[name=editor_notes]`).fill('New Incident 1 Editor Notes');
+
+    await page.getByText('Save', { exact: true }).click();
+
+    await expect(page.locator('.tw-toast:has-text("Incident 1 updated successfully.")')).toBeVisible();
+
+    const { data } = await query({
+      query: gql`{
+        incident(filter: { incident_id: { EQ: 1 } }) {
+          incident_id
+          editor_notes
+          translations(languages: ["es"]) {
+            language
+            dirty
+          }
+        }
+      }`
+    });
+
+    expect(data.incident).toMatchObject({
+      incident_id: 1,
+      editor_notes: "New Incident 1 Editor Notes",
+      translations: [
+        {
+          language: "es",
+          dirty: false,
+        },
+      ],
+    });
   });
 });

@@ -16,6 +16,7 @@ const config = {
       db_history_name: 'history',
       db_custom_data: 'customData',
       db_collection: 'incidents',
+      db_auth: 'auth',
     },
   },
   header: {

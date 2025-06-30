@@ -96,16 +96,14 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
         <FontAwesomeIcon title={t('Authors')} icon={faIdCard} className="fa-id-card" />
       </CustomButton>
 
-      {showAuthors && (
-        <Modal show={showAuthors} onClose={() => setShowAuthors(false)}>
-          <Modal.Header>
-            <Trans>Authors</Trans>
-          </Modal.Header>
-          <Modal.Body>
-            <>{item.authors.join(', ')}</>
-          </Modal.Body>
-        </Modal>
-      )}
+      <Modal show={showAuthors} onClose={() => setShowAuthors(false)}>
+        <Modal.Header>
+          <Trans>Authors</Trans>
+        </Modal.Header>
+        <Modal.Body>
+          <>{item.authors.join(', ')}</>
+        </Modal.Body>
+      </Modal>
 
       <CustomButton
         variant="link"
@@ -116,16 +114,14 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
         <FontAwesomeIcon titleId="report-shield" icon={faUserShield} className="fa-user-shield" />
       </CustomButton>
 
-      {showSubmitters && (
-        <Modal show={showSubmitters} onClose={() => setShowSubmitters(false)}>
-          <Modal.Header>
-            <Trans>Submitters</Trans>
-          </Modal.Header>
-          <Modal.Body>
-            <>{item.submitters.join(', ')}</>
-          </Modal.Body>
-        </Modal>
-      )}
+      <Modal show={showSubmitters} onClose={() => setShowSubmitters(false)}>
+        <Modal.Header>
+          <Trans>Submitters</Trans>
+        </Modal.Header>
+        <Modal.Body>
+          <>{item.submitters.join(', ')}</>
+        </Modal.Body>
+      </Modal>
 
       <CustomButton
         variant="link"
@@ -149,20 +145,18 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
         <FontAwesomeIcon titleId="report-flag" icon={faFlag} className="fa-flag" />
       </CustomButton>
 
-      {showFlag && (
-        <Modal
-          show={showFlag}
-          onClose={() => setShowFlag(false)}
-          data-cy={'flag-report-' + item.report_number}
-        >
-          <Modal.Header>
-            <Trans>Flag Report</Trans>
-          </Modal.Header>
-          <Modal.Body>
-            <FlagModalContent reportNumber={item.report_number} />
-          </Modal.Body>
-        </Modal>
-      )}
+      <Modal
+        show={showFlag}
+        onClose={() => setShowFlag(false)}
+        data-cy={'flag-report-' + item.report_number}
+      >
+        <Modal.Header>
+          <Trans>Flag Report</Trans>
+        </Modal.Header>
+        <Modal.Body>
+          <FlagModalContent reportNumber={item.report_number} />
+        </Modal.Body>
+      </Modal>
 
       {toggleFilterByIncidentId && item.is_incident_report && (
         <CustomButton

@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const { Client: GoogleMapsAPIClient } = require('@googlemaps/google-maps-services-js');
 
-const { startCase, differenceWith } = require('lodash');
+const { startCase } = require('lodash');
 
 const config = require('./config');
 
@@ -34,13 +34,9 @@ const createDocPages = require('./page-creators/createDocPages');
 
 const createMissingTranslationsPage = require('./page-creators/createMissingTranslationsPage');
 
-const algoliasearch = require('algoliasearch');
-
 const { MongoClient } = require('mongodb');
 
 const { getLanguages } = require('./i18n');
-
-const AlgoliaUpdater = require('./src/utils/AlgoliaUpdater');
 
 const typeDefs = require('./typeDefs');
 
@@ -66,6 +62,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
     ['/apps/newsSearch', '/apps/newsdigest'],
     ['/research/related-work', '/research/4-related-work'],
     ['/blog/incident-report-2022-january', '/blog/incident-report-2023-january'],
+    ['/taxonomy/*', '/taxonomies/*'],
   ];
 
   redirects.forEach((pair) => {
@@ -259,69 +256,15 @@ exports.onPreInit = async ({ reporter }) => {
 
   await lookupIndex.run();
 
+  const staticIndex = new LookupIndex({
+    client: mongoClient,
+    filePath: path.join(__dirname, 'static', 'lookupIndex.json'),
+    optimized: true,
+  });
+
+  await staticIndex.run();
+
   reporter.log('Lookup index created.');
-};
-
-exports.onPreBootstrap = async ({ reporter }) => {
-  // Algolia index update process
-  if (process.env.CONTEXT === 'production') {
-    const algoliaUpdaterActivity = reporter.activityTimer(`Algolia`);
-
-    algoliaUpdaterActivity.start();
-
-    const configuredLanguages = getLanguages();
-
-    const unavailableLanguages = differenceWith(
-      config.i18n.availableLanguages,
-      configuredLanguages,
-      (aLang, cLang) => {
-        return cLang.code === aLang;
-      }
-    );
-
-    if (unavailableLanguages.length > 0) {
-      throw `Language config error. Review your GATSBY_AVAILABLE_LANGUAGES variable. You've included a language that hasn't been configured yet: ${unavailableLanguages
-        .map((l) => l)
-        .join(', ')}`;
-    }
-
-    if (
-      config.mongodb.translationsConnectionString &&
-      config.i18n.availableLanguages &&
-      config.header.search.algoliaAdminKey &&
-      config.header.search.algoliaAppId
-    ) {
-      const mongoClient = new MongoClient(config.mongodb.translationsConnectionString);
-
-      const languages = getLanguages();
-
-      algoliaUpdaterActivity.setStatus('Updating Algolia incidents indexes...');
-
-      try {
-        const algoliaClient = algoliasearch(
-          config.header.search.algoliaAppId,
-          config.header.search.algoliaAdminKey
-        );
-
-        const algoliaUpdater = new AlgoliaUpdater({
-          languages,
-          mongoClient,
-          algoliaClient,
-          reporter,
-        });
-
-        await algoliaUpdater.run();
-      } catch (e) {
-        reporter.panicOnBuild('Error updating Algolia index:', e);
-      }
-    } else {
-      throw `Missing environment variable, can't run Algolia update process.`;
-    }
-
-    algoliaUpdaterActivity.end();
-  } else {
-    reporter.warn('Netlify CONTEXT is not production, skipping Algolia index update process.');
-  }
 };
 
 exports.onPreBuild = function ({ reporter }) {

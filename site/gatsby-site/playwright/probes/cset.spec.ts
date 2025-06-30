@@ -3,8 +3,8 @@ import { gql } from '@apollo/client';
 import { query, test } from '../utils';
 
 const urls = [
-  { namespace: 'CSETv0', url: '/taxonomy/csetv0' },
-  { namespace: 'CSETv1', url: '/taxonomy/csetv1' },
+  { namespace: 'CSETv0', url: '/taxonomies/csetv0' },
+  { namespace: 'CSETv1', url: '/taxonomies/csetv1' },
 ];
 
 urls.forEach(({ namespace, url }) => {

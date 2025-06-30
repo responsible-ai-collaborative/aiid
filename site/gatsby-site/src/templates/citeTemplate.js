@@ -53,6 +53,7 @@ function CiteTemplate({
   liveVersion = false,
   setIsLiveData,
   readOnly = false,
+  linkRecords,
 }) {
   const { loading, isRole, user } = useUserContext();
 
@@ -68,6 +69,7 @@ function CiteTemplate({
     variables: {
       filter: { userId: { EQ: user?.id }, incident_id: { EQ: incident.incident_id } },
     },
+    skip: !user || loading,
   });
 
   const visibleClassifications = {
@@ -176,6 +178,11 @@ function CiteTemplate({
             {incidentTitle}
           </h1>
           <div className="inline-flex gap-2 lg:justify-end">
+            {incident.isTranslated && (
+              <div className="self-center">
+                <TranslationBadge className="mx-2" />
+              </div>
+            )}
             {incidentResponded && (
               <div className="self-center">
                 <Badge color="success" data-cy="responded-badge">
@@ -246,6 +253,7 @@ function CiteTemplate({
           <Row>
             <Col>
               <div
+                style={{ 'overflow-wrap': 'anywhere' }}
                 className={`${incident.isTranslated ? 'flex flex-wrap' : ''}`}
                 data-testid="incident-description-section"
               >
@@ -265,7 +273,7 @@ function CiteTemplate({
           {incident.editor_notes && incident.editor_notes !== '' && (
             <Row className="mt-2">
               <Col>
-                <div>
+                <div style={{ 'overflow-wrap': 'anywhere' }}>
                   <strong>Editor Notes</strong>: {incident.editor_notes}
                 </div>
               </Col>
@@ -283,6 +291,7 @@ function CiteTemplate({
                   subscribing={subscribing}
                   isLiveData={liveVersion}
                   setIsLiveData={setIsLiveData}
+                  linkRecords={linkRecords}
                 />
               </Col>
             </Row>

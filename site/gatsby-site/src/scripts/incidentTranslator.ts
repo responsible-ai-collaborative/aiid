@@ -57,11 +57,11 @@ export default class IncidentTranslator {
    * Performs the actual translation of a given payload to a specified language.
    * If dryRun is true, it returns mocked results instead of calling the API.
    */
-  async translate({ payload, to }: { payload: string[]; to: string }): Promise<string[]> {
+  async translate({ payload, to }: { payload: string[]; to: string }): Promise<[string[], any]> {
     if (!this.dryRun) {
       return this.translateClient.translate(payload, { to });
     } else {
-      return payload.map((p) => `translated-${to}-${p}`);
+      return [payload.map((p) => `translated-${to}-${p}`), {}];
     }
   }
 
@@ -105,8 +105,17 @@ export default class IncidentTranslator {
 
     // Only queue incidents that have not been translated yet
     for (const entry of items) {
-      if (!alreadyTranslated.find((item) => item.incident_id === entry.incident_id)) {
+      const alreadyTranslatedEntry = alreadyTranslated.find(
+        (item) => item.incident_id == entry.incident_id
+      );
+
+      // If the incident is not already translated, translate it
+      if (!alreadyTranslatedEntry) {
         q.push({ entry, to });
+      }
+      // If the incident is already translated but is dirty, translate it again
+      else if (alreadyTranslatedEntry.dirty) {
+        q.push({ entry: { ...entry, dirty: alreadyTranslatedEntry.dirty }, to });
       }
     }
 
@@ -139,7 +148,7 @@ export default class IncidentTranslator {
     };
 
     const translated = await incidentsTranslatedCollection
-      .find(query, { projection: { incident_id: 1 } })
+      .find(query, { projection: { incident_id: 1, dirty: 1 } })
       .toArray();
 
     return translated;
@@ -158,6 +167,8 @@ export default class IncidentTranslator {
       const translated: Document = {
         incident_id: t.incident_id,
         language,
+        created_at: new Date(),
+        dirty: t.dirty,
       };
 
       for (const key of keys) {
@@ -167,7 +178,23 @@ export default class IncidentTranslator {
       return translated;
     });
 
-    return incidentsTranslationsCollection.insertMany(incidentsTranslated);
+
+    const incidentsTranslatedToUpdate = incidentsTranslated.filter((t) => t.dirty);
+
+    for (const incidentTranslatedToUpdate of incidentsTranslatedToUpdate) {
+      await incidentsTranslationsCollection.updateOne(
+        { incident_id: incidentTranslatedToUpdate.incident_id, language },
+        { $set: { ...incidentTranslatedToUpdate, dirty: false } }
+      );
+    }
+
+    const incidentsTranslatedToInsert = incidentsTranslated.filter((t) => !t.dirty);
+
+    if (incidentsTranslatedToInsert.length > 0) {
+      await incidentsTranslationsCollection.insertMany(incidentsTranslatedToInsert);
+    }
+
+    return { insertedCount: incidentsTranslatedToInsert.length + incidentsTranslatedToUpdate.length };
   }
 
   /**
@@ -186,7 +213,7 @@ export default class IncidentTranslator {
     }
 
     // Call the translation API (or mocked call if dryRun is true)
-    const results = await this.translate({ payload, to });
+    const [results] = await this.translate({ payload, to });
 
     // Apply each translated result to the correct field
     for (let i = 0; i < results.length; i++) {

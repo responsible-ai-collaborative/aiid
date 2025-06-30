@@ -1,10 +1,11 @@
-import { GraphQLFieldConfigMap, GraphQLInputObjectType, GraphQLInt, GraphQLList, GraphQLNonNull } from "graphql";
+import { GraphQLBoolean, GraphQLFieldConfigMap, GraphQLInputObjectType, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLString } from "graphql";
 import { allow } from "graphql-shield";
 import { generateMutationFields, generateQueryFields, getQueryResolver } from "../utils";
 import { Context, DBIncident } from "../interfaces";
 import { isRole } from "../rules";
 import { createNotificationsOnNewIncident, createNotificationsOnUpdatedIncident, hasRelevantUpdates, linkReportsToIncidents, logIncidentHistory } from "./common";
 import { IncidentType } from "../types/incidents";
+import { GraphQLDateTime } from "graphql-scalars";
 
 export const queryFields: GraphQLFieldConfigMap<any, Context> = {
 
@@ -103,6 +104,49 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
             return updated;
         })
     },
+
+    updateOneIncidentTranslation: {
+        args: {
+            input: {
+                type: new GraphQLNonNull(new GraphQLInputObjectType({
+                    name: 'UpdateOneIncidentTranslationInput',
+                    fields: {
+                        language: { type: new GraphQLNonNull(GraphQLString) },
+                        incident_id: { type: new GraphQLNonNull(GraphQLInt) },
+                        title: { type: new GraphQLNonNull(GraphQLString) },
+                        description: { type: new GraphQLNonNull(GraphQLString) },
+                        dirty: { type: GraphQLBoolean },
+                    },
+                }))
+            }
+        },
+        type: IncidentType,
+        resolve: getQueryResolver(IncidentType, async (filter, projection, options, obj, args, context) => {
+
+            // update the translation in the `incidents` collection
+            const translationsCollection = context.client.db('translations').collection("incidents");
+
+            const translation = {
+                title: args.input.title,
+                description: args.input.description,
+                language: args.input.language,
+                dirty: args.input.dirty,
+                modified_at: new Date(),
+            };
+
+            await translationsCollection.updateOne(
+                { incident_id: args.input.incident_id, language: args.input.language },
+                { $set: { ...translation } },
+                { upsert: true }
+            );
+
+            const incidents = context.client.db('aiidprod').collection("incidents");
+
+            const incident = await incidents.findOne({ incident_id: args.input.incident_id }, options);
+
+            return incident;
+        }),
+    },
 }
 
 export const permissions = {
@@ -116,5 +160,6 @@ export const permissions = {
         updateManyIncidents: isRole('incident_editor'),
         linkReportsToIncidents: isRole('incident_editor'),
         flagIncidentSimilarity: allow,
+        updateOneIncidentTranslation: isRole('incident_editor'),
     }
 }

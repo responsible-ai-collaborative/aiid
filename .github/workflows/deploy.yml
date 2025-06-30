@@ -74,17 +74,19 @@ jobs:
 
       - name: Run database migrations
         if: ${{ inputs.netlify-alias == '' }}
-        run: node migrator up
+        run: npm run db:migrator -- up
         working-directory: site/gatsby-site
         env:
           MONGODB_MIGRATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_MIGRATIONS_CONNECTION_STRING }}
+          GATSBY_SITE_URL: ${{ inputs.site-url || vars.SITE_URL }}
+          GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
 
       - name: Use deploy specific netlify.toml
         run: mv deploy-netlify.toml netlify.toml
         working-directory: site/gatsby-site
 
       - name: Install Netlify CLI
-        run: npm install netlify-cli -g
+        run: npm install netlify-cli@19.0.2 -g
 
       - name: Set branch context URL
         continue-on-error: true
@@ -92,6 +94,8 @@ jobs:
           # Extract branch name from ref (removes refs/heads/ prefix)
           if [[ ! -z "${{ inputs.netlify-alias }}" ]]; then
             netlify env:set NEXTAUTH_URL ${{ inputs.site-url || vars.SITE_URL }} --context "branch:${{ inputs.netlify-alias }}"
+            netlify env:set SITE_URL ${{ inputs.site-url || vars.SITE_URL }} --context "branch:${{ inputs.netlify-alias }}"
+            netlify env:set GATSBY_AVAILABLE_LANGUAGES ${{ vars.GATSBY_AVAILABLE_LANGUAGES }} --context "branch:${{ inputs.netlify-alias }}"
           fi
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
@@ -135,6 +139,18 @@ jobs:
           NOTIFICATIONS_SENDER: dummy
           GOOGLE_TRANSLATE_API_KEY: dummy
 
+      - name: Update Algolia indexes
+        if: inputs.netlify-context == 'production' && inputs.netlify-alias == ''
+        run: npm run algolia-update:ci
+        working-directory: site/gatsby-site
+        env:
+          GATSBY_ALGOLIA_APP_ID: ${{ vars.GATSBY_ALGOLIA_APP_ID }}
+          ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
+          GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
+          MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
+          GATSBY_SITE_URL: dummy
+          ALGOLIA_SUBSET: ${{ vars.ALGOLIA_SUBSET }}
+
       - name: Build size
         run: |
           du -ah . 2>/dev/null | sort -rh | head -n 20
@@ -158,7 +174,27 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
 
+      - name: Validate deploy output
+        id: validate-deploy
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `${{ steps.deploy-netlify.outputs.deploy_log }}`;
+            try {
+              const data = JSON.parse(output);
+              if (!data.deploy_url || !data.logs) {
+                throw new Error('Missing deploy_url or logs');
+              }
+              console.log('✅ Deploy output validation passed.');
+            } catch (err) {
+              console.error('❌ Deploy output validation failed:', err.message);
+              console.error(output);
+              throw err;
+            }
+
       - name: Comment on PR
+        continue-on-error: true
         uses: actions/github-script@v7
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}

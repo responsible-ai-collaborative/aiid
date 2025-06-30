@@ -76,7 +76,8 @@ export function testIntegrity() {
       expect(invalidReports.length).toBe(0);
     });
 
-    test(`Classifications should be linked to one and only one incident`, async () => {
+    test(`Classifications should be linked to one and only one incident or report`, async () => {
+
       const { data: { classifications } } = await query({
         query: gql`
           query {
@@ -84,12 +85,20 @@ export function testIntegrity() {
               incidents {
                 incident_id
               }
+              reports {
+                report_number
+              }
             }
           }
         `,
       });
 
-      expect(classifications.every((c) => c.incidents.length == 1)).toBe(true);
+      
+      const onlyOneIncident = c => c.incidents.length == 1 && c.reports.length == 0;
+      const onlyOneReport = c => c.incidents.length == 0 && c.reports.length == 1;
+      const onlyOneIncidentOrReport = c => onlyOneIncident(c) || onlyOneReport(c);
+      
+      expect(classifications.every(onlyOneIncidentOrReport)).toBe(true);
     });
 
     test(`Classifications should only contain attributes defined in the taxonomy`, async () => {

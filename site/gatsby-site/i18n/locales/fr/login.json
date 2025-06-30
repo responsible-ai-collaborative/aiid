@@ -23,5 +23,7 @@
   "Subscribe": "S'abonner",
   "Subscribe to Major Updates": "S'abonner aux mises à jour majeures",
   "Subscribe to New Incidents": "S'abonner aux Nouveaux Incidents",
-  "Verification email sent to {{email}}": "E-mail de vérification envoyé à {{email}}"
+  "Verification email sent to {{email}}": "E-mail de vérification envoyé à {{email}}",
+  "Receive AI Incident Briefing": "Recevoir le résumé des incidents AI",
+  "<0>Subscribe</0> to the \"AI Incident Briefing\" and receive notifications about new incidents and other updates.": "<0>S'abonner</0> au \"Résumé des incidents AI\" et recevoir des notifications sur les nouveaux incidents et autres mises à jour."
 }

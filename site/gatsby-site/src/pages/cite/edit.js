@@ -228,8 +228,17 @@ function EditCitePage(props) {
         },
       });
 
+      const hasTitleChanged = values.title !== reportData.report.title;
+
+      const hasTextChanged = values.text !== reportData.report.text;
+
       for (const { code } of availableLanguages.filter((c) => c.code !== values.language)) {
         const updatedTranslation = pick(values[`translations_${code}`], translationsFields);
+
+        // If the title or text has changed, mark the translation as dirty
+        if (hasTitleChanged || hasTextChanged) {
+          updatedTranslation.dirty = true;
+        }
 
         await updateReportTranslations({
           variables: {

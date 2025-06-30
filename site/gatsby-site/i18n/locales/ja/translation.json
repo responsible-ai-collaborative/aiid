@@ -100,6 +100,7 @@
   "Did <strong>our</strong> AI mess up? Flag <3></3> the unrelated incidents": "<strong>私たちの</strong>AIが混乱していますか？無関係のインシデントとしてフラグを立ててください",
   "reports": "レポート",
   "report": "レポート",
+  "Report": "レポート",
   "Flag reverted.": "フラグ反転",
   "Incident flagged successfully. Our editors will remove it from this list if it not relevant.": "インシデントのフラグ付けに成功しました。エディタが不適切だと判断するとリストから削除されます",
   "Color by incident classifications from taxonomies": "分類法に基づいてインシデントクラスによって色付け",
@@ -157,6 +158,8 @@
   "Thank you for verifying your account.": "アカウントを確認いただきありがとうございます",
   "Read more": "さらに読む",
   "Table View": "テーブル表示",
+  "List View": "リスト表示",
+  "List view": "リスト表示",
   "Submitting...": "投稿中...",
   "View Less": "閉じる",
   "View ({{hidden}}) more": "さらに見る ({{hidden}})",
@@ -304,6 +307,7 @@
   "Most Semantically Similar Incidents (Experimental)": "最も意味的に類似したインシデント（実験的）",
   "Reports must have at least {{minLength}} non-space characters to compute semantic similarity.": "レポートは意味的類似度を計算するために少なくとも{{minLength}}文字以上の非空白文字を持っている必要があります",
   "No related reports found." : "関連するレポートが見つかりません",
+  "No related incidents found.": "関連するインシデントが見つかりません",
   "<0>Center for Security and Emerging Technology (CSETv1)</0> The CSET AI Harm Taxonomy characterizes AI incidents and classifies harms of relevance to the public policy community.": "<0>Center for Security and Emerging Technology (CSET)</0> CSET AI危害分類法はAIインシデントを特徴づけ、公共政策コミュニティに関連する危害を分類します",
   "Known AI Goal": "既知のAIゴール",
   "Known AI Technology": "既知のAI技術",
@@ -583,5 +587,8 @@
   "Database Roadmap": "データベースのロードマップ",
   "Initial Collection Methodology": "最初の収集方法",
   "Project and Community": "プロジェクトとコミュニティ",
-  "Submission Queue": "登録待ち一覧"
+  "Submission Queue": "登録待ち一覧",
+  "Sign Up": "サインアップ",
+  "See in OECD AIM": "OECD AIMで表示",
+  "The OECD AI Incidents and Hazards Monitor (AIM) automatically collects and classifies AI-related incidents and hazards in real time from reputable news sources worldwide.": "OECD AIインシデントおよびハザードモニター（AIM）は、世界中の信頼できるニュースソースからリアルタイムでAI関連のインシデントやハザードを自動的に収集・分類します。"
 }

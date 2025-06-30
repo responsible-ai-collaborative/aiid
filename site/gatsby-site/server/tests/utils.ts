@@ -7,13 +7,20 @@ import supertest from 'supertest';
 import * as context from '../context';
 import { User } from "../generated/graphql";
 
+export const getClient = () => {
+
+    const client = new MongoClient(process.env.API_MONGODB_CONNECTION_STRING!);
+
+    return client;
+}
+
 export const startTestServer = async () => {
 
     const server = new ApolloServer({
         schema,
     });
 
-    const client = new MongoClient(config.API_MONGODB_CONNECTION_STRING);
+    const client = getClient();
 
     const { url } = await startStandaloneServer(server, { context: ({ req }) => context.context({ req, client }), listen: { port: 0 } });
 
@@ -56,6 +63,7 @@ type DeepPartial<T> = T extends object ? { [P in keyof T]?: DeepPartial<T[P]> } 
 
 export interface Fixture<T, U, I = any> {
     name: string;
+    fieldName?: string ;
     query: string;
     seeds: { [database: string]: { [collection: string]: Record<string, unknown>[] } };
     testSingular: {
@@ -153,7 +161,7 @@ export const seedFixture = async (seeds: Record<string, Record<string, Record<st
 
 export const mockSession = (userId: string) => {
 
-    const client = new MongoClient(process.env.API_MONGODB_CONNECTION_STRING!);
+    const client = getClient();
 
     const db = client.db('customData');
     const collection = db.collection('users');
@@ -168,8 +176,10 @@ export const mockSession = (userId: string) => {
 
 export const getCollection = (databaseName: string, collectionName: string) => {
 
-    const client = new MongoClient(process.env.API_MONGODB_CONNECTION_STRING!);
+    const client = getClient();
     const collection = client.db(databaseName).collection(collectionName);
 
     return collection;
 }
+
+export const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);

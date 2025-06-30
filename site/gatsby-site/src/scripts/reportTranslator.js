@@ -72,8 +72,17 @@ class ReportTranslator {
     const alreadyTranslated = await this.getTranslatedReports({ items, language: to });
 
     for (const entry of items) {
-      if (!alreadyTranslated.find((item) => item.report_number == entry.report_number)) {
+      const alreadyTranslatedEntry = alreadyTranslated.find(
+        (item) => item.report_number == entry.report_number
+      );
+
+      // If the report is not already translated, translate it
+      if (!alreadyTranslatedEntry) {
         q.push({ entry, to });
+      }
+      // If the report is already translated but is dirty, translate it again
+      else if (alreadyTranslatedEntry.dirty) {
+        q.push({ entry: { ...entry, dirty: alreadyTranslatedEntry.dirty }, to });
       }
     }
 
@@ -87,60 +96,54 @@ class ReportTranslator {
   async getTranslatedReports({ items, language }) {
     const originalIds = items.map((item) => item.report_number);
 
-    const reportsTranslatedCollection = this.mongoClient
-      .db('translations')
-      .collection(`reports_${language}`);
+    const reportsTranslatedCollection = this.mongoClient.db('translations').collection('reports');
 
     const query = {
       report_number: { $in: originalIds },
-      $and: [...keys, 'plain_text'].map((key) => ({ [key]: { $exists: true } })),
+      $and: [{ language: language }].concat(
+        [...keys, 'plain_text'].map((key) => ({ [key]: { $exists: true } }))
+      ),
     };
 
     const translated = await reportsTranslatedCollection
-      .find(query, { projection: { report_number: 1 } })
+      .find(query, { projection: { report_number: 1, dirty: 1 } })
       .toArray();
-
-    // TODO: uncomment this block and delete the code above when the "reports_xx" collections are no longer needed
-    // const reportsTranslatedCollection = this.mongoClient
-    //   .db('translations')
-    //   .collection('reports');
-
-    // const query = {
-    //   report_number: { $in: originalIds },
-    //   $and: [{ language: language }].concat([...keys, 'plain_text'].map((key) => ({ [key]: { $exists: true } }))),
-    // };
-
-    // const translated = await reportsTranslatedCollection
-    //   .find(query, { projection: { report_number: 1 } })
-    //   .toArray();
 
     return translated;
   }
 
   async saveTranslatedReports({ items, language }) {
-    const reportsTranslatedCollection = this.mongoClient
-      .db('translations')
-      .collection(`reports_${language}`);
-
     const reportsTranslationsCollection = this.mongoClient.db('translations').collection('reports');
 
     const translated = [];
 
     for (const item of items) {
-      const { report_number, text, title } = item;
+      const { report_number, text, title, dirty } = item;
 
       const plain_text = (await remark().use(remarkStrip).process(text)).contents.toString();
 
-      translated.push({ report_number, text, title, plain_text });
+      translated.push({ report_number, text, title, plain_text, dirty });
     }
 
-    // TODO: remove this line when the "reports_xx" collections are no longer needed
-    await reportsTranslatedCollection.insertMany(translated);
-
     // Insert the translated reports into the reports collection with the language field
-    const reportsTranslated = translated.map((t) => ({ ...t, language }));
+    const reportsTranslated = translated.map((t) => ({ ...t, language, created_at: new Date() }));
 
-    return reportsTranslationsCollection.insertMany(reportsTranslated);
+    const reportsTranslatedToUpdate = reportsTranslated.filter((t) => t.dirty);
+
+    for (const report of reportsTranslatedToUpdate) {
+      await reportsTranslationsCollection.updateOne(
+        { report_number: report.report_number },
+        { $set: { ...report, dirty: false } }
+      );
+    }
+
+    const reportsTranslatedToInsert = reportsTranslated.filter((t) => !t.dirty);
+
+    if (reportsTranslatedToInsert.length > 0) {
+      await reportsTranslationsCollection.insertMany(reportsTranslatedToInsert);
+    }
+
+    return { insertedCount: reportsTranslatedToInsert.length + reportsTranslatedToUpdate.length };
   }
 
   async translateReport({ entry, to }) {
