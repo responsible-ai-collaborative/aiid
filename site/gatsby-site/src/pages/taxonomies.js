@@ -67,6 +67,11 @@ export default function Taxonomies({ data }) {
                 misinformation, malicious use, and human-computer interaction issues.
               </Trans>
             </p>
+            <TaxonomyGraphCarousel
+              data={data}
+              namespace="MIT"
+              axes={['Risk Domain', 'Entity', 'Timing', 'Intent']}
+            />
           </li>
         </ul>
 
