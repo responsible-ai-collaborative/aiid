@@ -70,7 +70,7 @@ export default function Taxonomies({ data }) {
             <TaxonomyGraphCarousel
               data={data}
               namespace="MIT"
-              axes={['Risk Domain', 'Entity', 'Timing', 'Intent', 'Risk Subdomain']}
+              axes={['Risk Domain', 'Entity', 'Timing', 'Intent']}
             />
           </li>
         </ul>
