@@ -75,6 +75,13 @@ export default function Discover() {
 
     // Set the current page from the URL, defaulting to 0 (Algolia's pagination is zero-based)
     setCurrentPage(!isNaN(page) ? page - 1 : 0);
+
+    // If there are no query params, set the defaults
+    if ([...params.keys()].length === 0) {
+      params.set('hideDuplicates', '1');
+      params.set('is_incident_report', 'true');
+      navigate(`?${params.toString()}`, { replace: true });
+    }
   }, []);
 
   if (width == 0) {

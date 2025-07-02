@@ -28,7 +28,7 @@ const queryConfig = {
   display: DisplayModeEnumParam,
   page: withDefault(NumberParam, 1),
   hideDuplicates: withDefault(BooleanParam, false),
-  is_incident_report: withDefault(StringParam, 'true'),
+  is_incident_report: StringParam,
   sortBy: withDefault(StringParam, 'relevance'),
   tags: StringParam,
   language: StringParam,
