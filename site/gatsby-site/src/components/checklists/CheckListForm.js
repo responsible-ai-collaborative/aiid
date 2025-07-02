@@ -140,6 +140,9 @@ export default function CheckListForm({
     likelihood: '',
   }));
 
+  console.log(`values.risks`, values.risks);
+  console.log(`generatedRisks`, generatedRisks);
+
   const allPrecedents = generatedRisks.reduce((allPrecedents, generatedRisk) => {
     const newPrecedents = generatedRisk.precedents.filter((precedent) =>
       allPrecedents.every(
@@ -149,6 +152,8 @@ export default function CheckListForm({
 
     return allPrecedents.concat(newPrecedents);
   }, []);
+
+  console.log(`allPrecedents`, allPrecedents);
 
   useEffect(() => {
     if (userIsOwner) {
