@@ -71,7 +71,7 @@ test.describe('Login', () => {
 
       await page.goto(magicLink);
 
-      await expect(page).toHaveURL(redirectTo);
+      await page.waitForURL(redirectTo, { timeout: 7000 });
     }
   );
 
