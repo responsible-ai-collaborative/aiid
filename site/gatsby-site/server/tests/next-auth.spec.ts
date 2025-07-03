@@ -139,7 +139,7 @@ describe('Auth', () => {
 
             expect(sendEmailMock).toHaveBeenCalledWith({
                 dynamicData: {
-                    magicLink: expect.stringMatching(/^http:\/\/localhost:8000\/api\/auth\/callback\/http-email\?callbackUrl=http%3A%2F%2Flocalhost%3A8000%2F&token=.+&email=test.user%40incidentdatabase.ai$/),
+                    magicLink: expect.stringMatching(/^<a href="http:\/\/localhost:8000\/magic-link\?link=http%3A%2F%2Flocalhost%3A8000%2Fapi%2Fauth%2Fcallback%2Fhttp-email.*<\/a>$/),
                 },
                 recipient: {
                     email: "test.user@incidentdatabase.ai",
@@ -188,7 +188,7 @@ describe('Auth', () => {
 
             expect(sendEmailMock).toHaveBeenCalledWith({
                 dynamicData: {
-                    magicLink: expect.stringMatching(/^http:\/\/localhost:8000\/api\/auth\/callback\/http-email\?callbackUrl=http%3A%2F%2Flocalhost%3A8000%2Fsome-path%2Fsome-page&token=.+&email=test.user%40incidentdatabase.ai$/),
+                    magicLink: expect.stringMatching(/^<a href="http:\/\/localhost:8000\/magic-link\?link=http%3A%2F%2Flocalhost%3A8000%2Fapi%2Fauth%2Fcallback%2Fhttp-email.*<\/a>$/),
                 },
                 recipient: {
                     email: "test.user@incidentdatabase.ai",
@@ -220,7 +220,7 @@ describe('Auth', () => {
 
             expect(sendEmailMock).toHaveBeenCalledWith({
                 dynamicData: {
-                    magicLink: expect.stringMatching(/^http:\/\/localhost:8000\/api\/auth\/callback\/http-email\?callbackUrl=http%3A%2F%2Flocalhost%3A8000%2F&token=.+&email=test.user%40incidentdatabase.ai$/),
+                    magicLink: expect.stringMatching(/^<a href="http:\/\/localhost:8000\/magic-link\?link=http%3A%2F%2Flocalhost%3A8000%2Fapi%2Fauth%2Fcallback%2Fhttp-email.*<\/a>$/),
                 },
                 recipient: {
                     email: "test.user@incidentdatabase.ai",
@@ -265,7 +265,7 @@ describe('Auth', () => {
 
             expect(sendEmailMock).toHaveBeenCalledWith({
                 dynamicData: {
-                    magicLink: expect.stringMatching(/^http:\/\/localhost:8000\/api\/auth\/callback\/http-email\?callbackUrl=http%3A%2F%2Flocalhost%3A8000%2F&token=.+&email=test.user%40incidentdatabase.ai$/),
+                    magicLink: expect.stringMatching(/^<a href="http:\/\/localhost:8000\/magic-link\?link=http%3A%2F%2Flocalhost%3A8000%2Fapi%2Fauth%2Fcallback%2Fhttp-email.*<\/a>$/),
                 },
                 recipient: {
                     email: "test.user@incidentdatabase.ai",
@@ -306,7 +306,7 @@ describe('Auth', () => {
 
             expect(sendEmailMock).toHaveBeenCalledWith({
                 dynamicData: {
-                    magicLink: expect.stringMatching(/^http:\/\/localhost:8000\/api\/auth\/callback\/http-email\?callbackUrl=http%3A%2F%2Flocalhost%3A8000%2Fsome-path%2Fsome-page&token=.+&email=test.user%40incidentdatabase.ai$/),
+                    magicLink: expect.stringMatching(/^<a href="http:\/\/localhost:8000\/magic-link\?link=http%3A%2F%2Flocalhost%3A8000%2Fapi%2Fauth%2Fcallback%2Fhttp-email.*<\/a>$/),
                 },
                 recipient: {
                     email: "test.user@incidentdatabase.ai",
