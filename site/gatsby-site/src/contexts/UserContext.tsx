@@ -52,6 +52,9 @@ const client = new ApolloClient({
       User: {
         keyFields: ['userId'],
       },
+      Subscription: {
+        keyFields: ['_id'],
+      },
     },
   }),
 });

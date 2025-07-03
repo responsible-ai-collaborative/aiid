@@ -57,9 +57,13 @@ export function testPages(paths: string[]) {
 
         await expect(page.locator('[rel="canonical"]')).toHaveAttribute('href', url);
         await expect(page.locator('[rel="alternate"]')).toHaveCount(6);
+        const defaultPath = switchLocalizedPath({ newLang: 'en', path });
+        
+        const defaultUrl = baseUrl + defaultPath;
+
         await expect(page.locator('[rel="alternate"][hrefLang="x-default"]')).toHaveAttribute(
           'href',
-          baseUrl
+          defaultUrl
         );
         await expect(page.locator('[rel="alternate"][type="application/rss+xml"]')).toHaveAttribute(
           'href',

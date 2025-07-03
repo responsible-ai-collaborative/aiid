@@ -149,7 +149,7 @@ const TaxonomyGraphCarousel = ({ namespace, axes, data }) => {
                       )}`}
                       className="h-96"
                     >
-                      <BillboardJS bb={bb} options={{ ...options }} />
+                      <BillboardJS bb={bb} options={{ ...options }} style={{ height: '20rem' }} />
                     </LocalizedLink>
                   </div>
                 );

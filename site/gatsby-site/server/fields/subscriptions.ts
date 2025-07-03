@@ -14,7 +14,7 @@ export const queryFields: GraphQLFieldConfigMap<any, Context> = {
 
 export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
 
-    ...generateMutationFields({ databaseName: 'customData', collectionName: 'subscriptions', Type: SubscriptionType, generateFields: ['deleteMany', 'updateOne', 'upsertOne'] }),
+    ...generateMutationFields({ databaseName: 'customData', collectionName: 'subscriptions', Type: SubscriptionType, generateFields: ['deleteMany', 'updateOne', 'upsertOne', 'deleteOne'] }),
 }
 
 export const permissions = {
@@ -23,6 +23,7 @@ export const permissions = {
         subscriptions: isSubscriptionOwner(),
     },
     Mutation: {
+        deleteOneSubscription: isSubscriptionOwner(),
         deleteManySubscriptions: isSubscriptionOwner(),
         updateOneSubscription: isSubscriptionOwner(),
         upsertOneSubscription: isSubscriptionOwner(),
