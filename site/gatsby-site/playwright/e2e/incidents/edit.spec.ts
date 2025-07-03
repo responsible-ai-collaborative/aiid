@@ -190,4 +190,149 @@ test.describe('Incidents', () => {
       ],
     });
   });
+
+  test("Should mark the incident translations as dirty if the incident's title is changed", async ({ page, login }) => {
+
+    await init();
+
+    await login();
+
+    await page.goto('/incidents/edit?incident_id=1');
+
+    await page.locator(`[name=title]`).fill('New Incident 1 Title');
+
+    await page.getByText('Save', { exact: true }).click();
+
+    await expect(page.locator('.tw-toast:has-text("Incident 1 updated successfully.")')).toBeVisible();
+
+    const { data } = await query({
+      query: gql`{
+        incident(filter: { incident_id: { EQ: 1 } }) {
+          incident_id
+          translations(languages: ["es", "fr", "ja"]) {
+            title
+            description
+            language
+            dirty
+          }
+        }
+      }`
+    });
+
+    expect(data.incident).toMatchObject({
+      incident_id: 1,
+      translations: [
+        {
+          language: "es",
+          title: "Título del Incidente 1",
+          description: "Descripción del incidente 1",
+          dirty: true,
+        },
+        {
+          language: "fr",
+          title: "Titre de l'incident 1",
+          description: "Description de l'incident 1",
+          dirty: true,
+        },
+        {
+          language: 'ja',
+          title: "",
+          description: "",
+          dirty: true,
+        },
+      ],
+    });
+  });
+
+  test("Should mark the incident translations as dirty if the incident's description is changed", async ({ page, login }) => {
+
+    await init();
+
+    await login();
+
+    await page.goto('/incidents/edit?incident_id=1');
+
+    await page.locator(`[name=description]`).fill('New Incident 1 Description');
+
+    await page.getByText('Save', { exact: true }).click();
+
+    await expect(page.locator('.tw-toast:has-text("Incident 1 updated successfully.")')).toBeVisible();
+
+    const { data } = await query({
+      query: gql`{
+        incident(filter: { incident_id: { EQ: 1 } }) {
+          incident_id
+          translations(languages: ["es", "fr", "ja"]) {
+            title
+            description
+            language
+            dirty
+          }
+        }
+      }`
+    });
+
+    expect(data.incident).toMatchObject({
+      incident_id: 1,
+      translations: [
+        {
+          language: "es",
+          title: "Título del Incidente 1",
+          description: "Descripción del incidente 1",
+          dirty: true,
+        },
+        {
+          language: "fr",
+          title: "Titre de l'incident 1",
+          description: "Description de l'incident 1",
+          dirty: true,
+        },
+        {
+          language: 'ja',
+          title: "",
+          description: "",
+          dirty: true,
+        },
+      ],
+    });
+  });
+
+  test("Should not mark the incident translations as dirty if the incident's title or description are not changed", async ({ page, login }) => {
+
+    await init();
+
+    await login();
+
+    await page.goto('/incidents/edit?incident_id=1');
+
+    await page.locator(`[name=editor_notes]`).fill('New Incident 1 Editor Notes');
+
+    await page.getByText('Save', { exact: true }).click();
+
+    await expect(page.locator('.tw-toast:has-text("Incident 1 updated successfully.")')).toBeVisible();
+
+    const { data } = await query({
+      query: gql`{
+        incident(filter: { incident_id: { EQ: 1 } }) {
+          incident_id
+          editor_notes
+          translations(languages: ["es"]) {
+            language
+            dirty
+          }
+        }
+      }`
+    });
+
+    expect(data.incident).toMatchObject({
+      incident_id: 1,
+      editor_notes: "New Incident 1 Editor Notes",
+      translations: [
+        {
+          language: "es",
+          dirty: false,
+        },
+      ],
+    });
+  });
 });

@@ -41,8 +41,8 @@ const RiskSections = ({
   // the id in openSections won't match anymore,
   // so we have to wrap the update funcion
   // to update the list of open sections if necessary.
-  updateRisk = (risk, attributeValueMap) => {
-    if (attributeValueMap.tags != risk.tags) {
+  updateRisk = (risk, attributeValueMap, risks) => {
+    if (attributeValueMap.tags) {
       setOpenSections((openSections) => {
         const result = [...openSections];
 
@@ -51,7 +51,7 @@ const RiskSections = ({
         return result;
       });
     }
-    bareUpdateRisk(risk, attributeValueMap);
+    bareUpdateRisk(risk, attributeValueMap, risks);
   };
 
   const riskSectionProps = {
@@ -64,6 +64,7 @@ const RiskSections = ({
     changeSort,
     updateRisk,
     userIsOwner,
+    allRisks: risks,
   };
 
   return (

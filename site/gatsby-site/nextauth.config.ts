@@ -30,6 +30,8 @@ export const getAuthConfig = async (req: any): Promise<NextAuthOptions> => {
         maxAge: 60 * 60 * 24, // Email link will expire in 24 hours
         async sendVerificationRequest({ identifier: email, url }: { identifier: string, url: string }) {
 
+          const interstitial = `${config.SITE_URL}/magic-link?link=${encodeURIComponent(url)}`;
+
           const user = await client.db('auth').collection('users').findOne({ email });
 
           if (user) {
@@ -38,7 +40,7 @@ export const getAuthConfig = async (req: any): Promise<NextAuthOptions> => {
               recipient: { email },
               subject: 'Secure link to log in to AIID',
               templateId: 'Login',
-              dynamicData: { magicLink: url },
+              dynamicData: { magicLink: `<a href="${interstitial}">${interstitial}</a>` },
             })
           }
           else {
@@ -47,7 +49,7 @@ export const getAuthConfig = async (req: any): Promise<NextAuthOptions> => {
               recipient: { email },
               subject: 'Secure link to create your AIID account',
               templateId: 'Signup',
-              dynamicData: { magicLink: url },
+              dynamicData: { magicLink: `<a href="${interstitial}">${interstitial}</a>` },
             })
           }
         }

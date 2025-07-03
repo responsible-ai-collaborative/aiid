@@ -11,6 +11,7 @@ import { replacePlaceholdersWithAllowedKeys } from '../emails';
 import { processBriefingNotifications } from '../../src/scripts/process-briefing-notifications';
 import * as prismic from '@prismicio/client';
 import * as userCacheManager from '../fields/userCacheManager';
+import nunjucks from 'nunjucks';
 
 jest.mock('@prismicio/client', () => ({
   createClient: jest.fn().mockReturnValue({
@@ -612,6 +613,129 @@ describe(`Briefing Notifications`, () => {
     }));
 
     expect(result).toBe(1);
+  });
+
+  it('Should not render image div if reportImageUrl is empty or null', async () => {
+    const notifications: DBNotification[] = [
+      {
+        processed: false,
+        type: 'ai-briefing',
+        incident_id: 1,
+      },
+    ];
+
+    const subscriptions: DBSubscription[] = [
+      {
+        type: 'ai-briefing',
+        userId: '5f8f4b3b9b3e6f001f3b3b3b',
+      },
+    ];
+
+    const users: DBUser[] = [
+      {
+        userId: '5f8f4b3b9b3e6f001f3b3b3b',
+        roles: ['admin'],
+      },
+    ];
+
+    const entities: DBEntity[] = [
+      {
+        entity_id: 'entity-1',
+        name: 'Entity 1',
+      },
+    ];
+
+    const incidents: Partial<DBIncident>[] = [
+      {
+        incident_id: 1,
+        title: 'Incident 1',
+        description: 'Incident 1 description',
+        "Alleged deployer of AI system": [],
+        "Alleged developer of AI system": [],
+        "Alleged harmed or nearly harmed parties": [],
+        date: new Date().toISOString(),
+        editors: [],
+        reports: [1],
+        implicated_systems: [],
+      },
+    ];
+
+    const reports: DBReport[] = [
+      {
+        report_number: 1,
+        title: 'Report 1',
+        description: 'Report 1 description',
+        authors: [],
+        cloudinary_id: '',
+        date_downloaded: new Date().toISOString(),
+        date_modified: new Date().toISOString(),
+        date_published: new Date().toISOString(),
+        date_submitted: new Date().toISOString(),
+        epoch_date_downloaded: 1,
+        epoch_date_modified: 1,
+        epoch_date_published: 1,
+        epoch_date_submitted: 1,
+        image_url: '',
+        language: 'en',
+        plain_text: 'plain_text',
+        source_domain: 'source_domain',
+        submitters: [],
+        tags: [],
+        text: 'text',
+        url: 'url',
+        user: 'user_id',
+      },
+    ];
+
+    await seedFixture({
+      customData: {
+        users,
+        notifications,
+        subscriptions,
+      },
+      aiidprod: {
+        incidents,
+        entities,
+        reports,
+      },
+      auth: {
+        users: [
+          {
+            _id: new ObjectId('5f8f4b3b9b3e6f001f3b3b3b'),
+            email: 'test@test.com',
+            roles: ['admin'],
+          },
+        ],
+      },
+    });
+
+    const mockGetAllByType = jest.fn().mockImplementation((documentType) => {
+      if (documentType === 'blog') {
+        return Promise.resolve([] as any);
+      }
+      if (documentType === 'update') {
+        return Promise.resolve([] as any);
+      }
+      return Promise.resolve([]);
+    });
+
+    (prismic.createClient as jest.Mock).mockReturnValue({
+      getAllByType: mockGetAllByType,
+    });
+
+    mockSession('5f8f4b3b9b3e6f001f3b3b3b');
+
+    const sendEmailMock = jest.spyOn(emails, 'sendBulkEmails').mockResolvedValue();
+
+    await processBriefingNotifications();
+
+    expect(sendEmailMock).toHaveBeenCalledTimes(1);
+    const dynamicData = sendEmailMock.mock.calls[0][0].dynamicData;
+    const renderedHtml = nunjucks.renderString(
+      templates.AIIncidentBriefing,
+      dynamicData || {}
+    );
+    expect(renderedHtml).not.toContain('alt="First Report Image"');
   });
 
   it('Should not crash if no recipients found', async () => {
