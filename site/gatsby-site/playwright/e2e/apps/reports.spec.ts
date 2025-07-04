@@ -47,9 +47,15 @@ test.describe('Reports App', () => {
 
       // Check image
       if (report.cloudinary_id) {
-        const image = reportCard.locator('img').first();
-        const src = await image.getAttribute('src');
-        expect(src).toMatch(new RegExp(`https://res.cloudinary.com/pai/image/upload/f_auto/q_auto/c_fill,h_480/(v1/)?${report.cloudinary_id}`));
+        //Wait for data-testid="cloudinary-image-skeleton" to be not visible (It means the image has loaded successfully or fallback is displayed)
+        await expect(reportCard.getByTestId('cloudinary-image-skeleton')).not.toBeVisible();
+        // Checks if placeholder exists, to know if the image has loaded successfully
+        const placeHolderExists = await reportCard.locator('[data-cy="cloudinary-image-placeholder"]').isVisible();
+        if (!placeHolderExists) {
+          const image = reportCard.locator('[data-cy="cloudinary-image"]').first();
+          const src = await image.getAttribute('src');
+          expect(src).toMatch(new RegExp(`https://res.cloudinary.com/pai/image/upload/f_auto/q_auto/c_fill,h_480/(v1/)?${report.cloudinary_id}`));
+        }
       }
 
       // Check text content
