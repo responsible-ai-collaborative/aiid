@@ -31,6 +31,8 @@ const Image = ({
 
   const [loadFailed, setLoadFailed] = useState(!publicID || publicID.includes('placeholder.svg'));
 
+  const [isPlaceholderLoaded, setIsPlaceholderLoaded] = useState(false);
+
   const prevPublicID = useRef(publicID);
 
   useEffect(() => {
@@ -85,37 +87,49 @@ const Image = ({
   image.transformation = tmpImage.transformation.toString();
 
   const showSkeleton =
-    !isLoaded && !loadFailed && publicID && !publicID.includes('placeholder.svg');
+    !isLoaded &&
+    !loadFailed &&
+    publicID &&
+    !publicID.includes('placeholder.svg') &&
+    !isPlaceholderLoaded;
+
+  if (publicID.includes('legacy/d41d8cd98f00b204e9800998ecf8427e')) {
+    console.log('showSkeleton', showSkeleton, isLoaded, loadFailed, isPlaceholderLoaded, publicID);
+  }
 
   return (
-    <div data-cy="cloudinary-image-wrapper" className="h-full w-full aspect-[16/9]">
-      {showSkeleton && (
-        <ImageSkeleton
-          className={`${className} h-full w-full object-cover`}
-          height={height}
-          style={style}
-          data-cy="cloudinary-image-skeleton"
-        />
-      )}
+    <div data-cy="cloudinary-image-wrapper" className="relative h-full w-full aspect-[16/9]">
+      <ImageSkeleton
+        className={`${className} h-full w-full object-cover absolute inset-0`}
+        height={height}
+        style={style}
+        data-cy="cloudinary-image-skeleton"
+      />
       <PlaceholderImage
         siteName="IncidentDatabase.AI"
         itemIdentifier={itemIdentifier}
         title={alt}
         className={`${className} ${
           (!publicID || publicID === '' || loadFailed) && !showSkeleton ? '' : 'hidden'
-        } h-full w-full object-cover`}
+        } h-full w-full object-cover absolute inset-0`}
         height={height}
         style={style}
         data-cy="cloudinary-image-placeholder"
-        onLoad={() => setIsLoaded(true)}
-        onError={() => setIsLoaded(true)}
+        onLoad={() => {
+          // setIsLoaded(true);
+          setIsPlaceholderLoaded(true);
+        }}
+        onError={() => {
+          // setIsLoaded(true);
+          setLoadFailed(true);
+        }}
       />
       <AdvancedImage
         data-cy="cloudinary-image"
         alt={alt}
         className={`${className} ${
           !publicID || publicID === '' || loadFailed || showSkeleton ? 'hidden' : ''
-        } h-full w-full object-cover`}
+        } h-full w-full object-cover absolute inset-0`}
         cldImg={image}
         plugins={plugins}
         style={style}
