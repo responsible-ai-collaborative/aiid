@@ -146,4 +146,26 @@ const Image = ({
   );
 };
 
+// Defensive CSS to hide broken images
+if (typeof window !== 'undefined') {
+  const styleId = 'cloudinary-hide-broken-img';
+
+  if (!document.getElementById(styleId)) {
+    const style = document.createElement('style');
+
+    style.id = styleId;
+    style.innerHTML = `
+      [data-cy="cloudinary-image-wrapper"] img:not([src]),
+      [data-cy="cloudinary-image-wrapper"] img[src=""],
+      [data-cy="cloudinary-image-wrapper"] img[src][src^="blob:"] {
+        display: none !important;
+      }
+      [data-cy="cloudinary-image-wrapper"] img:invalid {
+        display: none !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+}
+
 export { getCloudinaryPublicID, Image };
