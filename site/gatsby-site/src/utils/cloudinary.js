@@ -8,12 +8,10 @@ import config from '../../config';
 import PlaceholderImage from 'components/PlaceholderImage';
 import ImageSkeleton from '../elements/Skeletons/Image';
 
+// Utility to get Cloudinary public ID from a URL
 const getCloudinaryPublicID = (url) => {
   // https://cloudinary.com/documentation/fetch_remote_images#auto_upload_remote_files
-
-  const publicID = 'reports/' + url.replace(/^https?:\/\//, '');
-
-  return publicID;
+  return 'reports/' + url.replace(/^https?:\/\//, '');
 };
 
 const Image = ({
@@ -27,12 +25,14 @@ const Image = ({
   itemIdentifier,
   onImageLoaded = (_loadFailed) => {}, // eslint-disable-line no-unused-vars
 }) => {
+  // State for image loading and error
   const [isLoaded, setIsLoaded] = useState(false);
 
   const [loadFailed, setLoadFailed] = useState(!publicID || publicID.includes('placeholder.svg'));
 
   const [isPlaceholderLoaded, setIsPlaceholderLoaded] = useState(false);
 
+  // Track previous publicID to reset state on change
   const prevPublicID = useRef(publicID);
 
   useEffect(() => {
@@ -46,6 +46,7 @@ const Image = ({
   // Preflight check: only for non-placeholder images, only when not loaded/failed
   useEffect(() => {
     if (!publicID || publicID.includes('placeholder.svg') || isLoaded || loadFailed) return;
+
     const image = new CloudinaryImage(publicID, { cloudName: config.cloudinary.cloudName });
 
     image.delivery(format(auto())).delivery(quality(qAuto()));
@@ -73,6 +74,7 @@ const Image = ({
     };
   }, [publicID, isLoaded, loadFailed]);
 
+  // Notify parent when image load fails
   useEffect(() => {
     onImageLoaded(loadFailed);
   }, [loadFailed, onImageLoaded]);
@@ -86,16 +88,13 @@ const Image = ({
   if (transformation) tmpImage.addTransformation(transformation);
   image.transformation = tmpImage.transformation.toString();
 
+  // Show skeleton if image is loading and not failed/placeholder
   const showSkeleton =
     !isLoaded &&
     !loadFailed &&
     publicID &&
     !publicID.includes('placeholder.svg') &&
     !isPlaceholderLoaded;
-
-  if (publicID.includes('legacy/d41d8cd98f00b204e9800998ecf8427e')) {
-    console.log('showSkeleton', showSkeleton, isLoaded, loadFailed, isPlaceholderLoaded, publicID);
-  }
 
   return (
     <div data-cy="cloudinary-image-wrapper" className="relative h-full w-full aspect-[16/9]">
@@ -116,34 +115,46 @@ const Image = ({
         style={style}
         data-cy="cloudinary-image-placeholder"
         onLoad={() => {
-          // setIsLoaded(true);
           setIsPlaceholderLoaded(true);
         }}
         onError={() => {
-          // setIsLoaded(true);
           setLoadFailed(true);
         }}
       />
-      <AdvancedImage
-        data-cy="cloudinary-image"
-        alt={alt}
-        className={`${className} ${
-          !publicID || publicID === '' || loadFailed || showSkeleton ? 'hidden' : ''
-        } h-full w-full object-cover absolute inset-0`}
-        cldImg={image}
-        plugins={plugins}
-        style={style}
-        onError={() => {
-          setIsLoaded(true);
-          setLoadFailed(true);
-        }}
-        onLoad={() => {
-          setIsLoaded(true);
-          setLoadFailed(false);
-        }}
-      />
+      {isLoaded && !loadFailed && publicID && publicID !== '' && (
+        <AdvancedImage
+          data-cy="cloudinary-image"
+          alt={alt}
+          className={`${className} h-full w-full object-cover absolute inset-0`}
+          cldImg={image}
+          plugins={plugins}
+          style={style}
+        />
+      )}
     </div>
   );
 };
+
+// Defensive CSS to hide broken images
+if (typeof window !== 'undefined') {
+  const styleId = 'cloudinary-hide-broken-img';
+
+  if (!document.getElementById(styleId)) {
+    const style = document.createElement('style');
+
+    style.id = styleId;
+    style.innerHTML = `
+      [data-cy="cloudinary-image-wrapper"] img:not([src]),
+      [data-cy="cloudinary-image-wrapper"] img[src=""],
+      [data-cy="cloudinary-image-wrapper"] img[src][src^="blob:"] {
+        display: none !important;
+      }
+      [data-cy="cloudinary-image-wrapper"] img:invalid {
+        display: none !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+}
 
 export { getCloudinaryPublicID, Image };
