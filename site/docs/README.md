@@ -32,6 +32,10 @@ Details about the frontend development process, including the use of Tailwind CS
 
 Details about the AIID API, including how to access and interact with it, and information on email notifications.
 
+10. [Prismic setup](prismic.md)
+
+Guide to connect a Prismic account to this project, to create Documents, Blog posts and much more.
+
 ## Getting Help
 
 1. Open issues on [GitHub](https://github.com/responsible-ai-collaborative/aiid/issues)
