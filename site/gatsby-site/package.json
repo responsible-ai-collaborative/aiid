@@ -30,6 +30,7 @@
     "@postlight/parser": "^2.2.3",
     "@prismicio/react": "^2.7.1",
     "@sentry/aws-serverless": "^8.54.0",
+    "@sentry/cli": "^2.46.0",
     "algoliasearch": "^4.20.0",
     "async": "^3.2.2",
     "billboard.js": "^3.7.4",
@@ -138,7 +139,7 @@
   "main": "n/a",
   "scripts": {
     "start": "netlify dev -c \"gatsby develop -p 7999\" --target-port 7999 --port 8000 --offline --no-open",
-    "build": "npm run codegen && netlify build --offline --context=${npm_config_context:-branch-deploy}",
+    "build": "npm run codegen && netlify build --offline --context=${npm_config_context:-branch-deploy} && npm run sentry:sourcemaps",
     "format": "prettier --write \"{src,page-creators,pages,constants}/**/*.{js,jsx,css,json}\"",
     "lint": "eslint --fix \"{src,page-creators,pages,constants}/**/*.{js,jsx}\"",
     "serve": "netlify dev --target-port 9000 --port 8000 -d public --offline",
@@ -162,7 +163,8 @@
     "generate-oecd-relationships": "npx tsx --env-file=.env src/scripts/import-oecd-relationships.ts",
     "algolia-update": "npx tsx --env-file=.env src/scripts/algolia-update.ts",
     "algolia-update:ci": "npx tsx src/scripts/algolia-update.ts",
-    "db:migrator": "npx tsx migrator"
+    "db:migrator": "npx tsx migrator",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org aiid --project aiid ./netlify && sentry-cli sourcemaps upload --org aiid --project aiid ./netlify"
   },
   "devDependencies": {
     "@babel/plugin-proposal-export-default-from": "^7.23.3",

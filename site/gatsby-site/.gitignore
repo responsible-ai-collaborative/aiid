@@ -15,3 +15,6 @@ node_modules
 
 /netlify/functions/lookupIndex.json
 /static/lookupIndex.json
+
+# Sentry Config File
+.sentryclirc
