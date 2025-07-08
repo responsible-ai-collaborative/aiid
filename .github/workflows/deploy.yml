@@ -139,6 +139,7 @@ jobs:
           NOTIFICATIONS_SENDER_NAME: dummy
           NOTIFICATIONS_SENDER: dummy
           GOOGLE_TRANSLATE_API_KEY: dummy
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
       - name: Update Algolia indexes
         if: inputs.netlify-context == 'production' && inputs.netlify-alias == ''
