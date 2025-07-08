@@ -164,7 +164,7 @@
     "algolia-update": "npx tsx --env-file=.env src/scripts/algolia-update.ts",
     "algolia-update:ci": "npx tsx src/scripts/algolia-update.ts",
     "db:migrator": "npx tsx migrator",
-    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org aiid --project aiid site/gatsby-site/.netlify && sentry-cli sourcemaps upload --org aiid --project aiid site/gatsby-site/.netlify"
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org aiid --project aiid ./.netlify && sentry-cli sourcemaps upload --org aiid --project aiid ./.netlify"
   },
   "devDependencies": {
     "@babel/plugin-proposal-export-default-from": "^7.23.3",
