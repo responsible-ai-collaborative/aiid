@@ -1,5 +1,3 @@
-import { expect as playwrightExpect } from '@playwright/test';
-import { expect as jestExpect } from '@jest/globals';
 import axios from 'axios';
 
 jest.mock('axios');
@@ -26,8 +24,8 @@ describe('Prismic Webhook Function', () => {
 
         const response = await handler(event);
 
-        playwrightExpect(response.statusCode).toBe(405);
-        playwrightExpect(JSON.parse(response.body).error).toBe('Method not allowed');
+        expect(response.statusCode).toBe(405);
+        expect(JSON.parse(response.body).error).toBe('Method not allowed');
     });
 
     test('Should reject invalid secret', async () => {
@@ -43,8 +41,8 @@ describe('Prismic Webhook Function', () => {
 
         const response = await handler(event);
 
-        playwrightExpect(response.statusCode).toBe(401);
-        playwrightExpect(JSON.parse(response.body).error).toBe('Unauthorized: Invalid secret');
+        expect(response.statusCode).toBe(401);
+        expect(JSON.parse(response.body).error).toBe('Unauthorized: Invalid secret');
     });
 
     test('Should reject invalid environment', async () => {
@@ -60,8 +58,8 @@ describe('Prismic Webhook Function', () => {
 
         const response = await handler(event);
 
-        playwrightExpect(response.statusCode).toBe(400);
-        playwrightExpect(JSON.parse(response.body).error).toBe('Invalid environment specified');
+        expect(response.statusCode).toBe(400);
+        expect(JSON.parse(response.body).error).toBe('Invalid environment specified');
     });
 
     test('Should reject missing PRISMIC_SECRET', async () => {
@@ -79,8 +77,8 @@ describe('Prismic Webhook Function', () => {
 
         const response = await handler(event);
 
-        playwrightExpect(response.statusCode).toBe(500);
-        playwrightExpect(JSON.parse(response.body).error).toBe('Server misconfiguration: PRISMIC_SECRET is not set.');
+        expect(response.statusCode).toBe(500);
+        expect(JSON.parse(response.body).error).toBe('Server misconfiguration: PRISMIC_SECRET is not set.');
         process.env.PRISMIC_SECRET = PRISMIC_SECRET_TEST;
     });
 
@@ -97,9 +95,9 @@ describe('Prismic Webhook Function', () => {
 
         const response = await handler(event);
 
-        playwrightExpect(response.statusCode).toBe(200);
-        playwrightExpect(JSON.parse(response.body).success).toBe('GitHub Action triggered successfully!');
-        jestExpect(mockedAxios.post).toHaveBeenCalledWith(
+        expect(response.statusCode).toBe(200);
+        expect(JSON.parse(response.body).success).toBe('GitHub Action triggered successfully!');
+        expect(mockedAxios.post).toHaveBeenCalledWith(
             expect.stringContaining('/actions/workflows/production.yml/dispatches'),
             expect.objectContaining({
                 inputs: { 'skip-cache': true },
@@ -127,9 +125,9 @@ describe('Prismic Webhook Function', () => {
 
         const response = await handler(event);
 
-        playwrightExpect(response.statusCode).toBe(200);
-        playwrightExpect(JSON.parse(response.body).success).toBe('GitHub Action triggered successfully!');
-        jestExpect(mockedAxios.post).toHaveBeenCalledWith(
+        expect(response.statusCode).toBe(200);
+        expect(JSON.parse(response.body).success).toBe('GitHub Action triggered successfully!');
+        expect(mockedAxios.post).toHaveBeenCalledWith(
             expect.stringContaining('/actions/workflows/staging.yml/dispatches'),
             expect.objectContaining({
                 inputs: { 'skip-cache': true },
@@ -159,7 +157,7 @@ describe('Prismic Webhook Function', () => {
 
         const response = await handler(event);
 
-        playwrightExpect(response.statusCode).toBe(500);
-        playwrightExpect(JSON.parse(response.body).error).toBe('Failed to trigger GitHub Action.');
+        expect(response.statusCode).toBe(500);
+        expect(JSON.parse(response.body).error).toBe('Failed to trigger GitHub Action.');
     });
 });
