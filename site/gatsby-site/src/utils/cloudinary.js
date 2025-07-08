@@ -31,10 +31,13 @@ const Image = ({
 
   const [imageFailed, setImageFailed] = useState(false);
 
+  const [placeholderLoaded, setPlaceholderLoaded] = useState(false);
+
   // Reset state when publicID changes
   useEffect(() => {
     setImageLoaded(false);
     setImageFailed(false);
+    setPlaceholderLoaded(false);
   }, [publicID]);
 
   // Prepare Cloudinary image for AdvancedImage
@@ -46,8 +49,8 @@ const Image = ({
   if (transformation) tmpImage.addTransformation(transformation);
   image.transformation = tmpImage.transformation.toString();
 
-  // Show skeleton until image loads or fails
-  const showSkeleton = !imageLoaded && !imageFailed;
+  // Show skeleton until image loads or fails and placeholder is loaded
+  const showSkeleton = !imageLoaded && (!imageFailed || (imageFailed && !placeholderLoaded));
 
   return (
     <div data-cy="cloudinary-image-wrapper" className="relative h-full w-full aspect-[16/9]">
@@ -68,17 +71,32 @@ const Image = ({
           height={height}
           style={style}
           data-cy="cloudinary-image-placeholder"
+          onLoad={() => {
+            setPlaceholderLoaded(true);
+            onImageLoaded(false);
+          }}
+          onError={() => {
+            setPlaceholderLoaded(false);
+            onImageLoaded(true);
+          }}
         />
       )}
       <AdvancedImage
         data-cy="cloudinary-image"
         alt={alt}
-        className={`${className} h-full w-full object-cover absolute inset-0 ${
-          imageLoaded && !imageFailed ? '' : 'hidden'
-        }`}
+        className={`
+          ${className}
+          h-full w-full object-cover absolute inset-0
+          transition-opacity duration-300
+          ${imageLoaded && !imageFailed ? 'opacity-100' : 'opacity-0'}
+        `}
         cldImg={image}
         plugins={plugins}
-        style={style}
+        style={{
+          ...style,
+          opacity: imageLoaded && !imageFailed ? 1 : 0,
+          transition: 'opacity 0.3s',
+        }}
         onError={() => {
           setImageFailed(true);
           onImageLoaded(true);
