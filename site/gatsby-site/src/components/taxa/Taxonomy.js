@@ -21,15 +21,22 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
 
   const { hasLong, topClassifications } = getTopClassifications({ taxonomy });
 
-  const singleColumn = hasLong || showAllClassifications;
+  const singleColumn = hasLong || showAllClassifications || topClassifications.length % 2 == 1;
 
   const colorSchemes = {
     blue: {
       textColor: 'text-blue-900',
       borderColor: 'border-blue-200',
       keyBackround: 'bg-blue-100',
-      valueBackgroundEven: 'bg-[#f6faff]', // A little bit lighter than blue-50
-      valueBackgroundOdd: 'bg-blue-50',
+      valueBackground: [
+        'bg-[#f6faff]', // Odd Rows, single column
+        '[&:nth-child(4n)]:bg-blue-50', // Even rows, single column
+
+        'lg:[&:nth-child(4n)]:bg-[#f6faff]', // Odd rows, two-column
+        'lg:[&:nth-child(8n)]:bg-blue-50', // Even rows, two-column, left
+        'lg:[&:nth-child(8n+6)]:bg-blue-50', // Even rows, two-column, right
+      ].join(' '),
+      valueBackgroundSingleColumn: 'bg-[#f6faff] [&:nth-child(4n)]:bg-blue-50',
     },
     orange: {
       textColor: 'text-orange-800',
@@ -37,13 +44,29 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
       keyBackround: 'bg-orange-100',
       valueBackgroundEven: 'bg-[#fffcf9]', // A little bit lighter than orange-50
       valueBackgroundOdd: 'bg-orange-50',
+      valueBackground: [
+        'bg-[#fffcf9]', // Odd Rows, single column
+        '[&:nth-child(4n)]:bg-orange-50', // Even rows, single column
+
+        'lg:[&:nth-child(4n)]:bg-[#fffcf9]', // Odd rows, two-column
+        'lg:[&:nth-child(8n)]:bg-orange-50', // Even rows, two-column, left
+        'lg:[&:nth-child(8n+6)]:bg-orange-50', // Even rows, two-column, right
+      ].join(' '),
+      valueBackgroundSingleColumn: 'bg-[#fffcf9] [&:nth-child(4n)]:bg-orange-50',
     },
     gray: {
       textColor: 'text-gray-600',
       borderColor: 'border-gray-200',
       keyBackround: 'bg-gray-100',
-      valueBackgroundEven: 'bg-gray-50',
-      valueBackgroundOdd: '',
+      valueBackground: [
+        'bg-white', // Odd Rows, single column
+        '[&:nth-child(4n)]:bg-gray-50', // Even rows, single column
+
+        'lg:[&:nth-child(4n)]:bg-white', // Odd rows, two-column
+        'lg:[&:nth-child(8n)]:bg-gray-50', // Even rows, two-column, left
+        'lg:[&:nth-child(8n+6)]:bg-gray-50', // Even rows, two-column, right
+      ].join(' '),
+      valueBackgroundSingleColumn: 'bg-white [&:nth-child(4n)]:bg-gray-50',
     },
   };
 
@@ -120,7 +143,11 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
               <div
                 className={`
                 grid
-                ${singleColumn ? 'grid-cols-[1fr_3fr]' : 'lg:grid-cols-[repeat(4,_auto)]'}
+                ${
+                  singleColumn
+                    ? 'grid-cols-[1fr_3fr]'
+                    : 'grid-cols-[repeat(2,_auto)] lg:grid-cols-[repeat(4,_auto)]'
+                }
               `}
               >
                 {['dummy-notes']
@@ -150,8 +177,6 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
                       ? i == topClassifications.length - 1
                       : i > topClassifications.length - 3;
 
-                    const isEven = singleColumn ? i % 2 : i % 4 > 1;
-
                     return (
                       <>
                         <div
@@ -178,9 +203,9 @@ const Taxonomy = ({ taxonomy, incidentId, reportNumber, canEdit, initialEditing 
                           className={`
                           border-1 ${colorScheme.borderColor} pl-4 pr-2
                           ${
-                            isEven
-                              ? colorScheme.valueBackgroundEven
-                              : colorScheme.valueBackgroundOdd
+                            singleColumn
+                              ? colorScheme.valueBackgroundSingleColumn
+                              : colorScheme.valueBackground
                           }
                           ${isFirst ? 'border-t-0' : ''}
                           ${isLast ? 'border-b-0' : ''}
