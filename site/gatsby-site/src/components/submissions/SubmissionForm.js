@@ -375,6 +375,7 @@ const SubmissionForm = ({ onChange = null, promoType = null }) => {
           </div>
           <div className="mt-1">
             <Checkbox
+              name="quiet"
               checked={values.quiet}
               onChange={(e) => {
                 setFieldValue('quiet', e.target.checked);
