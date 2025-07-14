@@ -379,7 +379,7 @@ const SubmissionForm = ({ onChange = null, promoType = null }) => {
               checked={values.quiet}
               onChange={(e) => {
                 setFieldValue('quiet', e.target.checked);
-                handleSubmit();
+                setFieldTouched('quiet', true);
               }}
             />
           </div>
