@@ -377,9 +377,14 @@ const SubmissionForm = ({ onChange = null, promoType = null }) => {
             <Checkbox
               name="quiet"
               checked={values.quiet}
-              onChange={(e) => {
+              // onChange={(e) => {
+              //   setFieldValue('quiet', e.target.checked);
+              //   // e.preventDefault();
+              //   // handleSubmit();
+              // }}
+              onClick={(e) => {
+                // e.preventDefault();
                 setFieldValue('quiet', e.target.checked);
-                handleSubmit();
               }}
             />
           </div>
