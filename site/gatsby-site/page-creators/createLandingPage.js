@@ -23,6 +23,8 @@ const createLandingPage = async (graphql, createPage) => {
             title
             url
             language
+            is_incident_report
+            quiet
           }
         }
       }
@@ -63,14 +65,19 @@ const createLandingPage = async (graphql, createPage) => {
     }
   `);
 
-  const latestIncidents = result.data.latestIncidents.nodes;
+  const latestIncidents = result.data.latestIncidents.nodes.map((node) => {
+    const filteredReports = node.reports
+      .filter((r) => r.is_incident_report && !r.quiet)
+      .sort((a, b) => a.epoch_date_submitted - b.epoch_date_submitted);
 
-  const latestIncidentsReportNumbers = result.data.latestIncidents.nodes.map((node) => {
-    const sortedArray = node.reports.sort((a, b) => {
-      return a.epoch_date_submitted - b.epoch_date_submitted;
-    });
+    return {
+      ...node,
+      reports: filteredReports,
+    };
+  });
 
-    return sortedArray[0].report_number;
+  const latestIncidentsReportNumbers = latestIncidents.map((node) => {
+    return node.reports[0].report_number;
   });
 
   createPage({
