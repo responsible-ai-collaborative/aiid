@@ -39,7 +39,6 @@ export default function Hits({ ...props }) {
       : VIEW_TYPES.REPORTS;
   }, [indexUiState]);
 
-  // Track if we've ever loaded results
   const hasLoadedOnce = useRef(false);
 
   useEffect(() => {

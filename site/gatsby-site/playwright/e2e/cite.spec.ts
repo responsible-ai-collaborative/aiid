@@ -637,7 +637,7 @@ test.describe('Cite pages', () => {
         expect(graphqlCalls).toHaveLength(0);
     });
 
-    test('Should query user subscriptions when logged in', async ({ page, login }: { page: any, login: any }) => {
+    test('Should query user subscriptions when logged in', async ({ page, login }) => {
 
         await init();
 

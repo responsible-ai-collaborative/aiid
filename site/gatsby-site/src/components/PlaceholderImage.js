@@ -124,9 +124,7 @@ export default function PlaceholderImage({
         onLoad();
       }
     } catch (err) {
-      // Handle the error: log, report, or call a callback
       console.error('Error in PlaceholderImage useEffect:', err);
-      // Optionally, you could call a prop like onError if you want to handle it upstream
       if (onError) {
         onError(err);
       }

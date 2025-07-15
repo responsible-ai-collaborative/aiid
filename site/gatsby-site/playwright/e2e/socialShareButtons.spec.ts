@@ -70,7 +70,7 @@ test.describe('Social Share Buttons', () => {
       const expectedUrlPart = `shareArticle%2F%3Furl%3D${encodeURIComponent(canonicalUrl)}`;
 
       await expect(async () => {
-        const popupPromise = page.waitForEvent('popup', { timeout: 5000 });
+        const popupPromise = page.waitForEvent('popup', { timeout: 2000 });
         await linkedInButton.first().click();
         const popup = await popupPromise;
         await popup.waitForURL((url) => {
@@ -104,7 +104,7 @@ test.describe('Social Share Buttons', () => {
       const expectedUrlPart = `u=${canonicalUrl}`;
 
       await expect(async () => {
-        const popupPromise = page.waitForEvent('popup', { timeout: 4000 });
+        const popupPromise = page.waitForEvent('popup', { timeout: 2000 });
         await facebookButton.first().click();
         const popup = await popupPromise;
         await popup.waitForURL((url) => {
