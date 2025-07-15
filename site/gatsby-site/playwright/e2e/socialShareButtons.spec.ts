@@ -52,7 +52,7 @@ test.describe('Social Share Buttons', () => {
       await page.waitForLoadState('networkidle');
 
       await expect(async () => {
-        const popupPromise = page.waitForEvent('popup', { timeout: 4000 });
+        const popupPromise = page.waitForEvent('popup', { timeout: 2000 });
         await twitterButton.first().click();
         const popup = await popupPromise;
         await popup.waitForURL(/https:\/\/x\.com\/intent\/post\?text=.*/, { timeout: 1000 });
