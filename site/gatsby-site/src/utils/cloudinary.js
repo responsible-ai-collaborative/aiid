@@ -73,7 +73,7 @@ const Image = ({
           data-cy="cloudinary-image-placeholder"
           onLoad={() => {
             setPlaceholderLoaded(true);
-            onImageLoaded(false);
+            onImageLoaded(true);
           }}
           onError={() => {
             setPlaceholderLoaded(false);

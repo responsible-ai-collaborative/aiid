@@ -590,5 +590,7 @@
   "Submission Queue": "登録待ち一覧",
   "Sign Up": "サインアップ",
   "See in OECD AIM": "OECD AIMで表示",
-  "The OECD AI Incidents and Hazards Monitor (AIM) automatically collects and classifies AI-related incidents and hazards in real time from reputable news sources worldwide.": "OECD AIインシデントおよびハザードモニター（AIM）は、世界中の信頼できるニュースソースからリアルタイムでAI関連のインシデントやハザードを自動的に収集・分類します。"
+  "The OECD AI Incidents and Hazards Monitor (AIM) automatically collects and classifies AI-related incidents and hazards in real time from reputable news sources worldwide.": "OECD AIインシデントおよびハザードモニター（AIM）は、世界中の信頼できるニュースソースからリアルタイムでAI関連のインシデントやハザードを自動的に収集・分類します。",
+  "Image could not be loaded. The URL may be invalid, or the image host may block external access. Using fallback image.": "画像を読み込めませんでした。URLが無効か、画像ホストが外部アクセスをブロックしている可能性があります。フォールバック画像を使用しています。"
+
 }

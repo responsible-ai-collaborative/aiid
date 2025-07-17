@@ -63,7 +63,10 @@ export default function PreviewImageInputGroup({
       {imageLoadedFailed && touched[name] && (
         <span className="text-sm text-orange-600 italic">
           <FontAwesomeIcon icon={faExclamationTriangle} />{' '}
-          <Trans>Image URL is invalid, using fallback image</Trans>
+          <Trans>
+            Image could not be loaded. The URL may be invalid, or the image host may block external
+            access. Using fallback image.
+          </Trans>
         </span>
       )}
       <figure
