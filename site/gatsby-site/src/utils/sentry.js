@@ -1,5 +1,4 @@
 import * as Sentry from '@sentry/react';
-import React from 'react';
 
 const environment = process.env.GATSBY_SENTRY_ENVIRONMENT || 'development';
 
@@ -22,18 +21,12 @@ if (typeof window !== 'undefined' && process.env.GATSBY_SENTRY_DSN) {
           /\/api\/semanticallyRelated/,
           /\/netlify\/functions/,
         ],
-        //Automatically capture page views and navigation
-        routingInstrumentation: Sentry.reactRouterV6Instrumentation(
-          React.useEffect,
-          () => window.location,
-          () => window.history
-        ),
       }),
     ],
     // Performance Monitoring
-    tracesSampleRate: environment === 'production' ? 0.1 : 1.0,
+    tracesSampleRate: 1.0,
     // Session Replay
-    replaysSessionSampleRate: environment === 'production' ? 0.01 : 0.1,
+    replaysSessionSampleRate: 0.1,
     replaysOnErrorSampleRate: 1.0,
     // Debug mode for development
     debug: environment === 'development',
