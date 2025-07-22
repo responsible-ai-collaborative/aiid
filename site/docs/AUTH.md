@@ -26,63 +26,88 @@ MongoDBAdapter.ts           # Custom MongoDB adapter (copied from @auth/mongodb-
 ### 1. Magic Link Authentication
 The system uses **passwordless authentication** with magic links:
 
-1. User enters email on login/signup page
-2. System checks if user exists in `auth.users` collection
-3. Sends appropriate email template:
-   - **Existing users**: "Login" template
+1. **Frontend submits** email via POST to `/api/auth/signin/http-email`
+2. **NextAuth queries** database to check if user exists
+3. **Database returns** user record (or null for new users)
+4. **NextAuth requests** email service to send appropriate template:
    - **New users**: "Signup" template
-4. User clicks magic link → redirects to `/magic-link` interstitial page
-5. Link expires after **24 hours**
+   - **Existing users**: "Login" template
+5. **Email service confirms** email sent and **NextAuth redirects frontend** to verify-request page
+6. **Email delivered** with link to `/magic-link?link=<encoded_nextauth_url>`
+7. **User clicks** email link → goes to magic link interstitial page
+8. **Magic link page** automatically redirects browser to actual NextAuth URL
+9. **NextAuth verifies** token and creates user/session records
+10. **Database confirms** record creation and **NextAuth redirects** to callback URL
+11. **Links expire** after 24 hours
 
-### User Registration (Signup) Flow
+## Authentication Flow Diagrams
+
+### Signup Flow
 
 ```mermaid
 sequenceDiagram
-    participant User
-    participant SignupPage
-    participant UserContext
-    participant NextAuth
-    participant EmailService
-    participant Database
-    participant MagicLinkPage
+    participant U as User
+    participant F as Frontend
+    participant N as NextAuth
+    participant E as Email Service
+    participant M as Magic Link Page
+    participant DB as Database
 
-    User->>SignupPage: Enter email
-    SignupPage->>UserContext: signUp(email, callbackUrl)
-    UserContext->>NextAuth: signIn('http-email', {operation: 'signup'})
-    NextAuth->>Database: Check if user exists
-    NextAuth->>EmailService: Send signup email
-    EmailService->>User: Magic link email
-    User->>MagicLinkPage: Click email link
-    MagicLinkPage->>NextAuth: Verify token
-    NextAuth->>Database: Create user record
-    NextAuth->>Database: Create customData record with 'subscriber' role
-    NextAuth->>User: Redirect to /account
+    U->>F: Submit signup form with email
+    F->>N: POST /api/auth/signin/http-email
+    N->>DB: Query users collection
+    DB->>N: Return user record (or null if new)
+    alt New user
+        N->>E: Send signup email template
+        E->>N: Email sent confirmation
+        N->>F: Redirect to verify-request
+        Note over E: Email contains /magic-link?link=encoded(nextauth_callback_url)
+        E->>U: Email delivered
+        U->>M: Click email link → /magic-link page
+        M->>M: Extract & decode NextAuth URL
+        M->>N: Redirect to NextAuth callback
+        N->>N: Verify email token
+        N->>DB: Create auth.users record
+        DB->>N: User created
+        N->>DB: Create customData.users with roles: ['subscriber']
+        DB->>N: Profile created
+        N->>F: Redirect to /account
+    else Existing user
+        N->>E: Send login email template
+        Note over N,E: Same flow as login
+    end
 ```
 
-### User Login Flow
+### Login Flow
 
 ```mermaid
 sequenceDiagram
-    participant User
-    participant LoginPage
-    participant UserContext
-    participant NextAuth
-    participant EmailService
-    participant Database
-    participant MagicLinkPage
+    participant U as User
+    participant F as Frontend
+    participant N as NextAuth
+    participant E as Email Service
+    participant M as Magic Link Page
+    participant DB as Database
 
-    User->>LoginPage: Enter email
-    LoginPage->>UserContext: logIn(email, callbackUrl)
-    UserContext->>NextAuth: signIn('http-email', {operation: 'login'})
-    NextAuth->>Database: Check if user exists and is verified
-    alt User exists and verified
-        NextAuth->>EmailService: Send login email
-        EmailService->>User: Magic link email
-        User->>MagicLinkPage: Click email link
-        MagicLinkPage->>NextAuth: Verify token and create session
-        NextAuth->>User: Redirect to callback URL
-    else User unverified
-        NextAuth->>User: Redirect to verify-request page
+    U->>F: Submit login form with email
+    F->>N: POST /api/auth/signin/http-email?operation=login
+    N->>DB: Check user exists & emailVerified
+    DB->>N: Return user record with verification status
+    alt Verified user
+        N->>E: Send login email template
+        E->>N: Email sent confirmation
+        N->>F: Redirect to verify-request
+        Note over E: Email contains /magic-link?link=encoded(nextauth_callback_url)
+        E->>U: Email delivered
+        U->>M: Click email link → /magic-link page
+        M->>M: window.location.href = decodeURIComponent(linkParam)
+        M->>N: Browser redirects to NextAuth URL
+        N->>N: Verify token & create session
+        N->>DB: Store session in auth.sessions
+        DB->>N: Session saved
+        N->>F: Redirect to original callback URL
+    else Unverified user
+        N->>F: Redirect to /verify-request (security)
     end
 ```
 
@@ -100,10 +125,13 @@ The `/magic-link` interstitial page serves as a critical security layer. Instead
 - Both use `magicLink` variable and redirect through `/magic-link?link=<encoded_url>`
 
 ### 3. User Creation Flow
-When a new user signs up:
-1. NextAuth creates user in `auth.users` collection
-2. `createUser` event triggers creation of profile in `customData.users`
-3. New users get default role: `['subscriber']`
+When a new user completes email verification:
+1. **NextAuth verifies** the email token from magic link
+2. **NextAuth creates** user record in `auth.users` collection
+3. **Database confirms** user creation
+4. **NextAuth creates** profile in `customData.users` with default role `['subscriber']`
+5. **Database confirms** profile creation
+6. **NextAuth redirects** frontend to `/account` page for profile completion
 
 ## Database Schema
 
