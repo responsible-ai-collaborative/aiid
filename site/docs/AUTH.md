@@ -18,6 +18,7 @@ nextauth.config.ts           # NextAuth configuration
 netlify/functions/auth.ts    # Serverless auth endpoint
 src/contexts/UserContext.tsx # React context for user state
 server/rules.ts             # GraphQL authorization rules
+MongoDBAdapter.ts           # Custom MongoDB adapter (copied from @auth/mongodb-adapter for ESM compatibility)
 ```
 
 ## Authentication Flow
@@ -33,6 +34,58 @@ The system uses **passwordless authentication** with magic links:
 4. User clicks magic link → redirects to `/magic-link` interstitial page
 5. Link expires after **24 hours**
 
+### User Registration (Signup) Flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant SignupPage
+    participant UserContext
+    participant NextAuth
+    participant EmailService
+    participant Database
+    participant MagicLinkPage
+
+    User->>SignupPage: Enter email
+    SignupPage->>UserContext: signUp(email, callbackUrl)
+    UserContext->>NextAuth: signIn('http-email', {operation: 'signup'})
+    NextAuth->>Database: Check if user exists
+    NextAuth->>EmailService: Send signup email
+    EmailService->>User: Magic link email
+    User->>MagicLinkPage: Click email link
+    MagicLinkPage->>NextAuth: Verify token
+    NextAuth->>Database: Create user record
+    NextAuth->>Database: Create customData record with 'subscriber' role
+    NextAuth->>User: Redirect to /account
+```
+
+### User Login Flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant LoginPage
+    participant UserContext
+    participant NextAuth
+    participant EmailService
+    participant Database
+    participant MagicLinkPage
+
+    User->>LoginPage: Enter email
+    LoginPage->>UserContext: logIn(email, callbackUrl)
+    UserContext->>NextAuth: signIn('http-email', {operation: 'login'})
+    NextAuth->>Database: Check if user exists and is verified
+    alt User exists and verified
+        NextAuth->>EmailService: Send login email
+        EmailService->>User: Magic link email
+        User->>MagicLinkPage: Click email link
+        MagicLinkPage->>NextAuth: Verify token and create session
+        NextAuth->>User: Redirect to callback URL
+    else User unverified
+        NextAuth->>User: Redirect to verify-request page
+    end
+```
+
 ### Magic Link Interstitial Page
 The `/magic-link` interstitial page serves as a critical security layer. Instead of sending the NextAuth URL directly in emails, the system:
 
@@ -41,15 +94,10 @@ The `/magic-link` interstitial page serves as a critical security layer. Instead
 3. **Prevents token consumption** by security tools that would invalidate the magic link before the user clicks it
 4. **Requires user interaction** to proceed to the actual authentication
 
-This prevents scenarios where:
-- Corporate email security tools visit the magic link automatically
-- Link scanning services consume the one-time token
-- Users receive an "already used" error when they actually try to authenticate
-
 ### 2. Email Templates
-- **Login**: "Secure link to log in to AIID" 
-- **Signup**: "Secure link to create your AIID account"
-- Both redirect through `/magic-link?link=<encoded_url>` for security
+- **Login** (existing users): "Secure link to log in to AIID"
+- **Signup** (new users): "Secure link to create your AIID account"
+- Both use `magicLink` variable and redirect through `/magic-link?link=<encoded_url>`
 
 ### 3. User Creation Flow
 When a new user signs up:
@@ -59,22 +107,18 @@ When a new user signs up:
 
 ## Database Schema
 
-### Auth Database (`auth`)
-- `users` - NextAuth user records (id, email, emailVerified)
-- `sessions` - Active user sessions
-- `verification_tokens` - Email verification tokens
+**Auth Database (`auth`)**: `users`, `sessions`, `verification_tokens`
 
-### Custom Data Database (`customData`)
-- `users` - User profiles and roles
-  ```typescript
-  {
-    userId: string,        // Links to auth.users.id
-    roles: string[],       // User roles array
-    first_name?: string,
-    last_name?: string,
-    createdAt: Date
-  }
-  ```
+**Custom Data Database (`customData`)**: 
+```typescript
+users: {
+  userId: string,        // Links to auth.users.id
+  roles: string[],       // User roles array
+  first_name?: string,
+  last_name?: string,
+  createdAt: Date
+}
+```
 
 ## User Roles & Permissions
 
@@ -87,22 +131,10 @@ When a new user signs up:
 - `taxonomy_editor_{name}` - Can edit specific taxonomy
 
 ### Authorization Rules
-Authorization is enforced at the GraphQL layer using `graphql-shield`:
-
-```typescript
-// Basic role check
-isRole('admin')           // Admin access
-isRole('subscriber')      // Subscriber access
-
-// Ownership checks
-isSelf()                  // User can only access their own data
-isSubscriptionOwner()     // User can only access their subscriptions
-isChecklistsOwner()       // User can only access their checklists
-
-// Special rules
-notQueriesAdminData()     // Prevents querying admin-only fields
-hasHeaderSecret()         // Requires secret header for certain operations
-```
+GraphQL-level authorization using `graphql-shield`:
+- **Role checks**: `isRole('admin')`, `isRole('subscriber')`
+- **Ownership**: `isSelf()`, `isSubscriptionOwner()`, `isChecklistsOwner()`
+- **Special**: `notQueriesAdminData()`, `hasHeaderSecret()`
 
 ## Session Management
 
@@ -122,24 +154,18 @@ The `session` callback enriches user data by:
 
 ## Frontend Integration
 
-### UserContext
-The `UserContext` provides authentication state and helpers:
-
 ```typescript
 const { user, loading, isRole, isAdmin, actions } = useUserContext();
 
 // Check roles
-const canEdit = isRole('incident_editor');
-const hasAdminAccess = isAdmin;
+isRole('incident_editor')  // Role check
+isAdmin                    // Admin check
 
 // Authentication actions
-await actions.logIn(email, callbackUrl);
-await actions.signUp(email, callbackUrl);
-await actions.logOut();
+actions.logIn(email, callbackUrl)
+actions.signUp(email, callbackUrl)
+actions.logOut()
 ```
-
-### GraphQL Integration
-The UserContext also provides an Apollo Client configured to work with the authenticated GraphQL API at `/api/graphql`.
 
 ## Security Features
 
@@ -149,10 +175,16 @@ The sign-in callback prevents email enumeration attacks:
 - Same flow for both verified and unverified emails
 - No information leaked about email verification status
 
-### Email Verification
-- New users must verify their email before accessing the system
-- `operation` parameter differentiates between login and signup flows
-- Unverified users see consistent behavior regardless of email status
+```typescript
+// Custom signIn callback prevents unverified users from logging in
+async signIn({ user }) {
+  if (!(user as AdapterUser).emailVerified && req?.query?.operation == 'login') {
+    // Gracefully stop signin while appearing successful (security)
+    return config.SITE_URL + '/api/auth/verify-request?provider=http-email&type=email'
+  }
+  return true;
+}
+```
 
 ### Authorization Layers
 1. **NextAuth Session** - Basic authentication
@@ -171,29 +203,41 @@ MAILERSEND_API_KEY=<email-service-key>
 SITE_URL=https://incidentdatabase.ai
 ```
 
-## Pages
+## Authentication Pages
+- `/login`, `/logout`, `/verify-request`, `/account`, `/auth-error`, `/magic-link`
 
-### Authentication Pages
-- `/login` - Login form
-- `/logout` - Logout confirmation
-- `/verify-request` - Email verification confirmation
-- `/account` - New user account setup
-- `/auth-error` - Authentication error handling
-- `/magic-link` - Magic link redirect handler
 
-## Development Notes
+## Usage Examples
 
-### Testing Authentication
-- Debug mode enabled for localhost development
-- Sentry integration for error tracking
-- Custom error handling for authentication failures
+### Checking Authentication Status
 
-### Migration from MongoDB Realm
-The system previously used MongoDB Realm and has migration logic for existing users. The current NextAuth implementation is the active authentication system.
+```typescript
+import { useUserContext } from 'contexts/UserContext';
 
-## Common Issues
+function MyComponent() {
+  const { user, loading, isAdmin, isRole } = useUserContext();
+  
+  if (loading) return <Spinner />;
+  if (!user) return <LoginPrompt />;
+  
+  return (
+    <div>
+      <p>Welcome, {user.first_name}!</p>
+      {isAdmin && <AdminPanel />}
+      {isRole('editor') && <EditButton />}
+    </div>
+  );
+}
+```
+
+
+
+## Troubleshooting
 
 1. **Email not received** - Check MAILERSEND_API_KEY configuration
-2. **Session expired** - Sessions last 5 days, check session configuration
+2. **Session expired** - Sessions last 5 days, check session configuration  
 3. **Role not recognized** - Verify role exists in `customData.users.roles` array
 4. **GraphQL authorization error** - Check user roles match required permissions in `server/rules.ts`
+5. **Magic Links Not Working** - Verify `NEXTAUTH_URL`, email service config, and MongoDB connection
+6. **Session Not Persisting** - Check `NEXTAUTH_SECRET` and MongoDB session collection
+7. **Role Permissions Not Working** - Verify role assignment in session callback
