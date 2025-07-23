@@ -14,9 +14,7 @@ function mockAuthEmailEvent(operation: string, email: string, callbackUrl: strin
         path: "/api/auth/signin/http-email",
         rawUrl: "http://localhost:8000/api/auth/signin/http-email",
         httpMethod: "POST",
-        queryStringParameters: {
-            operation,
-        },
+        rawQuery: `operation=${operation}`,
         headers: {
             cookie: `next-auth.callback-url=${encodedCallbackUrl}; next-auth.csrf-token=3fc5b5ba3bb4457090ea32b335e69294637dca5a9473dcc669a4ed00cdadf199%7C1ecd6e1064b23beb6a1e215165a586be0a08bed2d588cc0a440ab3e43c4d2e87`,
             connection: "close",
@@ -40,11 +38,7 @@ function mockMagicLinkEvent(email: string, token: string, callbackUrl: string): 
         path: "/api/auth/callback/http-email",
         httpMethod: "GET",
         rawUrl: `http://localhost:8000/api/auth/callback/http-email?callbackUrl=${encodeURIComponent(callbackUrl)}&token=${token}&email=${encodeURIComponent(email)}`,
-        queryStringParameters: {
-            callbackUrl,
-            token,
-            email,
-        },
+        rawQuery: `callbackUrl=${encodeURIComponent(callbackUrl)}&token=${token}&email=${encodeURIComponent(email)}`,
         headers: {
             cookie: "",
             connection: "close",
@@ -65,7 +59,7 @@ function mockAuthSessionEvent(sessionToken: string): Partial<HandlerEvent> {
     return {
         path: "/api/auth/session",
         httpMethod: "GET",
-        queryStringParameters: {},
+        rawQuery: "",
         rawUrl: `http://localhost:8000/api/auth/session`,
         headers: {
             cookie: `next-auth.session-token=${sessionToken}; next-auth.callback-url=${encodedCallbackUrl}; next-auth.csrf-token=3fc5b5ba3bb4457090ea32b335e69294637dca5a9473dcc669a4ed00cdadf199%7C1ecd6e1064b23beb6a1e215165a586be0a08bed2d588cc0a440ab3e43c4d2e87`,
@@ -101,7 +95,7 @@ describe('Auth', () => {
 
             const sendEmailMock = jest.spyOn(emails, 'sendEmail').mockResolvedValue();
 
-            const event = mockAuthEmailEvent('login', 'test.user@incidentdatabase.ai', '/');
+            const event = mockAuthEmailEvent('login', 'test+user@incidentdatabase.ai', '/');
 
             const response = await handler(event as HandlerEvent, {} as HandlerContext);
 
@@ -322,7 +316,7 @@ describe('Auth', () => {
 
         test('Should verify the email and create a user with the appropriate userId', async () => {
 
-            const email = "test.user@incidentdatabase.ai";
+            const email = "test+user@incidentdatabase.ai";
             // hashed token gets sent in the magic link email
             const hashedToken = '4456ea1edd2d80807c5722de9fa3584ba7b2f9c4b12984ae00f500ddb41d378e';
             // token stored in the database
