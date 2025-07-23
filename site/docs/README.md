@@ -32,9 +32,13 @@ Details about the frontend development process, including the use of Tailwind CS
 
 Details about the AIID API, including how to access and interact with it, and information on email notifications.
 
-10. [Prismic setup](prismic.md)
+10. [Prismic setup](PRISMIC.md)
 
 Guide to connect a Prismic account to this project, to create Documents, Blog posts and much more.
+
+11. [Cloudinary Integration](CLOUDINARY.md)
+
+Guide for Cloudinary image hosting, optimization, and integration with the AIID project.
 
 ## Getting Help
 
