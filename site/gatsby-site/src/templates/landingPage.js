@@ -17,7 +17,6 @@ import Container from '../elements/Container';
 import config from '../../config';
 import PostPreviewNew from 'components/blog/PrismicPostPreview';
 import HeadContent from 'components/HeadContent';
-import SentryTestButton from 'components/SentryTestButton';
 
 const LandingPage = (props) => {
   const { data } = props;
@@ -150,9 +149,6 @@ const LandingPage = (props) => {
           <Sponsors sponsors={sponsors} />
         </div>
       </Container>
-
-      {/* Sentry Test Button - only shows in development */}
-      <SentryTestButton />
     </div>
   );
 };

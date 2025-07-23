@@ -164,18 +164,6 @@ jobs:
         run: |
           du -ah . 2>/dev/null | sort -rh | head -n 20
 
-      # Sourcemaps are now handled automatically by @sentry/webpack-plugin during build
-      # - name: Create Sentry release and upload sourcemaps
-      #   uses: getsentry/action-release@v3
-      #   env:
-      #     SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-      #     SENTRY_ORG: ${{ vars.SENTRY_ORG }}
-      #     SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
-      #   with:
-      #     environment: ${{ inputs.environment }}
-      #     sourcemaps: "site/gatsby-site/public site/gatsby-site/.netlify"
-      #     ignore_missing: true
-
       - name: Upload to netlify
         id: deploy-netlify
         working-directory: site/gatsby-site

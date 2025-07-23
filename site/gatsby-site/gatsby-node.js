@@ -112,13 +112,6 @@ exports.onCreateWebpackConfig = ({ actions, stage }) => {
     },
   };
 
-  console.log('---- SENTRY_DSN', process.env.SENTRY_DSN);
-  console.log('---- SENTRY_AUTH_TOKEN', process.env.SENTRY_AUTH_TOKEN);
-  console.log('---- SENTRY_ORG', process.env.SENTRY_ORG);
-  console.log('---- SENTRY_PROJECT', process.env.SENTRY_PROJECT);
-  console.log('---- SENTRY_RELEASE', process.env.SENTRY_RELEASE);
-  console.log('---- GATSBY_COMMIT_SHA', process.env.GATSBY_COMMIT_SHA);
-
   // Only add Sentry plugin for production builds
   if (stage === 'build-javascript' && process.env.SENTRY_DSN && process.env.SENTRY_AUTH_TOKEN) {
     config.devtool = 'source-map';
