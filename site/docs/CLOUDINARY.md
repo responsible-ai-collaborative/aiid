@@ -71,6 +71,30 @@ The system includes robust fallback mechanisms:
 - **[Placeholder images](../gatsby-site/src/components/PlaceholderImage.js)** when external images fail to load
 - **Error handling** for inaccessible or blocked images
 
+#### PlaceholderImage Component
+
+When external images fail to load (due to server restrictions, network issues, or invalid URLs), AIID generates unique, visually appealing placeholder images using the `PlaceholderImage` component:
+
+```javascript
+import PlaceholderImage from 'components/PlaceholderImage';
+
+<PlaceholderImage
+  siteName="IncidentDatabase.AI"
+  itemIdentifier="image_url"
+  title="Incident Title"
+  height={300}
+  onLoad={() => console.log('Placeholder loaded')}
+  onError={() => console.log('Placeholder failed')}
+/>
+```
+
+**Features:**
+- **Deterministic Generation**: Creates consistent placeholder images based on the `itemIdentifier` or `title`
+- **Branded Content**: Displays "IncidentDatabase.AI" prominently in the placeholder
+- **Color Schemes**: Uses randomized but consistent color palettes (cyberpunk, matrix, sunset, etc.)
+- **Responsive Design**: Automatically scales to different sizes while maintaining aspect ratio
+- **Canvas-based**: Generates images using HTML5 Canvas for optimal performance
+
 ## Common Use Cases
 
 ### Incident Report Images
