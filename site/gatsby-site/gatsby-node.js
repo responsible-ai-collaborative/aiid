@@ -124,8 +124,8 @@ exports.onCreateWebpackConfig = ({ actions, stage }) => {
     config.devtool = 'source-map';
     config.plugins = [
       sentryWebpackPlugin({
-        org: process.env.SENTRY_ORG,
-        project: process.env.SENTRY_PROJECT,
+        org: process.env.SENTRY_ORG || 'aiid',
+        project: process.env.SENTRY_PROJECT || 'aiid',
         authToken: process.env.SENTRY_AUTH_TOKEN,
         telemetry: false,
         sourcemaps: {
