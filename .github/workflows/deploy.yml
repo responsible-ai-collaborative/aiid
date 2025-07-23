@@ -139,6 +139,14 @@ jobs:
           NOTIFICATIONS_SENDER_NAME: dummy
           NOTIFICATIONS_SENDER: dummy
           GOOGLE_TRANSLATE_API_KEY: dummy
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
+          SENTRY_DSN: ${{ vars.SENTRY_DSN }}
+          SENTRY_RELEASE: ${{ inputs.sha }}
+          GATSBY_SENTRY_DSN: ${{ vars.SENTRY_DSN }}
+          GATSBY_SENTRY_ENVIRONMENT: ${{ inputs.environment }}
+          GATSBY_SENTRY_RELEASE: ${{ inputs.sha }}
 
       - name: Update Algolia indexes
         if: inputs.netlify-context == 'production' && inputs.netlify-alias == ''
@@ -155,17 +163,6 @@ jobs:
       - name: Build size
         run: |
           du -ah . 2>/dev/null | sort -rh | head -n 20
-
-      - name: Create Sentry release and upload sourcemaps
-        uses: getsentry/action-release@v3
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ vars.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
-        with:
-          environment: ${{ inputs.environment }}
-          sourcemaps: "site/gatsby-site/public site/gatsby-site/.netlify"
-          ignore_missing: true
 
       - name: Upload to netlify
         id: deploy-netlify

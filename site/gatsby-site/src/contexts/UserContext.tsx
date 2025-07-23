@@ -3,6 +3,8 @@ import { ApolloProvider, ApolloClient, HttpLink, InMemoryCache, ApolloLink } fro
 import { useTranslation } from 'react-i18next';
 import { removeTypenameFromVariables } from '@apollo/client/link/remove-typename';
 import { signOut, signIn, useSession, getCsrfToken, SignInResponse } from "next-auth/react";
+import '../utils/sentry'; // Initialize Sentry
+import * as Sentry from '@sentry/react';
 
 interface User {
   roles?: string[];
@@ -27,8 +29,26 @@ interface CustomDataMock {
   roles: string[];
 }
 
+// Create Sentry Apollo Link to propagate traces
+const sentryLink = new ApolloLink((operation, forward) => {
+  // Add Sentry trace headers to GraphQL requests
+  const activeSpan = Sentry.getActiveSpan();
+  if (activeSpan) {
+    operation.setContext(({ headers = {} }) => ({
+      headers: {
+        ...headers,
+        'sentry-trace': Sentry.spanToTraceHeader(activeSpan),
+        'baggage': Sentry.spanToBaggageHeader(activeSpan),
+      },
+    }));
+  }
+  
+  return forward(operation);
+});
+
 const client = new ApolloClient({
   link: ApolloLink.from([
+    sentryLink,
     removeTypenameFromVariables(),
     new HttpLink({
       uri: '/api/graphql',
