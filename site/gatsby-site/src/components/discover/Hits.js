@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef, useEffect, useState } from 'react';
 import { useHits, useInstantSearch, useRefinementList } from 'react-instantsearch';
 import Hit from './Hit';
 import { DisplayModeEnumParam } from './queryParams';
@@ -18,6 +18,19 @@ export default function Hits({ ...props }) {
 
   const isLoading = status === 'loading' || status === 'stalled';
 
+  const [debouncedLoading, setDebouncedLoading] = useState(false);
+
+  useEffect(() => {
+    let timeout;
+
+    if (isLoading) {
+      timeout = setTimeout(() => setDebouncedLoading(true), 200);
+    } else {
+      setDebouncedLoading(false);
+    }
+    return () => clearTimeout(timeout);
+  }, [isLoading]);
+
   const viewType = useMemo(() => {
     return indexUiState.configure.distinct === true &&
       indexUiState.refinementList.is_incident_report.length > 0 &&
@@ -25,6 +38,14 @@ export default function Hits({ ...props }) {
       ? VIEW_TYPES.INCIDENTS
       : VIEW_TYPES.REPORTS;
   }, [indexUiState]);
+
+  const hasLoadedOnce = useRef(false);
+
+  useEffect(() => {
+    if (status === 'idle' && hits.length > 0) {
+      hasLoadedOnce.current = true;
+    }
+  }, [status, hits.length]);
 
   if (!results.__isArtificial && results.nbHits === 0) {
     return (
@@ -47,7 +68,7 @@ export default function Hits({ ...props }) {
       }}
       className={`grid gap-2 mt-4 mx-auto px-3 w-full lg:max-w-6xl xl:max-w-7xl`}
     >
-      {isLoading ? (
+      {debouncedLoading && hits.length === 0 ? (
         display === 'list' ? (
           <ListSkeleton />
         ) : (

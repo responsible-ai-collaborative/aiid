@@ -47,9 +47,12 @@ test.describe('Social Share Buttons', () => {
       await page.goto(url);
       const twitterButton = page.locator('[data-cy=btn-share-twitter]');
       await expect(twitterButton).toBeVisible();
+      await expect(twitterButton).toBeEnabled();
+
+      await page.waitForLoadState('networkidle');
 
       await expect(async () => {
-        const popupPromise = page.waitForEvent('popup', { timeout: 2000 })
+        const popupPromise = page.waitForEvent('popup', { timeout: 2000 });
         await twitterButton.first().click();
         const popup = await popupPromise;
         await popup.waitForURL(/https:\/\/x\.com\/intent\/post\?text=.*/, { timeout: 1000 });
@@ -60,6 +63,9 @@ test.describe('Social Share Buttons', () => {
       await page.goto(url);
       const linkedInButton = page.locator('[data-cy=btn-share-linkedin]');
       await expect(linkedInButton).toBeVisible();
+      await expect(linkedInButton).toBeEnabled();
+
+      await page.waitForLoadState('networkidle');
 
       const expectedUrlPart = `shareArticle%2F%3Furl%3D${encodeURIComponent(canonicalUrl)}`;
 
