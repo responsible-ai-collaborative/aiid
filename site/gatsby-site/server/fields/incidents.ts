@@ -1,15 +1,75 @@
 import { GraphQLBoolean, GraphQLFieldConfigMap, GraphQLInputObjectType, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLString } from "graphql";
 import { allow } from "graphql-shield";
-import { generateMutationFields, generateQueryFields, getQueryResolver } from "../utils";
-import { Context, DBIncident } from "../interfaces";
+import { generateMutationFields, generateQueryFields, getQueryResolver, createNestedObjectFilter, CustomStringFilter } from "../utils";
+import { Context, DBIncident, DBClassification } from "../interfaces";
 import { isRole } from "../rules";
 import { createNotificationsOnNewIncident, createNotificationsOnUpdatedIncident, hasRelevantUpdates, linkReportsToIncidents, logIncidentHistory } from "./common";
 import { IncidentType } from "../types/incidents";
-import { GraphQLDateTime } from "graphql-scalars";
+
+// Define classification-specific filter types
+const ClassificationAttributeFilter = createNestedObjectFilter('ClassificationAttribute', {
+    short_name: { type: CustomStringFilter },
+    value_json: { type: CustomStringFilter }
+});
+
+const ClassificationFilter = createNestedObjectFilter('Classification', {
+    namespace: { type: CustomStringFilter },
+    attributes: { type: ClassificationAttributeFilter }
+});
+
+// Define classification filter for incidents
+const classificationsFilter = {
+    name: 'classifications',
+    type: ClassificationFilter,
+    resolve: async (filterValue: any, context: Context) => {
+        const db = context.client.db('aiidprod');
+        const classificationsCollection = db.collection<DBClassification>('classifications');
+        
+        // Build classification query based on filter values
+        const query: any = {};
+        
+        if (filterValue.namespace) {
+            if (filterValue.namespace.eq) {
+                query.namespace = filterValue.namespace.eq;
+            }
+            if (filterValue.namespace.in) {
+                query.namespace = { $in: filterValue.namespace.in };
+            }
+        }
+        
+        if (filterValue.attributes) {
+            const attrQuery: any = {};
+            if (filterValue.attributes.short_name?.eq) {
+                attrQuery.short_name = filterValue.attributes.short_name.eq;
+            }
+            if (filterValue.attributes.value_json?.eq) {
+                attrQuery.value_json = filterValue.attributes.value_json.eq;
+            }
+            
+            if (Object.keys(attrQuery).length > 0) {
+                query.attributes = { $elemMatch: attrQuery };
+            }
+        }
+        
+        // Find matching classifications and extract incident IDs
+        const matchingClassifications = await classificationsCollection.find(query).toArray();
+        const incidentIds = [...new Set(matchingClassifications.flatMap(c => c.incidents))];
+        
+        // Return MongoDB filter for incident IDs
+        return incidentIds.length > 0 
+            ? { incident_id: { $in: incidentIds } }
+            : { incident_id: { $in: [] } }; // Force empty result if no matches
+    }
+};
 
 export const queryFields: GraphQLFieldConfigMap<any, Context> = {
 
-    ...generateQueryFields({ collectionName: 'incidents', Type: IncidentType })
+    // Use custom filters for incidents
+    ...generateQueryFields({ 
+        collectionName: 'incidents', 
+        Type: IncidentType, 
+        customFilters: [classificationsFilter] 
+    })
 }
 
 
