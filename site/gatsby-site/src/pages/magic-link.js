@@ -16,7 +16,7 @@ const MagicLink = ({ location }) => {
     setIsLoading(false);
 
     if (linkParam) {
-      window.location.href = decodeURIComponent(linkParam);
+      window.location.href = linkParam;
     }
   }, [location.search]);
 
