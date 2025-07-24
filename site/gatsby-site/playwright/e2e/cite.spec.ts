@@ -142,6 +142,22 @@ test.describe('Cite pages', () => {
         expect(data.report.flag).toBe(true);
     });
 
+    test('Should expand all and collapse all reports', async ({ page }) => {
+        await page.goto('/cite/3');
+
+        await page.locator('[data-cy="expand-all-reports"]').click();
+        
+        await expect(page.locator('[data-cy="collapse-report-button"]')).toHaveCount(2);
+        
+        await expect(page.locator('[data-cy="expand-all-reports"]')).toBeDisabled();
+        
+        await page.locator('[data-cy="collapse-all-reports"]').click();
+        
+        await expect(page.locator('[data-cy="expand-report-button"]')).toHaveCount(2);
+        
+        await expect(page.locator('[data-cy="collapse-all-reports"]')).toBeDisabled();
+    });
+
     test('Should remove duplicate', async ({ page, login }) => {
 
         test.slow();
