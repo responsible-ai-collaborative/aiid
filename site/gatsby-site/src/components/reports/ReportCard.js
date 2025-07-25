@@ -23,12 +23,16 @@ const ReportCard = ({
   reportTitle = null,
   incidentId = null,
   readOnly = false,
+  externalExpanded = null,
+  onToggleExpanded = null,
 }) => {
   item.incident_id = incidentId || item.incident_id;
 
   const { t } = useTranslation();
 
-  const [expanded, setExpanded] = useState(alwaysExpanded);
+  const [internalExpanded, setInternalExpanded] = useState(alwaysExpanded);
+
+  const expanded = externalExpanded !== null ? externalExpanded : internalExpanded;
 
   const ref = useRef(null);
 
@@ -38,7 +42,13 @@ const ReportCard = ({
 
   const toggleReadMore = () => {
     if (alwaysExpanded) return;
-    setExpanded(!expanded);
+
+    if (onToggleExpanded) {
+      onToggleExpanded(item.report_number, !expanded);
+    } else {
+      setInternalExpanded(!expanded);
+    }
+
     const card = ref.current;
 
     if (card && expanded) {
