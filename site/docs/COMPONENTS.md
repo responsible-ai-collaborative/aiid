@@ -108,6 +108,178 @@ import Loader from 'components/ui/Loader';
 <Loader size="lg" color="green" />
 ```
 
+## Skeleton Components
+
+Skeleton components provide loading placeholders that mimic the structure of the actual content, improving perceived performance and user experience.
+
+### DefaultSkeleton
+
+Basic text skeleton with multiple lines of varying widths.
+
+**Location**: `src/elements/Skeletons/Default/index.js`
+
+**Props**: None
+
+**Usage**:
+```javascript
+import DefaultSkeleton from 'elements/Skeletons/Default';
+
+<DefaultSkeleton />
+```
+
+**Features**:
+- Animated pulse effect
+- Multiple text lines with varying widths
+- Dark mode support
+- Screen reader accessible
+
+### CardSkeleton
+
+Card-style skeleton with optional image, text, and avatar sections.
+
+**Location**: `src/elements/Skeletons/Card/index.js`
+
+**Props**:
+- `className` - Additional CSS classes (default: '')
+- `text` - Show text skeleton lines (default: true)
+- `lines` - Number of text lines to show (default: 3)
+- `image` - Show image placeholder (default: true)
+- `avatar` - Show avatar placeholder (default: false)
+- `maxWidthSmall` - Apply max-width constraint (default: true)
+- `style` - Inline styles object
+
+**Usage**:
+```javascript
+import CardSkeleton from 'elements/Skeletons/Card';
+
+// Basic card skeleton
+<CardSkeleton />
+
+// Card with avatar and custom lines
+<CardSkeleton 
+  avatar={true}
+  lines={5}
+  image={false}
+/>
+
+// Custom styled card
+<CardSkeleton 
+  className="my-4"
+  style={{ maxWidth: '400px' }}
+/>
+```
+
+**Features**:
+- Configurable image placeholder with icon
+- Adjustable text line count
+- Optional avatar section
+- Responsive design
+- Dark mode support
+
+### ImageSkeleton
+
+Image placeholder skeleton with icon.
+
+**Location**: `src/elements/Skeletons/Image/index.js`
+
+**Props**: None
+
+**Usage**:
+```javascript
+import ImageSkeleton from 'elements/Skeletons/Image';
+
+<ImageSkeleton />
+```
+
+**Features**:
+- Image placeholder with gallery icon
+- Responsive layout
+- Dark mode support
+- Test ID for automated testing
+
+### ListSkeleton
+
+List-style skeleton with multiple items.
+
+**Location**: `src/elements/Skeletons/List/index.js`
+
+**Props**: None
+
+**Usage**:
+```javascript
+import ListSkeleton from 'elements/Skeletons/List';
+
+<ListSkeleton />
+```
+
+**Features**:
+- Multiple list items with titles and descriptions
+- Consistent spacing and layout
+- Dark mode support
+- Responsive design
+
+### Skeleton Usage Patterns
+
+#### Loading States
+Use skeletons to show loading states while data is being fetched:
+
+```javascript
+const MyComponent = () => {
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    fetchData().then(setData).finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return <CardSkeleton />;
+  }
+
+  return <ActualContent data={data} />;
+};
+```
+
+#### Conditional Skeleton Types
+Choose appropriate skeleton based on content type:
+
+```javascript
+const ContentSkeleton = ({ type }) => {
+  switch (type) {
+    case 'card':
+      return <CardSkeleton />;
+    case 'list':
+      return <ListSkeleton />;
+    case 'image':
+      return <ImageSkeleton />;
+    default:
+      return <DefaultSkeleton />;
+  }
+};
+```
+
+#### Custom Skeleton Styling
+Apply custom styles to match your design:
+
+```javascript
+<CardSkeleton 
+  className="bg-white shadow-lg rounded-lg"
+  style={{ 
+    minHeight: '200px',
+    border: '1px solid #e5e7eb'
+  }}
+/>
+```
+
+### Skeleton Best Practices
+
+1. **Match Content Structure**: Use skeletons that closely resemble the actual content layout
+2. **Consistent Timing**: Show skeletons for a minimum time to avoid flickering
+3. **Accessibility**: All skeletons include proper ARIA attributes and screen reader text
+4. **Dark Mode**: Skeletons automatically adapt to dark mode
+5. **Performance**: Skeletons are lightweight and don't impact bundle size significantly
+6. **Testing**: Use test IDs for automated testing of loading states
+
 ### Link
 
 Custom link component with i18n support.
