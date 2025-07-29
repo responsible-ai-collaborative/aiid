@@ -2,11 +2,11 @@
 
 ## Overview
 
-The AIID frontend is built with **Gatsby** and **React**, using **Tailwind CSS** and **Flowbite** for styling. The application follows a component-based architecture with centralized state management through React Context.
+The AIID frontend is built with **Gatsby** and **React**, using **Tailwind CSS** and **Flowbite** for styling.
 
 ## Technology Stack
 
-- **Framework**: Gatsby (React-based static site generator)
+- **Framework**: GatsbyJS
 - **Styling**: Tailwind CSS with Flowbite React components
 - **State Management**: React Context API
 - **Authentication**: NextAuth.js with passwordless email flow
@@ -155,15 +155,15 @@ const searchClient = algoliasearch(
 ### Tailwind CSS & Flowbite
 
 This project uses [Tailwind CSS](https://tailwindcss.com/) framework with its class syntax.
-More specifically, we base our components on [Flowbite React](https://flowbite-react.com/) and [Flowbite](https://flowbite.com/) which is built on top of TailwindCSS.
+More specifically, this project also uses [Flowbite React](https://flowbite-react.com/) and [Flowbite](https://flowbite.com/) which is built on top of TailwindCSS. However, the use of those libraries is not mandatory and Tailwind classes can be used directly on custom components.
 
-### Development Steps
+### How to use Flowbite React and Flowbite
 
-In order to keep styling consistency on the site, we follow a set of steps when developing. This is also to make the development process more agile and simple.
+You can use Flowbite React's components directly, but if you need a more customized component you can use Flowbite's components code and classes, examples below. Here are basic steps to help you develop.
 
 1. Develop your component using [Flowbite React components](https://flowbite-react.com/)
 2. If your components is not fully contemplated by Flowbite react, check [Flowbite components](https://flowbite.com/#components) and use the provided HTMLs.
-3. If you need to improve styling, use only Tailwind CSS classes.
+3. If you need to improve styling, use Tailwind CSS classes.
 
 **Examples**
 If you want to place a new [Flowbite React button](https://flowbite-react.com/buttons):
@@ -226,16 +226,6 @@ const { t } = useTranslation();
 t('welcome.message')
 ```
 
-### Translation Badge
-
-Use the `TranslationBadge` component to indicate AI-translated content:
-
-```javascript
-import TranslationBadge from 'components/i18n/TranslationBadge';
-
-<TranslationBadge className="ml-2" />
-```
-
 ### Language Configuration
 
 Supported languages are configured in `i18n/config.json`:
@@ -269,19 +259,6 @@ const validationSchema = Yup.object({
 
 ## Performance Optimization
 
-### Code Splitting
-Use dynamic imports for large components:
-
-```javascript
-const LazyComponent = React.lazy(() => import('./LazyComponent'));
-
-const MyComponent = () => (
-  <Suspense fallback={<Loader />}>
-    <LazyComponent />
-  </Suspense>
-);
-```
-
 ### Memoization
 Use React.memo for expensive components:
 
@@ -290,27 +267,6 @@ const ExpensiveComponent = React.memo(({ data }) => {
   // Expensive rendering logic
   return <div>{/* Component content */}</div>;
 });
-```
-
-### Virtual Scrolling
-For large lists, consider virtual scrolling:
-
-```javascript
-import { FixedSizeList as List } from 'react-window';
-
-const VirtualList = ({ items }) => (
-  <List
-    height={400}
-    itemCount={items.length}
-    itemSize={50}
-  >
-    {({ index, style }) => (
-      <div style={style}>
-        {items[index]}
-      </div>
-    )}
-  </List>
-);
 ```
 
 ## Integration with External Services
@@ -353,24 +309,6 @@ if ('Rollbar' in window && error) {
 
 ## Development Patterns
 
-### Error Boundaries
-Use error boundaries to catch component errors:
-
-```javascript
-import { ErrorBoundary } from 'react-error-boundary';
-
-const ErrorFallback = ({ error }) => (
-  <div className="error-boundary">
-    <h2>Something went wrong</h2>
-    <pre>{error.message}</pre>
-  </div>
-);
-
-<ErrorBoundary FallbackComponent={ErrorFallback}>
-  <MyComponent />
-</ErrorBoundary>
-```
-
 ### Loading States
 Implement loading states for async operations:
 
@@ -386,21 +324,3 @@ const MyComponent = () => {
   return <div>{/* Component content */}</div>;
 };
 ```
-
-### Conditional Rendering
-Use conditional rendering based on user roles:
-
-```javascript
-const MyComponent = () => {
-  const { isRole } = useUserContext();
-
-  return (
-    <div>
-      {isRole('admin') && <AdminPanel />}
-      {isRole('editor') && <EditButton />}
-    </div>
-  );
-};
-```
-
-
