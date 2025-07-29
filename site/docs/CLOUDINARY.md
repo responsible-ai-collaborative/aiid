@@ -95,17 +95,6 @@ import PlaceholderImage from 'components/PlaceholderImage';
 - **Responsive Design**: Automatically scales to different sizes while maintaining aspect ratio
 - **Canvas-based**: Generates images using HTML5 Canvas for optimal performance
 
-## Common Use Cases
-
-### Incident Report Images
-- Fetch and display images from news articles and reports
-- Automatic optimization for different viewing contexts
-- Fallback to placeholder images when external sources are unavailable
-
-### User-Submitted Content
-- Preview images during submission process
-- Validate image accessibility before processing
-- Provide immediate feedback on image loading status
 
 ## Troubleshooting
 
