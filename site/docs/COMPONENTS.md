@@ -2,6 +2,31 @@
 
 This guide provides detailed documentation for the key components used in the AIID frontend application. For architectural patterns, state management, and development guidelines, see [Frontend Documentation](./FRONTEND.md).
 
+## Table of Contents
+
+- [UI Components](#ui-components)
+- [Skeleton Components](#skeleton-components)
+- [Form Components](#form-components)
+- [Discovery Components](#discovery-components)
+- [Citation Components](#citation-components)
+- [Taxonomy Components](#taxonomy-components)
+- [Entity Components](#entity-components)
+- [Visualization Components](#visualization-components)
+- [Internationalization Components](#internationalization-components)
+- [Layout Components](#layout-components)
+- [Blog Components](#blog-components)
+- [Landing Components](#landing-components)
+- [Reports Components](#reports-components)
+- [Checklists Components](#checklists-components)
+- [Variants Components](#variants-components)
+- [Users Components](#users-components)
+- [Classifications Components](#classifications-components)
+- [Leaderboards Components](#leaderboards-components)
+- [Authentication Components](#authentication-components)
+- [Documentation Components](#documentation-components)
+- [Utility Components](#utility-components)
+- [Component Implementation Patterns](#component-implementation-patterns)
+
 ## UI Components
 
 ### MdxComponents
@@ -775,7 +800,458 @@ import Sponsors from 'components/landing/Sponsors';
 <Sponsors />
 ```
 
+## Reports Components
+
+### ReportCard
+
+Report display card component.
+
+**Location**: `src/components/reports/ReportCard.js`
+
+**Props**:
+- `report` - Report data object
+- `showActions` - Show action buttons (default: true)
+- `className` - Additional CSS classes
+
+**Usage**:
+```javascript
+import ReportCard from 'components/reports/ReportCard';
+
+<ReportCard
+  report={reportData}
+  showActions={true}
+/>
+```
+
+### ReportsTable
+
+Table component for displaying reports.
+
+**Location**: `src/components/reports/ReportsTable.js`
+
+**Props**:
+- `reports` - Array of report data
+- `columns` - Column configuration
+- `sortable` - Enable sorting (default: true)
+
+**Usage**:
+```javascript
+import ReportsTable from 'components/reports/ReportsTable';
+
+<ReportsTable
+  reports={reportsData}
+  columns={customColumns}
+/>
+```
+
+### ReportVersionViewModal
+
+Modal for viewing report versions.
+
+**Location**: `src/components/reports/ReportVersionViewModal.js`
+
+**Props**:
+- `report` - Report data
+- `isOpen` - Modal open state
+- `onClose` - Close handler function
+
+**Usage**:
+```javascript
+import ReportVersionViewModal from 'components/reports/ReportVersionViewModal';
+
+<ReportVersionViewModal
+  report={reportData}
+  isOpen={modalOpen}
+  onClose={() => setModalOpen(false)}
+/>
+```
+
+## Checklists Components
+
+### CheckListForm
+
+Risk assessment checklist form.
+
+**Location**: `src/components/checklists/CheckListForm.js`
+
+**Props**:
+- `initialValues` - Initial form values
+- `onSubmit` - Form submission handler
+- `loading` - Loading state
+
+**Usage**:
+```javascript
+import CheckListForm from 'components/checklists/CheckListForm';
+
+<CheckListForm
+  initialValues={checklistData}
+  onSubmit={handleSubmit}
+  loading={isSubmitting}
+/>
+```
+
+### RiskSection
+
+Risk assessment section component.
+
+**Location**: `src/components/checklists/RiskSection.js`
+
+**Props**:
+- `section` - Risk section data
+- `onChange` - Change handler function
+- `disabled` - Disable editing
+
+**Usage**:
+```javascript
+import RiskSection from 'components/checklists/RiskSection';
+
+<RiskSection
+  section={riskSectionData}
+  onChange={handleSectionChange}
+  disabled={false}
+/>
+```
+
+### ChecklistsIndex
+
+Main checklists index page component.
+
+**Location**: `src/components/checklists/ChecklistsIndex.js`
+
+**Props**: None
+
+**Usage**:
+```javascript
+import ChecklistsIndex from 'components/checklists/ChecklistsIndex';
+
+<ChecklistsIndex />
+```
+
+## Variants Components
+
+### VariantList
+
+List of incident variants.
+
+**Location**: `src/components/variants/VariantList.js`
+
+**Props**:
+- `variants` - Array of variant data
+- `onSelect` - Selection handler function
+
+**Usage**:
+```javascript
+import VariantList from 'components/variants/VariantList';
+
+<VariantList
+  variants={variantsData}
+  onSelect={handleVariantSelect}
+/>
+```
+
+### VariantForm
+
+Form for creating/editing variants.
+
+**Location**: `src/components/variants/VariantForm.js`
+
+**Props**:
+- `variant` - Existing variant data (for editing)
+- `onSubmit` - Form submission handler
+- `loading` - Loading state
+
+**Usage**:
+```javascript
+import VariantForm from 'components/variants/VariantForm';
+
+<VariantForm
+  variant={existingVariant}
+  onSubmit={handleSubmit}
+  loading={isSubmitting}
+/>
+```
+
+### VariantsTable
+
+Table component for displaying variants.
+
+**Location**: `src/components/variants/VariantsTable.js`
+
+**Props**:
+- `variants` - Array of variant data
+- `onEdit` - Edit handler function
+- `onDelete` - Delete handler function
+
+**Usage**:
+```javascript
+import VariantsTable from 'components/variants/VariantsTable';
+
+<VariantsTable
+  variants={variantsData}
+  onEdit={handleEdit}
+  onDelete={handleDelete}
+/>
+```
+
+## Users Components
+
+### UsersTable
+
+Table component for displaying users.
+
+**Location**: `src/components/users/UsersTable.js`
+
+**Props**:
+- `users` - Array of user data
+- `onEdit` - Edit handler function
+- `onDelete` - Delete handler function
+
+**Usage**:
+```javascript
+import UsersTable from 'components/users/UsersTable';
+
+<UsersTable
+  users={usersData}
+  onEdit={handleEdit}
+  onDelete={handleDelete}
+/>
+```
+
+### UserDetails
+
+User details display component.
+
+**Location**: `src/components/users/UserDetails.js`
+
+**Props**:
+- `user` - User data object
+- `showActions` - Show action buttons
+
+**Usage**:
+```javascript
+import UserDetails from 'components/users/UserDetails';
+
+<UserDetails
+  user={userData}
+  showActions={true}
+/>
+```
+
+### UserEditModal
+
+Modal for editing user information.
+
+**Location**: `src/components/users/UserEditModal.js`
+
+**Props**:
+- `user` - User data
+- `isOpen` - Modal open state
+- `onClose` - Close handler function
+- `onSave` - Save handler function
+
+**Usage**:
+```javascript
+import UserEditModal from 'components/users/UserEditModal';
+
+<UserEditModal
+  user={userData}
+  isOpen={modalOpen}
+  onClose={() => setModalOpen(false)}
+  onSave={handleSave}
+/>
+```
+
+## Classifications Components
+
+### CsetTable
+
+CSET taxonomy classification table.
+
+**Location**: `src/components/classifications/CsetTable.js`
+
+**Props**:
+- `classifications` - Array of classification data
+- `onUpdate` - Update handler function
+
+**Usage**:
+```javascript
+import CsetTable from 'components/classifications/CsetTable';
+
+<CsetTable
+  classifications={classificationsData}
+  onUpdate={handleUpdate}
+/>
+```
+
+## Leaderboards Components
+
+### Leaderboard
+
+Generic leaderboard component.
+
+**Location**: `src/components/leaderboards/Leaderboard.js`
+
+**Props**:
+- `data` - Leaderboard data
+- `title` - Leaderboard title
+- `type` - Leaderboard type
+
+**Usage**:
+```javascript
+import Leaderboard from 'components/leaderboards/Leaderboard';
+
+<Leaderboard
+  data={leaderboardData}
+  title="Top Contributors"
+  type="submitters"
+/>
+```
+
+### SubmittersLeaderboard
+
+Submitters leaderboard component.
+
+**Location**: `src/components/leaderboards/SubmittersLeaderboard.js`
+
+**Props**: None
+
+**Usage**:
+```javascript
+import SubmittersLeaderboard from 'components/leaderboards/SubmittersLeaderboard';
+
+<SubmittersLeaderboard />
+```
+
+## Authentication Components
+
+### LoginSignup
+
+Authentication component for login and signup.
+
+**Location**: `src/components/loginSignup/index.js`
+
+**Props**:
+- `mode` - 'login' or 'signup'
+- `onSuccess` - Success callback function
+
+**Usage**:
+```javascript
+import LoginSignup from 'components/loginSignup';
+
+<LoginSignup
+  mode="login"
+  onSuccess={handleAuthSuccess}
+/>
+```
+
+## Documentation Components
+
+### PrismicDocPost
+
+Prismic documentation post component.
+
+**Location**: `src/components/doc/PrismicDocPost.js`
+
+**Props**:
+- `post` - Prismic post data
+- `location` - Current page location
+
+**Usage**:
+```javascript
+import PrismicDocPost from 'components/doc/PrismicDocPost';
+
+<PrismicDocPost
+  post={prismicPostData}
+  location={location}
+/>
+```
+
 ## Utility Components
+
+### PlaceholderImage
+
+Placeholder image component.
+
+**Location**: `src/components/PlaceholderImage.js`
+
+**Props**:
+- `width` - Image width
+- `height` - Image height
+- `alt` - Alt text
+- `className` - Additional CSS classes
+
+**Usage**:
+```javascript
+import PlaceholderImage from 'components/PlaceholderImage';
+
+<PlaceholderImage
+  width={300}
+  height={200}
+  alt="Placeholder"
+/>
+```
+
+### TaxonomyGraphCarousel
+
+Carousel for taxonomy graph visualization.
+
+**Location**: `src/components/TaxonomyGraphCarousel.js`
+
+**Props**:
+- `data` - Taxonomy graph data
+- `onSelect` - Selection handler function
+
+**Usage**:
+```javascript
+import TaxonomyGraphCarousel from 'components/TaxonomyGraphCarousel';
+
+<TaxonomyGraphCarousel
+  data={taxonomyData}
+  onSelect={handleSelect}
+/>
+```
+
+### HeadContent
+
+Head content management component.
+
+**Location**: `src/components/HeadContent.js`
+
+**Props**:
+- `title` - Page title
+- `description` - Page description
+- `keywords` - Page keywords
+
+**Usage**:
+```javascript
+import HeadContent from 'components/HeadContent';
+
+<HeadContent
+  title="Page Title"
+  description="Page description"
+  keywords="keyword1, keyword2"
+/>
+```
+
+### UserSubscriptions
+
+User subscriptions management component.
+
+**Location**: `src/components/UserSubscriptions.js`
+
+**Props**:
+- `user` - User data
+- `onUpdate` - Update handler function
+
+**Usage**:
+```javascript
+import UserSubscriptions from 'components/UserSubscriptions';
+
+<UserSubscriptions
+  user={userData}
+  onUpdate={handleUpdate}
+/>
+```
 
 ### RelatedIncidents
 
@@ -835,6 +1311,68 @@ import ReadMoreText from 'components/ReadMoreText';
 <ReadMoreText
   text="Long text content..."
   maxLength={200}
+/>
+```
+
+### SimilaritySelector
+
+Similarity selection component.
+
+**Location**: `src/components/SimilaritySelector.js`
+
+**Props**:
+- `options` - Similarity options
+- `onSelect` - Selection handler function
+- `value` - Current value
+
+**Usage**:
+```javascript
+import SimilaritySelector from 'components/SimilaritySelector';
+
+<SimilaritySelector
+  options={similarityOptions}
+  onSelect={handleSelect}
+  value={currentValue}
+/>
+```
+
+### Outline
+
+Content outline component.
+
+**Location**: `src/components/Outline.js`
+
+**Props**:
+- `items` - Outline items
+- `onSelect` - Selection handler function
+
+**Usage**:
+```javascript
+import Outline from 'components/Outline';
+
+<Outline
+  items={outlineItems}
+  onSelect={handleSelect}
+/>
+```
+
+### WordList
+
+Word list display component.
+
+**Location**: `src/components/WordList.js`
+
+**Props**:
+- `words` - Array of words
+- `onSelect` - Selection handler function
+
+**Usage**:
+```javascript
+import WordList from 'components/WordList';
+
+<WordList
+  words={wordArray}
+  onSelect={handleSelect}
 />
 ```
 

@@ -25,6 +25,15 @@ src/components/
 ├── discover/              # Search and discovery components
 ├── incidents/             # Incident-specific components
 ├── submissions/           # Submission workflow components
+├── reports/               # Report management components
+├── checklists/            # Risk assessment and checklist components
+├── variants/              # Incident variant management components
+├── users/                 # User management components
+├── classifications/       # Taxonomy classification components
+├── leaderboards/          # Leaderboard and ranking components
+├── loginSignup/           # Authentication components
+├── doc/                   # Documentation and Prismic components
+├── images/                # Image and icon components
 ├── cite/                  # Citation and reference components
 ├── taxa/                  # Taxonomy-related components
 ├── entities/              # Entity management components
@@ -43,7 +52,10 @@ The application is organized into logical component categories:
 - **UI Components**: Reusable components used throughout the application
 - **Form Components**: Form-related components with validation
 - **Discovery Components**: Search and discovery functionality
+- **Data Management Components**: Reports, checklists, variants, users, classifications
+- **Authentication Components**: Login, signup, and user management
 - **Specialized Components**: Domain-specific components for incidents, citations, etc.
+- **Utility Components**: Helper components for images, documentation, etc.
 
 For detailed component documentation, see [Component Reference Guide](./COMPONENTS.md).
 
