@@ -38,38 +38,14 @@ src/components/
 
 ### Component Categories
 
-#### UI Components (`src/components/ui/`)
-Reusable components used throughout the application:
+The application is organized into logical component categories:
 
-- **MdxComponents**: Custom MDX components for documentation
-- **Header**: Main site header with navigation
-- **Table**: Data table component with sorting and pagination
-- **SocialShareButtons**: Social media sharing functionality
-- **Loader**: Loading spinner component
-- **Link**: Custom link component with i18n support
-- **DateLabel**: Date formatting component
+- **UI Components**: Reusable components used throughout the application
+- **Form Components**: Form-related components with validation
+- **Discovery Components**: Search and discovery functionality
+- **Specialized Components**: Domain-specific components for incidents, citations, etc.
 
-#### Form Components (`src/components/forms/`)
-Form-related components and validation:
-
-- **TextInputGroup**: Text input with validation
-- **TagsInputGroup**: Tag input component
-- **FlowbiteSearchInput**: Search input using Flowbite
-- **Label**: Form label component
-- **SubmitButton**: Form submission button
-- **IncidentReportForm**: Complete incident report form
-- **QuickAddForm**: Quick incident addition form
-
-#### Discovery Components (`src/components/discover/`)
-Search and discovery functionality:
-
-- **Discover**: Main discovery page component
-- **SearchBox**: Search input component
-- **Hits**: Search results display
-- **Controls**: Search filters and controls
-- **Pagination**: Search results pagination
-
-Read more about components [here](./COMPONENTS.md).
+For detailed component documentation, see [Component Reference Guide](./COMPONENTS.md).
 
 ## State Management
 
@@ -293,6 +269,50 @@ const validationSchema = Yup.object({
 
 ## Performance Optimization
 
+### Code Splitting
+Use dynamic imports for large components:
+
+```javascript
+const LazyComponent = React.lazy(() => import('./LazyComponent'));
+
+const MyComponent = () => (
+  <Suspense fallback={<Loader />}>
+    <LazyComponent />
+  </Suspense>
+);
+```
+
+### Memoization
+Use React.memo for expensive components:
+
+```javascript
+const ExpensiveComponent = React.memo(({ data }) => {
+  // Expensive rendering logic
+  return <div>{/* Component content */}</div>;
+});
+```
+
+### Virtual Scrolling
+For large lists, consider virtual scrolling:
+
+```javascript
+import { FixedSizeList as List } from 'react-window';
+
+const VirtualList = ({ items }) => (
+  <List
+    height={400}
+    itemCount={items.length}
+    itemSize={50}
+  >
+    {({ index, style }) => (
+      <div style={style}>
+        {items[index]}
+      </div>
+    )}
+  </List>
+);
+```
+
 ## Accessibility (a11y)
 
 ### ARIA Attributes
@@ -363,3 +383,57 @@ if ('Rollbar' in window && error) {
   Rollbar.error(error);
 }
 ```
+
+## Development Patterns
+
+### Error Boundaries
+Use error boundaries to catch component errors:
+
+```javascript
+import { ErrorBoundary } from 'react-error-boundary';
+
+const ErrorFallback = ({ error }) => (
+  <div className="error-boundary">
+    <h2>Something went wrong</h2>
+    <pre>{error.message}</pre>
+  </div>
+);
+
+<ErrorBoundary FallbackComponent={ErrorFallback}>
+  <MyComponent />
+</ErrorBoundary>
+```
+
+### Loading States
+Implement loading states for async operations:
+
+```javascript
+const MyComponent = () => {
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState(null);
+
+  if (loading) {
+    return <Loader />;
+  }
+
+  return <div>{/* Component content */}</div>;
+};
+```
+
+### Conditional Rendering
+Use conditional rendering based on user roles:
+
+```javascript
+const MyComponent = () => {
+  const { isRole } = useUserContext();
+
+  return (
+    <div>
+      {isRole('admin') && <AdminPanel />}
+      {isRole('editor') && <EditButton />}
+    </div>
+  );
+};
+```
+
+For detailed component documentation and specific implementation examples, see [Component Reference Guide](./COMPONENTS.md).

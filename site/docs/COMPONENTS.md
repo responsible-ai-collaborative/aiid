@@ -1,6 +1,6 @@
 # Component Reference Guide
 
-This guide provides detailed documentation for the key components used in the AIID frontend application.
+This guide provides detailed documentation for the key components used in the AIID frontend application. For architectural patterns, state management, and development guidelines, see [Frontend Documentation](./FRONTEND.md).
 
 ## UI Components
 
@@ -838,60 +838,7 @@ import ReadMoreText from 'components/ReadMoreText';
 />
 ```
 
-## Component Development Patterns
-
-### Error Boundaries
-
-Use error boundaries to catch component errors:
-
-```javascript
-import { ErrorBoundary } from 'react-error-boundary';
-
-const ErrorFallback = ({ error }) => (
-  <div className="error-boundary">
-    <h2>Something went wrong</h2>
-    <pre>{error.message}</pre>
-  </div>
-);
-
-<ErrorBoundary FallbackComponent={ErrorFallback}>
-  <MyComponent />
-</ErrorBoundary>
-```
-
-### Loading States
-
-Implement loading states for async operations:
-
-```javascript
-const MyComponent = () => {
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState(null);
-
-  if (loading) {
-    return <Loader />;
-  }
-
-  return <div>{/* Component content */}</div>;
-};
-```
-
-### Conditional Rendering
-
-Use conditional rendering based on user roles:
-
-```javascript
-const MyComponent = () => {
-  const { isRole } = useUserContext();
-
-  return (
-    <div>
-      {isRole('admin') && <AdminPanel />}
-      {isRole('editor') && <EditButton />}
-    </div>
-  );
-};
-```
+## Component Implementation Patterns
 
 ### Toast Notifications
 
@@ -912,53 +859,4 @@ const MyComponent = () => {
 };
 ```
 
-## Performance Optimization
-
-### Memoization
-
-Use React.memo for expensive components:
-
-```javascript
-const ExpensiveComponent = React.memo(({ data }) => {
-  // Expensive rendering logic
-  return <div>{/* Component content */}</div>;
-});
-```
-
-### Lazy Loading
-
-Use dynamic imports for large components:
-
-```javascript
-const LazyComponent = React.lazy(() => import('./LazyComponent'));
-
-const MyComponent = () => (
-  <Suspense fallback={<Loader />}>
-    <LazyComponent />
-  </Suspense>
-);
-```
-
-### Virtual Scrolling
-
-For large lists, consider virtual scrolling:
-
-```javascript
-import { FixedSizeList as List } from 'react-window';
-
-const VirtualList = ({ items }) => (
-  <List
-    height={400}
-    itemCount={items.length}
-    itemSize={50}
-  >
-    {({ index, style }) => (
-      <div style={style}>
-        {items[index]}
-      </div>
-    )}
-  </List>
-);
-```
-
-This component reference guide provides detailed documentation for the key components used in the AIID frontend. For more information about specific components, refer to their individual source files and the main [Frontend Documentation](FRONTEND.md). 
+For more information about state management, architectural patterns, and development guidelines, see [Frontend Documentation](./FRONTEND.md). 
