@@ -325,39 +325,6 @@ const VirtualList = ({ items }) => (
 );
 ```
 
-## Accessibility (a11y)
-
-### ARIA Attributes
-Use proper ARIA attributes for accessibility:
-
-```javascript
-<button
-  aria-label="Close modal"
-  aria-expanded={isExpanded}
-  onClick={handleClick}
->
-  Close
-</button>
-```
-
-### Keyboard Navigation
-Ensure all interactive elements are keyboard accessible:
-
-```javascript
-<div
-  role="button"
-  tabIndex={0}
-  onKeyDown={(e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      handleClick();
-    }
-  }}
-  onClick={handleClick}
->
-  Clickable div
-</div>
-```
-
 ## Integration with External Services
 
 ### Algolia Search
