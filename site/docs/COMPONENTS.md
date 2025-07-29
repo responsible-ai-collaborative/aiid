@@ -218,46 +218,6 @@ import ListSkeleton from 'elements/Skeletons/List';
 - Dark mode support
 - Responsive design
 
-### Skeleton Usage Patterns
-
-#### Loading States
-Use skeletons to show loading states while data is being fetched:
-
-```javascript
-const MyComponent = () => {
-  const [loading, setLoading] = useState(true);
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    fetchData().then(setData).finally(() => setLoading(false));
-  }, []);
-
-  if (loading) {
-    return <CardSkeleton />;
-  }
-
-  return <ActualContent data={data} />;
-};
-```
-
-#### Conditional Skeleton Types
-Choose appropriate skeleton based on content type:
-
-```javascript
-const ContentSkeleton = ({ type }) => {
-  switch (type) {
-    case 'card':
-      return <CardSkeleton />;
-    case 'list':
-      return <ListSkeleton />;
-    case 'image':
-      return <ImageSkeleton />;
-    default:
-      return <DefaultSkeleton />;
-  }
-};
-```
-
 #### Custom Skeleton Styling
 Apply custom styles to match your design:
 
@@ -950,55 +910,6 @@ const MyComponent = () => {
 
   return <button onClick={handleSuccess}>Submit</button>;
 };
-```
-
-## Testing Components
-
-### Unit Testing Example
-
-```javascript
-import { render, screen, fireEvent } from '@testing-library/react';
-import MyComponent from './MyComponent';
-
-test('renders component and handles user interaction', () => {
-  render(<MyComponent title="Test" />);
-  
-  expect(screen.getByText('Test')).toBeInTheDocument();
-  
-  fireEvent.click(screen.getByRole('button'));
-  expect(screen.getByText('Clicked!')).toBeInTheDocument();
-});
-```
-
-### Integration Testing Example
-
-```javascript
-import { render, screen, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
-import MyComponent from './MyComponent';
-
-const mocks = [
-  {
-    request: {
-      query: GET_DATA
-    },
-    result: {
-      data: { items: [{ id: 1, title: 'Test' }] }
-    }
-  }
-];
-
-test('loads and displays data', async () => {
-  render(
-    <MockedProvider mocks={mocks}>
-      <MyComponent />
-    </MockedProvider>
-  );
-
-  await waitFor(() => {
-    expect(screen.getByText('Test')).toBeInTheDocument();
-  });
-});
 ```
 
 ## Performance Optimization
