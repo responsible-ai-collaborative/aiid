@@ -69,6 +69,8 @@ Search and discovery functionality:
 - **Controls**: Search filters and controls
 - **Pagination**: Search results pagination
 
+Read more about components [here](./COMPONENTS.md).
+
 ## State Management
 
 ### Context Providers
@@ -289,143 +291,7 @@ const validationSchema = Yup.object({
 });
 ```
 
-### Custom Form Components
-
-#### TextInputGroup
-Text input with validation and error handling:
-
-```javascript
-import TextInputGroup from 'components/forms/TextInputGroup';
-
-<TextInputGroup
-  name="title"
-  label="Title"
-  placeholder="Enter incident title"
-  required
-/>
-```
-
-#### TagsInputGroup
-Tag input component for multiple values:
-
-```javascript
-import TagsInputGroup from 'components/forms/TagsInputGroup';
-
-<TagsInputGroup
-  name="tags"
-  label="Tags"
-  placeholder="Add tags"
-/>
-```
-
-#### FlowbiteSearchInput
-Search input using Flowbite components:
-
-```javascript
-import FlowbiteSearchInput from 'components/forms/FlowbiteSearchInput';
-
-<FlowbiteSearchInput
-  placeholder="Search incidents..."
-  onChange={handleSearch}
-/>
-```
-
-## Component Development Guidelines
-
-### Creating New Components
-
-1. **Choose the right directory** based on component purpose
-2. **Use TypeScript** for new components when possible
-3. **Follow naming conventions**:
-   - Components: PascalCase (e.g., `IncidentCard.js`)
-   - Files: PascalCase for components, camelCase for utilities
-4. **Add PropTypes or TypeScript interfaces** for props
-5. **Include JSDoc comments** for complex components
-
-### Component Structure
-
-```javascript
-import React from 'react';
-import PropTypes from 'prop-types';
-
-/**
- * Component description
- * @param {Object} props - Component props
- * @param {string} props.title - Component title
- * @returns {JSX.Element} Component JSX
- */
-const MyComponent = ({ title, children }) => {
-  return (
-    <div className="my-component">
-      <h2>{title}</h2>
-      {children}
-    </div>
-  );
-};
-
-MyComponent.propTypes = {
-  title: PropTypes.string.isRequired,
-  children: PropTypes.node
-};
-
-export default MyComponent;
-```
-
-### Testing Components
-
-#### Unit Testing
-Use Jest and React Testing Library for component tests:
-
-```javascript
-import { render, screen } from '@testing-library/react';
-import MyComponent from './MyComponent';
-
-test('renders component with title', () => {
-  render(<MyComponent title="Test Title" />);
-  expect(screen.getByText('Test Title')).toBeInTheDocument();
-});
-```
-
-#### E2E Testing
-Use Playwright for end-to-end testing:
-
-```javascript
-import { test, expect } from '@playwright/test';
-
-test('user can submit incident', async ({ page }) => {
-  await page.goto('/apps/submit');
-  await page.fill('[name="title"]', 'Test Incident');
-  await page.click('[type="submit"]');
-  await expect(page.locator('.success-message')).toBeVisible();
-});
-```
-
 ## Performance Optimization
-
-### Code Splitting
-Use dynamic imports for large components:
-
-```javascript
-const LazyComponent = React.lazy(() => import('./LazyComponent'));
-
-<Suspense fallback={<Loader />}>
-  <LazyComponent />
-</Suspense>
-```
-
-### Memoization
-Use React.memo for expensive components:
-
-```javascript
-const ExpensiveComponent = React.memo(({ data }) => {
-  // Component logic
-});
-```
-
-### Bundle Size
-- Use tree shaking for imports
-- Avoid importing entire libraries
-- Use dynamic imports for large dependencies
 
 ## Accessibility (a11y)
 
@@ -458,53 +324,6 @@ Ensure all interactive elements are keyboard accessible:
 >
   Clickable div
 </div>
-```
-
-### Screen Reader Support
-Use semantic HTML and proper heading structure:
-
-```javascript
-<main>
-  <h1>Page Title</h1>
-  <section aria-labelledby="section-title">
-    <h2 id="section-title">Section Title</h2>
-    <p>Content</p>
-  </section>
-</main>
-```
-
-## Error Handling
-
-### Error Boundaries
-Use error boundaries to catch component errors:
-
-```javascript
-import { ErrorBoundary } from 'react-error-boundary';
-
-<ErrorBoundary fallback={<ErrorFallback />}>
-  <MyComponent />
-</ErrorBoundary>
-```
-
-### Toast Notifications
-Use the toast context for user feedback:
-
-```javascript
-const addToast = useToastContext();
-
-try {
-  await submitData();
-  addToast({
-    message: 'Data submitted successfully',
-    severity: SEVERITY.SUCCESS
-  });
-} catch (error) {
-  addToast({
-    message: 'Failed to submit data',
-    severity: SEVERITY.ERROR,
-    error
-  });
-}
 ```
 
 ## Integration with External Services
@@ -544,21 +363,3 @@ if ('Rollbar' in window && error) {
   Rollbar.error(error);
 }
 ```
-
-## Development Workflow
-
-### Environment Setup
-1. Install dependencies: `npm install`
-2. Set up environment variables in `.env`
-3. Start development server: `npm run start`
-
-### Code Quality
-- Use ESLint for code linting
-- Use Prettier for code formatting
-- Run tests before committing: `npm test`
-
-### Component Review Process
-1. Create component following guidelines
-2. Add tests for new functionality
-3. Update documentation if needed
-4. Submit pull request for review
