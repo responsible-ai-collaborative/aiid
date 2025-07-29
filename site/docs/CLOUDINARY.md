@@ -1,28 +1,20 @@
 # Cloudinary Integration
 
-## About Cloudinary
+[Cloudinary](https://cloudinary.com/) provides image and video management services for the platform.
 
-[Cloudinary](https://cloudinary.com/) is an **In-Kind Sponsor** of the AI Incident Database, providing powerful image and video management services that enhance our platform's capabilities.
-
-### Why Cloudinary is Essential for AIID
+## Benefits
 
 Cloudinary provides AIID with:
 
-- **Automatic Image Optimization**: Images are automatically optimized for different devices and screen sizes
-- **Global CDN**: Fast image delivery worldwide through Cloudinary's global content delivery network
+- **Image Optimization**: Automatic optimization for different devices and screen sizes
+- **Global CDN**: Fast worldwide image delivery
 - **Transformations**: On-the-fly image resizing, cropping, and format conversion
-- **Fetch Remote Images**: Ability to fetch and cache images from external sources
-- **Reliable Infrastructure**: Enterprise-grade reliability and uptime for our image assets
+- **Remote Image Fetching**: Fetch and cache images from external sources
+- **Reliable Infrastructure**: Enterprise-grade reliability for image assets
 
 ## Configuration
 
-### Default Setup (Sponsored)
-
-AIID uses Cloudinary's sponsored cloud by default. No additional configuration is required.
-
-### Custom Cloud Setup
-
-If you want to use your own Cloudinary cloud, update the configuration in `gatsby-site/config.js`:
+AIID uses a pre-configured Cloudinary cloud by default. For custom setup, update `gatsby-site/config.js`:
 
 ```javascript
 cloudinary: { 
@@ -30,7 +22,7 @@ cloudinary: {
 }
 ```
 
-## How AIID Uses Cloudinary
+## Usage
 
 ### 1. Image Fetching
 
@@ -42,14 +34,7 @@ const image = new CloudinaryImage(url, { cloudName: config.cloudinary.cloudName 
   .setDeliveryType('fetch');
 ```
 
-### 2. Image Optimization
-
-All images are automatically optimized with:
-- **Format optimization** (`f_auto`) - Automatically serves WebP, AVIF, or other modern formats when supported
-- **Quality optimization** (`q_auto`) - Intelligent quality settings for optimal file size
-- **Responsive images** - Different sizes for different screen sizes
-
-### 3. Image Components
+### 2. Image Components
 
 AIID provides reusable image components that leverage Cloudinary's capabilities:
 
@@ -64,12 +49,11 @@ import { Image } from 'utils/cloudinary';
 />
 ```
 
-### 4. Fallback Handling
+### Fallback Handling
 
-The system includes robust fallback mechanisms:
-- **Loading [skeletons](../gatsby-site/src/elements/Skeletons/Image/index.js)** while images load
-- **[Placeholder images](../gatsby-site/src/components/PlaceholderImage.js)** when external images fail to load
-- **Error handling** for inaccessible or blocked images
+- **Loading skeletons** while images load
+- **Placeholder images** when external images fail
+- **Error handling** for inaccessible images
 
 #### PlaceholderImage Component
 
@@ -95,17 +79,14 @@ import PlaceholderImage from 'components/PlaceholderImage';
 - **Responsive Design**: Automatically scales to different sizes while maintaining aspect ratio
 - **Canvas-based**: Generates images using HTML5 Canvas for optimal performance
 
+## Common Use Cases
+
+- **Incident Report Images**: Fetch and display images from news articles
+- **User-Submitted Content**: Preview images during submission process
 
 ## Troubleshooting
 
-### Image Loading Issues
-
-If images fail to load, this may be due to:
-- **Invalid URLs**: Check that the image URL is accessible in a browser
-- **Server restrictions**: Some image hosts block external requests
-- **Network issues**: Temporary connectivity problems
-
-### Solutions
+If images fail to load:
 - Verify the image URL works in a browser
-- Try uploading the image directly to Cloudinary instead of fetching
-- Use a different image host that allows external access
+- Check for server restrictions blocking external requests
+- Try uploading directly to Cloudinary instead of fetching
