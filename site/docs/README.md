@@ -28,9 +28,7 @@ Guide for implementing and managing taxonomies in the system
 
 Details about the frontend development process, including the use of Tailwind CSS and Flowbite.
 
-9. [Component Reference Guide](COMPONENTS.md)
 
-Detailed documentation for all frontend components, including props, usage examples, and implementation patterns.
 
 10. [API Documentation](API.md)
 

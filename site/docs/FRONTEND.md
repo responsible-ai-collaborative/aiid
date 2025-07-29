@@ -45,19 +45,7 @@ src/components/
 └── landing/               # Landing page components
 ```
 
-### Component Categories
-
-The application is organized into logical component categories:
-
-- **UI Components**: Reusable components used throughout the application
-- **Form Components**: Form-related components with validation
-- **Discovery Components**: Search and discovery functionality
-- **Data Management Components**: Reports, checklists, variants, users, classifications
-- **Authentication Components**: Login, signup, and user management
-- **Specialized Components**: Domain-specific components for incidents, citations, etc.
-- **Utility Components**: Helper components for images, documentation, etc.
-
-For detailed component documentation, see [Component Reference Guide](./COMPONENTS.md).
+You can view reusable components in the `src/components/` folder, organized by functionality (UI, forms, discovery, reports, etc.).
 
 ## State Management
 
@@ -415,4 +403,4 @@ const MyComponent = () => {
 };
 ```
 
-For detailed component documentation and specific implementation examples, see [Component Reference Guide](./COMPONENTS.md).
+
