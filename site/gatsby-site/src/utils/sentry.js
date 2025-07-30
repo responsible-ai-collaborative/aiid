@@ -29,7 +29,7 @@ if (typeof window !== 'undefined' && process.env.GATSBY_SENTRY_DSN) {
     replaysSessionSampleRate: 0.1,
     replaysOnErrorSampleRate: 1.0,
     // Debug mode for development
-    debug: true, //environment === 'development',
+    debug: environment === 'development',
     // Before sending error, filter out some common non-critical errors
     beforeSend(event) {
       // Filter out GraphQL network errors that are handled by the app
