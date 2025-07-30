@@ -2159,7 +2159,7 @@ export type Report = {
   editor_notes?: Maybe<Scalars['String']['output']>;
   embedding?: Maybe<ReportEmbedding>;
   epoch_date_downloaded: Scalars['Int']['output'];
-  epoch_date_modified: Scalars['Int']['output'];
+  epoch_date_modified?: Maybe<Scalars['Int']['output']>;
   epoch_date_published: Scalars['Int']['output'];
   epoch_date_submitted: Scalars['Int']['output'];
   flag?: Maybe<Scalars['Boolean']['output']>;
@@ -2262,7 +2262,7 @@ export type ReportInsertType = {
   editor_notes?: InputMaybe<Scalars['String']['input']>;
   embedding?: InputMaybe<ReportEmbeddingInsertType>;
   epoch_date_downloaded: Scalars['Int']['input'];
-  epoch_date_modified: Scalars['Int']['input'];
+  epoch_date_modified?: InputMaybe<Scalars['Int']['input']>;
   epoch_date_published: Scalars['Int']['input'];
   epoch_date_submitted: Scalars['Int']['input'];
   flag?: InputMaybe<Scalars['Boolean']['input']>;
@@ -3164,7 +3164,7 @@ export type FindReportQueryVariables = Exact<{
 }>;
 
 
-export type FindReportQuery = { __typename?: 'Query', report?: { __typename?: 'Report', url: string, title: string, description?: string | null, authors: Array<string | null>, submitters: Array<string | null>, date_published: any, date_downloaded: any, date_modified: any, date_submitted: any, epoch_date_downloaded: number, epoch_date_modified: number, epoch_date_published: number, epoch_date_submitted: number, image_url: string, cloudinary_id: string, text: string, plain_text: string, source_domain: string, tags: Array<string | null>, flag?: boolean | null, report_number: number, editor_notes?: string | null, language: string, is_incident_report?: boolean | null, quiet?: boolean | null, user?: { __typename?: 'User', userId: string } | null, embedding?: { __typename?: 'ReportEmbedding', from_text_hash?: string | null, vector?: Array<number | null> | null } | null } | null };
+export type FindReportQuery = { __typename?: 'Query', report?: { __typename?: 'Report', url: string, title: string, description?: string | null, authors: Array<string | null>, submitters: Array<string | null>, date_published: any, date_downloaded: any, date_modified: any, date_submitted: any, epoch_date_downloaded: number, epoch_date_modified?: number | null, epoch_date_published: number, epoch_date_submitted: number, image_url: string, cloudinary_id: string, text: string, plain_text: string, source_domain: string, tags: Array<string | null>, flag?: boolean | null, report_number: number, editor_notes?: string | null, language: string, is_incident_report?: boolean | null, quiet?: boolean | null, user?: { __typename?: 'User', userId: string } | null, embedding?: { __typename?: 'ReportEmbedding', from_text_hash?: string | null, vector?: Array<number | null> | null } | null } | null };
 
 export type FindReportWithTranslationsQueryVariables = Exact<{
   filter: ReportFilterType;
@@ -3180,7 +3180,7 @@ export type UpdateReportMutationVariables = Exact<{
 }>;
 
 
-export type UpdateReportMutation = { __typename?: 'Mutation', updateOneReport?: { __typename?: 'Report', url: string, title: string, authors: Array<string | null>, submitters: Array<string | null>, date_published: any, date_downloaded: any, date_modified: any, epoch_date_published: number, epoch_date_downloaded: number, epoch_date_modified: number, image_url: string, text: string, plain_text: string, tags: Array<string | null>, flag?: boolean | null, report_number: number, editor_notes?: string | null, language: string, quiet?: boolean | null } | null };
+export type UpdateReportMutation = { __typename?: 'Mutation', updateOneReport?: { __typename?: 'Report', url: string, title: string, authors: Array<string | null>, submitters: Array<string | null>, date_published: any, date_downloaded: any, date_modified: any, epoch_date_published: number, epoch_date_downloaded: number, epoch_date_modified?: number | null, image_url: string, text: string, plain_text: string, tags: Array<string | null>, flag?: boolean | null, report_number: number, editor_notes?: string | null, language: string, quiet?: boolean | null } | null };
 
 export type DeleteOneReportMutationVariables = Exact<{
   filter: ReportFilterType;
@@ -3223,7 +3223,7 @@ export type FlagReportMutationVariables = Exact<{
 }>;
 
 
-export type FlagReportMutation = { __typename?: 'Mutation', flagReport?: { __typename?: 'Report', report_number: number, flag?: boolean | null, date_modified: any, epoch_date_modified: number } | null };
+export type FlagReportMutation = { __typename?: 'Mutation', flagReport?: { __typename?: 'Report', report_number: number, flag?: boolean | null, date_modified: any, epoch_date_modified?: number | null } | null };
 
 export type DeleteSubmissionMutationVariables = Exact<{
   _id: Scalars['ObjectId']['input'];
@@ -3348,7 +3348,7 @@ export type UpdateUserProfileMutation = { __typename?: 'Mutation', updateOneUser
 export type FindVariantsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type FindVariantsQuery = { __typename?: 'Query', reports?: Array<{ __typename?: 'Report', submitters: Array<string | null>, date_published: any, report_number: number, title: string, description?: string | null, url: string, image_url: string, cloudinary_id: string, source_domain: string, text: string, plain_text: string, authors: Array<string | null>, epoch_date_downloaded: number, epoch_date_modified: number, epoch_date_published: number, epoch_date_submitted: number, language: string, tags: Array<string | null>, inputs_outputs?: Array<string | null> | null } | null> | null };
+export type FindVariantsQuery = { __typename?: 'Query', reports?: Array<{ __typename?: 'Report', submitters: Array<string | null>, date_published: any, report_number: number, title: string, description?: string | null, url: string, image_url: string, cloudinary_id: string, source_domain: string, text: string, plain_text: string, authors: Array<string | null>, epoch_date_downloaded: number, epoch_date_modified?: number | null, epoch_date_published: number, epoch_date_submitted: number, language: string, tags: Array<string | null>, inputs_outputs?: Array<string | null> | null } | null> | null };
 
 export type FindIncidentVariantsQueryVariables = Exact<{
   incident_id: Scalars['Int']['input'];
@@ -3377,7 +3377,7 @@ export type UpdateVariantMutationVariables = Exact<{
 }>;
 
 
-export type UpdateVariantMutation = { __typename?: 'Mutation', updateOneReport?: { __typename?: 'Report', url: string, title: string, authors: Array<string | null>, submitters: Array<string | null>, date_published: any, date_downloaded: any, date_modified: any, epoch_date_published: number, epoch_date_downloaded: number, epoch_date_modified: number, image_url: string, text: string, plain_text: string, tags: Array<string | null>, flag?: boolean | null, report_number: number, editor_notes?: string | null, language: string } | null };
+export type UpdateVariantMutation = { __typename?: 'Mutation', updateOneReport?: { __typename?: 'Report', url: string, title: string, authors: Array<string | null>, submitters: Array<string | null>, date_published: any, date_downloaded: any, date_modified: any, epoch_date_published: number, epoch_date_downloaded: number, epoch_date_modified?: number | null, image_url: string, text: string, plain_text: string, tags: Array<string | null>, flag?: boolean | null, report_number: number, editor_notes?: string | null, language: string } | null };
 
 export type DeleteOneVariantMutationVariables = Exact<{
   filter: ReportFilterType;
