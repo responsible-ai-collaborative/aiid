@@ -1,16 +1,14 @@
 # Cloudinary Integration
 
-[Cloudinary](https://cloudinary.com/) provides image and video management services for the platform.
+[Cloudinary](https://cloudinary.com/) provides image handling for AIID.
 
 ## Benefits
 
 Cloudinary provides AIID with:
 
-- **Image Optimization**: Automatic optimization for different devices and screen sizes
-- **Global CDN**: Fast worldwide image delivery
-- **Transformations**: On-the-fly image resizing, cropping, and format conversion
+- **Image Optimization**: Optimization for different devices and screen sizes
+- **Transformations**: Image resizing, cropping, and format conversion
 - **Remote Image Fetching**: Fetch and cache images from external sources
-- **Reliable Infrastructure**: Enterprise-grade reliability for image assets
 
 ## Configuration
 
@@ -36,7 +34,9 @@ const image = new CloudinaryImage(url, { cloudName: config.cloudinary.cloudName 
 
 ### 2. Image Components
 
-AIID provides reusable image components that leverage Cloudinary's capabilities:
+AIID provides reusable image components that uses Cloudinary's AdvanceImage component:
+
+You can view the code [here](../gatsby-site/src/utils/cloudinary.js).
 
 ```javascript
 import { Image } from 'utils/cloudinary';
@@ -57,7 +57,7 @@ import { Image } from 'utils/cloudinary';
 
 #### PlaceholderImage Component
 
-When external images fail to load (due to server restrictions, network issues, or invalid URLs), AIID generates unique, visually appealing placeholder images using the `PlaceholderImage` component:
+When external images fail to load (due to server restrictions, network issues, or invalid URLs), AIID generates a placeholder image using the `PlaceholderImage` component.
 
 ```javascript
 import PlaceholderImage from 'components/PlaceholderImage';
@@ -73,16 +73,10 @@ import PlaceholderImage from 'components/PlaceholderImage';
 ```
 
 **Features:**
-- **Deterministic Generation**: Creates consistent placeholder images based on the `itemIdentifier` or `title`
 - **Branded Content**: Displays "IncidentDatabase.AI" prominently in the placeholder
-- **Color Schemes**: Uses randomized but consistent color palettes (cyberpunk, matrix, sunset, etc.)
+- **Color Schemes**: Uses randomized color palettes (cyberpunk, matrix, sunset, etc.)
 - **Responsive Design**: Automatically scales to different sizes while maintaining aspect ratio
-- **Canvas-based**: Generates images using HTML5 Canvas for optimal performance
-
-## Common Use Cases
-
-- **Incident Report Images**: Fetch and display images from news articles
-- **User-Submitted Content**: Preview images during submission process
+- **Canvas-based**: Generates images using HTML5 Canvas
 
 ## Troubleshooting
 
