@@ -35,7 +35,7 @@ const incidentFields = [
 const EntityPage = ({ pageContext, data, ...props }) => {
   const { id, name, relatedEntities, entityRelationships } = pageContext;
 
-  const { isRole, user } = useUserContext();
+  const { isRole, user, loading } = useUserContext();
 
   const addToast = useToastContext();
 
@@ -136,6 +136,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
         entityId: { EQ: id },
       },
     },
+    skip: !user || loading,
     notifyOnNetworkStatusChange: true,
   });
 
