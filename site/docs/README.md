@@ -28,6 +28,7 @@ Guide for implementing and managing taxonomies in the system
 
 Details about the frontend development process, including the use of Tailwind CSS and Flowbite.
 
+
 9. [API Documentation](API.md)
 
 Details about the AIID API, including how to access and interact with it, and information on email notifications.
