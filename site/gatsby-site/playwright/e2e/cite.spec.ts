@@ -145,9 +145,10 @@ test.describe('Cite pages', () => {
     test('Should expand all and collapse all reports', async ({ page }) => {
         await page.goto('/cite/3');
 
-        await page.locator('[data-cy="expand-all-reports"]').click();
-        
-        await expect(page.locator('[data-cy="collapse-report-button"]')).toHaveCount(2);
+        await expect(async () => {
+            await page.locator('[data-cy="expand-all-reports"]').click();
+            await expect(page.locator('[data-cy="collapse-report-button"]')).toHaveCount(2, { timeout: 1000 });
+        }).toPass();
         
         await expect(page.locator('[data-cy="expand-all-reports"]')).toBeDisabled();
         
