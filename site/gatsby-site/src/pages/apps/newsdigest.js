@@ -19,6 +19,7 @@ import CardSkeleton from 'elements/Skeletons/Card';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 import useToast, { SEVERITY } from '../../hooks/useToast';
+import SentryTestButton from 'components/SentryTestButton';
 
 export default function NewsSearchPage() {
   const { t } = useTranslation(['submit']);
@@ -266,6 +267,8 @@ export default function NewsSearchPage() {
           </div>
         </details>
       )}
+
+      <SentryTestButton />
     </>
   );
 }
