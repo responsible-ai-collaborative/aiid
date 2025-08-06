@@ -62,6 +62,7 @@ For this reason, there are two tag inputs
 just for GMF goals and methods,
 whereas all other taxonomies share the "other tags" field.
 
+![](./img/checklists-tag-inputs.png)
 
 ## Risks List
 
@@ -78,6 +79,98 @@ when the user opens the checklist
 or edits query tags.
 
 ![](./img/checklists-list.png)
+
+## API
+
+Risks are matched to tags with a specialized API query resolved in
+`site/gatsby-site/server/fields/checklists.ts`.
+For example:
+
+```
+query FindRisks {
+  risks(input: {tags: ["GMF:Known AI Goal:Autonomous Driving"]}) {
+    tags
+    title
+    precedents {
+      incident_id
+      title
+      description
+      tags
+    }
+  }
+}
+```
+
+Response:
+```
+{
+	"data": {
+		"risks": [
+			{
+				"tags": [ "GMF:Known AI Technical Failure:Generalization Failure" ],
+				"title": "Generalization Failure",
+				"precedents": [
+					{
+						"incident_id": 221,
+						"title": "A Road Engineer Killed Following a Collision Involving a Tesla on Autopilot",
+						"description": "In Taiwan, a Tesla Model 3...",
+						"tags": [
+							"GMF:Potential AI Technology:Convolutional Neural Network",
+							"GMF:Potential AI Technology:Visual Object Detection",
+              ...
+						],
+						"__typename": "Precedents"
+					},
+					{
+						"incident_id": 20,
+						"title": "A Collection of Tesla Autopilot-Involved Crashes",
+						"description": "Multiple unrelated car accidents...",
+						"tags": [
+							"GMF:Known AI Goal:Autonomous Driving",
+							"GMF:Known AI Technology:Image Segmentation",
+              ...
+						],
+						"__typename": "Precedents"
+					},
+          ...
+				],
+				"__typename": "Risks"
+			},
+			{
+				"tags": [ "GMF:Known AI Technical Failure:Lack of Transparency" ],
+				"title": "Lack of Transparency",
+				"precedents": [
+					{
+						"incident_id": 175,
+						"title": "Cruise Autonomous Taxi Allegedly Bolted off from Police After Being Pulled over in San Francisco",
+						"description": "An autonomous Chevy Bolt...",
+						"tags": [
+							"GMF:Known AI Goal:Autonomous Driving",
+							"GMF:Known AI Technology:Visual Object Detection",
+              ...
+						],
+						"__typename": "Precedents"
+					},
+					{
+						"incident_id": 187,
+						"title": "YouTuber Tested Tesla on Self Driving Mode, Colliding with Street Pylons",
+						"description": "A YouTuber who was a Tesla’s employee...",
+						"tags": [
+							"GMF:Known AI Goal:Autonomous Driving",
+							"GMF:Known AI Technology:Convolutional Neural Network",
+              ...
+						],
+						"__typename": "Precedents"
+					},
+          ...
+				],
+				"__typename": "Risks"
+			},
+      ...
+		]
+	}
+}
+```
 
 
 ## Checklist database entry fields
