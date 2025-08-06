@@ -164,6 +164,17 @@ jobs:
         run: |
           du -ah . 2>/dev/null | sort -rh | head -n 20
 
+      # List .netlify directory contents recursively
+      - name: List .netlify directory contents
+        run: |
+          echo "Checking .netlify directory file names:"
+          if [ -d ".netlify" ]; then
+            find .netlify -type f | sort
+          else
+            echo "❌ .netlify directory not found!"
+          fi
+        working-directory: site/gatsby-site
+
       # Upload Netlify functions sourcemaps to Sentry
       - name: Upload Netlify functions sourcemaps to Sentry
         uses: getsentry/action-release@v3

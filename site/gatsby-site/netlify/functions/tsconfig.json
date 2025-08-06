@@ -8,5 +8,8 @@
         "skipLibCheck": true,
         "allowJs": true,
         "resolveJsonModule": true,
+        "sourceMap": true,
+        "inlineSources": true,
+        "sourceRoot": "/"
     }
 }
