@@ -593,5 +593,6 @@
   "Tags": "Étiquettes",
   "Sign Up": "S'inscrire",
   "See in OECD AIM": "Voir dans OECD AIM",
-  "The OECD AI Incidents and Hazards Monitor (AIM) automatically collects and classifies AI-related incidents and hazards in real time from reputable news sources worldwide.": "Le Moniteur des incidents et risques liés à l'IA de l'OCDE (AIM) collecte et classe automatiquement les incidents et risques liés à l'IA en temps réel à partir de sources d'information réputées dans le monde entier."
+  "The OECD AI Incidents and Hazards Monitor (AIM) automatically collects and classifies AI-related incidents and hazards in real time from reputable news sources worldwide.": "Le Moniteur des incidents et risques liés à l'IA de l'OCDE (AIM) collecte et classe automatiquement les incidents et risques liés à l'IA en temps réel à partir de sources d'information réputées dans le monde entier.",
+  "Image could not be loaded. The URL may be invalid, or the image host may block external access. Using fallback image.": "L'image n'a pas pu être chargée. L'URL peut être invalide, ou le hôte d'image peut bloquer l'accès externe. Utilisation d'une image de secours."
 }

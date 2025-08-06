@@ -24,6 +24,7 @@ import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import VariantList from 'components/variants/VariantList';
 import Tools from 'components/cite/Tools';
 import TranslationBadge from 'components/i18n/TranslationBadge';
+import ExpandCollapseAllReports from 'components/cite/ExpandCollapseAllReports';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCircleArrowLeft,
@@ -80,6 +81,8 @@ function CiteTemplate({
   const localizePath = useLocalizePath();
 
   const [isSubscribed, setIsSubscribed] = useState(false);
+
+  const [reportExpandedStates, setReportExpandedStates] = useState({});
 
   const { data } = useQuery(FIND_USER_SUBSCRIPTIONS, {
     variables: {
@@ -181,6 +184,40 @@ function CiteTemplate({
   const incidentResponded = sortedReports.some(
     (report) => report.tags && report.tags.includes(RESPONSE_TAG)
   );
+
+  const handleExpandAll = () => {
+    const expandedStates = {};
+
+    sortedReports.forEach((report) => {
+      expandedStates[report.report_number] = true;
+    });
+    setReportExpandedStates(expandedStates);
+  };
+
+  const handleCollapseAll = () => {
+    const expandedStates = {};
+
+    sortedReports.forEach((report) => {
+      expandedStates[report.report_number] = false;
+    });
+    setReportExpandedStates(expandedStates);
+  };
+
+  const handleToggleReport = (reportNumber, expanded) => {
+    setReportExpandedStates((prev) => ({
+      ...prev,
+      [reportNumber]: expanded,
+    }));
+  };
+
+  // Calculate derived state for expand/collapse all buttons
+  const reportStates = sortedReports.map(
+    (report) => reportExpandedStates[report.report_number] ?? false
+  );
+
+  const allExpanded = reportStates.length > 0 && reportStates.every((state) => state === true);
+
+  const allCollapsed = reportStates.length > 0 && reportStates.every((state) => state === false);
 
   return (
     <>
@@ -407,6 +444,18 @@ function CiteTemplate({
               </Col>
             </Row>
 
+            <Row className="mt-6">
+              <Col>
+                <ExpandCollapseAllReports
+                  onExpandAll={handleExpandAll}
+                  onCollapseAll={handleCollapseAll}
+                  hasReports={sortedReports.length > 0}
+                  allExpanded={allExpanded}
+                  allCollapsed={allCollapsed}
+                />
+              </Col>
+            </Row>
+
             {sortedReports.map((report) => {
               let actions = <></>;
 
@@ -431,6 +480,8 @@ function CiteTemplate({
                       incidentId={incident.incident_id}
                       actions={actions}
                       readOnly={readOnly}
+                      externalExpanded={reportExpandedStates[report.report_number]}
+                      onToggleExpanded={handleToggleReport}
                     />
                   </Col>
                 </Row>

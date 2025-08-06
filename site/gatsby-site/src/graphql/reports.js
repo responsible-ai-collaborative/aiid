@@ -65,6 +65,7 @@ export const FIND_REPORT_WITH_TRANSLATIONS = gql(`
         text
         language
       }
+      cloudinary_id
     }
   }
 `);

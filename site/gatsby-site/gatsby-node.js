@@ -6,6 +6,8 @@ const { Client: GoogleMapsAPIClient } = require('@googlemaps/google-maps-service
 
 const { startCase } = require('lodash');
 
+const { sentryWebpackPlugin } = require('@sentry/webpack-plugin');
+
 const config = require('./config');
 
 const createCitationPages = require('./page-creators/createCitationPages');
@@ -91,8 +93,8 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   }
 };
 
-exports.onCreateWebpackConfig = ({ actions }) => {
-  actions.setWebpackConfig({
+exports.onCreateWebpackConfig = ({ actions, stage }) => {
+  const config = {
     resolve: {
       modules: [path.resolve(__dirname, 'src'), 'node_modules'],
       alias: {
@@ -108,7 +110,29 @@ exports.onCreateWebpackConfig = ({ actions }) => {
       },
       fallback: { crypto: false },
     },
-  });
+  };
+
+  // Only add Sentry plugin for production builds
+  if (stage === 'build-javascript' && process.env.SENTRY_DSN && process.env.SENTRY_AUTH_TOKEN) {
+    config.devtool = 'source-map';
+    config.plugins = [
+      sentryWebpackPlugin({
+        org: process.env.SENTRY_ORG || 'aiid',
+        project: process.env.SENTRY_PROJECT || 'aiid',
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+        telemetry: false,
+        sourcemaps: {
+          assets: './public/**',
+          deleteAfterUpload: true,
+        },
+        release: {
+          name: process.env.SENTRY_RELEASE || process.env.GATSBY_COMMIT_SHA,
+        },
+      }),
+    ];
+  }
+
+  actions.setWebpackConfig(config);
 };
 
 exports.onCreateBabelConfig = ({ actions }) => {

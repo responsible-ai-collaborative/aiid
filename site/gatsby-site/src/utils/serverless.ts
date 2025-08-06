@@ -93,7 +93,7 @@ const parseCookies = (cookieHeader: string) => {
     return cookies;
 };
 
-const parseHeaders = (event: any) => {
+const parseHeaders = (event: HandlerEvent) => {
 
     return {
         ...event.headers,
@@ -101,13 +101,16 @@ const parseHeaders = (event: any) => {
     }
 }
 
-const parseQuery = (event: any) => {
+const parseQuery = (event: HandlerEvent) => {
 
     const path = event.path.replace('/api/auth/', '')
     const nextAuthArray = path.split('/').filter(Boolean);
 
+    const searchParams = new URLSearchParams(event.rawQuery);
+    const queryParams = Object.fromEntries(searchParams.entries());
+
     return {
-        ...event.queryStringParameters,
+        ...queryParams,
         nextauth: nextAuthArray,
         action: nextAuthArray[nextAuthArray.length - 1],
         providerId: nextAuthArray[1]

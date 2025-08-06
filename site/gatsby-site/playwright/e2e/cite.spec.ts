@@ -142,6 +142,23 @@ test.describe('Cite pages', () => {
         expect(data.report.flag).toBe(true);
     });
 
+    test('Should expand all and collapse all reports', async ({ page }) => {
+        await page.goto('/cite/3');
+
+        await expect(async () => {
+            await page.locator('[data-cy="expand-all-reports"]').click();
+            await expect(page.locator('[data-cy="collapse-report-button"]')).toHaveCount(2, { timeout: 1000 });
+        }).toPass();
+        
+        await expect(page.locator('[data-cy="expand-all-reports"]')).toBeDisabled();
+        
+        await page.locator('[data-cy="collapse-all-reports"]').click();
+        
+        await expect(page.locator('[data-cy="expand-report-button"]')).toHaveCount(2);
+        
+        await expect(page.locator('[data-cy="collapse-all-reports"]')).toBeDisabled();
+    });
+
     test('Should remove duplicate', async ({ page, login }) => {
 
         test.slow();
@@ -659,8 +676,12 @@ test.describe('Cite pages', () => {
             }
         });
 
-        // Wait a reasonable time to ensure no calls are made
-        await page.waitForTimeout(2000);
+        // Wait for the FindUserSubscriptions GraphQL request instead of a fixed timeout
+        await page.waitForRequest(request =>
+            request.url().includes('/graphql') &&
+            request.postData() &&
+            JSON.parse(request.postData()).operationName === 'FindUserSubscriptions'
+        );
 
         // Verify that FindUserSubscriptions query was made
         expect(graphqlCalls).toHaveLength(1);

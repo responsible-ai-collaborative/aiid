@@ -32,7 +32,7 @@ export const ReportType = new GraphQLObjectType({
         editor_notes: { type: GraphQLString },
         embedding: { type: EmbeddingType },
         epoch_date_downloaded: { type: new GraphQLNonNull(GraphQLInt) },
-        epoch_date_modified: { type: new GraphQLNonNull(GraphQLInt) },
+        epoch_date_modified: { type: GraphQLInt },
         epoch_date_published: { type: new GraphQLNonNull(GraphQLInt) },
         epoch_date_submitted: { type: new GraphQLNonNull(GraphQLInt) },
         flag: { type: GraphQLBoolean },
