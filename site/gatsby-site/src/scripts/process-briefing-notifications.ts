@@ -2,7 +2,6 @@ import { MongoClient } from "mongodb";
 import config from "../../server/config";
 import { Context, DBEntity, DBIncident, DBNotification, DBReport, DBSubscription } from "../../server/interfaces";
 import { sendBulkEmails, SendBulkEmailParams } from "../../server/emails";
-import * as reporter from '../../server/reporter';
 import * as prismic from '@prismicio/client';
 import { UserCacheManager } from "../../server/fields/userCacheManager";
 import { handleNotificationError, markNotificationsAsProcessed } from '../utils/notificationUtils';
@@ -255,7 +254,6 @@ export const run = async () => {
     process.exit(0);
   } catch (error: any) {
     console.error(error);
-    reporter.error(error);
     process.exit(1);
   }
 };

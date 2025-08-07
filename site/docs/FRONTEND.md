@@ -296,17 +296,6 @@ const cld = new Cloudinary({
 });
 ```
 
-### Rollbar
-Error tracking is integrated with Rollbar:
-
-```javascript
-import Rollbar from 'rollbar';
-
-if ('Rollbar' in window && error) {
-  Rollbar.error(error);
-}
-```
-
 ## Development Patterns
 
 ### Loading States

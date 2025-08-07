@@ -42,10 +42,7 @@ export function ToastContextProvider({ children }) {
     <ToastContext.Provider value={addToast}>
       {children}
       <div className="fixed bottom-0 left-0 max-w-full z-50 box-conten mb-4 ml-4">
-        {toasts.map(({ message, severity, error, id }, index) => {
-          if ('Rollbar' in window && error) {
-            Rollbar.error(error);
-          }
+        {toasts.map(({ message, severity, id }, index) => {
           return (
             <Toast className="tw-toast" data-cy="toast" key={id}>
               <div

@@ -1,7 +1,6 @@
 import { EmailParams, MailerSend, Recipient } from "mailersend";
 import config from "../config";
 import templates from "./templates";
-import * as reporter from '../reporter';
 import assert from "assert";
 import { RateLimiter } from "limiter";
 
@@ -149,7 +148,7 @@ export const sendBulkEmails = async ({ recipients, subject, dynamicData, templat
 
     } catch (error: any) {
         error.message = `[Send Email]: ${error.message}`;
-        reporter.error(error);
+        console.error(error);
 
         throw error;
     }
@@ -212,7 +211,7 @@ export const sendEmail = async ({ recipient, subject, dynamicData, templateId }:
 
     } catch (error: any) {
         error.message = `[Send Email]: ${error.message}`;
-        reporter.error(error);
+        console.error(error);
 
         throw error;
     }

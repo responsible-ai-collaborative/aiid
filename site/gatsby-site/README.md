@@ -47,13 +47,6 @@ Once you have cloned the repository, to set up a local development environment f
    MONGODB_TRANSLATIONS_CONNECTION_STRING=mongodb://127.0.0.1:4110 
    MONGODB_MIGRATIONS_CONNECTION_STRING=mongodb://127.0.0.1:4110
 
-   # Rollbar
-
-   # Token for sending error reports to Rollbar from the server
-   ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN=dummy  
-   # Token for Rollbar error tracking in the Gatsby frontend
-   GATSBY_ROLLBAR_TOKEN=dummy  
-
    # Algolia
 
    # Application ID for Algolia search integration in the Gatsby app

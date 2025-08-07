@@ -56,7 +56,6 @@ jobs:
         run: npm run test:api:ci
         env:
           API_MONGODB_CONNECTION_STRING: "" # dinamically set by globalSetup.ts
-          ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: sarasa
           MAILERSEND_API_KEY: something
           NOTIFICATIONS_SENDER_NAME: Test Preview
           NOTIFICATIONS_SENDER: test@test.com

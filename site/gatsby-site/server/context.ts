@@ -1,6 +1,5 @@
 import { IncomingMessage } from "http";
 import { MongoClient } from "mongodb";
-import * as reporter from "./reporter";
 import { getServerSession } from 'next-auth'
 import { getAuthConfig } from "../nextauth.config";
 import { createResponse } from '../src/utils/serverless'
@@ -24,7 +23,7 @@ export const context = async ({ req, client }: { req: IncomingMessage, client: M
     }
     catch (e) {
 
-        reporter.error(e as Error);
+        console.error(e as Error);
 
         throw e;
     }
