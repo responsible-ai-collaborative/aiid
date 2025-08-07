@@ -41,6 +41,10 @@ Complete guide to the authentication system including NextAuth.js configuration,
 
 Guide to connect a Prismic account to this project, to create Documents, Blog posts and much more.
 
+12. [Sentry Integration](SENTRY.md)
+
+Technical configuration guide for Sentry error tracking and performance monitoring integration.
+
 ## Getting Help
 
 1. Open issues on [GitHub](https://github.com/responsible-ai-collaborative/aiid/issues)
