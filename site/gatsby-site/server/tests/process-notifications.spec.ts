@@ -1,6 +1,5 @@
 import * as notifications from '../../src/scripts/process-notifications';
 import * as briefingNotifications from '../../src/scripts/process-briefing-notifications';
-import * as reporter from '../reporter';
 
 describe('Process Notifications script', () => {
 
@@ -16,7 +15,7 @@ describe('Process Notifications script', () => {
 
         const mockConsoleError = jest.spyOn(console, 'error').mockImplementation();
         const mockProcessExit = jest.spyOn(process, 'exit').mockImplementation();
-        const mockReporterError = jest.spyOn(reporter, 'error').mockImplementation();
+        const mockConsoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
         const mockProcessNotifications = jest.spyOn(notifications, 'processNotifications')
 
         const testError = new Error('Test error');
@@ -25,7 +24,7 @@ describe('Process Notifications script', () => {
         await notifications.run();
 
         expect(mockConsoleError).toHaveBeenCalledWith(testError);
-        expect(mockReporterError).toHaveBeenCalledWith(testError);
+        expect(mockConsoleErrorSpy).toHaveBeenCalledWith(testError);
         expect(mockProcessExit).toHaveBeenCalledWith(1);
 
         expect(mockConsoleError).toHaveBeenCalledTimes(1);

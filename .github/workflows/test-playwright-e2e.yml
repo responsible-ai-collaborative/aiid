@@ -80,7 +80,6 @@ jobs:
           MONGODB_MIGRATIONS_CONNECTION_STRING: mongodb://127.0.0.1:4110/
           GATSBY_PRISMIC_REPO_NAME: ${{ vars.GATSBY_PRISMIC_REPO_NAME }}
           PRISMIC_ACCESS_TOKEN: ${{ secrets.PRISMIC_ACCESS_TOKEN }}
-          GATSBY_ROLLBAR_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
           SKIP_PAGE_CREATOR: ${{ vars.SKIP_PAGE_CREATOR }}
           CLOUDFLARE_R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_R2_ACCOUNT_ID }}
           CLOUDFLARE_R2_BUCKET_NAME: ${{ vars.CLOUDFLARE_R2_BUCKET_NAME }}
@@ -88,7 +87,6 @@ jobs:
           CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
           CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
           GATSBY_COMMIT_SHA: ${{ inputs.sha }}
-          ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
           API_MONGODB_CONNECTION_STRING: mongodb://127.0.0.1:4110/
           GATSBY_SITE_URL: http://localhost:8000
           SITE_URL: http://localhost:8000
@@ -110,7 +108,6 @@ jobs:
           IS_EMPTY_ENVIRONMENT: ${{ vars.IS_EMPTY_ENVIRONMENT }}
           MONGODB_CONNECTION_STRING: mongodb://127.0.0.1:4110/
           API_MONGODB_CONNECTION_STRING: mongodb://127.0.0.1:4110/
-          ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN: ${{ secrets.GATSBY_ROLLBAR_TOKEN }}
           GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
           SHARD_INDEX: ${{ matrix.shardIndex }}
           SHARD_TOTAL: ${{ matrix.shardTotal }}
