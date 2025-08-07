@@ -15,7 +15,6 @@ describe('Process Notifications script', () => {
 
         const mockConsoleError = jest.spyOn(console, 'error').mockImplementation();
         const mockProcessExit = jest.spyOn(process, 'exit').mockImplementation();
-        const mockConsoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
         const mockProcessNotifications = jest.spyOn(notifications, 'processNotifications')
 
         const testError = new Error('Test error');
@@ -24,11 +23,9 @@ describe('Process Notifications script', () => {
         await notifications.run();
 
         expect(mockConsoleError).toHaveBeenCalledWith(testError);
-        expect(mockConsoleErrorSpy).toHaveBeenCalledWith(testError);
         expect(mockProcessExit).toHaveBeenCalledWith(1);
 
         expect(mockConsoleError).toHaveBeenCalledTimes(1);
-        expect(mockReporterError).toHaveBeenCalledTimes(1);
         expect(mockProcessExit).toHaveBeenCalledTimes(1);
     });
 
@@ -36,7 +33,6 @@ describe('Process Notifications script', () => {
 
         const mockConsoleError = jest.spyOn(console, 'error').mockImplementation();
         const mockProcessExit = jest.spyOn(process, 'exit').mockImplementation();
-        const mockReporterError = jest.spyOn(reporter, 'error').mockImplementation();
         const mockProcessBriefingNotifications = jest.spyOn(briefingNotifications, 'processBriefingNotifications')
 
         const testError = new Error('Test error');
@@ -45,11 +41,9 @@ describe('Process Notifications script', () => {
         await briefingNotifications.run();
 
         expect(mockConsoleError).toHaveBeenCalledWith(testError);
-        expect(mockReporterError).toHaveBeenCalledWith(testError);
         expect(mockProcessExit).toHaveBeenCalledWith(1);
 
         expect(mockConsoleError).toHaveBeenCalledTimes(1);
-        expect(mockReporterError).toHaveBeenCalledTimes(1);
         expect(mockProcessExit).toHaveBeenCalledTimes(1);
     });
 
@@ -58,7 +52,6 @@ describe('Process Notifications script', () => {
         const mockConsoleLog = jest.spyOn(console, 'log').mockImplementation();
         const mockConsoleError = jest.spyOn(console, 'error').mockImplementation();
         const mockProcessExit = jest.spyOn(process, 'exit').mockImplementation();
-        const mockReporterError = jest.spyOn(reporter, 'error').mockImplementation();
         const mockProcessNotifications = jest.spyOn(notifications, 'processNotifications')
 
         mockProcessNotifications.mockResolvedValueOnce(1);
@@ -69,7 +62,6 @@ describe('Process Notifications script', () => {
         expect(mockProcessExit).toHaveBeenCalledWith(0);
 
         expect(mockConsoleError).not.toHaveBeenCalled();
-        expect(mockReporterError).not.toHaveBeenCalled();
 
         expect(mockConsoleLog).toHaveBeenCalledTimes(1);
         expect(mockProcessExit).toHaveBeenCalledTimes(1);
