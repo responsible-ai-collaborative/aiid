@@ -1,6 +1,8 @@
 const path = require('path');
 
-const fs = require('fs');
+const fs = require('fs').promises;
+
+const Terser = require('terser');
 
 const { Client: GoogleMapsAPIClient } = require('@googlemaps/google-maps-services-js');
 
@@ -297,16 +299,29 @@ exports.onPreBuild = function ({ reporter }) {
   }
 };
 
-exports.onPostBuild = ({ reporter }) => {
+exports.onPostBuild = async ({ reporter }) => {
   reporter.info('Replacing Env variables on static file...');
-
-  const filePath = `${process.cwd()}/public/rollbar.js`;
+  const filePath = path.join(__dirname, 'public', 'rollbar.js');
 
   reporter.info(`Replacing "GATSBY_ROLLBAR_TOKEN" variable on static "${filePath}" file...`);
 
-  const fileContent = fs.readFileSync(filePath, 'utf8');
+  const fileContent = await fs.readFile(filePath, 'utf8');
 
   const newFileContent = fileContent.replace(/GATSBY_ROLLBAR_TOKEN/g, config.rollbar.token);
 
-  fs.writeFileSync(filePath, newFileContent);
+  await fs.writeFile(filePath, newFileContent);
+
+  reporter.info('Minifying embed.js...');
+  const scriptPath = path.join(__dirname, 'public', 'embed.js');
+
+  const minifiedScriptPath = path.join(__dirname, 'public', 'embed.min.js');
+
+  await fs.access(scriptPath);
+
+  const code = await fs.readFile(scriptPath, 'utf8');
+
+  const result = await Terser.minify(code);
+
+  await fs.writeFile(minifiedScriptPath, result.code, 'utf8');
+  reporter.info(`Successfully minified ${scriptPath} to ${minifiedScriptPath}`);
 };
