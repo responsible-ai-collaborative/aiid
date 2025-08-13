@@ -37,9 +37,16 @@ Details about the AIID API, including how to access and interact with it, and in
 
 Complete guide to the authentication system including NextAuth.js configuration, user roles, permissions, and security features.
 
-11. [Prismic setup](prismic.md)
+11. [Prismic setup](PRISMIC.md)
 
 Guide to connect a Prismic account to this project, to create Documents, Blog posts and much more.
+
+12. [Sentry Integration](SENTRY.md)
+
+Technical configuration guide for Sentry error tracking and performance monitoring integration.
+13. [Cloudinary Integration](CLOUDINARY.md)
+
+Guide for Cloudinary image hosting, optimization, and integration with the AIID project.
 
 ## Getting Help
 
