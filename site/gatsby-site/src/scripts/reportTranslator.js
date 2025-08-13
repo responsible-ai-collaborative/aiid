@@ -128,7 +128,9 @@ class ReportTranslator {
     // Insert the translated reports into the reports collection with the language field
     const reportsTranslated = translated.map((t) => ({ ...t, language, created_at: new Date() }));
 
-    const reportsTranslatedToUpdate = reportsTranslated.filter((t) => t.dirty);
+    const reportsTranslatedToUpdate = reportsTranslated.filter(
+      (t) => t.dirty && t.text !== '' && t.title !== ''
+    );
 
     for (const report of reportsTranslatedToUpdate) {
       await reportsTranslationsCollection.updateOne(
@@ -137,7 +139,9 @@ class ReportTranslator {
       );
     }
 
-    const reportsTranslatedToInsert = reportsTranslated.filter((t) => !t.dirty);
+    const reportsTranslatedToInsert = reportsTranslated.filter(
+      (t) => !t.dirty && t.text !== '' && t.title !== ''
+    );
 
     if (reportsTranslatedToInsert.length > 0) {
       await reportsTranslationsCollection.insertMany(reportsTranslatedToInsert);
