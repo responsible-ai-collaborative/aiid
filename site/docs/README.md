@@ -41,7 +41,10 @@ Complete guide to the authentication system including NextAuth.js configuration,
 
 Guide to connect a Prismic account to this project, to create Documents, Blog posts and much more.
 
-12. [Cloudinary Integration](CLOUDINARY.md)
+12. [Sentry Integration](SENTRY.md)
+
+Technical configuration guide for Sentry error tracking and performance monitoring integration.
+13. [Cloudinary Integration](CLOUDINARY.md)
 
 Guide for Cloudinary image hosting, optimization, and integration with the AIID project.
 
