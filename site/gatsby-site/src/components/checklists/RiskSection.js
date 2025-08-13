@@ -205,7 +205,7 @@ export default function RiskSection({
           </div>
           <PrecedentsList>
             {precedents.map((precedent) => (
-              <Card key={precedent.incident_id}>
+              <Card key={precedent.incident_id} data-cy="precedent-card">
                 <div>
                   <LocalizedLink to={`/cite/${precedent.incident_id}`}>
                     <h3 className="mt-0">{precedent.title}</h3>
