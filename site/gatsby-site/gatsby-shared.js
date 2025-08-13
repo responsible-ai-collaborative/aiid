@@ -4,7 +4,6 @@ import { QueryParamProvider } from 'use-query-params';
 import { UserContextProvider } from 'contexts/UserContext';
 import { MenuContextProvider } from 'contexts/MenuContext';
 import { ToastContextProvider } from 'contexts/ToastContext';
-import { Script } from 'gatsby';
 import { SessionProvider } from 'next-auth/react';
 
 export const wrapPageElement = ({ element }) => {
@@ -33,7 +32,6 @@ export const wrapPageElement = ({ element }) => {
 export const wrapRootElement = ({ element }) => {
   return (
     <>
-      <Script src="/rollbar.js" />
       <ToastContextProvider>{element}</ToastContextProvider>
     </>
   );
