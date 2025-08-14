@@ -2,6 +2,7 @@ import { test, query } from '../utils';
 import { gql } from '@apollo/client';
 import { isCompleteReport } from '../../src/utils/variants';
 import { expect } from '@playwright/test';
+import config from '../../config';
 
 const isLinked = (reportNumber, incidents) => {
   for (const incident of incidents) {
@@ -130,6 +131,118 @@ export function testIntegrity() {
           );
         })
       ).toBe(true);
+    });
+
+    test(`Translations reports should not have empty title or text fields`, async () => {
+      test.setTimeout(300000); // set timeout to 5 minutes for this specific test
+      
+      let allInvalidTranslations = [];
+
+      let skip = 0;
+
+      const limit = 100;
+      
+      let hasMoreReports = true;
+      
+      while (hasMoreReports) {
+        const { data } = await query({
+          query: gql`
+            query ($translationLanguages: [String!]!, $pagination: PaginationType!) {
+              reports(pagination: $pagination) {
+                translations(languages: $translationLanguages) {
+                  title
+                  text
+                }
+              }
+            }
+          `,
+          variables: {
+            translationLanguages: config.i18n.availableLanguages,
+            pagination: { limit, skip },
+          },
+        });
+
+        if (!data.reports || data.reports.length === 0) {
+          hasMoreReports = false;
+        }
+
+        const invalidTranslations = data.reports.filter((report) => {
+          if (!report.translations || report.translations.length === 0) {
+            return false; // Skip reports without translations
+          }
+          
+          return report.translations.some((translation) => {
+            return translation.title?.trim() === '' || 
+                   translation.text?.trim() === '';
+          });
+        });
+
+        allInvalidTranslations = allInvalidTranslations.concat(invalidTranslations);
+
+        if (data.reports.length < limit) {
+          hasMoreReports = false;
+        }
+
+        skip += limit;
+      }
+
+      expect(allInvalidTranslations.length).toBe(0);
+    });
+
+    test(`Translations incidents should not have empty title or description fields`, async () => {
+      test.setTimeout(300000); // set timeout to 5 minutes for this specific test
+      
+      let allInvalidTranslations = [];
+
+      let skip = 0;
+
+      const limit = 100;
+      
+      let hasMoreIncidents = true;
+      
+      while (hasMoreIncidents) {
+        const { data } = await query({
+          query: gql`
+            query ($translationLanguages: [String!]!, $pagination: PaginationType!) {
+              incidents(pagination: $pagination) {
+                translations(languages: $translationLanguages) {
+                  title
+                  description
+                }
+              }
+            }
+          `,
+          variables: {
+            translationLanguages: config.i18n.availableLanguages,
+            pagination: { limit, skip },
+          },
+        });
+
+        if (!data.incidents || data.incidents.length === 0) {
+          hasMoreIncidents = false;
+        }
+
+        const invalidTranslations = data.incidents.filter((incident) => {
+          if (!incident.translations || incident.translations.length === 0) {
+            return false; // Skip incidents without translations
+          }
+          
+          return incident.translations.some((translation) => {
+            return translation.title?.trim() === '' || 
+                   translation.description?.trim() === '';
+          });
+        });
+
+        allInvalidTranslations = allInvalidTranslations.concat(invalidTranslations);
+
+        if (data.incidents.length < limit) {
+          hasMoreIncidents = false;
+        }
+
+        skip += limit;
+      }
+
+      expect(allInvalidTranslations.length).toBe(0);
     });
 
   });
