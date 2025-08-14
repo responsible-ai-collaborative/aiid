@@ -78,7 +78,7 @@ export const UPDATE_VARIANT = gql(`
       date_downloaded
       date_modified
       epoch_date_published
-      epoch_date_downloaded
+      date_downloaded
       epoch_date_modified
       image_url
       text
