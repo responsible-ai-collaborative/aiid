@@ -18,7 +18,6 @@ export const ReportHistoryType = new GraphQLObjectType({
         modifiedBy: { type: GraphQLString },
         editor_notes: { type: GraphQLString },
         embedding: { type: EmbeddingType },
-        epoch_date_downloaded: { type: GraphQLInt },
         epoch_date_modified: { type: GraphQLInt },
         epoch_date_published: { type: GraphQLInt },
         epoch_date_submitted: { type: GraphQLInt },
