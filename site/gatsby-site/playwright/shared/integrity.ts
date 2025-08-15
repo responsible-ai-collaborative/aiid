@@ -148,7 +148,11 @@ export function testIntegrity() {
         const { data } = await query({
           query: gql`
             query ($translationLanguages: [String!]!, $pagination: PaginationType!) {
-              reports(pagination: $pagination) {
+              reports(
+                pagination: $pagination,
+                sort: { report_number: ASC }
+              ) {
+                report_number
                 translations(languages: $translationLanguages) {
                   title
                   text
@@ -204,7 +208,11 @@ export function testIntegrity() {
         const { data } = await query({
           query: gql`
             query ($translationLanguages: [String!]!, $pagination: PaginationType!) {
-              incidents(pagination: $pagination) {
+              incidents(
+                pagination: $pagination,
+                sort: { incident_id: ASC }
+              ) {
+                incident_id
                 translations(languages: $translationLanguages) {
                   title
                   description
