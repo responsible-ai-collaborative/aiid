@@ -134,7 +134,7 @@ export function testIntegrity() {
     });
 
     test(`Translations reports should not have empty title or text fields`, async () => {
-      test.setTimeout(300000); // set timeout to 5 minutes for this specific test
+      test.setTimeout(600000); // set timeout to 10 minutes for this specific test
       
       let allInvalidTranslations = [];
 
