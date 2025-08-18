@@ -1,7 +1,6 @@
 import { UserCacheManager } from "../../server/fields/userCacheManager";
 import config from "../../server/config";
 import { Context, DBEntity, DBIncident, DBNotification, DBReport, DBSubscription } from "../../server/interfaces";
-import * as reporter from '../../server/reporter';
 import { Collection, MongoClient } from "mongodb";
 import { SendBulkEmailParams, sendBulkEmails } from "../../server/emails";
 import { handleNotificationError, markNotificationsAsProcessed, markNotificationsAsNotProcessed } from '../utils/notificationUtils';
@@ -388,7 +387,6 @@ export const run = async () => {
         process.exit(0);
     } catch (error: any) {
         console.error(error);
-        reporter.error(error);
         process.exit(1);
     }
 }
