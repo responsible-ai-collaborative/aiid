@@ -1,7 +1,5 @@
 const path = require('path');
 
-const fs = require('fs');
-
 const { Client: GoogleMapsAPIClient } = require('@googlemaps/google-maps-services-js');
 
 const { startCase } = require('lodash');
@@ -295,18 +293,4 @@ exports.onPreBuild = function ({ reporter }) {
   if (!config.google.mapsApiKey) {
     reporter.warn('Missing environment variable GOOGLE_MAPS_API_KEY.');
   }
-};
-
-exports.onPostBuild = ({ reporter }) => {
-  reporter.info('Replacing Env variables on static file...');
-
-  const filePath = `${process.cwd()}/public/rollbar.js`;
-
-  reporter.info(`Replacing "GATSBY_ROLLBAR_TOKEN" variable on static "${filePath}" file...`);
-
-  const fileContent = fs.readFileSync(filePath, 'utf8');
-
-  const newFileContent = fileContent.replace(/GATSBY_ROLLBAR_TOKEN/g, config.rollbar.token);
-
-  fs.writeFileSync(filePath, newFileContent);
 };
