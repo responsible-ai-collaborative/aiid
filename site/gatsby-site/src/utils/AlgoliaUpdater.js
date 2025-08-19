@@ -240,6 +240,7 @@ const reportToEntry = ({ incident = null, report, classifications = [{ list: [],
   const entry = {
     authors: report.authors,
     description: report.description,
+    date_downloaded: report.date_downloaded,
     epoch_date_modified: report.epoch_date_modified,
     epoch_date_published: report.epoch_date_published,
     epoch_date_submitted: report.epoch_date_submitted,
