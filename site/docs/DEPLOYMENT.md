@@ -202,23 +202,6 @@ GOOGLE_TRANSLATE_API_KEY=XXXXXXXXXXXX
 
 Read more about the translation process in the [Internationalization Guide](i18N.md).
 
-## Rollbar
-
-This project uses [Rollbar](https://rollbar.com) for error logging for the whole site, including background processes.
-
-The access token value from your Rollbar account > Projects > Your project > Project Access Tokens > post_server_item
-
-And set two environment variables:
-
-```
-GATSBY_ROLLBAR_TOKEN
-ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN
-```
-
-> [!WARNING]  
-> The `GATSBY_ROLLBAR_TOKEN` is used in the client-side code, while the `ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN` is used in the server-side code. We recommend using different tokens for each.
-
-
 ## GitHub
 
 ### Deployment Workflows on GitHub Actions
@@ -284,7 +267,6 @@ CLOUDFLARE_R2_SECRET_ACCESS_KEY
 CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID
 CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY
 CYPRESS_RECORD_KEY
-GATSBY_ROLLBAR_TOKEN
 GOOGLE_MAPS_API_KEY
 GOOGLE_TRANSLATE_API_KEY
 MAILERSEND_API_KEY
@@ -294,7 +276,6 @@ MONGODB_REPLICA_SET
 MONGODB_TRANSLATIONS_CONNECTION_STRING
 NETLIFY_AUTH_TOKEN
 PRISMIC_ACCESS_TOKEN
-ROLLBAR_POST_SERVER_ITEM_ACCESS_TOKEN
 ```
 
 GitHub should detect the workflows in the `.github/workflows` directory. Once you have set up the environment variables and secrets, you can push your changes to the repository. The workflows should then be triggered, and the site will be deployed to Netlify.
