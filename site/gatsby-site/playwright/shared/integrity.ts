@@ -145,23 +145,20 @@ export function testIntegrity() {
       let hasMoreReports = true;
       
       while (hasMoreReports) {
+        console.log('--- skip', skip);
         const { data } = await query({
           query: gql`
-            query ($translationLanguages: [String!]!, $pagination: PaginationType!) {
+            query ($pagination: PaginationType!) {
               reports(
                 pagination: $pagination,
-                sort: { report_number: ASC }
               ) {
                 report_number
-                translations(languages: $translationLanguages) {
-                  title
-                  text
-                }
+                
               }
             }
           `,
           variables: {
-            translationLanguages: config.i18n.availableLanguages,
+            //translationLanguages: config.i18n.availableLanguages,
             pagination: { limit, skip },
           },
         });
@@ -205,23 +202,19 @@ export function testIntegrity() {
       let hasMoreIncidents = true;
       
       while (hasMoreIncidents) {
+        console.log('--- skip', skip);
         const { data } = await query({
           query: gql`
-            query ($translationLanguages: [String!]!, $pagination: PaginationType!) {
+            query ($pagination: PaginationType!) {
               incidents(
                 pagination: $pagination,
-                sort: { incident_id: ASC }
               ) {
                 incident_id
-                translations(languages: $translationLanguages) {
-                  title
-                  description
-                }
               }
             }
           `,
           variables: {
-            translationLanguages: config.i18n.availableLanguages,
+            //translationLanguages: config.i18n.availableLanguages,
             pagination: { limit, skip },
           },
         });
