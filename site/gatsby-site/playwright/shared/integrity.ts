@@ -3,6 +3,7 @@ import { gql } from '@apollo/client';
 import { isCompleteReport } from '../../src/utils/variants';
 import { expect } from '@playwright/test';
 import config from '../../config';
+import { MongoClient } from "mongodb";
 
 const isLinked = (reportNumber, incidents) => {
   for (const incident of incidents) {
@@ -134,118 +135,68 @@ export function testIntegrity() {
     });
 
     test(`Translations reports should not have empty title or text fields`, async () => {
-      test.setTimeout(600000); // set timeout to 10 minutes for this specific test
-      
-      let allInvalidTranslations = [];
+      const client = new MongoClient(config.mongodb.translationsConnectionString);
 
-      let skip = 0;
+      try {
+        await client.connect();
+        const db = client.db('translations');
 
-      const limit = 50;
-      
-      let hasMoreReports = true;
-      
-      while (hasMoreReports) {
-        console.log('--- skip', skip);
-        const { data } = await query({
-          query: gql`
-            query ($pagination: PaginationType!) {
-              reports(
-                pagination: $pagination,
-              ) {
-                report_number
-                
-              }
-            }
-          `,
-          variables: {
-            //translationLanguages: config.i18n.availableLanguages,
-            pagination: { limit, skip },
-          },
-        });
+        // Check report translations with empty title or text
+        const invalidReportTranslations = await db.collection('reports').find({
+          $or: [
+            { title: { $exists: false } },
+            { title: null },
+            { title: "" },
+            { text: { $exists: false } },
+            { text: null },
+            { text: "" },
+          ]
+        }).toArray();
 
-        if (!data.reports || data.reports.length === 0) {
-          hasMoreReports = false;
-        }
-
-        const invalidTranslations = data.reports.filter((report) => {
-          if (!report.translations || report.translations.length === 0) {
-            return false; // Skip reports without translations
-          }
-          
-          return report.translations.some((translation) => {
-            return translation.title?.trim() === '' || 
-                   translation.text?.trim() === '';
+        if (invalidReportTranslations.length > 0) {
+          console.log('Invalid report translations found:');
+          invalidReportTranslations.forEach((translation) => {
+            console.log(`report_number: ${translation.report_number}, language: ${translation.language}`);
           });
-        });
-
-        allInvalidTranslations = allInvalidTranslations.concat(invalidTranslations);
-
-        if (data.reports.length < limit) {
-          hasMoreReports = false;
         }
 
-        skip += limit;
+        expect(invalidReportTranslations.length).toBe(0);
+      } finally {
+        await client.close();
       }
-
-      expect(allInvalidTranslations.length).toBe(0);
     });
 
-    test(`Translations incidents should not have empty title or description fields`, async () => {
-      test.setTimeout(300000); // set timeout to 5 minutes for this specific test
-      
-      let allInvalidTranslations = [];
+    test(`Incident translations in MongoDB should not have empty title or description fields`, async () => {
+      const client = new MongoClient(config.mongodb.translationsConnectionString);
 
-      let skip = 0;
+      try {
+        await client.connect();
+        const db = client.db('translations');
 
-      const limit = 100;
-      
-      let hasMoreIncidents = true;
-      
-      while (hasMoreIncidents) {
-        console.log('--- skip', skip);
-        const { data } = await query({
-          query: gql`
-            query ($pagination: PaginationType!) {
-              incidents(
-                pagination: $pagination,
-              ) {
-                incident_id
-              }
-            }
-          `,
-          variables: {
-            //translationLanguages: config.i18n.availableLanguages,
-            pagination: { limit, skip },
-          },
-        });
+        // Check incident translations with empty title or description
+        const invalidIncidentTranslations = await db.collection('incidents').find({
+          $or: [
+            { title: { $exists: false } },
+            { title: null },
+            { title: "" },
+            { description: { $exists: false } },
+            { description: null },
+            { description: "" },
+          ]
+        }).toArray();
 
-        if (!data.incidents || data.incidents.length === 0) {
-          hasMoreIncidents = false;
-        }
-
-        const invalidTranslations = data.incidents.filter((incident) => {
-          if (!incident.translations || incident.translations.length === 0) {
-            return false; // Skip incidents without translations
-          }
-          
-          return incident.translations.some((translation) => {
-            return translation.title?.trim() === '' || 
-                   translation.description?.trim() === '';
+        if (invalidIncidentTranslations.length > 0) {
+          console.log('Invalid incident translations found:');
+          invalidIncidentTranslations.forEach((translation) => {
+            console.log(`incident_id: ${translation.incident_id}, language: ${translation.language}`);
           });
-        });
-
-        allInvalidTranslations = allInvalidTranslations.concat(invalidTranslations);
-
-        if (data.incidents.length < limit) {
-          hasMoreIncidents = false;
         }
 
-        skip += limit;
+        expect(invalidIncidentTranslations.length).toBe(0);
+      } finally {
+        await client.close();
       }
-
-      expect(allInvalidTranslations.length).toBe(0);
     });
-
   });
 }
 
