@@ -198,9 +198,6 @@ const config = {
     translateApikey: process.env.GOOGLE_TRANSLATE_API_KEY,
     defaultLanguage: 'en',
   },
-  rollbar: {
-    token: process.env.GATSBY_ROLLBAR_TOKEN,
-  },
   discover: {
     taxa: ['CSETv0', 'CSETv1', 'GMF'],
   },
@@ -222,7 +219,6 @@ const requiredEnvs = {
   // ALGOLIA_ADMIN_KEY: process.env.ALGOLIA_ADMIN_KEY,
   // GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY,
   // GOOGLE_TRANSLATE_API_KEY: process.env.GOOGLE_TRANSLATE_API_KEY,
-  // GATSBY_ROLLBAR_TOKEN: process.env.GATSBY_ROLLBAR_TOKEN,
   // CLOUDFLARE_R2_ACCOUNT_ID: process.env.CLOUDFLARE_R2_ACCOUNT_ID,
   // CLOUDFLARE_R2_ACCESS_KEY_ID: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID,
   // CLOUDFLARE_R2_SECRET_ACCESS_KEY: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY,

@@ -118,7 +118,7 @@ Additional services integrated into the architecture include:
 
 - MailerSend for email communication
 - Cloudinary for image hosting and optimization
-- Rollbar for error logging and monitoring
+- Sentry for error logging and monitoring
 - Google Translate API for content translation capabilities
 
 This architecture maintains a serverless approach, with no need for a traditional dynamic backend server, while leveraging specialized services for specific functionalities. The deployment process is fully automated through GitHub Actions, ensuring consistent and reliable deployments with proper testing and validation steps.
