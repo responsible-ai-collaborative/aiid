@@ -12,45 +12,45 @@ MongoDB collections structure, schema details, and data relationships
 
 Database migration procedures and configuration
 
-5. [OECD Import Guide](OECD-IMPORT.md)
-
-Guide for importing OECD incident relationships into the database
-
-6. [Deployment Guide](DEPLOYMENT.md)
+5. [Deployment Guide](DEPLOYMENT.md)
 
 Deployment procedures and configuration for Netlify, Prismic, and other services
 
-7. [Internationalization Guide](i18N.md)
+6. [Internationalization Guide](i18N.md)
 
 Internationalization system documentation and translation process
 
-8. [Taxonomy Guide](TAXA.md)
+7. [Taxonomy Guide](TAXA.md)
 
 Guide for implementing and managing taxonomies in the system
 
-9. [Frontend Documentation](FRONTEND.md)
+8. [Frontend Documentation](FRONTEND.md)
 
 Details about the frontend development process, including the use of Tailwind CSS and Flowbite.
 
-10. [API Documentation](API.md)
+9. [API Documentation](API.md)
 
 Details about the AIID API, including how to access and interact with it, and information on email notifications.
 
-11. [Authentication System](AUTH.md)
+10. [Authentication System](AUTH.md)
 
 Complete guide to the authentication system including NextAuth.js configuration, user roles, permissions, and security features.
 
-12. [Prismic setup](PRISMIC.md)
+11. [Prismic setup](PRISMIC.md)
 
 Guide to connect a Prismic account to this project, to create Documents, Blog posts and much more.
 
-13. [Sentry Integration](SENTRY.md)
+12. [Sentry Integration](SENTRY.md)
 
 Technical configuration guide for Sentry error tracking and performance monitoring integration.
 
-14. [Cloudinary Integration](CLOUDINARY.md)
+13. [Cloudinary Integration](CLOUDINARY.md)
 
 Guide for Cloudinary image hosting, optimization, and integration with the AIID project.
+
+14. [OECD Import Guide](OECD-IMPORT.md)
+
+Guide for importing OECD incident relationships into the database
 
 ## Getting Help
 
