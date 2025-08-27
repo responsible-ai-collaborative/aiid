@@ -2,7 +2,6 @@ import { test, query } from '../utils';
 import { gql } from '@apollo/client';
 import { isCompleteReport } from '../../src/utils/variants';
 import { expect } from '@playwright/test';
-import config from '../../config';
 import { MongoClient } from "mongodb";
 
 const isLinked = (reportNumber, incidents) => {
@@ -135,7 +134,13 @@ export function testIntegrity() {
     });
 
     test(`Translations reports should not have empty title or text fields`, async () => {
-      const client = new MongoClient(config.mongodb.translationsConnectionString);
+      const translationsConnectionString = process.env.MONGODB_TRANSLATIONS_CONNECTION_STRING;
+
+      expect(translationsConnectionString).toBeDefined();
+      expect(translationsConnectionString).not.toBeNull();
+      expect(translationsConnectionString).not.toBe('');
+      
+      const client = new MongoClient(translationsConnectionString);
 
       try {
         await client.connect();
@@ -167,7 +172,13 @@ export function testIntegrity() {
     });
 
     test(`Incident translations in MongoDB should not have empty title or description fields`, async () => {
-      const client = new MongoClient(config.mongodb.translationsConnectionString);
+      const translationsConnectionString = process.env.MONGODB_TRANSLATIONS_CONNECTION_STRING;
+
+      expect(translationsConnectionString).toBeDefined();
+      expect(translationsConnectionString).not.toBeNull();
+      expect(translationsConnectionString).not.toBe('');
+      
+      const client = new MongoClient(translationsConnectionString);
 
       try {
         await client.connect();
