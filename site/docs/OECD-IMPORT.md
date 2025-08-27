@@ -1,7 +1,5 @@
 # OECD Import
 
-The OECD import script processes AIID matches export data to create incident relationships between the AI Incident Database and the OECD AI Incident Monitor.
-
 ## Overview
 
 The script converts AIID matches export JSON files into structured relationship data that links AIID incidents to corresponding OECD incident entries. The generated data is then imported into the database via migrations.
