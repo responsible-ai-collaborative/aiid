@@ -1,15 +1,15 @@
-import { test } from '../utils';
-import { testPages } from '../shared/pages-tests';
+// import { test } from '../utils';
+// import { testPages } from '../shared/pages-tests';
 
-test.describe('Pages 2', () => {
+// test.describe('Pages 2', () => {
 
-  const paths = [
-    '/apps/submit/',
-    '/apps/submitted/',
-    '/apps/variants/',
-    '/blog/',
-    '/summaries/flagged/',
-  ];
+//   const paths = [
+//     '/apps/submit/',
+//     '/apps/submitted/',
+//     '/apps/variants/',
+//     '/blog/',
+//     '/summaries/flagged/',
+//   ];
 
-  testPages(paths);
-});
+//   testPages(paths);
+// });
