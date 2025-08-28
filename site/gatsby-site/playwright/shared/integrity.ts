@@ -140,8 +140,6 @@ export function testIntegrity() {
       expect(translationsConnectionString).not.toBeNull();
       expect(translationsConnectionString).not.toBe('');
 
-      console.log(`--- translationsConnectionString: "${translationsConnectionString}"`);
-      
       const client = new MongoClient(translationsConnectionString);
 
       try {
