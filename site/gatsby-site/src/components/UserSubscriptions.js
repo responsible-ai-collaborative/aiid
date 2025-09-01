@@ -14,7 +14,7 @@ import Link from 'components/ui/Link';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 
 const UserSubscriptions = () => {
-  const { user, isRole } = useUserContext();
+  const { user } = useUserContext();
 
   const { t } = useTranslation(['account']);
 
@@ -179,18 +179,16 @@ const UserSubscriptions = () => {
   return (
     <div className="mt-4">
       <div className={`my-2 -ml-2`}>
-        {(isRole('admin') || isRole('incident_editor')) && (
-          <div className={`p-2`}>
-            <ToggleSwitch
-              id="subscribe-ai-briefing"
-              checked={isSubscribeToAiIncidentBriefing}
-              label={t('Receive AI Incident Briefing', { ns: 'login' })}
-              onChange={onSusbcribeAiIncidentBriefingToggle}
-              name="subscribe-ai-briefing"
-              disabled={loading || deletingSubscription || subscribingToAiIncidentBriefing}
-            />
-          </div>
-        )}
+        <div className={`p-2`}>
+          <ToggleSwitch
+            id="subscribe-ai-briefing"
+            checked={isSubscribeToAiIncidentBriefing}
+            label={t('Receive AI Incident Briefing', { ns: 'login' })}
+            onChange={onSusbcribeAiIncidentBriefingToggle}
+            name="subscribe-ai-briefing"
+            disabled={loading || deletingSubscription || subscribingToAiIncidentBriefing}
+          />
+        </div>
       </div>
       <div className="my-4">
         <ToggleSwitch

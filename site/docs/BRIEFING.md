@@ -63,7 +63,7 @@ Here's a step-by-step breakdown of what the script does:
 
 ## Subscribing to the Briefing
 
-Users with `admin` or `incident_editor` roles can subscribe to the AI Incident Briefing through their account page.
+Users with any role can subscribe to the AI Incident Briefing through their account page.
 
 -   **UI Component:** The subscription option is managed by the `UserSubscriptions` component, located at `site/gatsby-site/src/components/UserSubscriptions.js`.
 -   **How it Works:** This component provides a toggle switch labeled "Receive AI Incident Briefing". When a user enables this toggle, a record is created in the `subscriptions` collection in MongoDB with the type `ai-briefing` and the user's ID. This adds them to the mailing list for the next scheduled briefing.
