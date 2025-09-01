@@ -179,7 +179,7 @@ const UserSubscriptions = () => {
   return (
     <div className="mt-4">
       <div className={`my-2 -ml-2`}>
-        <div className={`p-2`}>
+        <div className={`p-2`} data-testid="subscribe-ai-briefing">
           <ToggleSwitch
             id="subscribe-ai-briefing"
             checked={isSubscribeToAiIncidentBriefing}
@@ -190,7 +190,7 @@ const UserSubscriptions = () => {
           />
         </div>
       </div>
-      <div className="my-4">
+      <div className="my-4" data-testid="subscribe-all">
         <ToggleSwitch
           id="subscribe-all"
           checked={isSubscribeToNewIncidents}
