@@ -178,8 +178,8 @@ const UserSubscriptions = () => {
 
   return (
     <div className="mt-4">
-      <div className={`my-2 -ml-2`}>
-        <div className={`p-2`} data-testid="subscribe-ai-briefing">
+      <div className={`mt-2 -ml-2 mb-6`}>
+        <div className={`px-2`} data-testid="subscribe-ai-briefing">
           <div className="flex flex-row gap-2">
             <ToggleSwitch
               id="subscribe-ai-briefing"
@@ -191,14 +191,14 @@ const UserSubscriptions = () => {
             />
             <Badge>NEW</Badge>
           </div>
-          <p>
+          <p className="text-sm">
             {t(
               'The AI Incident Briefing is a weekly digest of new incidents, blog posts, and other AIID updates.'
             )}
           </p>
         </div>
       </div>
-      <div className="my-4" data-testid="subscribe-all">
+      <div className="mt-4 mb-8" data-testid="subscribe-all">
         <ToggleSwitch
           id="subscribe-all"
           checked={isSubscribeToNewIncidents}
