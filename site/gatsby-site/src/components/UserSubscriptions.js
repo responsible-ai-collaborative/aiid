@@ -1,4 +1,4 @@
-import { ListGroup, Spinner, Button, ToggleSwitch } from 'flowbite-react';
+import { ListGroup, Spinner, Button, ToggleSwitch, Badge } from 'flowbite-react';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { Trans, useTranslation } from 'react-i18next';
@@ -180,14 +180,22 @@ const UserSubscriptions = () => {
     <div className="mt-4">
       <div className={`my-2 -ml-2`}>
         <div className={`p-2`} data-testid="subscribe-ai-briefing">
-          <ToggleSwitch
-            id="subscribe-ai-briefing"
-            checked={isSubscribeToAiIncidentBriefing}
-            label={t('Receive AI Incident Briefing', { ns: 'login' })}
-            onChange={onSusbcribeAiIncidentBriefingToggle}
-            name="subscribe-ai-briefing"
-            disabled={loading || deletingSubscription || subscribingToAiIncidentBriefing}
-          />
+          <div className="flex flex-row gap-2">
+            <ToggleSwitch
+              id="subscribe-ai-briefing"
+              checked={isSubscribeToAiIncidentBriefing}
+              label={t('Receive AI Incident Briefing', { ns: 'login' })}
+              onChange={onSusbcribeAiIncidentBriefingToggle}
+              name="subscribe-ai-briefing"
+              disabled={loading || deletingSubscription || subscribingToAiIncidentBriefing}
+            />
+            <Badge>NEW</Badge>
+          </div>
+          <p>
+            {t(
+              'The AI Incident Briefing is a weekly digest of new incidents, blog posts, and other AIID updates.'
+            )}
+          </p>
         </div>
       </div>
       <div className="my-4" data-testid="subscribe-all">
