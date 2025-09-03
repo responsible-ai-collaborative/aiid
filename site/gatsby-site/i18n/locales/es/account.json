@@ -15,5 +15,8 @@
   "Roles": "Roles",
   "Email": "Email",
   "The AI Incident Briefing is a weekly digest of new incidents, blog posts, and other AIID updates.": "El AI Incident Briefing es un resumen semanal de nuevos incidentes, publicaciones en el blog y otras actualizaciones de AIID.",
-  "NEW": "NUEVO"
+  "NEW": "NUEVO",
+  "General Updates": "Actualizaciones generales",
+  "Incident Updates": "Actualizaciones de incidentes",
+  "Entity Updates": "Actualizaciones de entidades"
 }
