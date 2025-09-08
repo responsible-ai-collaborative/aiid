@@ -122,7 +122,7 @@ jobs:
           GATSBY_PRISMIC_REPO_NAME: dummy
           PRISMIC_ACCESS_TOKEN: dummy
           GOOGLE_TRANSLATE_API_KEY: dummy
-          MONGODB_TRANSLATIONS_CONNECTION_STRING: dummy
+          MONGODB_TRANSLATIONS_CONNECTION_STRING: mongodb://127.0.0.1:4110/
 
       - name: Upload Playwright traces
         if: failure()
