@@ -13,5 +13,10 @@
     "You don't have active subscriptions to Entities": "Vous n'avez pas d'abonnements actifs aux entités",
     "Do you want to delete this subscription?": "Voulez-vous supprimer cet abonnement?",
     "Updates on incident ": "Mises à jour sur l'incident ",
-    "Email": "E-mail"  
+    "Email": "E-mail",
+    "The AI Incident Briefing is a weekly digest of new incidents, blog posts, and other AIID updates.": "L'AI Incident Briefing est un résumé hebdomadaire de nouveaux incidents, articles de blog et autres mises à jour de AIID.",
+    "NEW": "NOUVEAU",
+    "General Updates": "Mises à jour générales",
+    "Incident Updates": "Mises à jour d'incident",
+    "Entity Updates": "Mises à jour d'entité"
 }

@@ -2,6 +2,7 @@ import { test, query } from '../utils';
 import { gql } from '@apollo/client';
 import { isCompleteReport } from '../../src/utils/variants';
 import { expect } from '@playwright/test';
+import { MongoClient } from "mongodb";
 
 const isLinked = (reportNumber, incidents) => {
   for (const incident of incidents) {
@@ -132,6 +133,81 @@ export function testIntegrity() {
       ).toBe(true);
     });
 
+    test(`Translations reports should not have empty title or text fields`, async () => {
+      const translationsConnectionString = process.env.MONGODB_TRANSLATIONS_CONNECTION_STRING;
+
+      expect(translationsConnectionString).toBeDefined();
+      expect(translationsConnectionString).not.toBeNull();
+      expect(translationsConnectionString).not.toBe('');
+
+      const client = new MongoClient(translationsConnectionString);
+
+      try {
+        await client.connect();
+        const db = client.db('translations');
+
+        // Check report translations with empty title or text
+        const invalidReportTranslations = await db.collection('reports').find({
+          $or: [
+            { title: { $exists: false } },
+            { title: null },
+            { title: "" },
+            { text: { $exists: false } },
+            { text: null },
+            { text: "" },
+          ]
+        }).toArray();
+
+        if (invalidReportTranslations.length > 0) {
+          console.log('Invalid report translations found:');
+          invalidReportTranslations.forEach((translation) => {
+            console.log(`report_number: ${translation.report_number}, language: ${translation.language}`);
+          });
+        }
+
+        expect(invalidReportTranslations.length).toBe(0);
+      } finally {
+        await client.close();
+      }
+    });
+
+    test(`Incident translations in MongoDB should not have empty title or description fields`, async () => {
+      const translationsConnectionString = process.env.MONGODB_TRANSLATIONS_CONNECTION_STRING;
+
+      expect(translationsConnectionString).toBeDefined();
+      expect(translationsConnectionString).not.toBeNull();
+      expect(translationsConnectionString).not.toBe('');
+      
+      const client = new MongoClient(translationsConnectionString);
+
+      try {
+        await client.connect();
+        const db = client.db('translations');
+
+        // Check incident translations with empty title or description
+        const invalidIncidentTranslations = await db.collection('incidents').find({
+          $or: [
+            { title: { $exists: false } },
+            { title: null },
+            { title: "" },
+            { description: { $exists: false } },
+            { description: null },
+            { description: "" },
+          ]
+        }).toArray();
+
+        if (invalidIncidentTranslations.length > 0) {
+          console.log('Invalid incident translations found:');
+          invalidIncidentTranslations.forEach((translation) => {
+            console.log(`incident_id: ${translation.incident_id}, language: ${translation.language}`);
+          });
+        }
+
+        expect(invalidIncidentTranslations.length).toBe(0);
+      } finally {
+        await client.close();
+      }
+    });
   });
 }
 

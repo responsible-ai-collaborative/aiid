@@ -100,7 +100,7 @@ test.describe('Subscriptions', () => {
 
 
         await expect(page.locator('input[name=subscribe-all]')).not.toBeVisible();
-        await expect(page.locator('button[role=switch][aria-checked=false]')).toBeVisible();
+        await expect(page.getByTestId('subscribe-all').locator('button[role=switch][aria-checked=false]')).toBeVisible();
     });
 
     test('New Incidents: Should display the switch toggle on if user has a subscription', async ({ page, login }) => {
@@ -122,7 +122,7 @@ test.describe('Subscriptions', () => {
         await page.goto(url);
 
         await expect(page.locator('input[name=subscribe-all]')).toBeChecked();
-        await expect(page.locator('button[role=switch][aria-checked=true]')).toBeVisible();
+        await expect(page.getByTestId('subscribe-all').locator('button[role=switch][aria-checked=true]')).toBeVisible();
     });
 
     test('New Incidents: Should let you toggle it on and off', async ({ page, login }) => {
@@ -229,7 +229,7 @@ test.describe('Subscriptions', () => {
         expect(subscriptionsData).not.toMatchObject([{ _id: "619b47eb5eed5334edfa3bd7" }]);
     });
 
-    test('AI Briefing: Should display the switch for admins and editors and not for subscribers', async ({ page, login }) => {
+    test('AI Briefing: Should display the switch for all users', async ({ page, login }) => {
 
       await init();
 
@@ -249,7 +249,7 @@ test.describe('Subscriptions', () => {
 
       await page.goto(url);
 
-      await expect(page.locator('#subscribe-ai-briefing')).not.toBeVisible();
+      await expect(page.locator('#subscribe-ai-briefing')).not.toBeDisabled();
 
   });
 
