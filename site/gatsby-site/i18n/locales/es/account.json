@@ -13,5 +13,10 @@
   "completeInfoAlertTitle": "Gestionando la identidad del usuario en la notificación de incidentes",
   "completeInfoAlertMessage": "Cuando hagas ediciones o envíes nuevos incidentes, esas acciones serán asociadas con tu cuenta de usuario y el nombre que ingreses aquí. Si quieres permanecer anónimo en cualquier momento, puedes abrir el sitio web en una sesión de navegador anónima",
   "Roles": "Roles",
-  "Email": "Email"
+  "Email": "Email",
+  "The AI Incident Briefing is a weekly digest of new incidents, blog posts, and other AIID updates.": "El AI Incident Briefing es un resumen semanal de nuevos incidentes, publicaciones en el blog y otras actualizaciones de AIID.",
+  "NEW": "NUEVO",
+  "General Updates": "Actualizaciones generales",
+  "Incident Updates": "Actualizaciones de incidentes",
+  "Entity Updates": "Actualizaciones de entidades"
 }

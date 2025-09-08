@@ -79,6 +79,7 @@ jobs:
           GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
           SITE_URL: ${{ inputs.site-url || vars.SITE_URL }}
           GATSBY_SITE_URL: ${{ inputs.site-url || vars.SITE_URL }}
+          MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
           NEXTAUTH_URL: dummy
           NEXTAUTH_SECRET: dummy
           GATSBY_PRISMIC_REPO_NAME: dummy

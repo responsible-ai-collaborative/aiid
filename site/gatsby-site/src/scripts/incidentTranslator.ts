@@ -179,7 +179,7 @@ export default class IncidentTranslator {
     });
 
 
-    const incidentsTranslatedToUpdate = incidentsTranslated.filter((t) => t.dirty);
+    const incidentsTranslatedToUpdate = incidentsTranslated.filter((t) => t.dirty && t.title !== '' && t.description !== '');
 
     for (const incidentTranslatedToUpdate of incidentsTranslatedToUpdate) {
       await incidentsTranslationsCollection.updateOne(
@@ -188,7 +188,7 @@ export default class IncidentTranslator {
       );
     }
 
-    const incidentsTranslatedToInsert = incidentsTranslated.filter((t) => !t.dirty);
+    const incidentsTranslatedToInsert = incidentsTranslated.filter((t) => !t.dirty && t.title !== '' && t.description !== '');
 
     if (incidentsTranslatedToInsert.length > 0) {
       await incidentsTranslationsCollection.insertMany(incidentsTranslatedToInsert);
