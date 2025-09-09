@@ -189,6 +189,7 @@ const SubmitForm = () => {
         plain_text: await stripMarkdown(values.text),
         embedding: values.embedding || undefined,
         incident_editors: { link: values.incident_editors },
+        snippet_max_characters: 1000000,
       };
 
       submission.deployers = await processEntities(

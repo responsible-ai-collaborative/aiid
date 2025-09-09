@@ -55,6 +55,7 @@ const typeDefs = `
         nlp_similar_incidents: [nlpSimilarIncident]
         editor_similar_incidents: [Int]
         editor_dissimilar_incidents: [Int]
+        snippet_max_characters: Int
     }
 
     type mongodbAiidprodReports implements Node {
@@ -85,6 +86,7 @@ const typeDefs = `
         is_incident_report: Boolean
         flag: Boolean
         quiet: Boolean
+        snippet_max_characters: Int
     }
 
     type mongodbAiidprodTaxaField_list implements Node {
