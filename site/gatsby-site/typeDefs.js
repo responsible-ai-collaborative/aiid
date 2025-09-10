@@ -72,7 +72,6 @@ const typeDefs = `
         mongodb_id: String
         text: String
         authors: [String]
-        epoch_date_downloaded: Int
         epoch_date_modified: Int
         epoch_date_published: Int
         epoch_date_submitted: Int
