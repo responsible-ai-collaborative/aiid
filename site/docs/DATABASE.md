@@ -66,7 +66,6 @@ Administering data requires administrative access to the database. This access i
 * `epoch_incident_date`: `1564016400` # (Int) Date the incident occurred in the Unix Epoch.
 * `epoch_date_downloaded`:`1564016400` # (Int) Date the report was downloaded in the Unix Epoch.
 * `epoch_date_submitted`:`1564016400` # (Int) Date the report was submitted to the AIID in the Unix Epoch.
-* `epoch_date_modified`: `1564016400` # (Int) Date the report was edited in the Unix Epoch.
 * `epoch_date_published`: `1564016400` # (Int) The publication date of the report in the Unix Epoch.
 
 ### People

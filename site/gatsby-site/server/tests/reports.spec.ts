@@ -24,7 +24,6 @@ describe(`Reports`, () => {
                         report_number
                         flag
                         date_modified
-                        epoch_date_modified
                     }
                 }
                     `,
@@ -65,7 +64,6 @@ describe(`Reports`, () => {
                 report_number: 1,
                 flag: true,
                 date_modified: expect.any(String),
-                epoch_date_modified: expect.any(Number),
             }
         })
     });

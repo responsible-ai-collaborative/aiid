@@ -45,7 +45,6 @@ const report1 = {
         vector: [0.1, 0.2, 0.3]
     },
     epoch_date_downloaded: 1631577600,
-    epoch_date_modified: 1631577600,
     epoch_date_published: 1631577600,
     epoch_date_submitted: 1631577600,
     flag: false,

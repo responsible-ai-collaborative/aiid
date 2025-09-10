@@ -175,7 +175,7 @@ test.describe('Report History', () => {
           history_reports(sort: {date_modified: DESC}) {
             title
             report_number
-            epoch_date_modified
+            date_modified
             modifiedBy
             authors
             submitters
@@ -201,7 +201,7 @@ test.describe('Report History', () => {
     const version = history_reports[1];
 
     await expect(page.getByText('Version details')).toBeVisible();
-    await expect(page.getByText(`Modified on: ${format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}`)).toBeVisible();
+    await expect(page.getByText(`Modified on: ${format(new Date(version.date_modified), 'yyyy-MM-dd hh:mm a')}`)).toBeVisible();
     await expect(page.locator('[data-cy="version-view-modal"] div').filter({ hasText: 'Modified by: John Doe' }).first()).toBeVisible();
 
 

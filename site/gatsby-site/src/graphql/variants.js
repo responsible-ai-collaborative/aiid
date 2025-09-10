@@ -16,7 +16,6 @@ export const FIND_VARIANTS = gql(`
       plain_text
       authors
       epoch_date_downloaded
-      epoch_date_modified
       epoch_date_published
       epoch_date_submitted
       language
@@ -79,7 +78,6 @@ export const UPDATE_VARIANT = gql(`
       date_modified
       epoch_date_published
       epoch_date_downloaded
-      epoch_date_modified
       image_url
       text
       plain_text

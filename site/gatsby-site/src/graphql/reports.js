@@ -13,7 +13,6 @@ export const FIND_REPORT = gql(`
       date_modified
       date_submitted
       epoch_date_downloaded
-      epoch_date_modified
       epoch_date_published
       epoch_date_submitted
       image_url
@@ -82,7 +81,6 @@ export const UPDATE_REPORT = gql(`
       date_modified
       epoch_date_published
       epoch_date_downloaded
-      epoch_date_modified
       image_url
       text
       plain_text
@@ -132,7 +130,6 @@ export const FIND_REPORT_HISTORY = gql(`
         vector
       }
       epoch_date_downloaded
-      epoch_date_modified
       epoch_date_published
       epoch_date_submitted
       flag
@@ -212,7 +209,6 @@ export const FLAG_REPORT = gql(`
       report_number
       flag
       date_modified
-      epoch_date_modified
     }
   }
 `);
