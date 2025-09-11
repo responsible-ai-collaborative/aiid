@@ -199,7 +199,7 @@ const config = {
     defaultLanguage: 'en',
   },
   discover: {
-    taxa: ['CSETv0', 'CSETv1', 'GMF'],
+    taxa: ['CSETv0', 'CSETv1', 'GMF', 'MIT'],
   },
   cloudflareR2: {
     accountId: process.env.CLOUDFLARE_R2_ACCOUNT_ID,
