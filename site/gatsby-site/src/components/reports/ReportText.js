@@ -36,7 +36,6 @@ function ReportText({ text, maxUiChars = null, maxQuotationChars = null, continu
           Continue reading at <Link to={continueLink}>the source</Link>
         </>
       )}
-      maxQuotationChars: {JSON.stringify(maxQuotationChars)}
     </>
   );
 }
