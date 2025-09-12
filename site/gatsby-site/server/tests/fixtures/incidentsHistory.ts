@@ -186,7 +186,7 @@ const fixture: Fixture<History_Incident, any, any> = {
             from_reports
             vector
         }
-        epoch_date_modified
+        date_modified
         flagged_dissimilar_incidents
         incident_id
         nlp_similar_incidents {

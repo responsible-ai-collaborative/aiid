@@ -7,7 +7,7 @@ import { FIND_USERS } from '../../graphql/users';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { useTranslation, Trans } from 'react-i18next';
 import DefaultSkeleton from 'elements/Skeletons/Default';
-import { format, fromUnixTime, getUnixTime } from 'date-fns';
+import { format, getUnixTime } from 'date-fns';
 import { getReportChanges } from 'utils/reports';
 import { Viewer } from '@bytemd/react';
 import { StringDiff, DiffMethod } from 'react-string-diff';
@@ -192,10 +192,8 @@ function IncidentHistoryPage() {
                 return (
                   <div key={`version_${index}`} className="py-2" data-cy="history-row">
                     <div className="flex font-semibold mb-2 gap-5" data-cy="history-row-ribbon">
-                      {version.epoch_date_modified && (
-                        <div>
-                          {format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}
-                        </div>
+                      {version.date_modified && (
+                        <div>{format(new Date(version.date_modified), 'yyyy-MM-dd hh:mm a')}</div>
                       )}
                       {(version.modifiedByUser?.first_name ||
                         version.modifiedByUser?.last_name) && (

@@ -330,7 +330,7 @@ const fixture: Fixture<Incident, IncidentUpdateType, IncidentInsertType> = {
             from_reports
             vector
         }
-        epoch_date_modified
+        date_modified
         flagged_dissimilar_incidents
         incident_id
         nlp_similar_incidents {

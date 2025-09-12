@@ -755,7 +755,7 @@ test.describe('Submitted reports', () => {
                         from_reports
                         vector
                     }
-                    epoch_date_modified
+                    date_modified
                     flagged_dissimilar_incidents
                     incident_id
                     nlp_similar_incidents {
@@ -807,7 +807,7 @@ test.describe('Submitted reports', () => {
             editors: [],
             editor_similar_incidents: [],
             embedding: null,
-            epoch_date_modified: null,
+            date_modified: null,
             flagged_dissimilar_incidents: [],
             incident_id: 5,
             nlp_similar_incidents: [],

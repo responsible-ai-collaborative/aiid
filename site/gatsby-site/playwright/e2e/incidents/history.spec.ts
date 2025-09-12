@@ -21,7 +21,7 @@ test.describe('Incidents', () => {
         query {
           history_incidents {
             incident_id
-            epoch_date_modified
+            date_modified
             modifiedBy
           }
         }
@@ -39,7 +39,7 @@ test.describe('Incidents', () => {
 
     for (let [index, history] of history_incidents.entries()) {
       const row = rows[index];
-      await row.evaluate((node, epoch_date_modified) => node.textContent.includes(`${new Date(epoch_date_modified * 1000).toISOString().slice(0, 16).replace('T', ' ')}`), history.epoch_date_modified);
+      await row.evaluate((node, date_modified) => node.textContent.includes(`${new Date(date_modified).toISOString().slice(0, 16).replace('T', ' ')}`), history.date_modified);
       await row.evaluate((node, history) => node.textContent.includes(`Modified by: ${history.modifiedBy === '1' ? 'John Doe' : 'Test User'}`), history);
     }
 
@@ -90,7 +90,7 @@ test.describe('Incidents', () => {
             description
             reports
             incident_id
-            epoch_date_modified
+            date_modified
             modifiedBy
             editors
           }
@@ -131,7 +131,7 @@ test.describe('Incidents', () => {
             }
             date
             editor_notes
-            epoch_date_modified
+            date_modified
             editors {
               userId
             }
@@ -154,10 +154,10 @@ test.describe('Incidents', () => {
     const { data: { history_incidents } } = await query({
       query: gql`
         query {
-          history_incidents(sort: {epoch_date_modified: DESC}) {
+          history_incidents(sort: {date_modified: DESC}) {
             title
             incident_id
-            epoch_date_modified
+            date_modified
             modifiedBy
             description
             reports
@@ -182,7 +182,7 @@ test.describe('Incidents', () => {
     await modal.getByText('View Version details').waitFor();
     await modal.getByTestId('incident-title').getByText(version1.title).waitFor();
     await modal.getByText('Modified by: Test User').waitFor();
-    await modal.getByText(`Modified on: ${format(fromUnixTime(version1.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}`).waitFor();
+    await modal.getByText(`Modified on: ${format(new Date(version1.date_modified), 'yyyy-MM-dd hh:mm a')}`).waitFor();
     await modal.locator('[data-testid="incident-description-section"]').getByText(`${version1.description}`).waitFor();
     if (version1.editor_notes) {
       await modal.getByText(`Editor Notes: ${version1.editor_notes}`).waitFor();

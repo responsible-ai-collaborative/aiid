@@ -1262,7 +1262,7 @@ describe(`Notifications`, () => {
                 filter: { incident_id: { EQ: 1 } },
                 update: {
                     set: {
-                        epoch_date_modified: 1,
+                        date_modified: new Date().toISOString(),
                     }
                 },
             }

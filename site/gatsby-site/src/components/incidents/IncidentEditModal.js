@@ -13,7 +13,6 @@ import { Formik } from 'formik';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useTranslation, Trans } from 'react-i18next';
 import { processEntities } from '../../utils/entities';
-import { getUnixTime } from 'date-fns';
 import { useUserContext } from 'contexts/UserContext';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import pick from 'lodash/pick';
@@ -131,7 +130,7 @@ export default function IncidentEditModal({ show, onClose, incidentId }) {
         createEntityMutation
       );
 
-      updated.epoch_date_modified = getUnixTime(new Date());
+      updated.date_modified = new Date();
 
       // Add the current user to the list of editors
       if (user && user.providerType != 'anon-user' && !updated.editors.link.includes(user.id)) {
