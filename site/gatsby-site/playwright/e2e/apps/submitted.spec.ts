@@ -22,6 +22,7 @@ test.describe('Submitted reports', () => {
                     }
                     status
                     text
+                    snippet_max_characters
                 }
             }
         `,
