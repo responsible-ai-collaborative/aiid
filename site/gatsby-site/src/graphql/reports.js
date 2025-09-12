@@ -34,6 +34,7 @@ export const FIND_REPORT = gql(`
         vector
       }
       quiet
+      snippet_max_characters
     }
   }
 `);
@@ -65,6 +66,7 @@ export const FIND_REPORT_WITH_TRANSLATIONS = gql(`
         language
       }
       cloudinary_id
+      snippet_max_characters
     }
   }
 `);
@@ -91,6 +93,7 @@ export const UPDATE_REPORT = gql(`
       editor_notes
       language
       quiet
+      snippet_max_characters
     }
   }
 `);
@@ -150,6 +153,7 @@ export const FIND_REPORT_HISTORY = gql(`
       source_domain
       user
       quiet
+      snippet_max_characters
     }
   }
 `);

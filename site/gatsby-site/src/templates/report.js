@@ -168,6 +168,7 @@ export const query = graphql`
       epoch_date_submitted
       language
       description
+      snippet_max_characters
     }
     allMongodbTranslationsReports(
       filter: { report_number: { eq: $report_number }, language: { eq: $locale } }

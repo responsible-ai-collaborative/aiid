@@ -64,6 +64,7 @@ export const FIND_SUBMISSIONS = gql(`
         entity_id
         name
       }
+      snippet_max_characters
     }
   }
 `);
@@ -120,6 +121,7 @@ export const FIND_SUBMISSION = gql(`
         entity_id
         name
       }
+      snippet_max_characters
     }
   }
 `);
@@ -174,6 +176,7 @@ export const UPDATE_SUBMISSION = gql(`
         entity_id
         name
       }
+      snippet_max_characters
     }
   }
 `);

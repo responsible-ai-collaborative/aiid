@@ -28,6 +28,7 @@ const submissions: DBSubmission[] = [
       incident_title: "Incident title",
       incident_date: "2021-09-14",
       editor_notes: "This is an editor note",
+      snippet_max_characters: 1000000,
   },
   {
       _id: new ObjectId("6140e4b4b9b4f7b3b3b1b1b2"),
@@ -55,6 +56,7 @@ const submissions: DBSubmission[] = [
       incident_title: "Incident title",
       incident_date: "2021-09-14",
       editor_notes: "This is an editor note",
+      snippet_max_characters: 1000000,
   },
   {
       _id: new ObjectId("6140e4b4b9b4f7b3b3b1b1b3"),
@@ -82,6 +84,7 @@ const submissions: DBSubmission[] = [
       incident_title: "Incident title",
       incident_date: "2021-09-14",
       editor_notes: "This is an editor note",
+      snippet_max_characters: 1000000,
   },
   {
       _id: new ObjectId("6140e4b4b9b4f7b3b3b1b1b4"),
@@ -109,6 +112,7 @@ const submissions: DBSubmission[] = [
       incident_title: "Incident title",
       incident_date: "2021-09-14",
       editor_notes: "This is an editor note",
+      snippet_max_characters: 1000000,
   },
 
 ]

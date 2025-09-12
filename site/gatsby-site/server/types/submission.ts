@@ -51,6 +51,7 @@ export const SubmissionType = new GraphQLObjectType({
         url: { type: new GraphQLNonNull(GraphQLString) },
         user: getRelationshipConfig(UserType, GraphQLString, 'user', 'userId', 'users', 'customData'),
         status: { type: GraphQLString },
+        snippet_max_characters: { type: GraphQLInt },
         quiet: { type: GraphQLBoolean },
         implicated_systems: getListRelationshipConfig(EntityType, GraphQLString, 'implicated_systems', 'entity_id', 'entities', 'aiidprod'),
     })

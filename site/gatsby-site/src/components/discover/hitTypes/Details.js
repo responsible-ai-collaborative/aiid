@@ -58,7 +58,7 @@ export default function Details({ item, toggleFilterByIncidentId, viewType }) {
           )}
           <ReportText
             text={viewType === VIEW_TYPES.INCIDENTS ? item.incident_description : item.text}
-            maxChars={400}
+            maxUiChars={400}
           />
         </Card.Text>
 

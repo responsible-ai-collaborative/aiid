@@ -147,6 +147,7 @@ export const schema = yup.object().shape({
     })
     .nullable(),
   editor_notes: yup.string().nullable(),
+  snippet_max_characters: yup.number().integer().positive(),
 });
 
 export const issueSchema = yup.object().shape({
