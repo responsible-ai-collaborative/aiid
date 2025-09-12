@@ -2,6 +2,7 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeTruncate from 'rehype-truncate';
 import Link from '../ui/Link';
+import { Trans } from 'react-i18next';
 
 function ReportText({ text, maxUiChars = null, maxQuotationChars = null, continueLink = null }) {
   const rehypePlugins = [];
@@ -32,9 +33,11 @@ function ReportText({ text, maxUiChars = null, maxQuotationChars = null, continu
         {text}
       </ReactMarkdown>
       {displayContinueLink && (
-        <>
-          Continue reading at <Link to={continueLink}>the source</Link>
-        </>
+        <p className="mt-4">
+          <Trans>
+            Continue reading at <Link to={continueLink}>the source</Link>.
+          </Trans>
+        </p>
       )}
     </>
   );
