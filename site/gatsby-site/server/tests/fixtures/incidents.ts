@@ -186,6 +186,7 @@ const incident1: DBIncident = {
     },
     reports: [1, 2],
     editor_notes: "Sample editor notes",
+    date_modified: "2023-01-14",
 };
 
 const incident2: DBIncident = {
@@ -235,6 +236,7 @@ const incident2: DBIncident = {
     },
     reports: [3],
     editor_notes: "",
+    date_modified: "2023-02-14",
 };
 
 const incident3: DBIncident = {
@@ -284,6 +286,7 @@ const incident3: DBIncident = {
     reports: [2, 3],
     implicated_systems: ['test system 1'],
     editor_notes: "",
+    date_modified: "2023-03-14",
 };
 
 const classification1: DBClassification = {
