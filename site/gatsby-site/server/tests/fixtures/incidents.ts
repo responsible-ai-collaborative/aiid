@@ -459,6 +459,7 @@ const fixture: Fixture<Incident, IncidentUpdateType, IncidentInsertType> = {
             editor_notes: "",
             flagged_dissimilar_incidents: [],
             AllegedDeployerOfAISystem: { link: ['entity1'] },
+            date_modified: "2023-04-14",
         },
         result: {
             _id: expect.any(String),
