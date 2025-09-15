@@ -44,11 +44,15 @@ Guide to connect a Prismic account to this project, to create Documents, Blog po
 12. [Sentry Integration](SENTRY.md)
 
 Technical configuration guide for Sentry error tracking and performance monitoring integration.
+
 13. [Cloudinary Integration](CLOUDINARY.md)
 
-14. [How to Add a New Field to a Collection](NEW_FIELD.md)
-
 Guide for Cloudinary image hosting, optimization, and integration with the AIID project.
+
+14. [Adding a New Database Field](NEW_FIELD.md)
+
+Instruction on how to add a new field to an existing collection in the database
+
 
 ## Getting Help
 
