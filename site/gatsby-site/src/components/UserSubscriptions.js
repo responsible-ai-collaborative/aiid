@@ -1,4 +1,4 @@
-import { ListGroup, Spinner, Button, ToggleSwitch } from 'flowbite-react';
+import { ListGroup, Spinner, Button, ToggleSwitch, Badge } from 'flowbite-react';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { Trans, useTranslation } from 'react-i18next';
@@ -14,7 +14,7 @@ import Link from 'components/ui/Link';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 
 const UserSubscriptions = () => {
-  const { user, isRole } = useUserContext();
+  const { user } = useUserContext();
 
   const { t } = useTranslation(['account']);
 
@@ -178,9 +178,10 @@ const UserSubscriptions = () => {
 
   return (
     <div className="mt-4">
-      <div className={`my-2 -ml-2`}>
-        {(isRole('admin') || isRole('incident_editor')) && (
-          <div className={`p-2`}>
+      <h3>{t('General Updates')}</h3>
+      <div className={`mt-4 -ml-2 mb-6`}>
+        <div className={`px-2`} data-testid="subscribe-ai-briefing">
+          <div className="flex flex-row gap-2">
             <ToggleSwitch
               id="subscribe-ai-briefing"
               checked={isSubscribeToAiIncidentBriefing}
@@ -189,10 +190,16 @@ const UserSubscriptions = () => {
               name="subscribe-ai-briefing"
               disabled={loading || deletingSubscription || subscribingToAiIncidentBriefing}
             />
+            <Badge>NEW</Badge>
           </div>
-        )}
+          <p className="text-sm text-gray-500">
+            {t(
+              'The AI Incident Briefing is a weekly digest of new incidents, blog posts, and other AIID updates.'
+            )}
+          </p>
+        </div>
       </div>
-      <div className="my-4">
+      <div className="mt-4 mb-8" data-testid="subscribe-all">
         <ToggleSwitch
           id="subscribe-all"
           checked={isSubscribeToNewIncidents}
@@ -202,6 +209,8 @@ const UserSubscriptions = () => {
           disabled={loading || deletingSubscription || subscribingToNewIncidents}
         />
       </div>
+
+      <h3>{t('Incident Updates')}</h3>
       {loading ? (
         <div className="flex flex-wrap gap-2">
           <Spinner />
@@ -209,49 +218,55 @@ const UserSubscriptions = () => {
         </div>
       ) : (
         <>
-          {incidentSubscriptions?.length > 0 ? (
-            <ListGroup>
-              {incidentSubscriptions
-                .map((subscription) => ({
-                  id: subscription._id,
-                  incidentId: subscription.incident_id.incident_id,
-                  incidentTitle: subscription.incident_id.title,
-                }))
-                .sort((a, b) => a.incidentId - b.incidentId) // sort subscriptions by Incident ID ascendant
-                .map((subscription, index) => (
-                  <div
-                    className={`p-3 ${index < incidentSubscriptions.length - 1 ? 'border-b' : ''}`}
-                    key={`subscription-${subscription.id}`}
-                    data-cy="incident-subscription-item"
-                  >
-                    <div className="flex flex-row w-full justify-between gap-3 items-center">
-                      <div className="items-center">
-                        <Trans ns="account">Updates on incident </Trans>
-                        <Link to={`/cite/${subscription.incidentId}`}>
-                          #{subscription.incidentId}: {subscription.incidentTitle}
-                        </Link>
+          <div className="mt-4 mb-8 text-sm text-gray-500">
+            {incidentSubscriptions?.length > 0 ? (
+              <ListGroup>
+                {incidentSubscriptions
+                  .map((subscription) => ({
+                    id: subscription._id,
+                    incidentId: subscription.incident_id.incident_id,
+                    incidentTitle: subscription.incident_id.title,
+                  }))
+                  .sort((a, b) => a.incidentId - b.incidentId) // sort subscriptions by Incident ID ascendant
+                  .map((subscription, index) => (
+                    <div
+                      className={`p-3 ${
+                        index < incidentSubscriptions.length - 1 ? 'border-b' : ''
+                      }`}
+                      key={`subscription-${subscription.id}`}
+                      data-cy="incident-subscription-item"
+                    >
+                      <div className="flex flex-row w-full justify-between gap-3 items-center">
+                        <div className="items-center">
+                          <Trans ns="account">Updates on incident </Trans>
+                          <Link to={`/cite/${subscription.incidentId}`}>
+                            #{subscription.incidentId}: {subscription.incidentTitle}
+                          </Link>
+                        </div>
+                        <Button
+                          size={'xs'}
+                          color={'failure'}
+                          disabled={deletingSubscription && deletingId === subscription.id}
+                          onClick={() => handleDeleteSubscription(subscription.id)}
+                          data-cy="incident-delete-btn"
+                        >
+                          {deletingSubscription && deletingId === subscription.id ? (
+                            <Spinner size={'xs'} />
+                          ) : (
+                            <FontAwesomeIcon icon={faTrash} />
+                          )}
+                        </Button>
                       </div>
-                      <Button
-                        size={'xs'}
-                        color={'failure'}
-                        disabled={deletingSubscription && deletingId === subscription.id}
-                        onClick={() => handleDeleteSubscription(subscription.id)}
-                        data-cy="incident-delete-btn"
-                      >
-                        {deletingSubscription && deletingId === subscription.id ? (
-                          <Spinner size={'xs'} />
-                        ) : (
-                          <FontAwesomeIcon icon={faTrash} />
-                        )}
-                      </Button>
                     </div>
-                  </div>
-                ))}
-            </ListGroup>
-          ) : (
-            <Trans ns="account">You don&apos;t have active subscriptions to Incident updates</Trans>
-          )}
-
+                  ))}
+              </ListGroup>
+            ) : (
+              <Trans ns="account">
+                You don&apos;t have active subscriptions to Incident updates
+              </Trans>
+            )}
+          </div>
+          <h3>{t('Entity Updates')}</h3>
           {entitySubscriptions?.length > 0 ? (
             <div className="mt-4">
               <ListGroup>
@@ -297,7 +312,7 @@ const UserSubscriptions = () => {
               </ListGroup>
             </div>
           ) : (
-            <div className="mt-4">
+            <div className="mt-4 text-sm text-gray-500">
               <Trans ns="account">You don&apos;t have active subscriptions to Entities</Trans>
             </div>
           )}

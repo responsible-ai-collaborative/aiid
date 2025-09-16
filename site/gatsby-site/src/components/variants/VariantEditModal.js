@@ -11,7 +11,6 @@ import { getVariantStatus, VARIANT_STATUS } from 'utils/variants';
 import { VariantStatusBadge } from './VariantList';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { getUnixTime } from 'date-fns';
 import Link from 'components/ui/Link';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 
@@ -75,7 +74,6 @@ export default function VariantEditModal({
       const today = new Date();
 
       updated.date_modified = today;
-      updated.epoch_date_modified = getUnixTime(today);
 
       await updateVariant({
         variables: {

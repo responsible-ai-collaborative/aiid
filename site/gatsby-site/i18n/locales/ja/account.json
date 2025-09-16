@@ -13,5 +13,10 @@
   "completeInfoAlertTitle": "インシデント報告のユーザー情報管理",
   "completeInfoAlertMessage": "インシデントを新しく作成したり編集すると、それらの操作はあなたのユーザーアカウントとここで入力する名前と関連づけられます。常に匿名を維持したい場合はブラウザの匿名モードでこのサイトを使用してください",
   "Email": "Eメール",
-  "Roles": "役割"
+  "Roles": "役割",
+  "The AI Incident Briefing is a weekly digest of new incidents, blog posts, and other AIID updates.": "AIインシデントの概要は、過去1週間で作成された新しいインシデント、ブログ投稿、その他のAIIDの更新を毎週まとめたものです。",
+  "NEW": "新着",
+  "General Updates": "一般更新",
+  "Incident Updates": "インシデント更新",
+  "Entity Updates": "組織更新"
 }

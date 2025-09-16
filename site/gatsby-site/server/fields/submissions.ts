@@ -226,7 +226,6 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                 date_modified: new Date(submission.date_modified),
                 date_published: new Date(submission.date_published),
                 date_submitted: new Date(submission.date_submitted),
-                epoch_date_downloaded: getUnixTime(submission.date_downloaded),
                 epoch_date_published: getUnixTime(submission.date_published),
                 epoch_date_submitted: getUnixTime(submission.date_submitted),
                 image_url: submission.image_url,
@@ -239,7 +238,8 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                 source_domain: submission.source_domain,
                 language: submission.language,
                 tags: submission.tags,
-                quiet: submission.quiet || false
+                quiet: submission.quiet || false,
+                snippet_max_characters: submission.snippet_max_characters || 1000000,
             };
             if (submission.embedding) {
                 newReport.embedding = submission.embedding;
@@ -247,10 +247,6 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
 
             if (submission.user) {
                 newReport.user = submission.user;
-            }
-
-            if (submission.epoch_date_modified) {
-                newReport.epoch_date_modified = submission.epoch_date_modified;
             }
 
             await reports.insertOne({ ...newReport, report_number: newReport.report_number, created_at: new Date() });

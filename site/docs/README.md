@@ -48,7 +48,11 @@ Technical configuration guide for Sentry error tracking and performance monitori
 
 Guide for Cloudinary image hosting, optimization, and integration with the AIID project.
 
-14. [OECD Import Guide](OECD-IMPORT.md)
+14. [Adding a New Database Field](NEW_FIELD.md)
+
+Instruction on how to add a new field to an existing collection in the database
+
+15. [OECD Import Guide](OECD-IMPORT.md)
 
 Guide for importing OECD incident relationships into the database
 

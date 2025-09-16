@@ -260,6 +260,7 @@ export const query = graphql`
         language
         tags
         inputs_outputs
+        snippet_max_characters
       }
     }
     allMongodbTranslationsReports(

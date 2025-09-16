@@ -89,7 +89,7 @@ const Sidebar = ({ defaultCollapsed = false, location = null, setNavCollapsed })
   };
 
   const sidebarItems =
-    sidebar.data.items.length > 0 ? sidebar.data.items.map(processItem) : navConfig;
+    sidebar?.data?.items?.length > 0 ? sidebar.data.items.map(processItem) : navConfig;
 
   const localizePath = useLocalizePath();
 

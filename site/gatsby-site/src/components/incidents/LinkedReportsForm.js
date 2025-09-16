@@ -8,7 +8,6 @@ import { useMutation } from '@apollo/client';
 import { UPDATE_REPORT } from '../../graphql/reports';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { isCompleteReport } from '../../utils/variants';
-import { getUnixTime } from 'date-fns';
 import FieldContainer from 'components/forms/SubmissionWizard/FieldContainer';
 import Label from 'components/forms/Label';
 
@@ -62,7 +61,7 @@ function LinkedReportsForm({ reports }) {
           update: {
             set: {
               tags: processedTags,
-              epoch_date_modified: getUnixTime(new Date()),
+              date_modified: new Date(),
             },
           },
         },
