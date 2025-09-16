@@ -248,10 +248,6 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                 newReport.user = submission.user;
             }
 
-            if (submission.epoch_date_modified) {
-                newReport.epoch_date_modified = submission.epoch_date_modified;
-            }
-
             await reports.insertOne({ ...newReport, report_number: newReport.report_number, created_at: new Date() });
 
             const incident_ids: number[] = parentIncidents.map(incident => incident.incident_id!);

@@ -120,7 +120,6 @@ export const mutationFields: GraphQLFieldConfigMap<any, any> = {
                     $set: {
                         flag: args.input,
                         date_modified: new Date(),
-                        epoch_date_modified: Math.floor(Date.now() / 1000)
                     }
                 });
 
@@ -224,7 +223,6 @@ export const mutationFields: GraphQLFieldConfigMap<any, any> = {
                 date_modified: now,
                 date_published: input.variant.date_published ? new Date(input.variant.date_published) : now,
                 date_submitted: now,
-                epoch_date_modified: getUnixTime(now.toString()),
                 epoch_date_published: getUnixTime(input.variant.date_published ? input.variant.date_published : todayFormated),
                 epoch_date_submitted: getUnixTime(todayFormated),
                 image_url: '',
