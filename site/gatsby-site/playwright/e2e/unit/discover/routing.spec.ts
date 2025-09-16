@@ -10,7 +10,7 @@ test('Should parse back and forth a discover URL', async () => {
 
   const location = {
     search:
-      '?authors=Christopher%20Knaus%7C%7CSam%20Levin&classifications=CSETv0%3AIntent%3AAccident&epoch_date_published_max=1670371200&hideDuplicates=1&is_incident_report=true&page=1&s=tesla&sortBy=published-date-asc&source_domain=theguardian.com',
+      '?authors=Christopher%20Knaus%7C%7CSam%20Levin&classifications=CSETv0%3AIntent%3AAccident&date_published_max=2022-12-07&hideDuplicates=1&is_incident_report=true&page=1&s=tesla&sortBy=published-date-asc&source_domain=theguardian.com',
   };
 
   const result = parseURL({ location, indexName, queryConfig });
@@ -27,7 +27,7 @@ test('Should parse back and forth a discover URL', async () => {
     is_incident_report: ['true'],
   });
   expect(state.range).toEqual({
-    epoch_date_published: `:1670371200`,
+    date_published: `:2022-12-07`,
   });
 
   expect(state.configure).toEqual({

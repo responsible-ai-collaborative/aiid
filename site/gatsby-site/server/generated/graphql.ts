@@ -2155,7 +2155,6 @@ export type Report = {
   description?: Maybe<Scalars['String']['output']>;
   editor_notes?: Maybe<Scalars['String']['output']>;
   embedding?: Maybe<ReportEmbedding>;
-  epoch_date_published: Scalars['Int']['output'];
   epoch_date_submitted: Scalars['Int']['output'];
   flag?: Maybe<Scalars['Boolean']['output']>;
   image_url: Scalars['String']['output'];
