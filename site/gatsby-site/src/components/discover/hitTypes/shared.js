@@ -45,7 +45,7 @@ export function SourceDomainSubtitle({ item, className }) {
     <div className={`${className || ''} text-inherit`}>
       <WebArchiveLink url={item.url} date={item.date_submitted}>
         {item.source_domain} &middot;{' '}
-        {item.date_published ? format(item.date_published, 'yyyy') : ''}
+        {item.date_published ? format(new Date(item.date_published), 'yyyy') : ''}
       </WebArchiveLink>
     </div>
   );
