@@ -116,11 +116,11 @@ export const queryFields: GraphQLFieldConfigMap<any, any> = {
                 ).toArray()
             );
 
-            const tagsByIncidentId: any = {};
+            const searchTagsByIncidentId: any = {};
             for (const classification of classificationsMatchingSearchTags) {
                 for (const id of classification.incidents) {
-                    tagsByIncidentId[id] = (
-                        (tagsByIncidentId[id] || []).concat(
+                    searchTagsByIncidentId[id] = (
+                        (searchTagsByIncidentId[id] || []).concat(
                             tagsFromClassification(classification)
                         )
                     );
@@ -160,6 +160,17 @@ export const queryFields: GraphQLFieldConfigMap<any, any> = {
                 ).toArray()
             )
 
+            const failureTagsByIncidentId: any = {};
+            for (const classification of failureClassificationsMatchingIncidentIds) {
+                for (const id of classification.incidents) {
+                    failureTagsByIncidentId[id] = (
+                        (failureTagsByIncidentId[id] || []).concat(
+                            tagsFromClassification(classification)
+                        )
+                    );
+                }
+            }
+
             const matchingClassificationsByFailure = groupByMultiple(
                 failureClassificationsMatchingIncidentIds,
                 (classification: any) => tagsFromClassification(classification).filter(
@@ -179,7 +190,13 @@ export const queryFields: GraphQLFieldConfigMap<any, any> = {
                         (failureClassification: any) => (
                             incidentsMatchingSearchTags
                                 .filter((incident: any) => failureClassification.incidents.includes(incident.incident_id))
-                                .map((incident: any) => ({ ...incident, tags: tagsByIncidentId[incident.incident_id] }))
+                                .map((incident: any) => ({ 
+                                  ...incident, 
+                                  tags: Array.from(new Set(
+                                    searchTagsByIncidentId[incident.incident_id]
+                                      .concat(failureTagsByIncidentId[incident.incident_id])
+                                  ))
+                                }))
                         )
                     ).flat()
                 })

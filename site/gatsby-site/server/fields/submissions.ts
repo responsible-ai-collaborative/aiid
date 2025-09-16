@@ -236,7 +236,8 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                 source_domain: submission.source_domain,
                 language: submission.language,
                 tags: submission.tags,
-                quiet: submission.quiet || false
+                quiet: submission.quiet || false,
+                snippet_max_characters: submission.snippet_max_characters || 1000000,
             };
             if (submission.embedding) {
                 newReport.embedding = submission.embedding;
@@ -244,10 +245,6 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
 
             if (submission.user) {
                 newReport.user = submission.user;
-            }
-
-            if (submission.epoch_date_modified) {
-                newReport.epoch_date_modified = submission.epoch_date_modified;
             }
 
             await reports.insertOne({ ...newReport, report_number: newReport.report_number, created_at: new Date() });

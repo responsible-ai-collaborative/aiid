@@ -16,7 +16,6 @@ const report1 = {
         from_text_hash: "sample_hash",
         vector: [0.1, 0.2, 0.3]
     },
-    epoch_date_modified: 1631577600,
     epoch_date_published: 1631577600,
     epoch_date_submitted: 1631577600,
     flag: false,
@@ -50,7 +49,6 @@ const report2 = {
         from_text_hash: "sample_hash_3",
         vector: [0.7, 0.8, 0.9]
     },
-    epoch_date_modified: 1665705600,
     epoch_date_published: 1665705600,
     epoch_date_submitted: 1665705600,
     flag: true,
@@ -84,7 +82,6 @@ const report3 = {
         from_text_hash: "sample_hash_2",
         vector: [0.4, 0.5, 0.6]
     },
-    epoch_date_modified: 1636848000,
     epoch_date_published: 1636848000,
     epoch_date_submitted: 1636848000,
     flag: false,
@@ -118,7 +115,6 @@ const report4 = {
         from_text_hash: "sample_hash_4",
         vector: [1.0, 1.1, 1.2]
     },
-    epoch_date_modified: 1673654400,
     epoch_date_published: 1673654400,
     epoch_date_submitted: 1673654400,
     flag: true,
@@ -179,7 +175,6 @@ const fixture: Fixture<Report, ReportUpdateType, ReportInsertType> = {
             from_text_hash
             vector
         }
-        epoch_date_modified
         epoch_date_published
         epoch_date_submitted
         flag
@@ -278,7 +273,6 @@ const fixture: Fixture<Report, ReportUpdateType, ReportInsertType> = {
             date_submitted: '2021-09-14T00:00:00.000Z',
             description: 'Sample description 5',
             authors: ['Author 5', 'Author 6'],
-            epoch_date_modified: 1631577600,
             epoch_date_published: 1631577600,
             epoch_date_submitted: 1631577600,
             image_url: 'http://example.com/image.png',
@@ -305,8 +299,6 @@ const fixture: Fixture<Report, ReportUpdateType, ReportInsertType> = {
             date_modified: '2021-09-14T00:00:00.000Z',
             date_published: '2021-09-14T00:00:00.000Z',
             date_submitted: '2021-09-14T00:00:00.000Z',
-
-            epoch_date_modified: 1631577600,
             epoch_date_published: 1631577600,
             epoch_date_submitted: 1631577600,
         }

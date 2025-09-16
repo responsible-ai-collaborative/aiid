@@ -16,7 +16,7 @@ import {
   faTenge,
 } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
-import { format, fromUnixTime } from 'date-fns';
+import { format } from 'date-fns';
 import { Modal, Button } from 'flowbite-react';
 import { Trans } from 'react-i18next';
 import Row from 'elements/Row';
@@ -48,10 +48,10 @@ export default function IncidentVersionViewModal({ show, onClose, version }) {
               {version.modifiedByUser.last_name}
             </div>
           )}
-          {version.epoch_date_modified && (
+          {version.date_modified && (
             <div>
               <strong>Modified on</strong>:{' '}
-              {format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}
+              {format(new Date(version.date_modified), 'yyyy-MM-dd hh:mm a')}
             </div>
           )}
         </div>

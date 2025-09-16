@@ -38,7 +38,6 @@ const reportFields = [
   'date_modified',
   'date_published',
   'editor_notes',
-  'epoch_date_modified',
   'epoch_date_published',
   'flag',
   'image_url',
@@ -206,7 +205,6 @@ function EditCitePage(props) {
       values.date_modified = now;
 
       values.epoch_date_published = getUnixTime(new Date(values.date_published));
-      values.epoch_date_modified = getUnixTime(now);
 
       values.date_published = new Date(values.date_published);
       values.date_downloaded = new Date(values.date_downloaded);

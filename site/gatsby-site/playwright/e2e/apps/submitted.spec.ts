@@ -23,6 +23,7 @@ test.describe('Submitted reports', () => {
                     }
                     status
                     text
+                    snippet_max_characters
                 }
             }
         `,
@@ -338,6 +339,7 @@ test.describe('Submitted reports', () => {
             incident_date: "2021-09-14",
             editor_notes: "",
             implicated_systems: ["entity-1"],
+            snippet_max_characters: 1000000,
         }]
 
         await init({ aiidprod: { submissions } });
@@ -381,6 +383,7 @@ test.describe('Submitted reports', () => {
             description: 'Sarasa',
             title: "",
             implicated_systems: ["entity-1"],
+            snippet_max_characters: 1000000,
         }]
 
         await init({ aiidprod: { submissions } });
@@ -556,7 +559,8 @@ test.describe('Submitted reports', () => {
             editor_notes: "",
             description: 'Sarasa',
             title: "Already Claimed",
-            implicated_systems: []
+            implicated_systems: [],
+            snippet_max_characters: 1000000,
         }]
 
         await seedCollection({ name: 'submissions', docs: submissions, drop: false });
