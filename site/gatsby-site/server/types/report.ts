@@ -41,6 +41,7 @@ export const ReportType = new GraphQLObjectType({
         plain_text: { type: new GraphQLNonNull(GraphQLString) },
         report_number: { type: new GraphQLNonNull(GraphQLInt) },
         source_domain: { type: new GraphQLNonNull(GraphQLString) },
+        snippet_max_characters: { type: GraphQLInt },
         submitters: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
         tags: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
         text: { type: new GraphQLNonNull(GraphQLString) },
