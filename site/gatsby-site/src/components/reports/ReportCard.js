@@ -203,7 +203,12 @@ const ReportCard = ({
           </div>
         </div>
         <div className="cursor-default">
-          <ReportText text={item.text} maxChars={expanded ? null : 240} />
+          <ReportText
+            text={item.text}
+            maxUiChars={expanded ? null : 240}
+            maxQuotationChars={item.snippet_max_characters}
+            continueLink={item.url}
+          />
           {expanded && hasVariantData(item) && (
             <div className="flex w-full flex-col my-4 gap-2">
               <div className="font-bold flex items-center gap-2">

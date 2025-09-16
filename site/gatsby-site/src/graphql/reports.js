@@ -12,8 +12,6 @@ export const FIND_REPORT = gql(`
       date_downloaded
       date_modified
       date_submitted
-      epoch_date_downloaded
-      epoch_date_modified
       epoch_date_published
       epoch_date_submitted
       image_url
@@ -35,6 +33,7 @@ export const FIND_REPORT = gql(`
         vector
       }
       quiet
+      snippet_max_characters
     }
   }
 `);
@@ -66,6 +65,7 @@ export const FIND_REPORT_WITH_TRANSLATIONS = gql(`
         language
       }
       cloudinary_id
+      snippet_max_characters
     }
   }
 `);
@@ -81,8 +81,7 @@ export const UPDATE_REPORT = gql(`
       date_downloaded
       date_modified
       epoch_date_published
-      epoch_date_downloaded
-      epoch_date_modified
+      date_downloaded
       image_url
       text
       plain_text
@@ -92,6 +91,7 @@ export const UPDATE_REPORT = gql(`
       editor_notes
       language
       quiet
+      snippet_max_characters
     }
   }
 `);
@@ -131,8 +131,7 @@ export const FIND_REPORT_HISTORY = gql(`
         from_text_hash
         vector
       }
-      epoch_date_downloaded
-      epoch_date_modified
+      date_downloaded
       epoch_date_published
       epoch_date_submitted
       flag
@@ -151,6 +150,7 @@ export const FIND_REPORT_HISTORY = gql(`
       source_domain
       user
       quiet
+      snippet_max_characters
     }
   }
 `);
@@ -212,7 +212,6 @@ export const FLAG_REPORT = gql(`
       report_number
       flag
       date_modified
-      epoch_date_modified
     }
   }
 `);

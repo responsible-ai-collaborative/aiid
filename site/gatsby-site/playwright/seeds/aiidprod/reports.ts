@@ -11,8 +11,6 @@ const items: DBReport[] = [
         date_modified: new Date("2024-10-29T00:49:45.572Z"),
         date_published: new Date("2020-01-01T00:00:00.000Z"),
         date_submitted: new Date("2020-01-01T00:00:00.000Z"),
-        epoch_date_downloaded: 1577836800,
-        epoch_date_modified: 1730162985,
         epoch_date_published: 1577836800,
         epoch_date_submitted: 1577836800,
         image_url: "https://upload.wikimedia.org/wikipedia/commons/e/e9/Felis_silvestris_silvestris_small_gradual_decrease_of_quality.png",
@@ -29,6 +27,7 @@ const items: DBReport[] = [
         flag: null,
         inputs_outputs: null,
         quiet: null,
+        snippet_max_characters: 1000000,
     },
     {
         title: "Report 2",
@@ -42,8 +41,6 @@ const items: DBReport[] = [
         date_modified: new Date("2020-01-01"),
         date_published: new Date("2020-01-01"),
         date_submitted: new Date("2020-01-01"),
-        epoch_date_downloaded: 1577836800,
-        epoch_date_modified: 1577836800,
         epoch_date_published: 1577836800,
         epoch_date_submitted: 1577836800,
 
@@ -56,6 +53,7 @@ const items: DBReport[] = [
         tags: ["tag1"],
         url: "https://report2.com",
         user: "6737a6e881955aa4905ccb04",
+        snippet_max_characters: 1234,
     },
     {
         _id: "5d34b8c29ced494f010ed469",
@@ -65,8 +63,6 @@ const items: DBReport[] = [
         date_published: new Date(1407974400000),
         date_submitted: new Date(1559347200000),
         description: "Increasing numbers of low-income mothers and fathers are at the center of a new collision that pits workplace scheduling technology against the routines of parenting.",
-        epoch_date_downloaded: 1555113600,
-        epoch_date_modified: 1592092800,
         epoch_date_published: 1407974400,
         epoch_date_submitted: 1559347200,
         image_url: "https://static01.nyt.com/images/2014/08/13/us/worker-hours-1407960684740/worker-hours-1407960684740-articleLarge.jpg",
@@ -97,6 +93,8 @@ const items: DBReport[] = [
 
         // TODO: field is present in the db but not mapped to any graphql field
         // created_at: 1559347200000
+        
+        snippet_max_characters: 5678,
     },
     {
         authors: [
@@ -107,8 +105,6 @@ const items: DBReport[] = [
         date_published: new Date(1440633600000),
         date_submitted: new Date(1559347200000),
         description: "Retail and restaurant workers are the focus of a raging national debate over fair hours, pay and the use of shift scheduling software from big vendors such as ADP, SAP and Kronos.",
-        epoch_date_downloaded: 1555113600,
-        epoch_date_modified: 1592092800,
         epoch_date_published: 1440633600,
         epoch_date_submitted: 1559347200,
         image_url: "https://cdn.ttgtmedia.com/visuals/searchFinancialApplications/hr_technology/financialapplications_article_004.jpg",
@@ -139,6 +135,8 @@ const items: DBReport[] = [
 
         // TODO: ditto
         // created_at: 1559347200000
+        
+        snippet_max_characters: 20000,
     },
     {
         authors: [
@@ -149,8 +147,6 @@ const items: DBReport[] = [
         date_published: new Date(1440633600000),
         date_submitted: new Date(1559347200000),
         description: "Retail and restaurant workers are the focus of a raging national debate over fair hours, pay and the use of shift scheduling software from big vendors such as ADP, SAP and Kronos.",
-        epoch_date_downloaded: 1555113600,
-        epoch_date_modified: 1592092800,
         epoch_date_published: 1440633600,
         epoch_date_submitted: 1559347200,
         image_url: "https://cdn.ttgtmedia.com/visuals/searchFinancialApplications/hr_technology/financialapplications_article_004.jpg",
@@ -181,6 +177,8 @@ const items: DBReport[] = [
 
         // TODO: ditto
         // created_at: 1559347200000
+
+        snippet_max_characters: 777777,
     },
     {
         "authors": ["Pablo Costa"],
@@ -200,8 +198,6 @@ const items: DBReport[] = [
         date_downloaded: new Date(1555113600000),
         date_modified: new Date(1592092800000),
         date_submitted: new Date(1559347200000),
-        epoch_date_downloaded: 0,
-        epoch_date_modified: 0,
         epoch_date_published: 0,
         image_url: "",
         language: "",
@@ -212,6 +208,7 @@ const items: DBReport[] = [
         title: "",
         editor_notes: "",
         user: "",
+        snippet_max_characters: 112358,
     },
     {
         "authors": ["Pablo Costa"],
@@ -231,8 +228,6 @@ const items: DBReport[] = [
         date_downloaded: new Date(1555113600000),
         date_modified: new Date(1592092800000),
         date_submitted: new Date(1559347200000),
-        epoch_date_downloaded: 0,
-        epoch_date_modified: 0,
         epoch_date_published: 0,
         image_url: "",
         language: "",
@@ -243,6 +238,7 @@ const items: DBReport[] = [
         title: "",
         editor_notes: "",
         user: "",
+        snippet_max_characters: 1000000,
     },
     {
         "authors": ["Pablo Costa"],
@@ -262,8 +258,6 @@ const items: DBReport[] = [
         date_downloaded: new Date(1555113600000),
         date_modified: new Date(1592092800000),
         date_submitted: new Date(1559347200000),
-        epoch_date_downloaded: 0,
-        epoch_date_modified: 0,
         epoch_date_published: 0,
         image_url: "",
         language: "",
@@ -274,6 +268,7 @@ const items: DBReport[] = [
         title: "",
         editor_notes: "",
         user: "",
+        snippet_max_characters: 1010101,
     },
     {
         authors: [
@@ -284,8 +279,6 @@ const items: DBReport[] = [
         date_published: new Date(1440633600000),
         date_submitted: new Date(1559347200000),
         description: "Response Report",
-        epoch_date_downloaded: 1555113600,
-        epoch_date_modified: 1592092800,
         epoch_date_published: 1440633600,
         epoch_date_submitted: 1559347200,
         image_url: "https://cdn.ttgtmedia.com/visuals/searchFinancialApplications/hr_technology/financialapplications_article_004.jpg",
@@ -316,6 +309,8 @@ const items: DBReport[] = [
 
         // TODO: ditto
         // created_at: 1559347200000
+        
+        snippet_max_characters: 3000,
     },
 ]
 

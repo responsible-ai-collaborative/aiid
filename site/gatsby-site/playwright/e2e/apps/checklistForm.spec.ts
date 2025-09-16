@@ -213,4 +213,27 @@ test.describe('Checklists App Form', () => {
 
         await expect(page.locator('details').first()).toHaveAttribute('open', '');
     });
+
+    test('Should not have blank precedents', async ({ page, login }) => {
+
+      const [userId] = await login();
+
+      await init({ 
+        aiidprod: { 
+          checklists: [ { ...defaultChecklist, owner_id: userId, } ] 
+        } 
+      }, { drop: true });
+
+      await page.goto(url);
+
+      await waitForRequest('findChecklist');
+      await waitForRequest('risks');
+
+      await page.locator('#tags_other_input').fill('MIT:Entity:AI');
+      await page.locator('#tags_other').click();
+
+      await page.locator('details').first().click();
+
+      await expect(page.locator('[data-cy="precedent-card"]').first()).toBeVisible();
+  });
 });
