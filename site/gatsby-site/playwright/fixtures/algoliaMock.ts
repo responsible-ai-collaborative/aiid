@@ -7,7 +7,7 @@ export const algoliaMock = {
           description:
             "Some employees at the coffee chain say it isn't living up to promises to improve the company's labor practices",
           date_downloaded: '2019-04-13',
-          date_published: '2015-09-23 14:00',
+          date_published: '2015-09-23T14:00:00.000Z',
           epoch_date_submitted: 1559347200,
           image_url:
             'https://cbsnews1.cbsistatic.com/hub/i/r/2015/03/17/01a38576-5108-40f7-8df8-5416164ed878/thumbnail/1200x630/ca8d35fe6bc065b5c9a747d92bc6d94c/154211248.jpg',
@@ -381,7 +381,7 @@ export const algoliaMock = {
           description:
             '😱 Wait! What? Just when you think you’ve seen it all…. Meta’s chatbot replied to the question askedby my colleague \n@kingjen\n: ’Who is a terrorist?’ with my (given) name! That’s right, not Bin Laden ',
           date_downloaded: '2022-08-26',
-          date_published: '2022-08-25 16:00',
+          date_published: '2022-08-25T16:00:00.000Z',
           epoch_date_submitted: 1661472000,
           image_url: 'https://pbs.twimg.com/media/Fa8rYYVWIAAI0xN?format=jpg',
           language: 'en',
@@ -600,7 +600,7 @@ export const algoliaMock = {
           description:
             'Cuando el covid-19 golpeó Europa en marzo de 2020, los hospitales se sumieron en una crisis sanitaria que aún se entendía mal. “Los médicos realmente no tenían idea de cómo manejar a estos pacientes”, dice Laure Wyn',
           date_downloaded: '2022-01-30',
-          date_published: '2021-07-30 14:00',
+          date_published: '2021-07-30T14:00:00.000Z',
           epoch_date_submitted: 1648598400,
           image_url:
             'https://wp.technologyreview.com/wp-content/uploads/2021/07/AP_20178810286930.jpg?resize=1200,600',

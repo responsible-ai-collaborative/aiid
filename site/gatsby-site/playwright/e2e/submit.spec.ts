@@ -470,9 +470,9 @@ test.describe('The Submit form', () => {
             incident_ids: 1,
         };
 
-        const date_published_gt = subWeeks(new Date(date_published), 2).toISOString().split('T')[0];
+        const date_published_gt = subWeeks(new Date(date_published), 2).toISOString();
 
-        const date_published_lt = addWeeks(new Date(date_published), 2).toISOString().split('T')[0];
+        const date_published_lt = addWeeks(new Date(date_published), 2).toISOString();
 
         const { data: { reports: reportsAuthors } } = await query({
             query: gql`
@@ -564,9 +564,9 @@ test.describe('The Submit form', () => {
             date_published,
         };
 
-        const date_published_gt = subWeeks(new Date(date_published), 2).toISOString().split('T')[0];
+        const date_published_gt = subWeeks(new Date(date_published), 2).toISOString();
 
-        const date_published_lt = addWeeks(new Date(date_published), 2).toISOString().split('T')[0];
+        const date_published_lt = addWeeks(new Date(date_published), 2).toISOString();
 
         const { data: { reports: reportsAuthors } } = await query({
             query: gql`

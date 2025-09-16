@@ -89,9 +89,9 @@ const allSearchColumns = {
         datePublished = today;
       }
 
-      const date_published_gt = subWeeks(datePublished, 2).toISOString().split('T')[0];
+      const date_published_gt = subWeeks(datePublished, 2).toISOString();
 
-      const date_published_lt = addWeeks(datePublished, 2).toISOString().split('T')[0];
+      const date_published_lt = addWeeks(datePublished, 2).toISOString();
 
       return {
         date_published: { GT: date_published_gt, LT: date_published_lt },
