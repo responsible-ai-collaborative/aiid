@@ -140,8 +140,6 @@ test.describe('Incidents', () => {
       `
     });
 
-    console.log(history_incidents);
-
     const restoredIncident = history_incidents[0];
 
     expect(incident.title).toBe(restoredIncident.title);
