@@ -28,6 +28,7 @@ export const ReportHistoryType = new GraphQLObjectType({
         plain_text: { type: GraphQLString },
         report_number: { type: GraphQLInt },
         source_domain: { type: GraphQLString },
+        snippet_max_characters: { type: GraphQLInt },
         submitters: { type: new GraphQLList(GraphQLString) },
         tags: { type: new GraphQLList(GraphQLString) },
         text: { type: GraphQLString },

@@ -26,6 +26,7 @@ const items: DBReport[] = [
         flag: null,
         inputs_outputs: null,
         quiet: null,
+        snippet_max_characters: 1000000,
     },
     {
         title: "Report 2",
@@ -50,6 +51,7 @@ const items: DBReport[] = [
         tags: ["tag1"],
         url: "https://report2.com",
         user: "6737a6e881955aa4905ccb04",
+        snippet_max_characters: 1234,
     },
     {
         _id: "5d34b8c29ced494f010ed469",
@@ -88,6 +90,8 @@ const items: DBReport[] = [
 
         // TODO: field is present in the db but not mapped to any graphql field
         // created_at: 1559347200000
+        
+        snippet_max_characters: 5678,
     },
     {
         authors: [
@@ -127,6 +131,8 @@ const items: DBReport[] = [
 
         // TODO: ditto
         // created_at: 1559347200000
+        
+        snippet_max_characters: 20000,
     },
     {
         authors: [
@@ -166,6 +172,8 @@ const items: DBReport[] = [
 
         // TODO: ditto
         // created_at: 1559347200000
+
+        snippet_max_characters: 777777,
     },
     {
         "authors": ["Pablo Costa"],
@@ -194,6 +202,7 @@ const items: DBReport[] = [
         title: "",
         editor_notes: "",
         user: "",
+        snippet_max_characters: 112358,
     },
     {
         "authors": ["Pablo Costa"],
@@ -222,6 +231,7 @@ const items: DBReport[] = [
         title: "",
         editor_notes: "",
         user: "",
+        snippet_max_characters: 1000000,
     },
     {
         "authors": ["Pablo Costa"],
@@ -250,6 +260,7 @@ const items: DBReport[] = [
         title: "",
         editor_notes: "",
         user: "",
+        snippet_max_characters: 1010101,
     },
     {
         authors: [
@@ -289,6 +300,8 @@ const items: DBReport[] = [
 
         // TODO: ditto
         // created_at: 1559347200000
+        
+        snippet_max_characters: 3000,
     },
 ]
 
