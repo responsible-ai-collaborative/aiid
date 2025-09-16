@@ -227,7 +227,6 @@ test.describe('The Discover app', () => {
         expect(updateVariables.set).toEqual({
             flag: true,
             date_modified: now.toISOString(),
-            epoch_date_modified: getUnixTime(now),
         });
 
         const logReportHistoryRequest = await waitForRequest('logReportHistory');
@@ -239,7 +238,6 @@ test.describe('The Discover app', () => {
 
         expectedReport.modifiedBy = '';
         expectedReport.date_modified = now.toISOString();
-        expectedReport.epoch_date_modified = getUnixTime(now);
 
         expect(input).toEqual(expectedReport);
 
