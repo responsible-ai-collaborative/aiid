@@ -5,13 +5,13 @@
 The script converts AIID matches export JSON files into structured relationship data that links AIID incidents to corresponding OECD incident entries. The generated data is then imported into the database via migrations.
 
 **Key Files:**
-- Script: `src/scripts/import-oecd-relationships.ts`
+- Script: `src/scripts/generate-oecd-relationships.ts`
 - Migration: `migrations/2025.05.20T12.00.00.import-oecd-relationships.ts`
 - Generated data: `migrations/data/oecd_relationships.json`
 
 ## Prerequisites
 
-Access to the OECD repository is required to obtain the `matches.json` file containing the AIID matches export data. This file must be downloaded and placed in the project directory before running the import script.
+Access to the OECD private repository is required to obtain the `matches.json` file containing the AIID matches export data. This file must be downloaded and placed in the project directory before running the import script.
 
 ## Usage
 
@@ -38,7 +38,7 @@ To create a new migration file:
 npm run db:migrator -- create --name new-migration-importing-generated-oecd-json.ts
 ```
 
-Look at [2025.05.20T12.00.00.import-oecd-relationships.ts](../gatsby-site//migrations/2025.05.20T12.00.00.import-oecd-relationships.ts) for an example.
+Look at [2025.05.20T12.00.00.import-oecd-relationships.ts](../gatsby-site/migrations/2025.05.20T12.00.00.import-oecd-relationships.ts) for an example.
 
 ### Run Migration
 
