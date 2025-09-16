@@ -5,6 +5,7 @@ import { init, seedCollection } from '../../memory-mongo';
 import { fillAutoComplete, query, setEditorText, test } from '../../utils';
 import { ObjectId } from 'mongodb';
 import { DBSubmission } from '../../../server/interfaces';
+import { format } from 'date-fns';
 
 test.describe('Submitted reports', () => {
     const url = '/apps/submitted';
@@ -807,7 +808,7 @@ test.describe('Submitted reports', () => {
             editors: [],
             editor_similar_incidents: [],
             embedding: null,
-            date_modified: null,
+            date_modified: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
             flagged_dissimilar_incidents: [],
             incident_id: 5,
             nlp_similar_incidents: [],

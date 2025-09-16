@@ -12,7 +12,7 @@ exports.up = async ({ context: { client } }) => {
         $set: {
           date_modified: {
             $dateToString: {
-              format: '%Y-%m-%d',
+              format: '%Y-%m-%d HH:mm:ss',
               date: { $toDate: { $multiply: ['$epoch_date_modified', 1000] } },
             },
           },

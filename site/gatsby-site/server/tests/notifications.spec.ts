@@ -800,7 +800,7 @@ describe(`Notifications`, () => {
             AllegedHarmedOrNearlyHarmedParties: { link: [] },
             editors: { link: ['user1'] },
             reports: { link: [] },
-            date_modified: "2024-01-01",
+            date_modified: "2024-01-01T00:00:00.000Z",
         }
 
         await makeRequest(url, {
@@ -1040,7 +1040,7 @@ describe(`Notifications`, () => {
                 reports: [1],
                 editor_notes: "Sample editor notes",
                 implicated_systems: [],
-                date_modified: "2023-01-14",
+                date_modified: "2023-01-14T00:00:00.000Z",
             },
 
         ]
@@ -1235,7 +1235,7 @@ describe(`Notifications`, () => {
                 reports: [],
                 editor_notes: "Sample editor notes",
                 implicated_systems: [],
-                date_modified: "2023-01-14",
+                date_modified: "2023-01-14T00:00:00.000Z",
             },
 
         ]

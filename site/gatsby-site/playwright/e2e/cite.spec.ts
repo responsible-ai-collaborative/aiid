@@ -602,7 +602,9 @@ test.describe('Cite pages', () => {
             editors: ["6737a6e881955aa4905ccb04"],
             reports: [1],
             editor_notes: "This is an editor note",
-            flagged_dissimilar_incidents: []
+            flagged_dissimilar_incidents: [],
+            date_modified: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
+            implicated_systems: ["entity-1"]
         }
 
         await init({ aiidprod: { incidents: [incident] } });
