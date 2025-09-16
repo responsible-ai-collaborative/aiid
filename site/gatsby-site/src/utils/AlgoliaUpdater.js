@@ -453,9 +453,9 @@ class AlgoliaUpdater {
 
     const incidentDateAscReplicaIndexName = indexName + '_epoch_incident_date_asc';
 
-    const datePublishedDescReplicaIndexName = indexName + '_epoch_date_published_desc';
+    const datePublishedDescReplicaIndexName = indexName + '_date_published_desc';
 
-    const datePublishedAscReplicaIndexName = indexName + '_epoch_date_published_asc';
+    const datePublishedAscReplicaIndexName = indexName + '_date_published_asc';
 
     const dateSubmittedDescReplicaIndexName = indexName + '_epoch_date_submitted_desc';
 
