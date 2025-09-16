@@ -44,7 +44,7 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
   allMongodbAiidprodIncidents.nodes.forEach((incident, index) => {
     const incident_id = incident.incident_id;
 
-    const nlp_similar_incidents = incident.nlp_similar_incidents.map(
+    const nlp_similar_incidents = incident.nlp_similar_incidents?.map(
       ({ incident_id, similarity }) => ({
         ...allMongodbAiidprodIncidents.nodes.find(
           (incident) => incident.incident_id === incident_id

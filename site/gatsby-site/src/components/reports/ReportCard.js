@@ -13,7 +13,7 @@ import { RESPONSE_TAG } from 'utils/entities';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { hasVariantData } from 'utils/variants';
-import { format, fromUnixTime } from 'date-fns';
+import { format } from 'date-fns';
 
 const ReportCard = ({
   item,
@@ -176,8 +176,6 @@ const ReportCard = ({
               {item.source_domain} &middot;{' '}
               {item.date_published
                 ? format(new Date(item.date_published), 'yyyy')
-                : item.epoch_date_published
-                ? format(fromUnixTime(item.epoch_date_published), 'yyyy')
                 : 'Needs publish date'}
             </WebArchiveLink>
             {actions && !readOnly && <>{actions}</>}

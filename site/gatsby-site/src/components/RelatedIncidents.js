@@ -89,12 +89,12 @@ const allSearchColumns = {
         datePublished = today;
       }
 
-      const epoch_date_published_gt = getUnixTime(subWeeks(datePublished, 2));
+      const date_published_gt = subWeeks(datePublished, 2).toISOString();
 
-      const epoch_date_published_lt = getUnixTime(addWeeks(datePublished, 2));
+      const date_published_lt = addWeeks(datePublished, 2).toISOString();
 
       return {
-        epoch_date_published: { GT: epoch_date_published_gt, LT: epoch_date_published_lt },
+        date_published: { GT: date_published_gt, LT: date_published_lt },
       };
     },
   },
