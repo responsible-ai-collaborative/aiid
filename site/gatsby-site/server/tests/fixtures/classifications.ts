@@ -111,7 +111,7 @@ const classification1: DBClassification = {
     attributes: [
         {
             short_name: "Harm Distribution Basis",
-            value_json: "[]"
+            value_json: "[\"sexual orientation or gender identity\"]"
         },
         {
             short_name: "Sector of Deployment",
@@ -130,7 +130,7 @@ const classification2: DBClassification = {
     attributes: [
         {
             short_name: "Harm Distribution Basis",
-            value_json: "[]"
+            value_json: "[\"veteran status\"]"
         },
         {
             short_name: "Sector of Deployment",
@@ -270,6 +270,7 @@ const fixture: Fixture<Classification, any, ClassificationInsertType> = {
         attributes {
             short_name
             value_json
+            value
         }
         namespace
         notes
@@ -315,6 +316,18 @@ const fixture: Fixture<Classification, any, ClassificationInsertType> = {
             namespace: "CSETv1",
             reports: [{ report_number: 1 }],
             incidents: [{ incident_id: 1 }],
+            attributes: [
+                {
+                    short_name: "Harm Distribution Basis",
+                    value: ["sexual orientation or gender identity"],
+                    value_json: "[\"sexual orientation or gender identity\"]",
+                } as any,
+                {
+                    short_name: "Sector of Deployment",
+                    value: [],
+                    value_json: "[]",
+                } as any,
+            ]
         },
     },
     testPluralFilter: {
@@ -329,6 +342,18 @@ const fixture: Fixture<Classification, any, ClassificationInsertType> = {
                 namespace: "CSETv1",
                 reports: [{ report_number: 1 }],
                 incidents: [{ incident_id: 1 }],
+                attributes: [
+                    {
+                        short_name: "Harm Distribution Basis",
+                        value: ["sexual orientation or gender identity"],
+                        value_json: "[\"sexual orientation or gender identity\"]",
+                    } as any,
+                    {
+                        short_name: "Sector of Deployment",
+                        value: [],
+                        value_json: "[]",
+                    } as any,
+                ]
             }
         ]
     },
