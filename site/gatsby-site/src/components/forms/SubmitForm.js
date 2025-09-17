@@ -191,7 +191,7 @@ const SubmitForm = () => {
         embedding: values.embedding || undefined,
         incident_editors: { link: values.incident_editors },
         snippet_max_characters:
-          config.snippetMaxCharactersDefaultByDomain[source_domain] || 1000000,
+          config.snippetMaxCharactersDefaultByDomain?.[source_domain] || 1000000,
       };
 
       submission.deployers = await processEntities(
