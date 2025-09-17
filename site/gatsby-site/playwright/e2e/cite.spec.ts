@@ -159,6 +159,25 @@ test.describe('Cite pages', () => {
         await expect(page.locator('[data-cy="collapse-all-reports"]')).toBeDisabled();
     });
 
+    test('Should limit report text on expansion to snippet_max_characters', async ({ page }) => {
+        await page.goto('/cite/4');
+
+        let text = await page.locator('.report-text').innerText();
+
+        // The extra 1 is the ellipsis (…).
+        await expect(text.length).toEqual(241);
+
+        await expect(page.locator('[data-cy="continue-reading"]')).toHaveCount(0);
+
+        await page.locator('[data-cy="expand-all-reports"]').click();
+
+        text = await page.locator('.report-text').innerText();
+
+        await expect(text.length).toEqual(3001);
+
+        await expect(page.locator('[data-cy="continue-reading"]')).toHaveCount(1);
+    });
+
     test('Should remove duplicate', async ({ page, login }) => {
 
         test.slow();
