@@ -44,11 +44,14 @@ function ReportText({ text, maxUiChars = null, maxQuotationChars = null, continu
 
   return (
     <>
-      <ReactMarkdown rehypePlugins={rehypePlugins} className="react-markdown prose max-w-full">
+      <ReactMarkdown
+        rehypePlugins={rehypePlugins}
+        className="report-text react-markdown prose max-w-full"
+      >
         {text}
       </ReactMarkdown>
       {displayContinueLink && (
-        <p className="mt-4">
+        <p className="mt-4" data-cy="continue-reading">
           <Trans>
             Continue reading at <Link to={continueLink}>the source</Link>.
           </Trans>
