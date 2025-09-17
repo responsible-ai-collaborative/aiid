@@ -1,7 +1,7 @@
 import { gql } from '../../server/generated';
 
 export const FIND_INCIDENT = gql(`
-  query FindIncident($filter: IncidentFilterType) {
+  query FindIncident($filter: IncidentFilterTypeWithClassifications) {
     incident(filter: $filter) {
       incident_id
       title
@@ -48,7 +48,7 @@ export const FIND_INCIDENT = gql(`
 `);
 
 export const FIND_INCIDENTS_TABLE = gql(`
-  query FindIncidentsTable($filter: IncidentFilterType) {
+  query FindIncidentsTable($filter: IncidentFilterTypeWithClassifications) {
     incidents(filter: $filter) {
       incident_id
       title
@@ -83,7 +83,7 @@ export const FIND_INCIDENTS_TABLE = gql(`
 `);
 
 export const FIND_INCIDENT_ENTITIES = gql(`
-  query FindIncidentEntities($filter: IncidentFilterType) {
+  query FindIncidentEntities($filter: IncidentFilterTypeWithClassifications) {
     incident(filter: $filter) {
       incident_id
       AllegedDeployerOfAISystem {
@@ -107,7 +107,7 @@ export const FIND_INCIDENT_ENTITIES = gql(`
 `);
 
 export const FIND_INCIDENTS = gql(`
-  query FindIncidents($filter: IncidentFilterType) {
+  query FindIncidents($filter: IncidentFilterTypeWithClassifications) {
     incidents(filter: $filter) {
       incident_id
       title
@@ -153,7 +153,7 @@ export const FIND_INCIDENTS = gql(`
 `);
 
 export const FIND_INCIDENTS_TITLE = gql(`
-  query FindIncidentsTitles($filter: IncidentFilterType) {
+  query FindIncidentsTitles($filter: IncidentFilterTypeWithClassifications) {
     incidents(filter: $filter) {
       incident_id
       title
@@ -234,7 +234,7 @@ export const GET_LATEST_INCIDENT_ID = gql(`
 `);
 
 export const FIND_FULL_INCIDENT = gql(`
-  query FindIncidentFull($filter: IncidentFilterType, $translationLanguages: [String!]!) {
+  query FindIncidentFull($filter: IncidentFilterTypeWithClassifications, $translationLanguages: [String!]!) {
     incident(filter: $filter) {
       incident_id
       title
