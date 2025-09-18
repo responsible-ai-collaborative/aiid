@@ -212,7 +212,10 @@ const config = {
     // When reports are viewed in the UI,
     // only a certain number of characters should be shown.
     // Beyond that, we direct users to the original source.
-    // The number of characters to show is set upon submission of a report,
+    // This maximum number of characters to show
+    // is stored for each a submission or report document
+    // in the `snippet_max_characters` field.
+    // This is set upon submission of a report,
     // and the default value is based on the source domain.
     // The mapping of domains to default character limits is specified here.
     // For example:
@@ -220,7 +223,9 @@ const config = {
     // "example.org": 10000,
     // "example.com": 500,
     //
-    // Changing these values _does not_ affect existing reports,
+    // If no value is specified for the domain,
+    // then `snippet_max_characters` is set to 1 million.
+    // Changing the values here _does not_ affect existing reports,
     // only new submissions.
   },
 };
