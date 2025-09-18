@@ -208,6 +208,21 @@ const config = {
     bucketName: process.env.CLOUDFLARE_R2_BUCKET_NAME,
     publicBucketUrl: process.env.GATSBY_CLOUDFLARE_R2_PUBLIC_BUCKET_URL,
   },
+  snippetMaxCharactersDefaultByDomain: {
+    // When reports are viewed in the UI,
+    // only a certain number of characters should be shown.
+    // Beyond that, we direct users to the original source.
+    // The number of characters to show is set upon submission of a report,
+    // and the default value is based on the source domain.
+    // The mapping of domains to default character limits is specified here.
+    // For example:
+    //
+    // "example.org": 10000,
+    // "example.com": 500,
+    //
+    // Changing these values _does not_ affect existing reports,
+    // only new submissions.
+  },
 };
 
 const requiredEnvs = {
