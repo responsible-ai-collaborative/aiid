@@ -10,7 +10,7 @@ import DefaultSkeleton from 'elements/Skeletons/Default';
 import CustomButton from 'elements/Button';
 import Link from 'components/ui/Link';
 import IncidentVersionViewModal from 'components/incidents/IncidentVersionViewModal';
-import { format, fromUnixTime, getUnixTime } from 'date-fns';
+import { format } from 'date-fns';
 import { getIncidentChanges } from 'utils/cite';
 import { StringDiff, DiffMethod } from 'react-string-diff';
 import { Button, Spinner } from 'flowbite-react';
@@ -137,7 +137,7 @@ function IncidentHistoryPage(props) {
           __typename: undefined,
           _id: undefined,
           changes: undefined,
-          epoch_date_modified: getUnixTime(new Date()),
+          date_modified: new Date(),
           editor_notes: version.editor_notes ? version.editor_notes : '',
         };
 
@@ -248,10 +248,8 @@ function IncidentHistoryPage(props) {
                 return (
                   <div key={`version_${index}`} className="py-2" data-cy="history-row">
                     <div className="flex font-semibold mb-2 gap-5" data-cy="history-row-ribbon">
-                      {version.epoch_date_modified && (
-                        <div>
-                          {format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}
-                        </div>
+                      {version.date_modified && (
+                        <div>{format(new Date(version.date_modified), 'yyyy-MM-dd hh:mm a')}</div>
                       )}
                       {(version.modifiedByUser?.first_name ||
                         version.modifiedByUser?.last_name) && (

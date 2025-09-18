@@ -183,6 +183,7 @@ const incident1: DBIncident = {
     },
     reports: [1, 2],
     editor_notes: "Sample editor notes",
+    date_modified: "2023-01-14T00:00:00.000Z",
 };
 
 const incident2: DBIncident = {
@@ -232,6 +233,7 @@ const incident2: DBIncident = {
     },
     reports: [3],
     editor_notes: "",
+    date_modified: "2023-02-14T00:00:00.000Z",
 };
 
 const incident3: DBIncident = {
@@ -281,6 +283,7 @@ const incident3: DBIncident = {
     reports: [2, 3],
     implicated_systems: ['test system 1'],
     editor_notes: "",
+    date_modified: "2023-03-14T00:00:00.000Z",
 };
 
 const classification1: DBClassification = {
@@ -327,7 +330,7 @@ const fixture: Fixture<Incident, IncidentUpdateType, IncidentInsertType> = {
             from_reports
             vector
         }
-        epoch_date_modified
+        date_modified
         flagged_dissimilar_incidents
         incident_id
         nlp_similar_incidents {
@@ -453,6 +456,7 @@ const fixture: Fixture<Incident, IncidentUpdateType, IncidentInsertType> = {
             editor_notes: "",
             flagged_dissimilar_incidents: [],
             AllegedDeployerOfAISystem: { link: ['entity1'] },
+            date_modified: "2023-04-14T00:00:00.000Z",
         },
         result: {
             _id: expect.any(String),

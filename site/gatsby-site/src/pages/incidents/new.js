@@ -68,6 +68,7 @@ function NewIncidentPage() {
         embedding: {
           ...values.embedding,
         },
+        date_modified: new Date(),
       };
 
       const { entities } = entitiesData;

@@ -290,7 +290,7 @@ export const FIND_FULL_INCIDENT = gql(`
         vector
       }
       editor_notes
-      epoch_date_modified
+      date_modified
       tsne {
         x
         y
@@ -306,7 +306,7 @@ export const FIND_FULL_INCIDENT = gql(`
 
 export const FIND_INCIDENT_HISTORY = gql(`
   query FindIncidentHistory($filter: History_incidentFilterType) {
-    history_incidents(filter: $filter, sort: {epoch_date_modified: DESC}) {
+    history_incidents(filter: $filter, sort: {date_modified: DESC}) {
       incident_id
       AllegedDeployerOfAISystem
       AllegedDeveloperOfAISystem
@@ -324,7 +324,7 @@ export const FIND_INCIDENT_HISTORY = gql(`
         from_reports
         vector
       }
-      epoch_date_modified
+      date_modified
       flagged_dissimilar_incidents
       nlp_similar_incidents {
         incident_id

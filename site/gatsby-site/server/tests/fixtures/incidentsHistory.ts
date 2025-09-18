@@ -69,6 +69,7 @@ const incident1: DBIncidentHistory = {
     },
     reports: [1, 2],
     editor_notes: "Sample editor notes",
+    date_modified: "2023-01-14T00:00:00.000Z",
 };
 
 const incident2: DBIncidentHistory = {
@@ -118,6 +119,7 @@ const incident2: DBIncidentHistory = {
     },
     reports: [3],
     editor_notes: "",
+    date_modified: "2023-02-14T00:00:00.000Z",
 };
 
 const incident3: DBIncidentHistory = {
@@ -167,6 +169,7 @@ const incident3: DBIncidentHistory = {
     },
     reports: [2, 3],
     editor_notes: "",
+    date_modified: "2023-03-14T00:00:00.000Z",
 };
 
 const fixture: Fixture<History_Incident, any, any> = {
@@ -186,7 +189,7 @@ const fixture: Fixture<History_Incident, any, any> = {
             from_reports
             vector
         }
-        epoch_date_modified
+        date_modified
         flagged_dissimilar_incidents
         incident_id
         nlp_similar_incidents {

@@ -27,7 +27,7 @@ const items: DBIncidentHistory[] = [
         "editor_similar_incidents": [],
         "editor_dissimilar_incidents": [],
         "flagged_dissimilar_incidents": [],
-        "epoch_date_modified": 1730242189,
+        "date_modified": "2024-10-30T10:29:49.000Z",
         "modifiedBy": "6737a6e881955aa4905ccb04"
     },
     {
@@ -57,7 +57,7 @@ const items: DBIncidentHistory[] = [
         "editor_similar_incidents": [],
         "editor_dissimilar_incidents": [],
         "flagged_dissimilar_incidents": [],
-        "epoch_date_modified": 1730242374,
+        "date_modified": "2024-10-30T10:32:54.000Z",
         "modifiedBy": "619b47ea5eed5334edfa3bbc"
     },
     {
@@ -87,7 +87,7 @@ const items: DBIncidentHistory[] = [
         "editor_similar_incidents": [],
         "editor_dissimilar_incidents": [],
         "flagged_dissimilar_incidents": [],
-        "epoch_date_modified": 1730242383,
+        "date_modified": "2024-10-30T10:33:03.000Z",
         "modifiedBy": "619b47ea5eed5334edfa3bbc"
     },
     {
@@ -117,7 +117,7 @@ const items: DBIncidentHistory[] = [
         "editor_similar_incidents": [],
         "editor_dissimilar_incidents": [],
         "flagged_dissimilar_incidents": [],
-        "epoch_date_modified": 1730242399,
+        "date_modified": "2024-10-30T10:33:19.000Z",
         "modifiedBy": "6737a6e881955aa4905ccb04"
     }
 ]

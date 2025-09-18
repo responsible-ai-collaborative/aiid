@@ -101,7 +101,7 @@ const SubmissionEdit = ({ id }) => {
             : ['Anonymous']
           : ['Anonymous'],
         plain_text: await stripMarkdown(update.text),
-        date_modified: format(now, 'yyyy-MM-dd'),
+        date_modified: format(now, 'yyyy-MM-dd HH:mm:ss'),
         epoch_date_modified: getUnixTime(now),
       };
 
