@@ -33,6 +33,7 @@ import {
   faStickyNote,
   faTenge,
   faGear,
+  faHashtag,
 } from '@fortawesome/free-solid-svg-icons';
 import FlowbiteSearchInput from 'components/forms/FlowbiteSearchInput';
 import { Checkbox, Select } from 'flowbite-react';
@@ -313,6 +314,18 @@ const SubmissionForm = ({ onChange = null, promoType = null }) => {
             />
           </div>
         </div>
+
+        {promoType && (
+          <TextInputGroup
+            name="snippet_max_characters"
+            type="number"
+            icon={faHashtag}
+            label={t('Maximum Displayed Characters')}
+            className="mt-3"
+            min="0"
+            {...TextInputGroupProps}
+          />
+        )}
 
         <SemanticallyRelatedIncidents incident={values} setFieldValue={setFieldValue} />
 

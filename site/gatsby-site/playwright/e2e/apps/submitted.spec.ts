@@ -295,6 +295,26 @@ test.describe('Submitted reports', () => {
         expect(updated.find((s) => s._id === submissions[0]._id).text).toContain(text);
     });
 
+    test('Edits a submission - update max characters', async ({ page, login }) => {
+
+        await init();
+
+        const submissions = await getSubmissions();
+
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+        await page.goto(url + `?editSubmission=${submissions[0]._id}`);
+
+        await page.locator('[label="Maximum Displayed Characters"]').clear();
+        await page.locator('[label="Maximum Displayed Characters"]').type("100");
+
+        await page.waitForResponse((response) => response.request()?.postData()?.includes('UpdateSubmission'));
+
+        const updated = await getSubmissions();
+
+        expect(updated.find((s) => s._id === submissions[0]._id).snippet_max_characters).toEqual(100);
+    });
+
     test('Edits a submission - uses fetch info', async ({ page, login }) => {
 
         await init();
@@ -1095,4 +1115,5 @@ test.describe('Submitted reports', () => {
 
   expect(updatedSubmissions.length).toBe(0);
   });
+
 });

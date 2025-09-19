@@ -53,6 +53,7 @@ const reportFields = [
   'embedding',
   'inputs_outputs',
   'quiet',
+  'snippet_max_characters',
 ];
 
 const translationsFields = ['title', 'text'];
