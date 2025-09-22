@@ -64,6 +64,7 @@ test.describe('Edit report', () => {
       title: 'Test Title',
       url: 'https://www.test.com/test',
       editor_notes: 'Pro iustitia tantum',
+      snippet_max_characters: '100',
     };
 
     for (const [key, value] of Object.entries(updates)) {
@@ -104,6 +105,7 @@ test.describe('Edit report', () => {
             title
             text
           }
+          snippet_max_characters
         }
       }`,
     });
@@ -122,6 +124,7 @@ test.describe('Edit report', () => {
         title: 'Este es un titulo en Espanol!',
         text: '## Este es texto en espanol\n\nque es mas largo que ochenta caracters, si ochenta caracteres!',
       }],
+      snippet_max_characters: 100,
     })
   });
 
