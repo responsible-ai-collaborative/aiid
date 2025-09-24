@@ -603,7 +603,7 @@ test.describe('Cite pages', () => {
             reports: [1],
             editor_notes: "This is an editor note",
             flagged_dissimilar_incidents: [],
-            date_modified: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
+            date_modified: new Date(),
             implicated_systems: ["entity-1"]
         }
 
