@@ -5,6 +5,7 @@ import { init, seedCollection } from '../../memory-mongo';
 import { fillAutoComplete, mockDate, query, setEditorText, test } from '../../utils';
 import { ObjectId } from 'mongodb';
 import { DBSubmission } from '../../../server/interfaces';
+import sinon from 'sinon';
 
 test.describe('Submitted reports', () => {
     const url = '/apps/submitted';
@@ -739,9 +740,12 @@ test.describe('Submitted reports', () => {
     test('Should keep all the appropriate fields from the Submission', async ({ page, login }) => {
         await init();
 
-        const now = new Date('2025-09-24 19:30:00');
-
-        await mockDate(page, now);
+        // mock new Date()
+        const mockDate = new Date('2025-09-24 19:30:00');
+        const dateStub = sinon.stub(global, 'Date') as any;
+        dateStub.returns(mockDate);
+        dateStub.now = () => mockDate.getTime();
+        dateStub.parse = () => mockDate.getTime();
 
         await login();
 
