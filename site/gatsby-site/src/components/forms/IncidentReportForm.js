@@ -29,6 +29,7 @@ import {
   faAlignLeft,
   faTenge,
   faCalendar,
+  faHashtag,
 } from '@fortawesome/free-solid-svg-icons';
 import IncidentsField from 'components/incidents/IncidentsField';
 import VariantForm from 'components/variants/VariantForm';
@@ -97,6 +98,7 @@ export const schema = yup.object().shape({
   incident_ids: yup.array().of(yup.number().positive()),
   is_incident_report: yup.boolean().required(),
   cloudinary_id: yup.string().nullable(),
+  snippet_max_characters: yup.number().positive(),
 });
 
 const IncidentReportForm = () => {
@@ -357,6 +359,15 @@ const IncidentReportForm = () => {
             />
           </div>
         </div>
+
+        <TextInputGroup
+          name="snippet_max_characters"
+          type="number"
+          icon={faHashtag}
+          label={t('Maximum Displayed Characters')}
+          className="mt-3"
+          {...TextInputGroupProps}
+        />
 
         <div className="mt-3">
           <div className="flex items-center mb-2">

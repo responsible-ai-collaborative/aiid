@@ -103,6 +103,10 @@ const SubmissionEdit = ({ id }) => {
         plain_text: await stripMarkdown(update.text),
         date_modified: format(now, 'yyyy-MM-dd HH:mm:ss'),
         epoch_date_modified: getUnixTime(now),
+        snippet_max_characters:
+          typeof values.snippet_max_characters == 'number'
+            ? values.snippet_max_characters
+            : undefined,
       };
 
       await updateSubmission({
