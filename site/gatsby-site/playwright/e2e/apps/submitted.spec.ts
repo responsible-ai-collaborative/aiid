@@ -832,7 +832,7 @@ test.describe('Submitted reports', () => {
             editors: [],
             editor_similar_incidents: [],
             embedding: null,
-            date_modified: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
+            date_modified: new Date(),
             flagged_dissimilar_incidents: [],
             incident_id: 5,
             nlp_similar_incidents: [],
