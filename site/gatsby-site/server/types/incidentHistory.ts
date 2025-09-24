@@ -20,7 +20,7 @@ export const IncidentHistoryType = new GraphQLObjectType({
         editor_similar_incidents: { type: new GraphQLList(GraphQLInt) },
         editors: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
         embedding: { type: IncidentEmbeddingType },
-        date_modified: { type: new GraphQLNonNull(GraphQLString) },
+        date_modified: { type: GraphQLDateTime },
         flagged_dissimilar_incidents: { type: new GraphQLList(GraphQLInt) },
         incident_id: { type: new GraphQLNonNull(GraphQLInt) },
         nlp_similar_incidents: { type: new GraphQLList(NlpSimilarIncidentType) },

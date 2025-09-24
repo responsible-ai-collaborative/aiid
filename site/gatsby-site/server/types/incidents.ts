@@ -25,7 +25,7 @@ export const IncidentType = new GraphQLObjectType({
         date: { type: new GraphQLNonNull(GraphQLString) },
         description: { type: GraphQLString },
         editor_notes: { type: new GraphQLNonNull(GraphQLString) },
-        date_modified: { type: new GraphQLNonNull(GraphQLString) },
+        date_modified: { type: GraphQLDateTime },
         incident_id: { type: new GraphQLNonNull(GraphQLInt) },
         title: { type: new GraphQLNonNull(GraphQLString) },
         AllegedDeployerOfAISystem: {
