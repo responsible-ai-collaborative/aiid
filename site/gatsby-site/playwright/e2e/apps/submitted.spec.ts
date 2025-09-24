@@ -739,6 +739,10 @@ test.describe('Submitted reports', () => {
     test('Should keep all the appropriate fields from the Submission', async ({ page, login }) => {
         await init();
 
+        const now = new Date('2025-09-24 19:30:00');
+
+        await mockDate(page, now);
+
         await login();
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
@@ -851,10 +855,6 @@ test.describe('Submitted reports', () => {
 
     test('Should perform a bulk claim on all submissions', async ({ page, login }) => {
         await init();
-
-        const now = new Date('2025-09-24 19:30:00');
-
-        await mockDate(page, now);
 
         const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
