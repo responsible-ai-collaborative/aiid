@@ -109,7 +109,7 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                         editor_notes: submission.editor_notes ?? '',
                         flagged_dissimilar_incidents: [],
                         created_at: new Date(),
-                        date_modified: submission.date_modified || new Date().toISOString().split('T')[0], // Default to today in YYYY-MM-DD format
+                        date_modified: submission.date_modified ? new Date(submission.date_modified) : new Date(), // Default to today in YYYY-MM-DD format
                     }
                     if (submission.embedding) {
                         newIncident.embedding = {
