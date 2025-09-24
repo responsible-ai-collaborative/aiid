@@ -732,7 +732,7 @@ export type History_Incident = {
   _id?: Maybe<Scalars['ObjectId']['output']>;
   created_at?: Maybe<Scalars['DateTime']['output']>;
   date: Scalars['String']['output'];
-  date_modified: Scalars['String']['output'];
+  date_modified?: Maybe<Scalars['DateTime']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   editor_dissimilar_incidents?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
   editor_notes?: Maybe<Scalars['String']['output']>;
@@ -756,7 +756,7 @@ export type History_IncidentFilterType = {
   _id?: InputMaybe<ObjectIdFilter>;
   created_at?: InputMaybe<DateTimeFilter>;
   date?: InputMaybe<StringFilter>;
-  date_modified?: InputMaybe<StringFilter>;
+  date_modified?: InputMaybe<DateTimeFilter>;
   description?: InputMaybe<StringFilter>;
   editor_dissimilar_incidents?: InputMaybe<IntFilter>;
   editor_notes?: InputMaybe<StringFilter>;
@@ -898,7 +898,7 @@ export type Incident = {
   classifications?: Maybe<Array<Maybe<Classification>>>;
   created_at?: Maybe<Scalars['DateTime']['output']>;
   date: Scalars['String']['output'];
-  date_modified: Scalars['String']['output'];
+  date_modified?: Maybe<Scalars['DateTime']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   editor_dissimilar_incidents?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
   editor_notes: Scalars['String']['output'];
@@ -975,7 +975,7 @@ export type IncidentFilterType = {
   _id?: InputMaybe<ObjectIdFilter>;
   created_at?: InputMaybe<DateTimeFilter>;
   date?: InputMaybe<StringFilter>;
-  date_modified?: InputMaybe<StringFilter>;
+  date_modified?: InputMaybe<DateTimeFilter>;
   description?: InputMaybe<StringFilter>;
   editor_dissimilar_incidents?: InputMaybe<IntFilter>;
   editor_notes?: InputMaybe<StringFilter>;
@@ -1002,7 +1002,7 @@ export type IncidentInsertType = {
   _id?: InputMaybe<Scalars['ObjectId']['input']>;
   created_at?: InputMaybe<Scalars['DateTime']['input']>;
   date: Scalars['String']['input'];
-  date_modified: Scalars['String']['input'];
+  date_modified?: InputMaybe<Scalars['DateTime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   editor_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   editor_notes: Scalars['String']['input'];
@@ -1051,7 +1051,7 @@ export type IncidentSetType = {
   _id?: InputMaybe<Scalars['ObjectId']['input']>;
   created_at?: InputMaybe<Scalars['DateTime']['input']>;
   date?: InputMaybe<Scalars['String']['input']>;
-  date_modified?: InputMaybe<Scalars['String']['input']>;
+  date_modified?: InputMaybe<Scalars['DateTime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   editor_dissimilar_incidents?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   editor_notes?: InputMaybe<Scalars['String']['input']>;
@@ -3121,14 +3121,14 @@ export type FindIncidentFullQueryVariables = Exact<{
 }>;
 
 
-export type FindIncidentFullQuery = { __typename?: 'Query', incident?: { __typename?: 'Incident', incident_id: number, title: string, description?: string | null, date: string, editor_similar_incidents?: Array<number | null> | null, editor_dissimilar_incidents?: Array<number | null> | null, flagged_dissimilar_incidents: Array<number | null>, editor_notes: string, date_modified: string, editors?: Array<{ __typename?: 'User', userId: string, first_name?: string | null, last_name?: string | null } | null> | null, AllegedDeployerOfAISystem?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, AllegedDeveloperOfAISystem?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, AllegedHarmedOrNearlyHarmedParties?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, implicated_systems?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, nlp_similar_incidents?: Array<{ __typename?: 'IncidentNlp_similar_incident', incident_id?: number | null, similarity?: number | null } | null> | null, reports?: Array<{ __typename?: 'Report', submitters: Array<string | null>, date_published: any, report_number: number, title: string, description?: string | null, url: string, image_url: string, cloudinary_id: string, source_domain: string, text: string, authors: Array<string | null>, epoch_date_submitted: number, language: string, tags: Array<string | null>, inputs_outputs?: Array<string | null> | null } | null> | null, embedding?: { __typename?: 'IncidentEmbedding', from_reports?: Array<number | null> | null, vector?: Array<number | null> | null } | null, tsne?: { __typename?: 'IncidentTsne', x?: number | null, y?: number | null } | null, translations?: Array<{ __typename?: 'IncidentTranslations', description?: string | null, title?: string | null, language?: string | null } | null> | null } | null };
+export type FindIncidentFullQuery = { __typename?: 'Query', incident?: { __typename?: 'Incident', incident_id: number, title: string, description?: string | null, date: string, editor_similar_incidents?: Array<number | null> | null, editor_dissimilar_incidents?: Array<number | null> | null, flagged_dissimilar_incidents: Array<number | null>, editor_notes: string, date_modified?: any | null, editors?: Array<{ __typename?: 'User', userId: string, first_name?: string | null, last_name?: string | null } | null> | null, AllegedDeployerOfAISystem?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, AllegedDeveloperOfAISystem?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, AllegedHarmedOrNearlyHarmedParties?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, implicated_systems?: Array<{ __typename?: 'Entity', entity_id: string, name: string } | null> | null, nlp_similar_incidents?: Array<{ __typename?: 'IncidentNlp_similar_incident', incident_id?: number | null, similarity?: number | null } | null> | null, reports?: Array<{ __typename?: 'Report', submitters: Array<string | null>, date_published: any, report_number: number, title: string, description?: string | null, url: string, image_url: string, cloudinary_id: string, source_domain: string, text: string, authors: Array<string | null>, epoch_date_submitted: number, language: string, tags: Array<string | null>, inputs_outputs?: Array<string | null> | null } | null> | null, embedding?: { __typename?: 'IncidentEmbedding', from_reports?: Array<number | null> | null, vector?: Array<number | null> | null } | null, tsne?: { __typename?: 'IncidentTsne', x?: number | null, y?: number | null } | null, translations?: Array<{ __typename?: 'IncidentTranslations', description?: string | null, title?: string | null, language?: string | null } | null> | null } | null };
 
 export type FindIncidentHistoryQueryVariables = Exact<{
   filter?: InputMaybe<History_IncidentFilterType>;
 }>;
 
 
-export type FindIncidentHistoryQuery = { __typename?: 'Query', history_incidents?: Array<{ __typename?: 'History_incident', incident_id: number, AllegedDeployerOfAISystem?: Array<string | null> | null, AllegedDeveloperOfAISystem?: Array<string | null> | null, AllegedHarmedOrNearlyHarmedParties?: Array<string | null> | null, implicated_systems?: Array<string | null> | null, _id?: any | null, date: string, description?: string | null, modifiedBy?: string | null, editor_dissimilar_incidents?: Array<number | null> | null, editor_notes?: string | null, editor_similar_incidents?: Array<number | null> | null, editors: Array<string | null>, date_modified: string, flagged_dissimilar_incidents?: Array<number | null> | null, reports: Array<number | null>, title: string, embedding?: { __typename?: 'IncidentEmbedding', from_reports?: Array<number | null> | null, vector?: Array<number | null> | null } | null, nlp_similar_incidents?: Array<{ __typename?: 'IncidentNlp_similar_incident', incident_id?: number | null, similarity?: number | null } | null> | null, tsne?: { __typename?: 'IncidentTsne', x?: number | null, y?: number | null } | null } | null> | null };
+export type FindIncidentHistoryQuery = { __typename?: 'Query', history_incidents?: Array<{ __typename?: 'History_incident', incident_id: number, AllegedDeployerOfAISystem?: Array<string | null> | null, AllegedDeveloperOfAISystem?: Array<string | null> | null, AllegedHarmedOrNearlyHarmedParties?: Array<string | null> | null, implicated_systems?: Array<string | null> | null, _id?: any | null, date: string, description?: string | null, modifiedBy?: string | null, editor_dissimilar_incidents?: Array<number | null> | null, editor_notes?: string | null, editor_similar_incidents?: Array<number | null> | null, editors: Array<string | null>, date_modified?: any | null, flagged_dissimilar_incidents?: Array<number | null> | null, reports: Array<number | null>, title: string, embedding?: { __typename?: 'IncidentEmbedding', from_reports?: Array<number | null> | null, vector?: Array<number | null> | null } | null, nlp_similar_incidents?: Array<{ __typename?: 'IncidentNlp_similar_incident', incident_id?: number | null, similarity?: number | null } | null> | null, tsne?: { __typename?: 'IncidentTsne', x?: number | null, y?: number | null } | null } | null> | null };
 
 export type FlagIncidentSimilarityMutationVariables = Exact<{
   incidentId: Scalars['Int']['input'];
