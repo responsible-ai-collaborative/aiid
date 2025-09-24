@@ -2,10 +2,9 @@ import { expect } from '@playwright/test';
 import { gql } from 'graphql-tag';
 import { isArray } from 'lodash';
 import { init, seedCollection } from '../../memory-mongo';
-import { fillAutoComplete, query, setEditorText, test } from '../../utils';
+import { fillAutoComplete, mockDate, query, setEditorText, test } from '../../utils';
 import { ObjectId } from 'mongodb';
 import { DBSubmission } from '../../../server/interfaces';
-import { format } from 'date-fns';
 
 test.describe('Submitted reports', () => {
     const url = '/apps/submitted';
@@ -852,6 +851,10 @@ test.describe('Submitted reports', () => {
 
     test('Should perform a bulk claim on all submissions', async ({ page, login }) => {
         await init();
+
+        const now = new Date('2025-09-24 19:30:00');
+
+        await mockDate(page, now);
 
         const [userId] = await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
 
