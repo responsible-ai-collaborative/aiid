@@ -1,4 +1,4 @@
-import { GraphQLField, GraphQLFieldConfig, GraphQLFieldConfigMap, GraphQLFieldResolver, GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputType, GraphQLInt, GraphQLList, GraphQLNamedType, GraphQLNonNull, GraphQLObjectType, GraphQLResolveInfo, ThunkObjMap, isNonNullType, isType } from "graphql";
+import { GraphQLField, GraphQLFieldConfig, GraphQLFieldConfigMap, GraphQLFieldResolver, GraphQLInputFieldConfig, GraphQLInputObjectType, GraphQLInputType, GraphQLInt, GraphQLList, GraphQLNamedType, GraphQLNonNull, GraphQLObjectType, GraphQLResolveInfo, GraphQLString, ThunkObjMap, isNonNullType, isType } from "graphql";
 import { getGraphQLInsertType, getGraphQLFilterType, getGraphQLSortType, GraphQLPaginationType, MongoDbOptions, getMongoDbSort, getMongoDbProjection, getMongoDbQueryResolver, validateUpdateArgs, getMongoDbUpdate, GetMongoDbProjectionOptions, UpdateObj } from "graphql-to-mongodb";
 import { Context } from "./interfaces";
 import capitalize from 'lodash/capitalize';
@@ -453,28 +453,43 @@ const defaultQueryFields: QueryFields[] = ['plural', 'singular'];
  * @returns {GraphQLFieldConfigMap<any, any>} - A map of GraphQL field configurations for the generated queries.
  */
 export function generateQueryFields(
-    { collectionName, databaseName = 'aiidprod', Type, generateFields = defaultQueryFields, fieldName = undefined }:
-        { collectionName: string, databaseName?: string, Type: GraphQLObjectType<any, any>, generateFields?: QueryFields[], fieldName?: string }): GraphQLFieldConfigMap<any, any> {
+    { collectionName, databaseName = 'aiidprod', Type, generateFields = defaultQueryFields, fieldName = undefined, customFilters = [] }:
+        { collectionName: string, databaseName?: string, Type: GraphQLObjectType<any, any>, generateFields?: QueryFields[], fieldName?: string, customFilters?: CustomFilterDefinition[] }): GraphQLFieldConfigMap<any, any> {
 
     const singularName = singularize(fieldName ?? collectionName);
     const pluralName = pluralize(fieldName ?? collectionName);
 
     const fields: GraphQLFieldConfigMap<any, Context> = {};
 
+    // Choose filter type and resolver based on whether custom filters are provided
+    const hasCustomFilters = customFilters.length > 0;
+    const filterType = hasCustomFilters ? getExtendedFilterType(Type, customFilters) : getFilterType(Type);
+    const createResolver = hasCustomFilters ? getExtendedQueryResolver : getQueryResolver;
+
+    const queryArgs = {
+        filter: { type: filterType },
+        sort: { type: getGraphQLSortType(Type) },
+        pagination: { type: GraphQLPaginationType }
+    };
+
     if (generateFields.includes('singular')) {
 
         fields[`${singularName}`] = {
             type: Type,
-            args: getQueryArgs(Type) as any,
-            resolve: getQueryResolver(Type, async (filter, projection, options, obj, args, context) => {
-
-                const db = context.client.db(databaseName);
-                const collection = db.collection(collectionName);
-
-                const item = await collection.findOne(filter, options);
-
-                return item;
-            }),
+            args: queryArgs as any,
+            resolve: hasCustomFilters 
+                ? (createResolver as any)(Type, async (filter: any, projection: any, options: any, obj: any, args: any, context: any) => {
+                    const db = context.client.db(databaseName);
+                    const collection = db.collection(collectionName);
+                    const item = await collection.findOne(filter, options);
+                    return item;
+                }, customFilters)
+                : (createResolver as any)(Type, async (filter: any, projection: any, options: any, obj: any, args: any, context: any) => {
+                    const db = context.client.db(databaseName);
+                    const collection = db.collection(collectionName);
+                    const item = await collection.findOne(filter, options);
+                    return item;
+                }),
         }
     }
 
@@ -482,16 +497,20 @@ export function generateQueryFields(
 
         fields[`${pluralName}`] = {
             type: new GraphQLList(Type),
-            args: getQueryArgs(Type) as any,
-            resolve: getQueryResolver(Type, async (filter, projection, options, obj, args, context) => {
-
-                const db = context.client.db(databaseName);
-                const collection = db.collection(collectionName);
-
-                const items = await collection.find(filter, options).toArray();
-
-                return items;
-            }),
+            args: queryArgs as any,
+            resolve: hasCustomFilters 
+                ? (createResolver as any)(Type, async (filter: any, projection: any, options: any, obj: any, args: any, context: any) => {
+                    const db = context.client.db(databaseName);
+                    const collection = db.collection(collectionName);
+                    const items = await collection.find(filter, options).toArray();
+                    return items;
+                }, customFilters)
+                : (createResolver as any)(Type, async (filter: any, projection: any, options: any, obj: any, args: any, context: any) => {
+                    const db = context.client.db(databaseName);
+                    const collection = db.collection(collectionName);
+                    const items = await collection.find(filter, options).toArray();
+                    return items;
+                }),
         }
     }
 
@@ -1050,4 +1069,140 @@ export const getRelationshipConfig = (
             relationship: getRelationshipExtension(sourceField, targetField, ReferencedFieldType, targetDatabase, targetCollection)
         },
     }
+}
+
+// Custom Filter System
+
+/**
+ * Definition for a custom filter that can be registered for GraphQL types
+ */
+interface CustomFilterDefinition<T = any> {
+    name: string;
+    type: GraphQLInputType;
+    resolve: (filterValue: any, context: Context) => Promise<Partial<T>>;
+}
+
+
+/**
+ * Reusable filter input types
+ */
+export const CustomStringFilter = new GraphQLInputObjectType({
+    name: 'CustomStringFilter',
+    fields: {
+        eq: { type: GraphQLString },
+        ne: { type: GraphQLString },
+        in: { type: new GraphQLList(GraphQLString) },
+        nin: { type: new GraphQLList(GraphQLString) },
+        regex: { type: GraphQLString }
+    }
+});
+
+export const CustomIntFilter = new GraphQLInputObjectType({
+    name: 'CustomIntFilter',
+    fields: {
+        eq: { type: GraphQLInt },
+        ne: { type: GraphQLInt },
+        gt: { type: GraphQLInt },
+        gte: { type: GraphQLInt },
+        lt: { type: GraphQLInt },
+        lte: { type: GraphQLInt },
+        in: { type: new GraphQLList(GraphQLInt) },
+        nin: { type: new GraphQLList(GraphQLInt) }
+    }
+});
+
+/**
+ * Helper function to create nested object filter types
+ * 
+ * @param name The name for the filter type
+ * @param fields The fields for the filter
+ */
+export function createNestedObjectFilter(name: string, fields: any): GraphQLInputObjectType {
+    return new GraphQLInputObjectType({
+        name: `${name}Filter`,
+        fields
+    });
+}
+
+/**
+ * Creates an extended filter type that includes custom filters
+ * 
+ * @param Type The GraphQL object type to create extended filter for
+ */
+export function getExtendedFilterType(Type: GraphQLObjectType, customFilters: CustomFilterDefinition[]): GraphQLInputObjectType {
+    const baseFilter = getFilterType(Type) as GraphQLInputObjectType;
+
+    if (customFilters.length === 0) {
+        return baseFilter;
+    }
+
+    const customFields = customFilters.reduce((fields, filter) => {
+        fields[filter.name] = { type: filter.type };
+        return fields;
+    }, {} as any);
+
+    // Create a unique type name based on custom filter names to avoid conflicts
+    const filterNames = customFilters.map(f => f.name).sort().join('');
+    const typeName = `${Type.name}FilterTypeWith${filterNames.charAt(0).toUpperCase() + filterNames.slice(1)}`;
+
+    const extendedFilter = new GraphQLInputObjectType({
+        name: typeName,
+        fields: {
+            ...baseFilter.getFields(),
+            ...customFields
+        }
+    });
+
+    return extendedFilter;
+}
+
+/**
+ * Creates a query resolver that handles custom filters
+ * 
+ * @param graphQLType The GraphQL type
+ * @param queryCallback The callback function for the query
+ * @param queryOptions Optional query options
+ */
+export function getExtendedQueryResolver<TSource, TContext>(
+    graphQLType: GraphQLObjectType,
+    queryCallback: QueryCallback<TSource, TContext>,
+    customFilters: CustomFilterDefinition[],
+    queryOptions?: QueryOptions
+): GraphQLFieldResolver<TSource, TContext> {
+
+    return async (source: TSource, args: any, context: TContext, info: GraphQLResolveInfo): Promise<any> => {
+        let additionalFilter = {};
+
+        // Process custom filters
+        for (const customFilter of customFilters) {
+            if (args.filter?.[customFilter.name]) {
+                const customFilterResult = await customFilter.resolve(
+                    args.filter[customFilter.name],
+                    context as Context
+                );
+                additionalFilter = { ...additionalFilter, ...customFilterResult };
+            }
+        }
+
+        // Remove custom filter fields from args to avoid graphql-to-mongodb errors
+        const standardFilter = { ...args.filter };
+        customFilters.forEach(filter => {
+            delete standardFilter[filter.name];
+        });
+
+        // Enhanced callback that combines filters
+        const enhancedCallback: QueryCallback<TSource, TContext> = async (
+            filter, projection, options, source, args, context, info
+        ) => {
+            // Properly combine filters using MongoDB $and to avoid overwriting
+            const combinedFilter = Object.keys(additionalFilter).length > 0 
+                ? { $and: [filter, additionalFilter] }
+                : filter;
+            return queryCallback(combinedFilter, projection, options, source, args, context, info);
+        };
+
+        const modifiedArgs = { ...args, filter: standardFilter };
+        const resolver = getQueryResolver(graphQLType, enhancedCallback, queryOptions);
+        return resolver(source, modifiedArgs, context, info);
+    };
 }
