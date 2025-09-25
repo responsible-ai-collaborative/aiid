@@ -740,14 +740,15 @@ test.describe('Submitted reports', () => {
     test('Should keep all the appropriate fields from the Submission', async ({ page, login }) => {
         await init();
 
-        // mock new Date()
+        await login();
+
+
+        // // mock new Date()
         const mockDate = new Date('2025-09-24 19:30:00');
         const dateStub = sinon.stub(global, 'Date') as any;
         dateStub.returns(mockDate);
         dateStub.now = () => mockDate.getTime();
         dateStub.parse = () => mockDate.getTime();
-
-        await login();
 
         await page.goto(url + `?editSubmission=6140e4b4b9b4f7b3b3b1b1b1`);
 
