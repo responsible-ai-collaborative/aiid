@@ -55,7 +55,7 @@ test.describe('Social Share Buttons', () => {
         const popupPromise = page.waitForEvent('popup', { timeout: 2000 });
         await twitterButton.first().click();
         const popup = await popupPromise;
-        await popup.waitForURL(/https:\/\/x\.com\/intent\/post\?text=.*/, { timeout: 1000 });
+        await popup.waitForURL(/https:\/\/x\.com\/intent\/post\?text=.*/, { timeout: 5000 });
       }).toPass();
     });
 
