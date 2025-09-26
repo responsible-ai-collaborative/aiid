@@ -24,294 +24,6 @@ test.describe('The Submit form', () => {
         await page.goto(url);
     });
 
-    test('Should submit a new report not linked to any incident once all fields are filled properly', async ({ page }) => {
-
-        await conditionalIntercept(
-            page,
-            '**/parseNews**',
-            () => true,
-            parseNews,
-            'parseNews'
-        );
-
-        await trackRequest(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON().operationName == 'FindSubmissions',
-            'findSubmissions'
-        );
-
-        await page.goto(url);
-
-        await waitForRequest('findSubmissions');
-
-        await page.locator('input[name="url"]').fill(
-            `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
-        );
-
-        await page.locator('button:has-text("Fetch info")').click();
-
-        await waitForRequest('parseNews');
-
-        await page.locator('[name="incident_date"]').fill('2020-01-01');
-
-        await expect(page.locator('.form-has-errors')).not.toBeVisible();
-
-        await page.locator('[data-cy="to-step-2"]').click();
-
-        await page.locator('input[name="submitters"]').fill('Something');
-
-        await page.locator('[name="language"]').selectOption('Spanish');
-
-        await page.locator('[name="tags"]').fill('New Tag');
-        await page.keyboard.press('Enter');
-
-        await page.locator('[name="editor_notes"]').fill('Here are some notes');
-
-        await page.locator('[data-cy="to-step-3"]').click();
-
-        await expect(page.locator('[name="incident_title"]')).not.toBeVisible();
-
-        await page.locator('[name="description"]').fill('Description');
-
-        await expect(page.locator('[name="incident_editors"]')).not.toBeVisible();
-
-        await page.locator('button[type="submit"]').click();
-
-        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
-
-        const { data } = await query({
-            query: gql`
-              query {
-                submission(sort: { _id: DESC }){
-                    _id
-                    title
-                    text
-                    authors
-                    incident_ids
-                    incident_editors {
-                        userId
-                    }
-                }
-              }
-            `,
-        });
-
-        expect(data.submission).toMatchObject({
-            title: "YouTube to crack down on inappropriate content masked as kids’ cartoons",
-            text: parseNews.text,
-            authors: ["Valentina Palladino"],
-            incident_ids: [],
-            incident_editors: [],
-        });
-    });
-
-    test('Should autocomplete entities', async ({ page, skipOnEmptyEnvironment }) => {
-
-        await conditionalIntercept(
-            page,
-            '**/parseNews**',
-            () => true,
-            parseNews,
-            'parseNews'
-        );
-
-        await trackRequest(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON().operationName == 'FindSubmissions',
-            'findSubmissions'
-        );
-
-        await page.goto(url);
-
-        await waitForRequest('findSubmissions');
-
-        await page.locator('input[name="url"]').fill(
-            `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
-        );
-
-        await page.locator('button:has-text("Fetch info")').click();
-
-        await waitForRequest('parseNews');
-
-        await page.locator('[name="incident_date"]').fill('2020-01-01');
-
-        await expect(page.locator('.form-has-errors')).not.toBeVisible();
-
-        await page.locator('[data-cy="to-step-2"]').click();
-
-        await page.locator('[data-cy="to-step-3"]').click();
-
-        await page.locator('input[name="deployers"]').fill('Entity 1');
-
-        await page.locator('#deployers-tags .dropdown-item[aria-label="Entity 1"]').click();
-
-        await page.locator('input[name="deployers"]').fill('NewDeployer');
-        await page.keyboard.press('Enter');
-        await page.locator('button[type="submit"]').click();
-
-        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
-        await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
-    });
-
-    test('As editor, should submit a new incident report, adding an incident title and editors.', async ({ page, login, skipOnEmptyEnvironment }) => {
-
-        test.slow();
-
-        await init();
-
-        await login();
-
-        await conditionalIntercept(
-            page,
-            '**/parseNews**',
-            () => true,
-            parseNews,
-            'parseNews'
-        );
-
-        const findSubmissionsResponse = page.waitForResponse(((response) => response.request()?.postDataJSON()?.operationName == 'FindSubmissions'))
-
-        const findUsersResponse = page.waitForResponse(((response) => response.request()?.postDataJSON()?.operationName == 'FindUsers'))
-
-        await page.goto(url);
-
-        await findSubmissionsResponse;
-
-        await page.locator('input[name="url"]').fill(
-            `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
-        );
-
-        await page.locator('button:has-text("Fetch info")').click();
-
-        await waitForRequest('parseNews');
-
-        await page.locator('[name="incident_date"]').fill('2020-01-01');
-
-        await expect(page.locator('.form-has-errors')).not.toBeVisible();
-
-        await page.locator('[data-cy="to-step-2"]').click();
-
-        await page.locator('[name="language"]').selectOption('Spanish');
-
-        await page.locator('[name="tags"]').fill('New Tag');
-        await page.keyboard.press('Enter');
-
-        await page.locator('[name="editor_notes"]').fill('Here are some notes');
-
-        await page.locator('[data-cy="to-step-3"]').click();
-
-        await findUsersResponse;
-
-        await page.locator('[name="incident_title"]').fill('Elsagate');
-
-        await page.locator('[name="description"]').fill('Description');
-
-        await fillAutoComplete(page, "#input-incident_editors", 'John', 'John Doe');
-
-        await page.locator('button[type="submit"]').click();
-
-        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue")')).toBeVisible();
-
-        await expect(page.locator('.tw-toast a')).toHaveAttribute('href', '/apps/submitted/');
-
-        await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
-
-
-        const { data } = await query({
-            query: gql`
-              query {
-                submission(sort: { _id: DESC }){
-                    _id
-                    title
-                    text
-                    authors
-                    incident_ids
-                    incident_editors {
-                        userId
-                    }
-                }
-              }
-            `,
-        });
-
-        expect(data.submission).toMatchObject({
-            title: "YouTube to crack down on inappropriate content masked as kids’ cartoons",
-            text: parseNews.text,
-            authors: ["Valentina Palladino"],
-            incident_ids: [],
-            incident_editors: [{ userId: '619b47ea5eed5334edfa3bbc' }],
-        });
-    });
-
-    test('Should submit a new report linked to incident 1 once all fields are filled properly', async ({ page, login, skipOnEmptyEnvironment }) => {
-
-        await init();
-
-        await conditionalIntercept(
-            page,
-            '**/parseNews**',
-            () => true,
-            parseNews,
-            'parseNews'
-        );
-
-        await trackRequest(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON().operationName == 'FindSubmissions',
-            'findInitialSubmissions'
-        );
-
-        await page.goto(url);
-
-        await waitForRequest('findInitialSubmissions');
-
-        await page.locator('input[name="url"]').fill(
-            `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
-        );
-
-        await page.locator('button:has-text("Fetch info")').click();
-
-        await waitForRequest('parseNews');
-
-        await setEditorText(
-            page,
-            `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
-        );
-
-        await page.locator('[data-cy=related-byText] [data-cy=result] [data-cy=set-id]:has-text("#1")').first().click();
-
-        await page.locator('[data-cy=related-byText] [data-cy=result] [data-cy="similar-selector"] [data-cy="similar"]').last().click();
-
-        await expect(page.locator('.form-has-errors')).not.toBeVisible();
-
-        await page.locator('[data-cy="to-step-2"]').click();
-
-        await page.locator('[name="tags"]').fill('New Tag');
-        await page.keyboard.press('Enter');
-
-        await page.locator('[name="editor_notes"]').fill('Here are some notes');
-
-        await expect(page.locator('[data-cy="to-step-3"]')).not.toBeVisible();
-
-        await expect(page.locator('[name="incident_title"]')).not.toBeVisible();
-
-        await expect(page.locator('[name="description"]')).not.toBeVisible();
-
-        await expect(page.locator('[name="incident_editors"]')).not.toBeVisible();
-
-        await page.locator('[data-cy="submit-step-2"]').click();
-
-        await expect(page.locator(':text("Report successfully added to review queue")')).toBeVisible();
-
-        await login();
-
-        await page.goto('/apps/submitted');
-
-        await expect(page.locator('[data-cy="row"]:has-text("YouTube to crack down on inappropriate content masked as kids’ cartoons")')).toBeVisible();
-    });
 
     test('Should show a toast on error when failing to reach parsing endpoint', async ({ page }) => {
         await page.goto(url);
@@ -327,63 +39,6 @@ test.describe('The Submit form', () => {
         await page.waitForSelector('.tw-toast:has-text("Error reaching news info endpoint, please try again in a few seconds.")');
     });
 
-    test('Should pull parameters from the query string and auto-fill fields', async ({ page }) => {
-
-        const values = {
-            url: 'https://incidentdatabase.ai',
-            title: 'test title',
-            authors: 'test author',
-            submitters: 'test submitter',
-            incident_date: '2022-01-01',
-            date_published: '2021-01-02',
-            date_downloaded: '2021-01-03',
-            image_url: 'https://incidentdatabase.ai/image.jpg',
-            incident_ids: [1],
-            text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
-            tags: 'test tag',
-            editor_notes: 'Here are some notes',
-        };
-
-        const params = new URLSearchParams(values);
-
-        await conditionalIntercept(
-            page,
-            '**/parseNews**',
-            () => true,
-            {
-                title: 'test title',
-                authors: 'test author',
-                date_published: '2021-01-02',
-                date_downloaded: '2021-01-03',
-                image_url: 'https://incidentdatabase.ai/image.jpg',
-                text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
-            },
-            'parseNews'
-        );
-
-        await trackRequest(
-            page,
-            '**/graphql',
-            (req) => req.postDataJSON().operationName == 'FindSubmissions',
-            'findSubmissions'
-        );
-
-        await page.goto(url + `?${params.toString()}`);
-
-        await waitForRequest('parseNews');
-
-        await waitForRequest('findSubmissions');
-
-        await expect(page.locator('.form-has-errors')).not.toBeVisible();
-
-        await page.locator('[data-cy="to-step-2"]').click();
-
-        await expect(page.locator('[data-cy="to-step-3"]')).not.toBeVisible();
-
-        await page.locator('[data-cy="submit-step-2"]').click();
-
-        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue")')).toBeVisible();
-    });
 
     test('Should submit a submission and link it to the current user id', async ({ page, login, skipOnEmptyEnvironment }) => {
 
@@ -1921,5 +1576,352 @@ test.describe('The Submit form', () => {
       expect(data.submission.deployers).toEqual([]);
       expect(data.submission.harmed_parties).toEqual([]);
       expect(data.submission.implicated_systems).toEqual([]);
+    });
+
+    test('Should submit a new report not linked to any incident once all fields are filled properly', async ({ page }) => {
+
+        await conditionalIntercept(
+            page,
+            '**/parseNews**',
+            () => true,
+            parseNews,
+            'parseNews'
+        );
+
+        await trackRequest(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindSubmissions',
+            'findSubmissions'
+        );
+
+        await page.goto(url);
+
+        await waitForRequest('findSubmissions');
+
+        await page.locator('input[name="url"]').fill(
+            `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+        );
+
+        await page.locator('button:has-text("Fetch info")').click();
+
+        await waitForRequest('parseNews');
+
+        await page.locator('[name="incident_date"]').fill('2020-01-01');
+
+        await expect(page.locator('.form-has-errors')).not.toBeVisible();
+
+        await page.locator('[data-cy="to-step-2"]').click();
+
+        await page.locator('input[name="submitters"]').fill('Something');
+
+        await page.locator('[name="language"]').selectOption('Spanish');
+
+        await page.locator('[name="tags"]').fill('New Tag');
+        await page.keyboard.press('Enter');
+
+        await page.locator('[name="editor_notes"]').fill('Here are some notes');
+
+        await page.locator('[data-cy="to-step-3"]').click();
+
+        await expect(page.locator('[name="incident_title"]')).not.toBeVisible();
+
+        await page.locator('[name="description"]').fill('Description');
+
+        await expect(page.locator('[name="incident_editors"]')).not.toBeVisible();
+
+        await page.locator('button[type="submit"]').click();
+
+        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
+
+        const { data } = await query({
+            query: gql`
+              query {
+                submission(sort: { _id: DESC }){
+                    _id
+                    title
+                    text
+                    authors
+                    incident_ids
+                    incident_editors {
+                        userId
+                    }
+                }
+              }
+            `,
+        });
+
+        expect(data.submission).toMatchObject({
+            title: "YouTube to crack down on inappropriate content masked as kids’ cartoons",
+            text: parseNews.text,
+            authors: ["Valentina Palladino"],
+            incident_ids: [],
+            incident_editors: [],
+        });
+    });
+
+    test('Should autocomplete entities', async ({ page, skipOnEmptyEnvironment }) => {
+
+        await conditionalIntercept(
+            page,
+            '**/parseNews**',
+            () => true,
+            parseNews,
+            'parseNews'
+        );
+
+        await trackRequest(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindSubmissions',
+            'findSubmissions'
+        );
+
+        await page.goto(url);
+
+        await waitForRequest('findSubmissions');
+
+        await page.locator('input[name="url"]').fill(
+            `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+        );
+
+        await page.locator('button:has-text("Fetch info")').click();
+
+        await waitForRequest('parseNews');
+
+        await page.locator('[name="incident_date"]').fill('2020-01-01');
+
+        await expect(page.locator('.form-has-errors')).not.toBeVisible();
+
+        await page.locator('[data-cy="to-step-2"]').click();
+
+        await page.locator('[data-cy="to-step-3"]').click();
+
+        await page.locator('input[name="deployers"]').fill('Entity 1');
+
+        await page.locator('#deployers-tags .dropdown-item[aria-label="Entity 1"]').click();
+
+        await page.locator('input[name="deployers"]').fill('NewDeployer');
+        await page.keyboard.press('Enter');
+        await page.locator('button[type="submit"]').click();
+
+        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
+        await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
+    });
+
+    test('As editor, should submit a new incident report, adding an incident title and editors.', async ({ page, login, skipOnEmptyEnvironment }) => {
+
+        test.slow();
+
+        await init();
+
+        await login();
+
+        await conditionalIntercept(
+            page,
+            '**/parseNews**',
+            () => true,
+            parseNews,
+            'parseNews'
+        );
+
+        const findSubmissionsResponse = page.waitForResponse(((response) => response.request()?.postDataJSON()?.operationName == 'FindSubmissions'))
+
+        const findUsersResponse = page.waitForResponse(((response) => response.request()?.postDataJSON()?.operationName == 'FindUsers'))
+
+        await page.goto(url);
+
+        await findSubmissionsResponse;
+
+        await page.locator('input[name="url"]').fill(
+            `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+        );
+
+        await page.locator('button:has-text("Fetch info")').click();
+
+        await waitForRequest('parseNews');
+
+        await page.locator('[name="incident_date"]').fill('2020-01-01');
+
+        await expect(page.locator('.form-has-errors')).not.toBeVisible();
+
+        await page.locator('[data-cy="to-step-2"]').click();
+
+        await page.locator('[name="language"]').selectOption('Spanish');
+
+        await page.locator('[name="tags"]').fill('New Tag');
+        await page.keyboard.press('Enter');
+
+        await page.locator('[name="editor_notes"]').fill('Here are some notes');
+
+        await page.locator('[data-cy="to-step-3"]').click();
+
+        await findUsersResponse;
+
+        await page.locator('[name="incident_title"]').fill('Elsagate');
+
+        await page.locator('[name="description"]').fill('Description');
+
+        await fillAutoComplete(page, "#input-incident_editors", 'John', 'John Doe');
+
+        await page.locator('button[type="submit"]').click();
+
+        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue")')).toBeVisible();
+
+        await expect(page.locator('.tw-toast a')).toHaveAttribute('href', '/apps/submitted/');
+
+        await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
+
+
+        const { data } = await query({
+            query: gql`
+              query {
+                submission(sort: { _id: DESC }){
+                    _id
+                    title
+                    text
+                    authors
+                    incident_ids
+                    incident_editors {
+                        userId
+                    }
+                }
+              }
+            `,
+        });
+
+        expect(data.submission).toMatchObject({
+            title: "YouTube to crack down on inappropriate content masked as kids’ cartoons",
+            text: parseNews.text,
+            authors: ["Valentina Palladino"],
+            incident_ids: [],
+            incident_editors: [{ userId: '619b47ea5eed5334edfa3bbc' }],
+        });
+    });
+
+    test('Should submit a new report linked to incident 1 once all fields are filled properly', async ({ page, login, skipOnEmptyEnvironment }) => {
+
+        await init();
+
+        await conditionalIntercept(
+            page,
+            '**/parseNews**',
+            () => true,
+            parseNews,
+            'parseNews'
+        );
+
+        await trackRequest(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindSubmissions',
+            'findInitialSubmissions'
+        );
+
+        await page.goto(url);
+
+        await waitForRequest('findInitialSubmissions');
+
+        await page.locator('input[name="url"]').fill(
+            `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+        );
+
+        await page.locator('button:has-text("Fetch info")').click();
+
+        await waitForRequest('parseNews');
+
+        await setEditorText(
+            page,
+            `Recent news stories and blog posts highlighted the underbelly of YouTube Kids, Google's children-friendly version of the wide world of YouTube. While all content on YouTube Kids is meant to be suitable for children under the age of 13, some inappropriate videos using animations, cartoons, and child-focused keywords manage to get past YouTube's algorithms and in front of kids' eyes. Now, YouTube will implement a new policy in an attempt to make the whole of YouTube safer: it will age-restrict inappropriate videos masquerading as children's content in the main YouTube app.`
+        );
+
+        await page.locator('[data-cy=related-byText] [data-cy=result] [data-cy=set-id]:has-text("#1")').first().click();
+
+        await page.locator('[data-cy=related-byText] [data-cy=result] [data-cy="similar-selector"] [data-cy="similar"]').last().click();
+
+        await expect(page.locator('.form-has-errors')).not.toBeVisible();
+
+        await page.locator('[data-cy="to-step-2"]').click();
+
+        await page.locator('[name="tags"]').fill('New Tag');
+        await page.keyboard.press('Enter');
+
+        await page.locator('[name="editor_notes"]').fill('Here are some notes');
+
+        await expect(page.locator('[data-cy="to-step-3"]')).not.toBeVisible();
+
+        await expect(page.locator('[name="incident_title"]')).not.toBeVisible();
+
+        await expect(page.locator('[name="description"]')).not.toBeVisible();
+
+        await expect(page.locator('[name="incident_editors"]')).not.toBeVisible();
+
+        await page.locator('[data-cy="submit-step-2"]').click();
+
+        await expect(page.locator(':text("Report successfully added to review queue")')).toBeVisible();
+
+        await login();
+
+        await page.goto('/apps/submitted');
+
+        await expect(page.locator('[data-cy="row"]:has-text("YouTube to crack down on inappropriate content masked as kids’ cartoons")')).toBeVisible();
+    });
+
+    test('Should pull parameters from the query string and auto-fill fields', async ({ page }) => {
+
+        const values = {
+            url: 'https://incidentdatabase.ai',
+            title: 'test title',
+            authors: 'test author',
+            submitters: 'test submitter',
+            incident_date: '2022-01-01',
+            date_published: '2021-01-02',
+            date_downloaded: '2021-01-03',
+            image_url: 'https://incidentdatabase.ai/image.jpg',
+            incident_ids: [1],
+            text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
+            tags: 'test tag',
+            editor_notes: 'Here are some notes',
+        };
+
+        const params = new URLSearchParams(values);
+
+        await conditionalIntercept(
+            page,
+            '**/parseNews**',
+            () => true,
+            {
+                title: 'test title',
+                authors: 'test author',
+                date_published: '2021-01-02',
+                date_downloaded: '2021-01-03',
+                image_url: 'https://incidentdatabase.ai/image.jpg',
+                text: '## Sit quo accusantium \n\n quia **assumenda**. Quod delectus similique labore optio quaease',
+            },
+            'parseNews'
+        );
+
+        await trackRequest(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindSubmissions',
+            'findSubmissions'
+        );
+
+        await page.goto(url + `?${params.toString()}`);
+
+        await waitForRequest('parseNews');
+
+        await waitForRequest('findSubmissions');
+
+        await expect(page.locator('.form-has-errors')).not.toBeVisible();
+
+        await page.locator('[data-cy="to-step-2"]').click();
+
+        await expect(page.locator('[data-cy="to-step-3"]')).not.toBeVisible();
+
+        await page.locator('[data-cy="submit-step-2"]').click();
+
+        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue")')).toBeVisible();
     });
 });
