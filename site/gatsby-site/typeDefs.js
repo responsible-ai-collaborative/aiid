@@ -73,7 +73,6 @@ const typeDefs = `
         mongodb_id: String
         text: String
         authors: [String]
-        epoch_date_published: Int
         epoch_date_submitted: Int
         cloudinary_id: String
         tags: [String]

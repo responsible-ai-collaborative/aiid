@@ -15,7 +15,7 @@ module.exports = {
     'searchable(Submitter)',
     'searchable(authors)',
     'searchable(classifications)',
-    'epoch_date_published',
+    'date_published',
     'epoch_date_submitted',
     'epoch_incident_date',
     'searchable(incident_id)',
