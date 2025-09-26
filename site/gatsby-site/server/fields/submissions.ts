@@ -109,15 +109,13 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                         editor_notes: submission.editor_notes ?? '',
                         flagged_dissimilar_incidents: [],
                         created_at: new Date(),
+                        date_modified: submission.date_modified ? new Date(submission.date_modified) : new Date(), // Default to today in YYYY-MM-DD format
                     }
                     if (submission.embedding) {
                         newIncident.embedding = {
                             vector: submission.embedding.vector,
                             from_reports: [report_number]
                         }
-                    }
-                    if (submission.epoch_date_modified) {
-                        newIncident.epoch_date_modified = submission.epoch_date_modified;
                     }
 
                     await incidents.insertOne({ ...newIncident, incident_id: newIncident.incident_id, created_at: new Date() });

@@ -43,7 +43,8 @@ describe(`Utils`, () => {
                     "date": "2029-01-01",
                     "title": "Test",
                     "editor_notes": "",
-                    "flagged_dissimilar_incidents": []
+                    "flagged_dissimilar_incidents": [],
+                    "date_modified": "2029-01-01T00:00:00.000Z"
                 }
             }
 

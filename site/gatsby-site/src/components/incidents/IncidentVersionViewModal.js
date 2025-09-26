@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { format, fromUnixTime } from 'date-fns';
+import { format } from 'date-fns';
 import { useQuery } from '@apollo/client';
 import { Modal, Button } from 'flowbite-react';
 import { Trans } from 'react-i18next';
@@ -109,10 +109,10 @@ export default function IncidentVersionViewModal({
                 {version.modifiedByUser.last_name}
               </div>
             )}
-            {version.epoch_date_modified && (
+            {version.date_modified && (
               <div>
                 <strong>Modified on</strong>:{' '}
-                {format(fromUnixTime(version.epoch_date_modified), 'yyyy-MM-dd hh:mm a')}
+                {format(new Date(version.date_modified), 'yyyy-MM-dd hh:mm a')}
               </div>
             )}
           </div>

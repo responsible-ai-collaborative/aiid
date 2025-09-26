@@ -20,6 +20,7 @@ const incidents: DBIncident[] = [
         editor_similar_incidents: [],
         editor_dissimilar_incidents: [],
         flagged_dissimilar_incidents: [],
+        date_modified: "2020-01-01T00:00:00.000Z",
     },
     {
         incident_id: 2,
@@ -40,6 +41,7 @@ const incidents: DBIncident[] = [
         editor_similar_incidents: [],
         editor_dissimilar_incidents: [],
         flagged_dissimilar_incidents: [],
+        date_modified: "2020-02-01T00:00:00.000Z",
     },
     {
         incident_id: 3,
@@ -93,6 +95,7 @@ const incidents: DBIncident[] = [
         // "created_at": 1407974400000
         implicated_systems: ["entity-1"],
         created_at: new Date('2020-03-01'),
+        date_modified: "2020-03-01T00:00:00.000Z",
     },
     {
         incident_id: 4,
@@ -136,6 +139,7 @@ const incidents: DBIncident[] = [
         },
         created_at: new Date('2020-04-01'),
         editor_notes: "",
+        date_modified: "2020-04-01T00:00:00.000Z",
     },
 ]
 
