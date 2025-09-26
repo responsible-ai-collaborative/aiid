@@ -10,24 +10,11 @@ exports.up = async ({ context: { client } }) => {
     [
       {
         $set: {
-          date_modified: {
-            $dateToString: {
-              format: '%Y-%m-%d HH:mm:ss',
-              date: { $toDate: { $multiply: ['$epoch_date_modified', 1000] } },
-            },
-          },
+          date_modified: { $toDate: { $multiply: ['$epoch_date_modified', 1000] } },
         },
       },
     ]
   );
 
   console.log(`Added date_modified field to ${addDateModifiedResult.modifiedCount} incidents.`);
-
-  // Then remove the old epoch_date_modified field
-  const removeResult = await incidentsCollection.updateMany(
-    { epoch_date_modified: { $exists: true } },
-    { $unset: { epoch_date_modified: '' } }
-  );
-
-  console.log(`Removed epoch_date_modified field from ${removeResult.modifiedCount} incidents.`);
 };
