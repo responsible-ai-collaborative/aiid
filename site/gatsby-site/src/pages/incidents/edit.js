@@ -17,7 +17,6 @@ import { useTranslation, Trans } from 'react-i18next';
 import { Link } from 'gatsby';
 import { processEntities } from '../../utils/entities';
 import DefaultSkeleton from 'elements/Skeletons/Default';
-import { getUnixTime } from 'date-fns';
 import { useUserContext } from 'contexts/UserContext';
 
 function EditCitePage(props) {
@@ -143,7 +142,7 @@ function EditCitePage(props) {
         createEntityMutation
       );
 
-      updated.epoch_date_modified = getUnixTime(new Date());
+      updated.date_modified = new Date();
 
       // Add the current user to the list of editors
       if (user && user.providerType != 'anon-user' && !updated.editors.link.includes(user.id)) {
