@@ -470,9 +470,9 @@ test.describe('The Submit form', () => {
             incident_ids: 1,
         };
 
-        const epoch_date_published_gt = getUnixTime(subWeeks(new Date(date_published), 2));
+        const date_published_gt = subWeeks(new Date(date_published), 2).toISOString();
 
-        const epoch_date_published_lt = getUnixTime(addWeeks(new Date(date_published), 2));
+        const date_published_lt = addWeeks(new Date(date_published), 2).toISOString();
 
         const { data: { reports: reportsAuthors } } = await query({
             query: gql`
@@ -487,7 +487,7 @@ test.describe('The Submit form', () => {
         const { data: { reports: reportsPublished } } = await query({
             query: gql`
             query {
-              reports(filter: { epoch_date_published: {GT: ${epoch_date_published_gt}, LT: ${epoch_date_published_lt} } }) {
+              reports(filter: { date_published: {GT: "${date_published_gt}", LT: "${date_published_lt}" } }) {
                 report_number
               }
             }
@@ -564,9 +564,9 @@ test.describe('The Submit form', () => {
             date_published,
         };
 
-        const epoch_date_published_gt = getUnixTime(subWeeks(new Date(date_published), 2));
+        const date_published_gt = subWeeks(new Date(date_published), 2).toISOString();
 
-        const epoch_date_published_lt = getUnixTime(addWeeks(new Date(date_published), 2));
+        const date_published_lt = addWeeks(new Date(date_published), 2).toISOString();
 
         const { data: { reports: reportsAuthors } } = await query({
             query: gql`
@@ -581,7 +581,7 @@ test.describe('The Submit form', () => {
         const { data: { reports: reportsPublished } } = await query({
             query: gql`
           query {
-            reports(filter: { epoch_date_published: {GT: ${epoch_date_published_gt}, LT: ${epoch_date_published_lt} } }) {
+            reports(filter: { date_published: {GT: "${date_published_gt}", LT: "${date_published_lt}" } }) {
               report_number
             }
           }

@@ -13,7 +13,7 @@ const convertData = (hits) => {
     'incident id': hit.incident_id,
     'report number': hit.report_number,
     title: hit.title,
-    'date published': format(fromUnixTime(hit.epoch_date_published ?? 0), 'yyyy-MM-dd'),
+    'date published': format(new Date(hit.date_published ?? 0), 'yyyy-MM-dd'),
     'date submitted': format(fromUnixTime(hit.epoch_date_submitted ?? 0), 'yyyy-MM-dd'),
     'date modified': format(new Date(hit.date_modified || 0), 'yyyy-MM-dd'),
     'date downloaded': format(new Date(hit.date_downloaded || 0), 'yyyy-MM-dd'),

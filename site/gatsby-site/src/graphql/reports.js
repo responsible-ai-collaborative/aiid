@@ -12,7 +12,7 @@ export const FIND_REPORT = gql(`
       date_downloaded
       date_modified
       date_submitted
-      epoch_date_published
+    
       epoch_date_submitted
       image_url
       cloudinary_id
@@ -80,7 +80,6 @@ export const UPDATE_REPORT = gql(`
       date_published
       date_downloaded
       date_modified
-      epoch_date_published
       date_downloaded
       image_url
       text
@@ -132,7 +131,6 @@ export const FIND_REPORT_HISTORY = gql(`
         vector
       }
       date_downloaded
-      epoch_date_published
       epoch_date_submitted
       flag
       image_url

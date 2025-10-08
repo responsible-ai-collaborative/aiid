@@ -24,7 +24,7 @@ const TRUNCATION_BLACKLIST = [
   'date',
   'incident_date',
   'date_modified',
-  'epoch_date_published',
+  'date_published',
   'epoch_date_submitted',
   'epoch_incident_date',
   'language',
@@ -242,7 +242,7 @@ const reportToEntry = ({ incident = null, report, classifications = [{ list: [],
     description: report.description,
     date_modified: report.date_modified,
     date_downloaded: report.date_downloaded,
-    epoch_date_published: report.epoch_date_published,
+    date_published: report.date_published,
     epoch_date_submitted: report.epoch_date_submitted,
     image_url: report.image_url,
     language: report.language,
@@ -393,7 +393,6 @@ class AlgoliaUpdater {
       date_published: 1,
       date_submitted: 1,
       description: 1,
-      epoch_date_published: 1,
       epoch_date_submitted: 1,
       image_url: 1,
       language: 1,
@@ -454,9 +453,9 @@ class AlgoliaUpdater {
 
     const incidentDateAscReplicaIndexName = indexName + '_epoch_incident_date_asc';
 
-    const datePublishedDescReplicaIndexName = indexName + '_epoch_date_published_desc';
+    const datePublishedDescReplicaIndexName = indexName + '_date_published_desc';
 
-    const datePublishedAscReplicaIndexName = indexName + '_epoch_date_published_asc';
+    const datePublishedAscReplicaIndexName = indexName + '_date_published_asc';
 
     const dateSubmittedDescReplicaIndexName = indexName + '_epoch_date_submitted_desc';
 
@@ -518,7 +517,7 @@ class AlgoliaUpdater {
       );
 
       await datePublishedDescReplicaIndex.setSettings({
-        ranking: ['desc(epoch_date_published)'],
+        ranking: ['desc(date_published)'],
       });
 
       const datePublishedAscReplicaIndex = await this.algoliaClient.initIndex(
@@ -526,7 +525,7 @@ class AlgoliaUpdater {
       );
 
       await datePublishedAscReplicaIndex.setSettings({
-        ranking: ['asc(epoch_date_published)'],
+        ranking: ['asc(date_published)'],
       });
 
       const dateSubmittedDescReplicaIndex = await this.algoliaClient.initIndex(
