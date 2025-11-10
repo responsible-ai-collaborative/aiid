@@ -177,7 +177,7 @@
     "@tailwindcss/typography": "^0.5.8",
     "@types/async": "^3.2.24",
     "@types/jest": "^29.5.12",
-    "@types/jsonwebtoken": "^9.0.7",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20.12.13",
     "@types/nunjucks": "^3.2.6",
     "@types/pluralize": "^0.0.33",
