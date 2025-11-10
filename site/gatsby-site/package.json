@@ -29,7 +29,7 @@
     "@netlify/functions": "^3.0.4",
     "@postlight/parser": "^2.2.3",
     "@prismicio/react": "^2.7.1",
-    "@sentry/aws-serverless": "^8.54.0",
+    "@sentry/aws-serverless": "^10.22.0",
     "@sentry/react": "^9.40.0",
     "algoliasearch": "^4.20.0",
     "async": "^3.2.2",
