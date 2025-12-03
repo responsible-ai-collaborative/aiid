@@ -10,6 +10,44 @@ import * as Sentry from '@sentry/aws-serverless';
 import { HandlerContext, HandlerEvent } from '@netlify/functions';
 import { Context } from '../../server/interfaces';
 
+// Simple rate limiter: 60 requests per minute per IP
+const MAX_REQUESTS_PER_MINUTE = 60;
+
+const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
+
+// Cleanup old entries every 5 minutes
+setInterval(() => {
+    const now = Date.now();
+    for (const [ip, entry] of rateLimitStore.entries()) {
+        if (entry.resetTime < now) {
+            rateLimitStore.delete(ip);
+        }
+    }
+}, 5 * 60 * 1000);
+
+function checkRateLimit(ip: string): { allowed: boolean; retryAfter?: number } {
+    const now = Date.now();
+    const entry = rateLimitStore.get(ip);
+
+    if (!entry || entry.resetTime < now) {
+        // First request or expired window (1 minute)
+        rateLimitStore.set(ip, {
+            count: 1,
+            resetTime: now + 60 * 1000,
+        });
+        return { allowed: true };
+    }
+
+    entry.count++;
+
+    if (entry.count > MAX_REQUESTS_PER_MINUTE) {
+        const retryAfter = Math.ceil((entry.resetTime - now) / 1000);
+        return { allowed: false, retryAfter };
+    }
+
+    return { allowed: true };
+}
+
 const sentryPlugin: ApolloServerPlugin<Context> = {
     async requestDidStart(requestContext) {
 
@@ -69,6 +107,37 @@ const handler = async (event: HandlerEvent, netlifyContext: HandlerContext) => {
 
             span.setAttribute('http.method', event.httpMethod);
             span.setAttribute('url', event.rawUrl);
+
+            // Rate limiting
+            const ip = event.headers['x-forwarded-for']?.split(',')[0]?.trim() 
+                || event.headers['x-real-ip'] 
+                || 'unknown';
+            
+            const rateLimitCheck = checkRateLimit(ip);
+
+            if (!rateLimitCheck.allowed) {
+                console.warn('[Rate Limit] Request blocked:', { ip });
+                
+                span.setAttribute('rate_limit.blocked', true);
+
+                return {
+                    statusCode: 429,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Retry-After': rateLimitCheck.retryAfter?.toString() || '60',
+                        'Access-Control-Allow-Origin': '*',
+                    },
+                    body: JSON.stringify({
+                        errors: [{
+                            message: `Rate limit exceeded. Maximum ${MAX_REQUESTS_PER_MINUTE} requests per minute allowed.`,
+                            extensions: { 
+                                code: 'RATE_LIMIT_EXCEEDED',
+                                retryAfter: rateLimitCheck.retryAfter,
+                            }
+                        }]
+                    }),
+                };
+            }
 
             // @ts-ignore
             const result = await graphqlHandler(event, netlifyContext);
