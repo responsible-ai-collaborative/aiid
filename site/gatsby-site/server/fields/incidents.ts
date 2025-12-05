@@ -151,8 +151,8 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
 
 export const permissions = {
     Query: {
-        incident: allow,
-        incidents: allow,
+        incident: isRole('subscriber'),
+        incidents: isRole('subscriber'),
     },
     Mutation: {
         insertOneIncident: isRole('incident_editor'),
