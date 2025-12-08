@@ -22,6 +22,11 @@
   from = "/api/graphql"
   to = "/.netlify/functions/graphql"
   status = 200
+  [redirects.rate_limit]
+    # 100 requests per 60 seconds, per unique IP + domain
+    window_limit = 100
+    window_size = 60
+    aggregate_by = ["ip", "domain"]
 
 [[redirects]]
   from = "/api/parseNews"
