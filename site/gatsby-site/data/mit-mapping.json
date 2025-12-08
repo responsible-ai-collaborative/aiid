@@ -1,7 +1,7 @@
 {
   "fieldMappings": {
-    "Risk Domain": "Risk Domain",
-    "Risk Subdomain": "Risk Subdomain",
+    "Domain": "Risk Domain",
+    "Subdomain": "Risk Subdomain",
     "Entity": "Entity",
     "Intent": "Intent",
     "Timing": "Timing"

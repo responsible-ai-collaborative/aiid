@@ -338,10 +338,10 @@ function transformToClassificationsFormat(
   let skippedCount = 0;
 
   const classifications = data.map(row => {
-    const incidentId = parseInt(row['Incident ID'], 10);
+    const incidentId = parseInt(row['incident_id'], 10);
 
     if (isNaN(incidentId)) {
-      logger.warning(`Skipping row with invalid Incident ID: ${row['Incident ID']}`);
+      logger.warning(`Skipping row with invalid Incident ID: ${row['incident_id']}`);
       skippedCount++;
       return null;
     }
