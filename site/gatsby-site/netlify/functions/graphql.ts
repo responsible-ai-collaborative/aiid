@@ -46,8 +46,8 @@ const server = new ApolloServer({
 });
 
 const client = new MongoClient(config.API_MONGODB_CONNECTION_STRING, {
-    maxPoolSize: 10,
-    minPoolSize: 1,
+    maxPoolSize: 10,  // default 100
+    minPoolSize: 1,  // default 0
     maxIdleTimeMS: 60000,
 });
 
