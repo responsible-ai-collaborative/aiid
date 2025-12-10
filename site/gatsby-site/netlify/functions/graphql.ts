@@ -45,7 +45,11 @@ const server = new ApolloServer({
     plugins: [sentryPlugin]
 });
 
-const client = new MongoClient(config.API_MONGODB_CONNECTION_STRING);
+const client = new MongoClient(config.API_MONGODB_CONNECTION_STRING, {
+    maxPoolSize: 10,  // default 100
+    minPoolSize: 1,  // default 0
+    maxIdleTimeMS: 60000,
+});
 
 const graphqlHandler = startServerAndCreateLambdaHandler(
     server,
