@@ -25,7 +25,7 @@
   [redirects.rate_limit]
     # 100 requests per 60 seconds, per unique IP + domain
     window_limit = 100
-    window_size = 600
+    window_size = 180
     aggregate_by = ["ip", "domain"]
 
 [[redirects]]
