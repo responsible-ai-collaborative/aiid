@@ -1,0 +1,31 @@
+name: Deploy Production Branch (NO TESTS, NOTIFICATIONS)
+
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      skip-cache:
+        description: "Skip Cache"
+        required: true
+        default: true
+        type: boolean
+
+jobs:
+  cache-modifier:
+    uses: ./.github/workflows/cache-modifier.yml
+    with:
+      skip-cache: ${{ github.event.inputs.skip-cache }}
+
+  call-deploy:
+    uses: ./.github/workflows/deploy.yml
+    needs: cache-modifier
+    secrets: inherit
+    permissions:
+      pull-requests: write
+    with:
+      environment: production
+      sha: ${{ github.sha }}
+      netlify-context: production
+      netlify-alias:
+      cache-modifier: ${{ needs.cache-modifier.outputs.cache-modifier  }}
+      runner-label: ${{ vars.PRODUCTION_RUNNER_LABEL }}
