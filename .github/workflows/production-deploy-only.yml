@@ -1,7 +1,6 @@
 name: Deploy Production Branch (NO TESTS, NO NOTIFICATIONS)
 
 on:
-  push:
   workflow_dispatch:
     inputs:
       skip-cache:
