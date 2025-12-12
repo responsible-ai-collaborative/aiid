@@ -1,4 +1,4 @@
-name: Deploy Production Branch (NO TESTS, NOTIFICATIONS)
+name: Deploy Production Branch (NO TESTS, NO NOTIFICATIONS)
 
 on:
   push:
