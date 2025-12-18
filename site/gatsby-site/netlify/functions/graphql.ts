@@ -63,6 +63,64 @@ const graphqlHandler = startServerAndCreateLambdaHandler(
     ]
 });
 
+const ALLOWED_ORIGINS = [
+    'https://incidentdatabase.ai',
+    'https://aiid-staging.netlify.app',
+    'http://localhost:8000',
+    'http://localhost:9000',
+];
+
+const BLOCKED_AGENTS = [
+    'python-requests',
+    'python-urllib',
+    'curl/',
+    'wget/',
+    'postman',
+    'insomnia',
+    'httpie',
+    'go-http-client',
+    'java/',
+    'okhttp',
+];
+
+const validateOrigin = (event: HandlerEvent) => {
+    const origin = event.headers.origin || event.headers.referer || '';
+
+    if (origin === '') return null;
+
+    const isAllowedOrigin = ALLOWED_ORIGINS.some(allowed => origin.startsWith(allowed));
+
+    if (!isAllowedOrigin) {
+        return {
+            statusCode: 403,
+            body: JSON.stringify({
+                error: 'Forbidden - Invalid origin',
+                message: 'API access is restricted to authorized domains'
+            }),
+        };
+    }
+
+    return null;
+};
+
+const validateUserAgent = (event: HandlerEvent) => {
+    const userAgent = (event.headers['user-agent'] || '').toLowerCase();
+
+    const isSuspiciousAgent = BLOCKED_AGENTS.some(agent => userAgent.includes(agent));
+
+    if (isSuspiciousAgent) {
+        return {
+            statusCode: 403,
+            body: JSON.stringify({
+                error: 'Forbidden - Invalid client',
+                message: 'API access is restricted to web browsers'
+            }),
+        };
+    }
+
+    return null;
+};
+
 const handler = async (event: HandlerEvent, netlifyContext: HandlerContext) => {
     return Sentry.startSpan(
         {
@@ -73,6 +131,16 @@ const handler = async (event: HandlerEvent, netlifyContext: HandlerContext) => {
 
             span.setAttribute('http.method', event.httpMethod);
             span.setAttribute('url', event.rawUrl);
+
+            if (process.env.API_VALIDATE_ORIGIN) {
+              const originError = validateOrigin(event);
+              if (originError) return originError;
+            }
+
+            if (process.env.API_VALIDATE_USER_AGENT) {
+              const userAgentError = validateUserAgent(event);
+              if (userAgentError) return userAgentError;
+            }
 
             // @ts-ignore
             const result = await graphqlHandler(event, netlifyContext);
