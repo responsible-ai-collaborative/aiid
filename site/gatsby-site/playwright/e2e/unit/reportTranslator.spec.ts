@@ -324,7 +324,10 @@ test('Report Translations - Should translate reports with submission date greate
   
   sinon.assert.calledOnce(mongoClient.connect);
   sinon.assert.calledOnce(reportsCollection.find);
-  sinon.assert.calledWith(reportsCollection.find, { date_submitted: { $gte: new Date(submissionDateStart) } });
+  sinon.assert.calledWith(reportsCollection.find, {
+    date_submitted: { $gte: new Date(submissionDateStart) },
+    tags: { $nin: ['variant:unreviewed', 'variant:rejected'] }
+  });
   sinon.assert.calledOnce(translateClient.translate);
   sinon.assert.calledOnce(reportsTranslationsCollection.insertMany);
   sinon.assert.calledWith(reportsTranslationsCollection.insertMany, [
