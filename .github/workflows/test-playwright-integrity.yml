@@ -1,0 +1,76 @@
+name: Database Integrity Tests
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to test (production or staging)"
+        required: true
+        default: "production"
+        type: choice
+        options:
+          - production
+          - staging
+
+jobs:
+  integrity-tests:
+    name: Run Database Integrity Tests
+    environment: ${{ inputs.environment || 'production' }}
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Cache NPM dependencies
+        id: cache-npm-dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            site/gatsby-site/node_modules
+          key: ${{ runner.os }}-npm-dependencies-${{ hashFiles('**/gatsby-site/package-lock.json') }}
+
+      - name: Install NPM dependencies
+        if: steps.cache-npm-dependencies.outputs.cache-hit != 'true'
+        run: npm ci
+        working-directory: site/gatsby-site
+
+      - name: Cache Playwright Browsers
+        id: cache-playwright-browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-browsers-${{ hashFiles('**/gatsby-site/package-lock.json') }}
+
+      - name: Install playwright browsers
+        if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+        working-directory: site/gatsby-site
+
+      - name: Run integrity tests
+        run: npx playwright test playwright/integrity/integrity.spec.ts
+        working-directory: site/gatsby-site
+        env:
+          GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
+          SITE_URL: ${{ vars.SITE_URL }}
+          GATSBY_SITE_URL: ${{ vars.SITE_URL }}
+          MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
+          NEXTAUTH_URL: dummy
+          NEXTAUTH_SECRET: dummy
+          GATSBY_PRISMIC_REPO_NAME: dummy
+          PRISMIC_ACCESS_TOKEN: dummy
+
+      - name: Upload test results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: integrity-test-results-${{ inputs.environment || 'production' }}
+          path: site/gatsby-site/playwright-report/
+          retention-days: 7
