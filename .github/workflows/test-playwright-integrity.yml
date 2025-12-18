@@ -58,10 +58,12 @@ jobs:
         run: npx playwright test playwright/integrity/integrity.spec.ts
         working-directory: site/gatsby-site
         env:
+          IS_EMPTY_ENVIRONMENT: ${{ vars.IS_EMPTY_ENVIRONMENT }}
           GATSBY_AVAILABLE_LANGUAGES: ${{ vars.GATSBY_AVAILABLE_LANGUAGES }}
           SITE_URL: ${{ vars.SITE_URL }}
           GATSBY_SITE_URL: ${{ vars.SITE_URL }}
           MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
+          GATSBY_COMMIT_SHA: ${{ github.sha }}
           NEXTAUTH_URL: dummy
           NEXTAUTH_SECRET: dummy
           GATSBY_PRISMIC_REPO_NAME: dummy
