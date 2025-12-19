@@ -83,12 +83,11 @@ const BLOCKED_AGENTS = [
     'okhttp',
 ];
 
+// Validates Origin/Referer headers to ensure requests come from allowed domains only
 const validateOrigin = (event: HandlerEvent) => {
     const origin = event.headers.origin || event.headers.referer || '';
 
-    if (origin === '') return null;
-
-    const isAllowedOrigin = ALLOWED_ORIGINS.some(allowed => origin.startsWith(allowed));
+    const isAllowedOrigin = origin !== '' && ALLOWED_ORIGINS.some(allowed => origin.startsWith(allowed));
 
     if (!isAllowedOrigin) {
         return {
@@ -103,6 +102,7 @@ const validateOrigin = (event: HandlerEvent) => {
     return null;
 };
 
+// Validates User-Agent header to block automated tools and non-browser clients
 const validateUserAgent = (event: HandlerEvent) => {
     const userAgent = (event.headers['user-agent'] || '').toLowerCase();
 
@@ -132,14 +132,17 @@ const handler = async (event: HandlerEvent, netlifyContext: HandlerContext) => {
             span.setAttribute('http.method', event.httpMethod);
             span.setAttribute('url', event.rawUrl);
 
-            if (process.env.API_VALIDATE_ORIGIN) {
-              const originError = validateOrigin(event);
-              if (originError) return originError;
-            }
+            // Only validate POST requests (mutations/queries), allow GET for Apollo Playground
+            if (event.httpMethod === 'POST') {
+              if (process.env.API_VALIDATE_ORIGIN === 'true') {
+                const originError = validateOrigin(event);
+                if (originError) return originError;
+              }
 
-            if (process.env.API_VALIDATE_USER_AGENT) {
-              const userAgentError = validateUserAgent(event);
-              if (userAgentError) return userAgentError;
+              if (process.env.API_VALIDATE_USER_AGENT === 'true') {
+                const userAgentError = validateUserAgent(event);
+                if (userAgentError) return userAgentError;
+              }
             }
 
             // @ts-ignore
