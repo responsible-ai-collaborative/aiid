@@ -65,7 +65,7 @@ const graphqlHandler = startServerAndCreateLambdaHandler(
 
 const ALLOWED_ORIGINS = [
     'https://incidentdatabase.ai',
-    'https://aiid-staging.netlify.app',
+    'https://staging-aiid.netlify.app',
 ];
 
 const BLOCKED_AGENTS = [
