@@ -211,6 +211,9 @@ class ReportTranslator {
       );
     }
 
+    // Exclude non-approved variant reports tag
+    reportsQuery.tags = { $nin: ['variant:unreviewed', 'variant:rejected'] };
+
     const reports = await this.mongoClient
       .db('aiidprod')
       .collection(`reports`)
