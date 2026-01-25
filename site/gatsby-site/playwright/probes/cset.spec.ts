@@ -13,7 +13,10 @@ urls.forEach(({ namespace, url }) => {
   });
 
   if (namespace === 'CSETv0') {
-    test(`Should render ${namespace} fields list and Searchable status`, async ({ page }) => {
+    // We believe the headers are blocking this the naked Apollo query,
+    // so this test will fail.
+    // https://github.com/responsible-ai-collaborative/aiid/pull/3802
+    test.skip(`Should render ${namespace} fields list and Searchable status`, async ({ page }) => {
       await page.goto(url);
 
       const fieldListQuery = gql`
