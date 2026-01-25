@@ -10,13 +10,9 @@ export default function Featured() {
       </h5>
       <p className="mb-5 text-base text-gray-500 dark:text-gray-400 sm:text-lg text-center">
         <Trans i18nKey="readAboutTheDatabase" ns="landing">
-          Read about the database on the{' '}
-          <a
-            href="https://www.partnershiponai.org/aiincidentdatabase/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            PAI Blog
+          Read about the database at{' '}
+          <a href="https://time.com/7346091/ai-harm-risk/" target="_blank" rel="noreferrer">
+            Time Magazine
           </a>
           ,{' '}
           <a
@@ -43,8 +39,12 @@ export default function Featured() {
             Wired
           </a>
           ,{' '}
-          <a href="https://arxiv.org/abs/2011.08512" target="_blank" rel="noreferrer">
-            arXiv
+          <a
+            href="https://thebulletin.org/2026/01/what-experts-can-learn-by-tracking-ai-harms/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Bulletin of the Atomic Scientists
           </a>{' '}
           , and{' '}
           <a
