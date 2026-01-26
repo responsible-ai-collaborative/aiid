@@ -51,7 +51,7 @@
     "dotenv": "^8.2.0",
     "flowbite": "^1.5.3",
     "flowbite-react": "^0.4.1",
-    "formik": "^2.2.6",
+    "formik": "^2.4.9",
     "gatsby": "^5.13.6",
     "gatsby-adapter-netlify": "^1.1.6",
     "gatsby-plugin-catch-links": "^5.0.0",
