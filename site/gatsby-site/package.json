@@ -103,7 +103,7 @@
     "react-dom": "^18.2.0",
     "react-feather": "^2.0.9",
     "react-helmet": "^6.1.0",
-    "react-i18next": "^11.17.1",
+    "react-i18next": "^16.5.4",
     "react-instantsearch": "^7.2.0",
     "react-is": "^18.2.0",
     "react-json-to-csv": "^1.2.0",
