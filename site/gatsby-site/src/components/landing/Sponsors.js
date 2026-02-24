@@ -130,6 +130,14 @@ export default function Sponsors({ sponsors = [] }) {
                     rel="noreferrer"
                   >
                     tax-exempt application.
+                  </a>{' '}
+                  We kindly request your financial support with a{' '}
+                  <a
+                    href="https://donate.stripe.com/28E7sDbq18xN82kbJ8bQY00"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    donation.
                   </a>
                 </Trans>
               </p>
