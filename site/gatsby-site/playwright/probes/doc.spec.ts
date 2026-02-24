@@ -38,7 +38,7 @@ test.describe('Docs', () => {
 
     const div = await page.locator("[data-testid='doc-content']");
     const textContent = await div.textContent();
-    expect(textContent).toContain('Bien que la recherche formelle sur les incidents liés à l'IA soit relativement récente, plusieurs personnes ont collecté ce qui pourrait être considéré comme des incidents. Parmi ceux-ci, on trouve :');
+    expect(textContent).toContain("Bien que la recherche formelle sur les incidents liés à l'IA soit relativement récente, plusieurs personnes ont collecté ce qui pourrait être considéré comme des incidents. Parmi ceux-ci, on trouve :");
 
   });
 
