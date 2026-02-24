@@ -18,13 +18,13 @@ test.describe('Docs', () => {
   test('Should load mdx doc in spanish', async ({ page, skipOnEmptyEnvironment, skipIfLanguageUnavailable }) => {
     await skipIfLanguageUnavailable('es');
     await page.setViewportSize({ width: 1280, height: 1000 });
-    await page.goto('/es/research/4-related-work'); // This doc hasn't been translated yet to Spanish yet, so it should fallback to English
+    await page.goto('/es/research/4-related-work');
 
-    await expect(page.locator('.titleWrapper h1')).toHaveText('Related Work');
+    await expect(page.locator('.titleWrapper h1')).toHaveText('Trabajo Relacionado');
 
     const div = await page.locator("[data-testid='doc-content']");
     const textContent = await div.textContent();
-    expect(textContent).toContain('While formal AI incident research is relatively new, a number of people have been collecting what could be considered incidents. These include,');
+    expect(textContent).toContain('Si bien la investigación formal sobre incidentes de IA es relativamente nueva, varias personas han estado recopilando lo que podría considerarse incidentes. Entre ellos se incluyen:');
 
   });
 
@@ -32,13 +32,13 @@ test.describe('Docs', () => {
     await skipIfLanguageUnavailable('fr');
     
     await page.setViewportSize({ width: 1280, height: 1000 });
-    await page.goto('/fr/research/4-related-work'); // This doc hasn't been translated to French yet, so it will default to English
+    await page.goto('/fr/research/4-related-work');
 
-    await expect(page.locator('.titleWrapper h1')).toHaveText('Related Work');
+    await expect(page.locator('.titleWrapper h1')).toHaveText('Travaux connexes');
 
     const div = await page.locator("[data-testid='doc-content']");
     const textContent = await div.textContent();
-    expect(textContent).toContain('While formal AI incident research is relatively new, a number of people have been collecting what could be considered incidents. These include,');
+    expect(textContent).toContain('Bien que la recherche formelle sur les incidents liés à l'IA soit relativement récente, plusieurs personnes ont collecté ce qui pourrait être considéré comme des incidents. Parmi ceux-ci, on trouve :');
 
   });
 
@@ -47,11 +47,11 @@ test.describe('Docs', () => {
     await page.setViewportSize({ width: 1280, height: 1000 });
     await page.goto('/ja/research/4-related-work');
 
-    await expect(page.locator('.titleWrapper h1')).toHaveText('関連する研究');
+    await expect(page.locator('.titleWrapper h1')).toHaveText('関連研究');
 
     const div = await page.locator("[data-testid='doc-content']");
     const textContent = await div.textContent();
-    expect(textContent).toContain('公式なAIインシデント研究は比較的新しいものですが、何人かの人々がインシデントと見なされる可能性のある事例を収集しています。これには');
+    expect(textContent).toContain('AIインシデントに関する正式な研究は比較的新しい分野ですが、インシデントと見なし得る事例を収集してきた人々が数多く存在します。以下がその例です。');
 
   });
 
