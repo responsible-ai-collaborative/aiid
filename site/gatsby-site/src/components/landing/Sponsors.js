@@ -131,7 +131,7 @@ export default function Sponsors({ sponsors = [] }) {
                   >
                     tax-exempt application.
                   </a>{' '}
-                  We kindly request your financial support with a
+                  We kindly request your financial support with a{' '}
                   <a
                     href="https://donate.stripe.com/28E7sDbq18xN82kbJ8bQY00"
                     target="_blank"
