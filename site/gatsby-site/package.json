@@ -85,7 +85,7 @@
     "limiter": "^3.0.0",
     "mailersend": "^2.3.0",
     "md5": "^2.3.0",
-    "minimatch": "^9.0.4",
+    "minimatch": "^9.0.7",
     "mongodb": "^6.10.0",
     "natural": "^8.0.1",
     "next-auth": "^4.24.10",
