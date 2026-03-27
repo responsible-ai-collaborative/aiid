@@ -1,0 +1,46 @@
+name: Master dataset build
+
+on:
+  schedule:
+    - cron: "0 10 * * 1"
+  workflow_dispatch: {}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build-master-dataset:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r site/master-db-pipeline/requirements.txt
+
+      - name: Build master dataset
+        env:
+          SNAPSHOT_DIR: ${{ github.workspace }}/.artifacts/snapshot
+          OUTPUT_PATH: ${{ github.workspace }}/.artifacts/AIID_Master_Dataset.xlsx
+        run: |
+          python site/master-db-pipeline/main.py --config site/master-db-pipeline/config.yaml
+
+      - name: Validate output
+        run: |
+          test -s "${{ github.workspace }}/.artifacts/AIID_Master_Dataset.xlsx"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: aiid-master-dataset
+          path: ${{ github.workspace }}/.artifacts/AIID_Master_Dataset.xlsx
+          if-no-files-found: error
