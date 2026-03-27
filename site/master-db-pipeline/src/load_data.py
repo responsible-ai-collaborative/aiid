@@ -8,6 +8,8 @@ from .download import SnapshotPaths
 
 @dataclass
 class RawData:
+    """Raw DataFrames loaded from the extracted snapshot dump."""
+
     incidents: pd.DataFrame
     mit: pd.DataFrame
     gmf: pd.DataFrame
@@ -16,6 +18,7 @@ class RawData:
 
 
 def load_raw_data(paths: SnapshotPaths) -> RawData:
+    """Read required CSV inputs into pandas DataFrames."""
     incidents = pd.read_csv(paths.incidents, low_memory=False)
     mit = pd.read_csv(paths.mit, low_memory=False)
     gmf = pd.read_csv(paths.gmf, low_memory=False)

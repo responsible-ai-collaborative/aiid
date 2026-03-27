@@ -12,6 +12,9 @@ def build_master(
     cset: pd.DataFrame,
     config: PipelineConfig,
 ) -> pd.DataFrame:
+    """Left-join taxonomy tables onto the incident data to form the master dataset."""
+
+    # Keep a stable core subset to prevent join drift.
     inc_core = inc[
         [
             "Incident ID",
@@ -31,6 +34,7 @@ def build_master(
     cset_ids = set(cset["Incident ID"])
 
     def _sources(iid: int) -> str:
+        """Encode which taxonomies contain annotations for a given incident."""
         parts: list[str] = []
         if iid in mit_ids:
             parts.append("MIT")
@@ -40,8 +44,10 @@ def build_master(
             parts.append("CSETv1")
         return " | ".join(parts) if parts else "None"
 
+    # Helpful for downstream coverage analysis.
     inc_core["Data Sources"] = inc_core["Incident ID"].apply(_sources)
 
+    # Join each taxonomy as a left-join (never introduce new incident rows).
     mit_join = mit[
         ["Incident ID", "Risk Domain", "Risk Subdomain", "Responsible Entity", "Intent", "Timing"]
     ]
@@ -54,7 +60,7 @@ def build_master(
     master = master.merge(cset[cset_join], on="Incident ID", how="left")
 
     master = master.sort_values("Incident ID").reset_index(drop=True)
-
+    
     ordered = [c for c in config.output.master_column_order if c in master.columns]
     extra = [c for c in master.columns if c not in ordered]
     master = master[ordered + extra]

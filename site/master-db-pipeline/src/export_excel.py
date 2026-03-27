@@ -8,6 +8,7 @@ from openpyxl.utils import get_column_letter
 
 
 def _col_group(column: str) -> str:
+    """Map a column name to a visual group for header coloring and dictionary labeling."""
     identity = {"Incident ID", "date", "year", "title", "description", "deployer", "developer", "harmed"}
     coverage = {"Data Sources", "report_count"}
     mit = {"Risk Domain", "Risk Subdomain", "Responsible Entity", "Intent", "Timing"}
@@ -25,6 +26,7 @@ def _col_group(column: str) -> str:
 
 
 def _write_master_sheet(wb: Workbook, df: pd.DataFrame) -> None:
+    """Write the main 'Master Dataset' worksheet with grouped headers and styling."""
     ws = wb.create_sheet("Master Dataset")
     cols = df.columns.tolist()
     n = len(cols)
@@ -54,6 +56,7 @@ def _write_master_sheet(wb: Workbook, df: pd.DataFrame) -> None:
     }
 
     ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=n)
+    # Workbook title bar.
     title_cell = ws.cell(
         row=1,
         column=1,
@@ -95,6 +98,7 @@ def _write_master_sheet(wb: Workbook, df: pd.DataFrame) -> None:
     for row_idx, row in enumerate(df.itertuples(index=False), start=4):
         fill = alt_fill if row_idx % 2 == 0 else white_fill
         for col_idx, value in enumerate(row, start=1):
+            # Keep Excel-friendly values (dates as strings, empty as None).
             if pd.isna(value):
                 value = None
             elif hasattr(value, "strftime"):
@@ -135,6 +139,7 @@ def _write_master_sheet(wb: Workbook, df: pd.DataFrame) -> None:
 
 
 def _write_dictionary_sheet(wb: Workbook, df: pd.DataFrame) -> None:
+    """Write a 'Data Dictionary' worksheet with fill rates and brief descriptions."""
     ws = wb.create_sheet("Data Dictionary")
     ws.merge_cells("A1:E1")
     title = ws.cell(row=1, column=1, value="Data Dictionary - AI Incident Database Master Dataset")
@@ -235,6 +240,7 @@ def _write_dictionary_sheet(wb: Workbook, df: pd.DataFrame) -> None:
 
 
 def _write_coverage_sheet(wb: Workbook, df: pd.DataFrame) -> None:
+    """Write a compact coverage summary by 'Data Sources' combinations."""
     ws = wb.create_sheet("Coverage Map")
     ws.merge_cells("A1:D1")
     title = ws.cell(row=1, column=1, value="Coverage Map - What you can analyze at each taxonomy level")
@@ -304,6 +310,8 @@ def _write_coverage_sheet(wb: Workbook, df: pd.DataFrame) -> None:
 
 
 def export_excel(master: pd.DataFrame, output_path: Path) -> None:
+    """Export the master dataset to a styled Excel workbook (three sheets)."""
+    # Ensure the target directory exists for local runs and CI.
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     wb = Workbook()

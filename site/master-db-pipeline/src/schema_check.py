@@ -10,15 +10,20 @@ from .download import SnapshotPaths
 
 @dataclass
 class SchemaCheckResult:
+    """Schema check outcome: missing expected columns and newly observed columns."""
+
     missing: List[Tuple[str, str, str]]
     new_columns: List[Tuple[str, str]]
 
     @property
     def is_ok(self) -> bool:
+        """True if no required columns are missing."""
         return len(self.missing) == 0
 
 
 def check_schema(config: PipelineConfig, paths: SnapshotPaths) -> SchemaCheckResult:
+    """Compare snapshot headers against configured column mappings"""
+    # Read only headers to keep this check fast and CI-friendly.
     raw_incidents = pd.read_csv(paths.incidents, nrows=0)
     raw_mit = pd.read_csv(paths.mit, nrows=0)
     raw_gmf = pd.read_csv(paths.gmf, nrows=0)
@@ -61,6 +66,7 @@ def check_schema(config: PipelineConfig, paths: SnapshotPaths) -> SchemaCheckRes
         missing_cols = expected - actual
         added = actual - expected
 
+        # Filter out known noisy columns that frequently appear.
         added_meaningful = {
             col
             for col in added

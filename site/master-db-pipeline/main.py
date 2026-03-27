@@ -21,6 +21,7 @@ from src.export_excel import export_excel
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse CLI args for local runs and GitHub Actions."""
     parser = argparse.ArgumentParser(description="Build AIID master dataset from latest snapshot.")
     parser.add_argument(
         "--config",
@@ -36,17 +37,28 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> int:
+    """Run the end-to-end master dataset pipeline.
+
+    Exit codes:
+      0 = success
+      2 = schema check failure (missing expected columns)
+      3 = validation failure (data quality guardrails failed)
+    """
     args = parse_args()
     config_path = Path(args.config).resolve()
+
+    # Load YAML config with optional env var overrides (CI-friendly).
     config = load_config(config_path)
 
     print("Starting master dataset pipeline")
     print(f"Config: {config_path}")
 
+    # Download the latest public snapshot and locate required CSV inputs.
     snapshot_paths = download_and_extract(config)
     print("Snapshot download and extraction complete")
 
     if not args.skip_schema_check:
+        # Fast header-only check to catch schema drift before doing heavy work.
         schema_result = check_schema(config, snapshot_paths)
         if not schema_result.is_ok:
             print("Schema check failed. Missing columns:")
@@ -58,6 +70,7 @@ def main() -> int:
                     print(f"  - {source}: '{col}'")
             return 2
 
+    # Load raw CSVs, compute duplicate incident IDs, and clean/normalize each source.
     raw = load_raw_data(snapshot_paths)
     dup_ids = compute_duplicate_ids(raw.duplicates, config.columns.duplicates_id_column)
 
@@ -66,8 +79,10 @@ def main() -> int:
     gmf = clean_gmf(raw.gmf, config, dup_ids)
     cset = clean_cset(raw.cset, config, dup_ids)
 
+    # Left-join taxonomies onto incidents (1 row per incident).
     master = build_master(inc, mit, gmf, cset, config)
 
+    # Keep the incident spine for join/row-count guardrails.
     inc_core = inc[
         [
             "Incident ID",
@@ -82,6 +97,7 @@ def main() -> int:
         ]
     ].copy()
 
+    # Validate dataset completeness/uniqueness and basic coverage expectations.
     validation = validate_master(master, inc_core, config)
     if not validation.ok:
         print("Validation failed:")
@@ -98,6 +114,7 @@ def main() -> int:
         for warning in validation.warnings:
             print(f"  - {warning}")
 
+    # Export to Excel (artifact path is typically set via OUTPUT_PATH in CI).
     export_excel(master, config.paths.output_path)
     print(f"Excel written to {config.paths.output_path}")
     print(f"Rows: {len(master)} Columns: {len(master.columns)}")

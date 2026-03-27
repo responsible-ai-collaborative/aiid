@@ -12,6 +12,8 @@ from .config import PipelineConfig
 
 @dataclass
 class SnapshotPaths:
+    """Resolved paths to the snapshot CSV inputs used by the pipeline."""
+
     incidents: Path
     mit: Path
     gmf: Path
@@ -20,7 +22,10 @@ class SnapshotPaths:
 
 
 def _latest_snapshot_url(links: list[str]) -> str:
+    """Pick the most recent snapshot URL based on its timestamped filename."""
+
     def _ts(url: str) -> str:
+        """Extract sortable timestamp token from a snapshot URL."""
         match = re.search(r"backup-(\d{14})\.tar\.bz2", url)
         return match.group(1) if match else ""
 
@@ -28,6 +33,7 @@ def _latest_snapshot_url(links: list[str]) -> str:
 
 
 def _find_file(root: Path, pattern: str) -> Path:
+    """Find the first file matching a glob pattern anywhere under root."""
     matches = list(root.rglob(pattern))
     if not matches:
         raise FileNotFoundError(
@@ -37,9 +43,11 @@ def _find_file(root: Path, pattern: str) -> Path:
 
 
 def download_and_extract(config: PipelineConfig) -> SnapshotPaths:
+    """Download the latest public snapshot tarball and locate required CSVs."""
     snapshot_dir = config.paths.snapshot_dir
     snapshot_dir.mkdir(parents=True, exist_ok=True)
 
+    # Scrape the snapshots page to discover available backup archives.
     html = requests.get(config.snapshot.snapshot_page_url, timeout=60).text
     soup = BeautifulSoup(html, "lxml")
 
@@ -48,6 +56,7 @@ def download_and_extract(config: PipelineConfig) -> SnapshotPaths:
         href = anchor["href"]
         if config.snapshot.snapshot_filter in href:
             if href.startswith("/"):
+                # Convert relative link to absolute for downloading.
                 href = config.snapshot.base_url + href
             links.append(href)
 
@@ -60,6 +69,7 @@ def download_and_extract(config: PipelineConfig) -> SnapshotPaths:
 
     tar_path = snapshot_dir / latest_url.split("/")[-1]
     if not tar_path.exists():
+        # Stream to disk to avoid holding large archives in memory.
         with requests.get(latest_url, stream=True, timeout=300) as response:
             response.raise_for_status()
             with open(tar_path, "wb") as handle:
@@ -68,6 +78,7 @@ def download_and_extract(config: PipelineConfig) -> SnapshotPaths:
                         handle.write(chunk)
 
     with tarfile.open(tar_path, "r:bz2") as tar:
+        # Use the safer extraction filter (Python 3.11+).
         tar.extractall(snapshot_dir, filter="data")
 
     incidents_path = _find_file(snapshot_dir, "incidents.csv")
