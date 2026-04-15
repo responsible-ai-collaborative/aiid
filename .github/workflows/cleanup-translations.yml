@@ -6,7 +6,7 @@ on:
       environment:
         description: "Environment to clean up (production or staging)"
         required: true
-        default: "production"
+        default: "staging"
         type: choice
         options:
           - production
