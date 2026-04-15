@@ -1,0 +1,53 @@
+name: Cleanup Invalid Translations
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to clean up (production or staging)"
+        required: true
+        default: "production"
+        type: choice
+        options:
+          - production
+          - staging
+      dry-run:
+        description: "Dry run (preview deletions without deleting)"
+        required: true
+        default: true
+        type: boolean
+
+jobs:
+  cleanup:
+    name: Remove Invalid Translations
+    environment: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Cache NPM dependencies
+        id: cache-npm-dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            site/gatsby-site/node_modules
+          key: ${{ runner.os }}-npm-dependencies-${{ hashFiles('**/gatsby-site/package-lock.json') }}
+
+      - name: Install NPM dependencies
+        if: steps.cache-npm-dependencies.outputs.cache-hit != 'true'
+        run: npm ci
+        working-directory: site/gatsby-site
+
+      - name: Run cleanup script
+        run: npx tsx src/scripts/cleanupTranslations.ts
+        working-directory: site/gatsby-site
+        env:
+          MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
+          DRY_RUN: ${{ inputs.dry-run }}
