@@ -156,6 +156,7 @@
     "process-briefing-notifications:ci": "npx tsx src/scripts/process-briefing-notifications.ts",
     "translate-reports": "npx tsx src/scripts/translateReports.ts",
     "translate-incidents": "npx tsx src/scripts/translateIncidents.ts",
+    "cleanup-translations": "npx tsx src/scripts/cleanupTranslations.ts",
     "magic-link": "npx tsx --env-file=.env src/scripts/magic-link.ts $1 $2",
     "restore-mongodb": "npx tsx --env-file=.env src/scripts/restore-mongodb.ts",
     "import-classifications-csv": "npx tsx --env-file=.env src/scripts/import-classifications-csv.ts",
