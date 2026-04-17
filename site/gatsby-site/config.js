@@ -87,6 +87,12 @@ const config = {
       { title: 'List View', label: 'list', url: '/summaries/incidents/', items: [] },
       { title: 'Entities', label: 'entities', url: '/entities/', items: [] },
       { title: 'Taxonomies', label: 'taxonomies', url: '/taxonomies/', items: [] },
+      {
+        title: 'Cross-Taxonomy Visualizations',
+        label: 'cross-taxonomy',
+        url: '/apps/cross-taxonomy/',
+        items: [],
+      },
       { title: 'Random Incident', label: 'random', url: '/random/', items: [] },
       { title: 'Submit Incident Reports', label: 'submit', url: '/apps/submit/', items: [] },
       { title: 'Risk Checklists', label: 'checklists', url: '/apps/checklists/', items: [] },
