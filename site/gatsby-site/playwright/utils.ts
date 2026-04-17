@@ -341,6 +341,13 @@ export const getApolloClient = () => {
     const client = new ApolloClient({
         link: new HttpLink({
             uri: `${config.SITE_URL}/api/graphql`,
+            headers: {
+                // The GraphQL endpoint rejects POSTs without an allowed Origin/Referer
+                // or with a non-browser User-Agent. See netlify/functions/graphql.ts.
+                origin: config.SITE_URL,
+                referer: config.SITE_URL,
+                'user-agent': 'Mozilla/5.0 (Playwright Integrity Tests)',
+            },
         }),
         cache: new InMemoryCache({
             addTypename: false,
