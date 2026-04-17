@@ -10,7 +10,7 @@ const DomainsLeaderboard = ({ limit = 0, className = '' }) => {
     <StaticQuery
       query={graphql`
         query DomainsLeaderboard {
-          allMongodbAiidprodReports {
+          allMongodbAiidprodReports(filter: { is_incident_report: { eq: true } }) {
             group(field: { source_domain: SELECT }) {
               fieldValue
               totalCount
