@@ -10,7 +10,7 @@ const AuthorsLeaderboard = ({ limit = 0, className = '' }) => {
     <StaticQuery
       query={graphql`
         query AuthorsLeaderboard {
-          allMongodbAiidprodReports {
+          allMongodbAiidprodReports(filter: { is_incident_report: { eq: true } }) {
             group(field: { authors: SELECT }) {
               fieldValue
               totalCount
