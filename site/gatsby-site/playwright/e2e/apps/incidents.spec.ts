@@ -263,7 +263,7 @@ test.describe('Incidents App', () => {
     await page.waitForSelector('[data-cy="table-view"] button:has-text("Issue Reports")');
     await page.locator('[data-cy="table-view"] button:has-text("Issue Reports")').click();
 
-    await page.waitForSelector('[data-cy="row"]');
+    await page.waitForURL(/view=issueReports/);
     await expect(page.locator('[data-cy="row"]')).toHaveCount(2);
 
     const firstRowLink = await page.locator('[data-cy="row"] td a').first().getAttribute('href');
@@ -271,7 +271,7 @@ test.describe('Incidents App', () => {
 
     await page.getByText('Reports', { exact: true }).click();
 
-    await page.waitForSelector('[data-cy="row"]');
+    await page.waitForURL(/view=reports/);
     await expect(page.locator('[data-cy="row"]')).toHaveCount(4);
 
     const firstCiteLink = await page.locator('[data-cy="row"] td a').first().getAttribute('href');
