@@ -18,7 +18,7 @@ const SocialShareButtons = ({ metaTitle, path, page, className = '' }) => {
         data-cy="btn-share-twitter"
         onClick={() => {
           window.open(
-            `https://twitter.com/intent/tweet?text=${metaTitle}&url=${canonicalUrl}`,
+            `https://x.com/intent/post?text=${metaTitle}&url=${canonicalUrl}`,
             'twitter-share',
             'width=550,height=235'
           );
