@@ -102,6 +102,20 @@ async function notificationsToBriefingIncidents(context: Context) {
   lastWeek.setUTCDate(now.getUTCDate() - 7); // Move to 7 days ago
   lastWeek.setUTCHours(15, 0, 0, 0); // Set to start of the day
 
+  const newIncidentIds = incidentList.map(i => i.id);
+
+  const updatedIncidentsRaw = await incidentsCollection.find({
+    date_modified: { $gte: lastWeek },
+    incident_id: { $nin: newIncidentIds },
+  }).sort({ date_modified: -1 }).limit(100).toArray();
+
+  const updatedIncidents = updatedIncidentsRaw.map(i => ({
+    id: i.incident_id,
+    title: i.title,
+    url: `${config.SITE_URL}/cite/${i.incident_id}`,
+    date_modified: i.date_modified instanceof Date ? i.date_modified.toISOString().split('T')[0] : i.date_modified,
+  }));
+
   const lastWeekDate = lastWeek.toISOString().split('T')[0]; // 'YYYY-MM-DD'
   const nowDate = now.toISOString().split('T')[0]; // 'YYYY-MM-DD'
   const lastWeekISOString = lastWeek.toISOString().split('.')[0] + 'Z';
@@ -182,14 +196,14 @@ async function notificationsToBriefingIncidents(context: Context) {
     updates = [];
   }
 
-  const hasContentToSend = incidentList.length > 0 || newBlogPosts.length > 0 || updates.length > 0;
+  const hasContentToSend = incidentList.length > 0 || updatedIncidents.length > 0 || newBlogPosts.length > 0 || updates.length > 0;
   const shouldSendEmail = recipients.length > 0 && hasContentToSend;
 
   if (shouldSendEmail) {
     result = recipients.length;
   }
 
-  console.log(`Found ${incidentList.length} incidents, ${newBlogPosts.length} new blog posts, and ${updates.length} updates to send to ${recipients.length} users found between ${lastWeekDate} - ${nowDate}`);
+  console.log(`Found ${incidentList.length} incidents, ${updatedIncidents.length} recently edited incidents, ${newBlogPosts.length} new blog posts, and ${updates.length} updates to send to ${recipients.length} users found between ${lastWeekDate} - ${nowDate}`);
 
   try {
     if (shouldSendEmail) {
@@ -198,6 +212,7 @@ async function notificationsToBriefingIncidents(context: Context) {
         subject: "Your AI Incident Briefing",
         dynamicData: {
           newIncidents: incidentList,
+          updatedIncidents: updatedIncidents,
           newBlogPosts: newBlogPosts,
           updates: updates
         },
