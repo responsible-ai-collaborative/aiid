@@ -37,7 +37,7 @@ const BASE_SORTING_LIST = [
     faIcon: faCalendarAlt,
     faClasses: 'far fa-calendar-alt',
     type: 'date',
-    instantKey: 'epoch_date_published_desc',
+    instantKey: 'date_published_desc',
   },
   {
     name: 'published-date-asc',
@@ -46,7 +46,7 @@ const BASE_SORTING_LIST = [
     faClasses: 'far fa-calendar-alt',
     type: 'date',
     division: true,
-    instantKey: 'epoch_date_published_asc',
+    instantKey: 'date_published_asc',
   },
   {
     name: 'submitted-date-desc',
