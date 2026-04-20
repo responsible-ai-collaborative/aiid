@@ -166,7 +166,7 @@
     "db:migrator": "npx tsx migrator"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-export-default-from": "^7.23.3",
+    "@babel/plugin-proposal-export-default-from": "^7.27.1",
     "@graphql-codegen/cli": "^5.0.7",
     "@graphql-codegen/client-preset": "^4.3.3",
     "@graphql-codegen/typescript": "^4.1.6",
