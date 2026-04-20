@@ -52,7 +52,7 @@
     "flowbite": "^1.5.5",
     "flowbite-react": "^0.4.11",
     "formik": "^2.2.10",
-    "gatsby": "^5.13.7",
+    "gatsby": "^5.16.1",
     "gatsby-adapter-netlify": "^1.1.7",
     "gatsby-plugin-catch-links": "^5.0.0",
     "gatsby-plugin-feed": "^5.0.0",
