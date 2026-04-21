@@ -91,6 +91,9 @@ export const setLimiter = (limiter: RateLimiter) => {
  *   }
  * ]);
  */
+// MailerSend's bulk endpoint rejects requests with more than 500 email objects (#MS42229).
+export const MAILERSEND_BULK_CHUNK_SIZE = 500;
+
 export const mailersendBulkSend = async (emails: EmailParams[]) => {
 
     const mailersend = new MailerSend({
@@ -100,9 +103,13 @@ export const mailersendBulkSend = async (emails: EmailParams[]) => {
     assert(emails.every(email => email.to.length == 1), 'Emails must have exactly one recipient');
     assert(emails.every(email => !email.cc), 'Should not use the "cc" field');
 
-    await bulkLimiter.removeTokens(1);
+    for (let i = 0; i < emails.length; i += MAILERSEND_BULK_CHUNK_SIZE) {
+        const chunk = emails.slice(i, i + MAILERSEND_BULK_CHUNK_SIZE);
 
-    await mailersend.email.sendBulk(emails);
+        await bulkLimiter.removeTokens(1);
+
+        await mailersend.email.sendBulk(chunk);
+    }
 }
 
 export const sendBulkEmails = async ({ recipients, subject, dynamicData, templateId }: SendBulkEmailParams) => {
