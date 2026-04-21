@@ -7,19 +7,20 @@ async function getSnapshotURL(url) {
 
   const response = await (await fetch(waUrl)).json();
 
-  return response.archived_snapshots.closest.url.replace('http:', 'https:');
+  return response.archived_snapshots?.closest?.url.replace('http:', 'https:');
 }
 
 export default function WebArchiveLink({ url, children, className = '' }) {
   const onClick = async () => {
     const win = window.open('', '_blank');
+    const fallbackUrl = `https://web.archive.org/web/*/${url}`;
 
     try {
       const snapshotUrl = await getSnapshotURL(url);
 
-      win.location.href = snapshotUrl;
+      win.location.href = snapshotUrl || fallbackUrl;
     } catch (e) {
-      win.location.href = url;
+      win.location.href = fallbackUrl;
     }
   };
 
