@@ -56,7 +56,6 @@ const report1 = {
         from_text_hash: "sample_hash",
         vector: [0.1, 0.2, 0.3]
     },
-    epoch_date_published: 1631577600,
     epoch_date_submitted: 1631577600,
     flag: false,
     image_url: "http://example.com/image.png",
@@ -89,7 +88,6 @@ const report2 = {
         from_text_hash: "sample_hash_3",
         vector: [0.7, 0.8, 0.9]
     },
-    epoch_date_published: 1665705600,
     epoch_date_submitted: 1665705600,
     flag: true,
     image_url: "http://example3.com/image3.png",
@@ -122,7 +120,6 @@ const report3 = {
         from_text_hash: "sample_hash_2",
         vector: [0.4, 0.5, 0.6]
     },
-    epoch_date_published: 1636848000,
     epoch_date_submitted: 1636848000,
     flag: false,
     image_url: "http://example2.com/image2.png",
