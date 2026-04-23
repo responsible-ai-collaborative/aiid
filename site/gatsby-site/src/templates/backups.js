@@ -10,7 +10,7 @@ import config from '../../config';
 import { useTranslation } from 'react-i18next';
 
 const Backups = ({ pageContext }) => {
-  const { backups } = pageContext;
+  const { backups, masterDatasets } = pageContext;
 
   if (!backups) {
     return null;
@@ -39,6 +39,27 @@ const Backups = ({ pageContext }) => {
     const minute = stringDate.substring(10, 12);
 
     return new Date(year, month - 1, day, hour, minute);
+  };
+
+  /**
+   * Parses the build date from a master dataset key.
+   *
+   * The expected format of the key is "AIID_Master_Dataset-YYYYMMDD.xlsx"
+   * (e.g. "AIID_Master_Dataset-20240422.xlsx").
+   *
+   * @param {string} key - The master dataset R2 object key.
+   * @returns {Date} The build date.
+   */
+  const parseMasterDatasetDate = (key) => {
+    const stringDate = key.replace('AIID_Master_Dataset-', '').replace('.xlsx', '');
+
+    const year = stringDate.substring(0, 4);
+
+    const month = stringDate.substring(4, 6);
+
+    const day = stringDate.substring(6, 8);
+
+    return new Date(year, month - 1, day);
   };
 
   return (
@@ -79,6 +100,35 @@ const Backups = ({ pageContext }) => {
           the database for so we can list your work in the incident database and ensure your use
           case is not dropped from support.
         </p>
+
+        {masterDatasets && masterDatasets.length > 0 && (
+          <>
+            <h2>Master Dataset (Excel)</h2>
+            <p>
+              The master dataset is a curated, weekly-built Excel file that joins all incident
+              records with their taxonomy classifications (CSETv0, CSETv1, GMF, MIT). It is
+              suitable for tabular analysis and is updated every Monday.
+            </p>
+            <Container>
+              <Row>
+                <Col xs={12}>
+                  <ul className="pl-8 leading-6" data-cy="master-datasets-list">
+                    {masterDatasets.map((item) => (
+                      <li key={`master-${item.Key}`}>
+                        {format(parseMasterDatasetDate(item.Key), 'yyyy-MM-dd')} &middot;{' '}
+                        {(item.Size / 1000000).toFixed(2)} MB &middot;{' '}
+                        <Link to={`${config.cloudflareR2.publicBucketUrl}/${item.Key}`}>
+                          {item.Key}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </Col>
+              </Row>
+            </Container>
+          </>
+        )}
+
         <h2>Download</h2>
         <Container>
           <Row>
