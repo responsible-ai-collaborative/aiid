@@ -57,7 +57,7 @@ export const replacePlaceholdersWithAllowedKeys = (template: string, data: any =
 
 let bulkLimiter = new RateLimiter({
     tokensPerInterval: 10,
-    interval: "second",
+    interval: "minute",
 });
 
 /**
