@@ -52,6 +52,7 @@ const getEmailTemplate = () => {
         A <a href="{{incidentUrl}}">new incident</a> has been added to the AI incident database.
         You can manage your subscriptions to these notifications from
         <a href="https://incidentdatabase.ai/account/">your account page</a>.
+        You can now receive a weekly 'briefing' rather than notifications for each and every new incident.
       </p>
 
       <div style="${incidentStyle}">

@@ -38,6 +38,12 @@ const insertContent= (content: string, variables: any): string  => {
         </div>
         <div style="padding: 32px 8px;">
           ${content}
+          <p style="margin-top: 32px; font-size: 85%; border-top: 1px solid #ccc; padding-top: 16px;">
+            The AIID is a project of the <a href="https://raicollab.org/">Responsible AI Collaborative</a>
+            and depends on grants and donations to continue operations.
+            Please consider <a href="https://donate.stripe.com/28E7sDbq18xN82kbJ8bQY00">donating</a>
+            to make a safer world with AI.
+          </p>
         </div>
       </div>
     </body>
