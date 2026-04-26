@@ -1,6 +1,6 @@
 import { UserCacheManager } from "../../server/fields/userCacheManager";
 import config from "../../server/config";
-import { Context, DBEntity, DBIncident, DBNotification, DBReport, DBSubscription } from "../../server/interfaces";
+import { Context, DBEntity, DBIncident, DBNotification, DBReport, DBSubscription, NotificationTypes } from "../../server/interfaces";
 import { Collection, MongoClient } from "mongodb";
 import { SendBulkEmailParams, sendBulkEmails } from "../../server/emails";
 import { markNotificationsAsProcessed, markNotificationsAsNotProcessed } from '../utils/notificationUtils';
@@ -93,7 +93,7 @@ export const processNotifications = async () => {
     const entitiesCollection = context.client.db('aiidprod').collection<DBEntity>("entities");
     const reportsCollection = context.client.db('aiidprod').collection<DBReport>("reports");
 
-    const targetTypes = ['new-incidents', 'entity', 'new-report-incident', 'incident-updated', 'submission-promoted'];
+    const targetTypes: NotificationTypes[] = ['new-incidents', 'entity', 'new-report-incident', 'incident-updated', 'submission-promoted'];
 
     const pendingNotifications = await notificationsCollection.find({
         processed: false,
@@ -236,7 +236,7 @@ export const processNotifications = async () => {
                     ? `${config.SITE_URL}/cite/${incident.incident_id}#r${newReport.report_number}`
                     : undefined,
                 reportTitle: newReport?.title,
-                reportAuthor: newReport?.authors?.[0],
+                reportAuthor: newReport?.authors?.[0] ?? undefined,
             };
             const dedupeKey = `${incident.incident_id}:${notification.type}:${notification.report_number ?? ''}`;
             for (const sub of subs) {
