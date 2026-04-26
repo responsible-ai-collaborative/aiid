@@ -8,44 +8,11 @@ export interface SendBulkEmailParams {
     recipients: {
         email: string;
         userId?: string;
+        // Per-recipient overrides; merged on top of the shared dynamicData below.
+        dynamicData?: Record<string, any>;
     }[];
     subject: string;
-    dynamicData?: {
-        incidentId?: string;
-        incidentTitle?: string;
-        incidentUrl?: string;
-        incidentDescription?: string;
-        incidentDate?: string;
-        developers?: string;
-        deployers?: string;
-        entitiesHarmed?: string;
-        implicatedSystems?: string;
-        reportUrl?: string;
-        reportTitle?: string;
-        reportAuthor?: string;
-        entityName?: string;
-        entityUrl?: string;
-        magicLink?: string;    // URL for magic link (optional)
-        newIncidents?: {
-            id: number;
-            title: string;
-            url: string;
-            date: string;
-            description: string;
-        }[];
-        newBlogPosts?: {
-            title: string;
-            url: string;
-            date: string;
-            description: string;
-        }[];
-        updates?: {
-            title: string;
-            url: string;
-            date: string;
-            description: string;
-        }[];
-    };
+    dynamicData?: Record<string, any>;
     templateId: string; // Email template ID
 }
 
@@ -139,18 +106,21 @@ export const sendBulkEmails = async ({ recipients, subject, dynamicData, templat
 
     for (const recipient of recipients) {
 
+        const mergedData = {
+            ...dynamicData,
+            ...recipient.dynamicData,
+            email: recipient.email,
+            userId: recipient.userId,
+            siteUrl: config.SITE_URL,
+        };
+
         const personalizations = [{
             email: recipient.email,
-            data: {
-                ...dynamicData,
-                email: recipient.email,
-                userId: recipient.userId,
-                siteUrl: config.SITE_URL,
-            }
+            data: mergedData,
         }]
 
         // We have to do this because MailerSend is escaping the placeholders containing html tags
-        const html = replacePlaceholdersWithAllowedKeys(emailTemplateBody, dynamicData, ['developers', 'deployers', 'entitiesHarmed', 'implicatedSystems'])
+        const html = replacePlaceholdersWithAllowedKeys(emailTemplateBody, mergedData, ['developers', 'deployers', 'entitiesHarmed', 'implicatedSystems'])
 
         const emailParams = new EmailParams()
             .setFrom({ email: config.NOTIFICATIONS_SENDER, name: config.NOTIFICATIONS_SENDER_NAME })
