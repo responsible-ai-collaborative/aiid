@@ -8,44 +8,11 @@ export interface SendBulkEmailParams {
     recipients: {
         email: string;
         userId?: string;
+        // Per-recipient overrides; merged on top of the shared dynamicData below.
+        dynamicData?: Record<string, any>;
     }[];
     subject: string;
-    dynamicData?: {
-        incidentId?: string;
-        incidentTitle?: string;
-        incidentUrl?: string;
-        incidentDescription?: string;
-        incidentDate?: string;
-        developers?: string;
-        deployers?: string;
-        entitiesHarmed?: string;
-        implicatedSystems?: string;
-        reportUrl?: string;
-        reportTitle?: string;
-        reportAuthor?: string;
-        entityName?: string;
-        entityUrl?: string;
-        magicLink?: string;    // URL for magic link (optional)
-        newIncidents?: {
-            id: number;
-            title: string;
-            url: string;
-            date: string;
-            description: string;
-        }[];
-        newBlogPosts?: {
-            title: string;
-            url: string;
-            date: string;
-            description: string;
-        }[];
-        updates?: {
-            title: string;
-            url: string;
-            date: string;
-            description: string;
-        }[];
-    };
+    dynamicData?: Record<string, any>;
     templateId: string; // Email template ID
 }
 
@@ -94,6 +61,21 @@ export const setLimiter = (limiter: RateLimiter) => {
 // MailerSend's bulk endpoint rejects requests with more than 500 email objects (#MS42229).
 export const MAILERSEND_BULK_CHUNK_SIZE = 500;
 
+// MailerSend's per-account quota is a 60s sliding window, so a one-minute wait
+// is the minimum that reliably clears it.
+const RATE_LIMIT_RETRY_DELAY_MS = 60_000;
+
+const sendWithRateLimitRetry = async <T>(fn: () => Promise<T>): Promise<T> => {
+    try {
+        return await fn();
+    } catch (error: any) {
+        if (error?.statusCode !== 429) throw error;
+        console.warn(`MailerSend 429; retrying after ${RATE_LIMIT_RETRY_DELAY_MS}ms`);
+        await new Promise(resolve => setTimeout(resolve, RATE_LIMIT_RETRY_DELAY_MS));
+        return await fn();
+    }
+};
+
 export const mailersendBulkSend = async (emails: EmailParams[]) => {
 
     const mailersend = new MailerSend({
@@ -108,7 +90,7 @@ export const mailersendBulkSend = async (emails: EmailParams[]) => {
 
         await bulkLimiter.removeTokens(1);
 
-        await mailersend.email.sendBulk(chunk);
+        await sendWithRateLimitRetry(() => mailersend.email.sendBulk(chunk));
     }
 }
 
@@ -124,18 +106,21 @@ export const sendBulkEmails = async ({ recipients, subject, dynamicData, templat
 
     for (const recipient of recipients) {
 
+        const mergedData = {
+            ...dynamicData,
+            ...recipient.dynamicData,
+            email: recipient.email,
+            userId: recipient.userId,
+            siteUrl: config.SITE_URL,
+        };
+
         const personalizations = [{
             email: recipient.email,
-            data: {
-                ...dynamicData,
-                email: recipient.email,
-                userId: recipient.userId,
-                siteUrl: config.SITE_URL,
-            }
+            data: mergedData,
         }]
 
         // We have to do this because MailerSend is escaping the placeholders containing html tags
-        const html = replacePlaceholdersWithAllowedKeys(emailTemplateBody, dynamicData, ['developers', 'deployers', 'entitiesHarmed', 'implicatedSystems'])
+        const html = replacePlaceholdersWithAllowedKeys(emailTemplateBody, mergedData, ['developers', 'deployers', 'entitiesHarmed', 'implicatedSystems'])
 
         const emailParams = new EmailParams()
             .setFrom({ email: config.NOTIFICATIONS_SENDER, name: config.NOTIFICATIONS_SENDER_NAME })
@@ -170,7 +155,9 @@ export const mailersendSingleSend = async (email: EmailParams) => {
     assert(email.to.length == 1, 'Email must have exactly one recipient');
     assert(!email.cc, 'Should not use the "cc" field');
 
-    await mailersend.email.send(email);
+    await bulkLimiter.removeTokens(1);
+
+    await sendWithRateLimitRetry(() => mailersend.email.send(email));
 }
 
 export interface SendEmailParams {
