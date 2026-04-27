@@ -16,7 +16,7 @@
     "@cloudinary/react": "^1.11.2",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-brands-svg-icons": "^6.4.2",
-    "@fortawesome/free-solid-svg-icons": "^6.3.0",
+    "@fortawesome/free-solid-svg-icons": "^7.2.0",
     "@fortawesome/react-fontawesome": "^0.2.6",
     "@google-cloud/translate": "^8.0.3",
     "@googlemaps/google-maps-services-js": "^3.4.2",
