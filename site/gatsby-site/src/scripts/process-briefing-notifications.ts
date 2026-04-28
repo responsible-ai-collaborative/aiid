@@ -50,7 +50,7 @@ async function notificationsToBriefingIncidents(context: Context) {
   const firstReports = await Promise.all(incidents.map(async (incident) => {
     if (incident.reports && incident.reports.length > 0) {
       const firstReportNumber = incident.reports[0];
-      const report = await reportsCollection.findOne({ report_number: firstReportNumber, language: 'en' });
+      const report = await reportsCollection.findOne({ report_number: firstReportNumber });
 
       if (!report) {
         console.log(`No report found for incident ${incident.incident_id} with report number ${firstReportNumber}`);
