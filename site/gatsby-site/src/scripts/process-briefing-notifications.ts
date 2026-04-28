@@ -203,7 +203,7 @@ async function notificationsToBriefingIncidents(context: Context) {
     result = recipients.length;
   }
 
-  console.log(`Found ${incidentList.length} incidents, ${updatedIncidents.length} recently edited incidents, ${newBlogPosts.length} new blog posts, and ${updates.length} updates to send to ${recipients.length} users found between ${lastWeekDate} - ${nowDate}`);
+  console.log(`Found ${incidentList.length} incidents, ${updatedIncidents.length} recently updated incidents, ${newBlogPosts.length} new blog posts, and ${updates.length} updates to send to ${recipients.length} users found between ${lastWeekDate} - ${nowDate}`);
 
   try {
     if (shouldSendEmail) {
