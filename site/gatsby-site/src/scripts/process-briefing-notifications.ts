@@ -107,7 +107,7 @@ async function notificationsToBriefingIncidents(context: Context) {
   const updatedIncidentsRaw = await incidentsCollection.find({
     date_modified: { $gte: lastWeek },
     incident_id: { $nin: newIncidentIds },
-  }).sort({ date_modified: -1 }).limit(100).toArray();
+  }).sort({ date_modified: -1 }).limit(15).toArray();
 
   const updatedIncidents = updatedIncidentsRaw.map(i => ({
     id: i.incident_id,
