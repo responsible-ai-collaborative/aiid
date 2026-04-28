@@ -94,6 +94,21 @@ export const setLimiter = (limiter: RateLimiter) => {
 // MailerSend's bulk endpoint rejects requests with more than 500 email objects (#MS42229).
 export const MAILERSEND_BULK_CHUNK_SIZE = 500;
 
+// MailerSend's per-account quota is a 60s sliding window, so a one-minute wait
+// is the minimum that reliably clears it.
+const RATE_LIMIT_RETRY_DELAY_MS = 60_000;
+
+const sendWithRateLimitRetry = async <T>(fn: () => Promise<T>): Promise<T> => {
+    try {
+        return await fn();
+    } catch (error: any) {
+        if (error?.statusCode !== 429) throw error;
+        console.warn(`MailerSend 429; retrying after ${RATE_LIMIT_RETRY_DELAY_MS}ms`);
+        await new Promise(resolve => setTimeout(resolve, RATE_LIMIT_RETRY_DELAY_MS));
+        return await fn();
+    }
+};
+
 export const mailersendBulkSend = async (emails: EmailParams[]) => {
 
     const mailersend = new MailerSend({
@@ -108,7 +123,7 @@ export const mailersendBulkSend = async (emails: EmailParams[]) => {
 
         await bulkLimiter.removeTokens(1);
 
-        await mailersend.email.sendBulk(chunk);
+        await sendWithRateLimitRetry(() => mailersend.email.sendBulk(chunk));
     }
 }
 
@@ -170,7 +185,9 @@ export const mailersendSingleSend = async (email: EmailParams) => {
     assert(email.to.length == 1, 'Email must have exactly one recipient');
     assert(!email.cc, 'Should not use the "cc" field');
 
-    await mailersend.email.send(email);
+    await bulkLimiter.removeTokens(1);
+
+    await sendWithRateLimitRetry(() => mailersend.email.send(email));
 }
 
 export interface SendEmailParams {
