@@ -33,6 +33,12 @@ export interface SendBulkEmailParams {
             date: string;
             description: string;
         }[];
+        updatedIncidents?: {
+            id: number;
+            title: string;
+            url: string;
+            date_modified: string;
+        }[];
         newBlogPosts?: {
             title: string;
             url: string;
