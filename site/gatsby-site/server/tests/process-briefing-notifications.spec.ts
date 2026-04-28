@@ -599,6 +599,7 @@ describe(`Briefing Notifications`, () => {
               url: config.SITE_URL + "/cite/1",
             }
           ],
+        updatedIncidents: [],
         updates: [
           { description: "<p>Example Update</p>", title: "Example Update" }
         ]
