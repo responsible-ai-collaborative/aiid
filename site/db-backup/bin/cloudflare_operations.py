@@ -40,6 +40,12 @@ def parse_arguments():
         required=False,
         help="Key under which the object should be stored in the bucket.",
     )
+    parser.add_argument(
+        "--content_type",
+        required=False,
+        default="application/x-bzip2",
+        help="MIME content type for the uploaded object",
+    )
 
     args = parser.parse_args()
 
@@ -86,7 +92,7 @@ def main(args):
             args.file_path,
             args.bucket_name,
             args.object_key,
-            ExtraArgs={"ContentType": "application/x-bzip2"},
+            ExtraArgs={"ContentType": args.content_type},
         )
         print("-----------------------------")
         print(

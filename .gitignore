@@ -80,3 +80,8 @@ package-lock.json
 .nyc_output
 
 site/gatsby-site/src/api/lookupIndex.json
+
+# Master DB pipeline (generated/downloaded artifacts)
+data/snapshots/
+output/
+.artifacts/

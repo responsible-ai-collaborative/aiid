@@ -1,0 +1,130 @@
+paths:
+  snapshot_dir: ./data/snapshots
+  output_path: ./output/AIID_Master_Dataset.xlsx
+
+snapshot:
+  base_url: https://incidentdatabase.ai
+  snapshot_page_url: https://incidentdatabase.ai/research/snapshots/
+  snapshot_filter: .tar.bz2
+
+columns:
+  incidents:
+    incident_id: Incident ID
+    date: date
+    title: title
+    description: description
+    reports: reports
+    Alleged deployer of AI system: deployer_raw
+    Alleged developer of AI system: developer_raw
+    Alleged harmed or nearly harmed parties: harmed_raw
+  mit:
+    Incident ID: Incident ID
+    Risk Domain: Risk Domain
+    Risk Subdomain: Risk Subdomain
+    Entity: Responsible Entity
+    Timing: Timing
+    Intent: Intent
+  gmf:
+    Incident ID: Incident ID
+    Known AI Goal: AI Goal
+    Known AI Technology: AI Technology
+    Known AI Technical Failure: Technical Failure
+  cset:
+    Incident ID: Incident ID
+    Harm Domain: Harm Domain
+    Tangible Harm: Tangible Harm
+    AI Harm Level: AI Harm Level
+    Rights Violation: Rights Violation
+    Harm Distribution Basis: Harm Distribution Basis
+    Special Interest Intangible Harm: Special Interest Intangible Harm
+    Lives Lost: Lives Lost
+    Injuries: Injuries
+    Estimated Harm Quantities: Estimated Harm Quantities
+    Sector of Deployment: Sector of Deployment
+    Public Sector Deployment: Public Sector Deployment
+    Infrastructure Sectors: Infrastructure Sectors
+    Location Region: Location Region
+    Location Country (two letters): Country Code
+    Location City: Location City
+    Date of Incident Year: Incident Year
+    Date of Incident Month: Incident Month
+    Date of Incident Day: Incident Day
+    Intentional Harm: Intentional Harm
+    Autonomy Level: Autonomy Level
+    AI Task: AI Task
+    AI tools and methods: AI Methods
+    AI System Description: AI System Description
+    Data Inputs: Data Inputs
+    Physical Objects: Physical Objects
+    Deployed: Deployed
+    Involving Minor: Involving Minor
+    Protected Characteristic: Protected Characteristic
+    AI System: AI System
+    Detrimental Content: Detrimental Content
+    Impact on Critical Services: Impact on Critical Services
+    Multiple AI Interaction: Multiple AI Interaction
+    Embedded: Embedded
+    Entities: Entities
+    Estimated Date: Estimated Date
+
+  duplicates_id_column: duplicate_incident_number
+
+validation:
+  expected_min_incidents: 1300
+  expected_mit_coverage: 85.0
+
+output:
+  master_column_order:
+    - Incident ID
+    - date
+    - year
+    - title
+    - description
+    - deployer
+    - developer
+    - harmed
+    - Data Sources
+    - report_count
+    - Risk Domain
+    - Risk Subdomain
+    - Responsible Entity
+    - Intent
+    - Timing
+    - AI Goal
+    - AI Technology
+    - Technical Failure
+    - Harm Domain
+    - Tangible Harm
+    - AI Harm Level
+    - Rights Violation
+    - Harm Distribution Basis
+    - Lives Lost
+    - Injuries
+    - Sector of Deployment
+    - Public Sector Deployment
+    - Infrastructure Sectors
+    - Location Region
+    - Country Code
+    - Location City
+    - Incident Year
+    - Incident Month
+    - Incident Day
+    - Intentional Harm
+    - Autonomy Level
+    - AI Task
+    - AI Methods
+    - AI System Description
+    - Data Inputs
+    - Involving Minor
+    - Protected Characteristic
+    - AI System
+    - Detrimental Content
+    - Impact on Critical Services
+    - Multiple AI Interaction
+    - Embedded
+    - Entities
+    - Physical Objects
+    - Deployed
+    - Estimated Date
+    - Estimated Harm Quantities
+    - Special Interest Intangible Harm
