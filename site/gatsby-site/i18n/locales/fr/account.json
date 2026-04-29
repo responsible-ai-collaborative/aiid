@@ -1,5 +1,5 @@
 {
-    "Notify me of new Incidents": "M'avertir des nouveaux Incidents",
+    "Notify me by email of new incidents immediately": "M'avertir par e-mail des nouveaux incidents immédiatement",
     "New <2>{{name}}</2> Entity incidents": "Nouveaux incidents d'entité <2>{{name}}</2>",
     "First Name": "Prénom",
     "Last Name": "Nom",
