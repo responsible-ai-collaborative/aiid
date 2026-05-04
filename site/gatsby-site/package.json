@@ -45,7 +45,7 @@
     "d3": "^7.1.1",
     "date-fns": "^2.19.0",
     "date-fns-tz": "^2.0.1",
-    "debounce": "^1.2.1",
+    "debounce": "^3.0.0",
     "deep-equal-in-any-order": "^2.0.6",
     "deepmerge": "^4.3.1",
     "dotenv": "^8.2.0",
