@@ -98,12 +98,12 @@ export default function SummariesGallery({ data }) {
     <>
       <div className="titleWrapper">
         <h1>
-          <Trans>Incident Image Gallery</Trans>
+          <Trans ns="gallery">Incident Image Gallery</Trans>
         </h1>
       </div>
       <div className="styled-main-wrapper max-w-full">
         <p>
-          <Trans>
+          <Trans ns="gallery">
             A visual index of every incident in the AI Incident Database. Hover a thumbnail to
             preview the full image and incident title; click to open the incident.
           </Trans>
@@ -126,7 +126,7 @@ export const Head = (props) => {
     location: { pathname },
   } = props;
 
-  const { t } = useTranslation();
+  const { t } = useTranslation('gallery');
 
   const metaTitle = t('Incident Image Gallery');
 
