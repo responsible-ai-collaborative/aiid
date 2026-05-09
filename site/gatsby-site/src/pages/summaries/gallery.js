@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import HeadContent from 'components/HeadContent';
 import { graphql } from 'gatsby';
 import md5 from 'md5';
@@ -30,6 +30,10 @@ const Thumb = ({ incident }) => {
 
   const [largeLoaded, setLargeLoaded] = useState(false);
 
+  const thumbRef = useRef(null);
+
+  const largeRef = useRef(null);
+
   const report = incident.reports[0];
 
   const publicID = report.cloudinary_id || `legacy/${md5(report.image_url)}`;
@@ -37,6 +41,26 @@ const Thumb = ({ incident }) => {
   const thumbSrc = cloudinaryUrl(publicID, THUMB_PX);
 
   const largeSrc = cloudinaryUrl(publicID, HOVER_PX);
+
+  // After hydration/mount the image may have already finished loading from
+  // cache, in which case the onLoad event has fired before React attached its
+  // handler and thumbLoaded never flips. Cover that case explicitly.
+  useEffect(() => {
+    const img = thumbRef.current;
+
+    if (img && img.complete && img.naturalWidth > 0) {
+      setThumbLoaded(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!hovered) return;
+    const img = largeRef.current;
+
+    if (img && img.complete && img.naturalWidth > 0) {
+      setLargeLoaded(true);
+    }
+  }, [hovered]);
 
   return (
     <LocalizedLink
@@ -54,6 +78,7 @@ const Thumb = ({ incident }) => {
         style={fallbackBgStyle}
       >
         <img
+          ref={thumbRef}
           src={thumbSrc}
           alt={incident.title}
           loading="lazy"
@@ -67,6 +92,7 @@ const Thumb = ({ incident }) => {
         />
         {hovered && (
           <img
+            ref={largeRef}
             src={largeSrc}
             alt=""
             decoding="async"
@@ -88,10 +114,7 @@ const Thumb = ({ incident }) => {
 
 export default function SummariesGallery({ data }) {
   const incidents = [...data.allMongodbAiidprodIncidents.nodes]
-    .filter(
-      (incident) =>
-        incident.reports?.[0]?.cloudinary_id || incident.reports?.[0]?.image_url
-    )
+    .filter((incident) => incident.reports?.[0]?.cloudinary_id || incident.reports?.[0]?.image_url)
     .sort((a, b) => a.incident_id - b.incident_id);
 
   return (
