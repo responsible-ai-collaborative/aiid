@@ -61,6 +61,13 @@
                 "allowTargetBlank" : true,
                 "placeholder" : "Logo's link"
               }
+            },
+            "direct_link" : {
+              "type" : "Boolean",
+              "config" : {
+                "label" : "Immediately open the sponsor page",
+                "default_value" : false
+              }
             }
           },
           "label" : "Sponsor's info"
