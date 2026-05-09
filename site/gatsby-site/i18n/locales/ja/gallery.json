@@ -1,0 +1,5 @@
+{
+    "Incident Image Gallery": "インシデント画像ギャラリー",
+    "A visual index of every incident in the AI Incident Database. Hover a thumbnail to preview the full image and incident title; click to open the incident.": "AIインシデントデータベース内のすべてのインシデントの視覚的なインデックスです。サムネイルにカーソルを合わせるとフル画像とインシデントのタイトルが表示され、クリックするとインシデントが開きます。",
+    "A thumbnail gallery of every incident in the AI Incident Database. Hover for the title; click to open the incident.": "AIインシデントデータベース内のすべてのインシデントのサムネイルギャラリーです。カーソルを合わせるとタイトルが表示され、クリックするとインシデントが開きます。"
+}
