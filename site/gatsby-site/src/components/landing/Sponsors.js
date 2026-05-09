@@ -70,6 +70,7 @@ export default function Sponsors({ sponsors = [] }) {
             richText: item.description?.richText,
             logo: item.logo,
             link: item.link.url,
+            directLink: item.direct_link ?? false,
           };
         }),
       };
@@ -153,18 +154,37 @@ export default function Sponsors({ sponsors = [] }) {
                     </h6>
                     <div className="flex justify-around gap-4 items-center">
                       {sponsor.items.map((item) => {
+                        const imageSrc = `${
+                          item.logo?.url ? item.logo.url : '/images/' + item.logo
+                        }`;
+
+                        const image = (
+                          <StyledImage
+                            src={imageSrc}
+                            onClick={() => setModalState(item.name)}
+                            data-cy={`${item.name}-modal-click`}
+                            className="max-h-[90px] ml-0 mr-0 mb-0 inline-flex"
+                          />
+                        );
+
                         return (
                           <div
                             key={`sponsor-item-${item.name}`}
                             className="flex-1 max-w-xs w-full max-h-[90px] ml-0 mr-0 text-center"
                             data-cy={`${item.name}-image`}
                           >
-                            <StyledImage
-                              src={`${item.logo?.url ? item.logo.url : '/images/' + item.logo}`}
-                              onClick={() => setModalState(item.name)}
-                              data-cy={`${item.name}-modal-click`}
-                              className="max-h-[90px] ml-0 mr-0 mb-0 inline-flex"
-                            />
+                            {item.directLink ? (
+                              <a
+                                href={item.link}
+                                target="_blank"
+                                rel="noreferrer"
+                                data-cy={`${item.name}-link-click`}
+                              >
+                                {image}
+                              </a>
+                            ) : (
+                              image
+                            )}
                           </div>
                         );
                       })}
