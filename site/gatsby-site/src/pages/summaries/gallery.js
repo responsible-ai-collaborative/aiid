@@ -66,7 +66,7 @@ const Thumb = ({ incident }) => {
     <LocalizedLink
       to={`/cite/${incident.incident_id}`}
       data-cy={`incident-thumb-${incident.incident_id}`}
-      className="group block relative aspect-square hover:z-10 focus:z-10"
+      className="group block relative aspect-square hover:z-10 focus:z-10 cursor-pointer"
       title={incident.title}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -86,7 +86,7 @@ const Thumb = ({ incident }) => {
           width={THUMB_PX}
           height={THUMB_PX}
           onLoad={() => setThumbLoaded(true)}
-          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-200 ${
+          className={`absolute inset-0 h-full w-full object-contain bg-white transition-opacity duration-200 ${
             thumbLoaded ? 'opacity-100' : 'opacity-0'
           }`}
         />
@@ -99,7 +99,7 @@ const Thumb = ({ incident }) => {
             width={HOVER_PX}
             height={HOVER_PX}
             onLoad={() => setLargeLoaded(true)}
-            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-200 ${
+            className={`absolute inset-0 h-full w-full object-contain bg-white transition-opacity duration-200 ${
               largeLoaded ? 'opacity-100' : 'opacity-0'
             }`}
           />
