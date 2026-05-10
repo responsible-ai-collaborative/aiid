@@ -8,7 +8,7 @@ export default function NewsletterSignup() {
   const { t } = useTranslation();
 
   return (
-    <Card className="h-full w-full self-stretch flex justify-center shadow-md">
+    <Card className="h-full w-full self-stretch flex justify-center shadow-md overflow-hidden">
       <h5 className="text-2xl font-bold tracking-tight p-4 pb-2 text-gray-900 dark:text-white">
         <Trans ns="landing">The AI Incident Briefing</Trans>
       </h5>
