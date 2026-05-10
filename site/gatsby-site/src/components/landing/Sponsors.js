@@ -37,7 +37,7 @@ const SponsorModal = ({ setModalState, modalState, modalName, children, title, l
           </div>
         ) : (
           <div className="mt-2">
-            <StyledImageModal src={`/images/${logo}`} linkTo={linkTo} />
+            <StyledImageModal src={logo?.url ? logo.url : `/images/${logo}`} linkTo={linkTo} />
           </div>
         )}
       </Modal.Body>
