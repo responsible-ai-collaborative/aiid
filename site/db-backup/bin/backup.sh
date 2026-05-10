@@ -27,7 +27,7 @@ TAR_OPTS="jcvf"
 
 DIRNAME=$(/usr/bin/dirname ${TARGET})
 BASENAME=$(/usr/bin/basename ${TARGET})
-TARBALL="${BACKUPFILE_PREFIX}-${NOW}.tar.bz2"
+TARBALL="${BACKUPFILE_NAME:-${BACKUPFILE_PREFIX}-${NOW}.tar.bz2}"
 TARBALL_FULLPATH="${TMPDIR}/${TARBALL}"
 
 # check parameters

@@ -141,6 +141,20 @@ const getEmailTemplate = () => {
         </div>
       {% endif %}
 
+      {% if updatedIncidents and updatedIncidents|length > 0 %}
+        <div style="${sectionStyle}">
+          <h2>Recently Edited Incidents</h2>
+          <ul style="padding-left: 20px; margin: 0;">
+            {% for incident in updatedIncidents %}
+              <li style="margin-bottom: 8px;">
+                <a href="{{ incident.url }}">{{ incident.title }}</a>
+                <span style="font-size: 85%; color: #666;"> — edited {{ incident.date_modified }}</span>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
       <p style="margin-bottom: 32px">
         You can manage your email subscriptions from
         <a href="https://incidentdatabase.ai/account/">your account page</a>.

@@ -134,6 +134,12 @@ export const getAuthConfig = async (req: any): Promise<NextAuthOptions> => {
             upsert: true,
           }
         )
+
+        await client.db('customData').collection('subscriptions').updateOne(
+          { userId: user.id, type: 'ai-briefing' },
+          { $setOnInsert: { userId: user.id, type: 'ai-briefing' } },
+          { upsert: true }
+        )
       },
     },
     pages: {

@@ -1,4 +1,4 @@
-import { ListGroup, Spinner, Button, ToggleSwitch, Badge } from 'flowbite-react';
+import { ListGroup, Spinner, Button, ToggleSwitch } from 'flowbite-react';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { Trans, useTranslation } from 'react-i18next';
@@ -181,17 +181,14 @@ const UserSubscriptions = () => {
       <h3>{t('General Updates')}</h3>
       <div className={`mt-4 -ml-2 mb-6`}>
         <div className={`px-2`} data-testid="subscribe-ai-briefing">
-          <div className="flex flex-row gap-2">
-            <ToggleSwitch
-              id="subscribe-ai-briefing"
-              checked={isSubscribeToAiIncidentBriefing}
-              label={t('Receive AI Incident Briefing', { ns: 'login' })}
-              onChange={onSusbcribeAiIncidentBriefingToggle}
-              name="subscribe-ai-briefing"
-              disabled={loading || deletingSubscription || subscribingToAiIncidentBriefing}
-            />
-            <Badge>NEW</Badge>
-          </div>
+          <ToggleSwitch
+            id="subscribe-ai-briefing"
+            checked={isSubscribeToAiIncidentBriefing}
+            label={t('Receive AI Incident Briefing', { ns: 'login' })}
+            onChange={onSusbcribeAiIncidentBriefingToggle}
+            name="subscribe-ai-briefing"
+            disabled={loading || deletingSubscription || subscribingToAiIncidentBriefing}
+          />
           <p className="text-sm text-gray-500">
             {t(
               'The AI Incident Briefing is a weekly digest of new incidents, blog posts, and other AIID updates.'
@@ -203,7 +200,7 @@ const UserSubscriptions = () => {
         <ToggleSwitch
           id="subscribe-all"
           checked={isSubscribeToNewIncidents}
-          label={t('Notify me of new Incidents')}
+          label={t('Notify me by email of new incidents immediately')}
           onChange={onSusbcribeToggle}
           name="subscribe-all"
           disabled={loading || deletingSubscription || subscribingToNewIncidents}
