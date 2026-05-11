@@ -11,6 +11,7 @@ import { useLayoutContext } from 'contexts/LayoutContext';
 import PrismicOutline from 'components/PrismicOutline';
 import { extractHeaders } from 'utils/extractHeaders';
 import { Heading1, Heading2 } from 'components/CustomHeaders';
+import NewsletterSignup from 'components/landing/NewsletterSignup';
 
 const PrismicBlogPost = ({ post, location }) => {
   let headers = [];
@@ -94,6 +95,9 @@ const PrismicBlogPost = ({ post, location }) => {
       )}
       <div className="prose post-styled-main-wrapper" data-testid="blog-content">
         <PrismicRichText field={post.data.content.richText} components={components} />
+      </div>
+      <div className="mt-8 md:mt-10">
+        <NewsletterSignup />
       </div>
     </>
   );

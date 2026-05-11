@@ -23,6 +23,7 @@ import useLocalizePath from 'components/i18n/useLocalizePath';
 import { graphql, useStaticQuery } from 'gatsby';
 import { processEntities, RESPONSE_TAG } from '../../utils/entities';
 import SubmissionWizard from '../submissions/SubmissionWizard';
+import QuickAdd from 'components/landing/QuickAdd';
 import getSourceDomain from 'utils/getSourceDomain';
 import { Helmet } from 'react-helmet';
 import { Button } from 'flowbite-react';
@@ -270,12 +271,12 @@ const SubmitForm = () => {
   return (
     <>
       <Helmet>
-        <title>{t(isIncidentResponse ? 'New Incident Response' : 'New Incident Report')}</title>
+        <title>{t(isIncidentResponse ? 'New Incident Response' : 'Submit a New Report')}</title>
       </Helmet>
       <div className={'titleWrapper flex flex-row justify-between'}>
         <h1 data-cy="submit-form-title">
           <Trans ns="submit">
-            {isIncidentResponse ? 'New Incident Response' : 'New Incident Report'}
+            {isIncidentResponse ? 'New Incident Response' : 'Submit a New Report'}
           </Trans>
         </h1>
         <div className="flex items-center justify-center mt-2">
@@ -305,6 +306,16 @@ const SubmitForm = () => {
           </Button>
         </div>
       </div>
+      {!isIncidentResponse && (
+        <div className="my-5">
+          <QuickAdd />
+        </div>
+      )}
+      {!isIncidentResponse && (
+        <h2 className="mt-8">
+          <Trans ns="submit">Submit a Full Report</Trans>
+        </h2>
+      )}
       <p ref={submissionRef}>
         {isIncidentResponse ? (
           <>

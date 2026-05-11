@@ -4,7 +4,8 @@ import { test } from '../utils';
 test.describe('Submitter Selection', () => {
   let url = '/';
 
-  test('Should select the first submitter if there is one and load the discover page with a pre-selected submitter in the URL', async ({ page, skipOnEmptyEnvironment }) => {
+  // Leaderboards block is temporarily hidden on the landing page
+  test.skip('Should select the first submitter if there is one and load the discover page with a pre-selected submitter in the URL', async ({ page, skipOnEmptyEnvironment }) => {
 
     await page.goto(url);
 
@@ -32,7 +33,8 @@ test.describe('Submitter Selection', () => {
     expect(activeText).toContain('Anonymous');
   });
 
-  test('Should display an empty state if there are no submitters', async ({ page, runOnlyOnEmptyEnvironment }) => {
+  // Leaderboards block is temporarily hidden on the landing page
+  test.skip('Should display an empty state if there are no submitters', async ({ page, runOnlyOnEmptyEnvironment }) => {
 
     await page.goto(url);
 
