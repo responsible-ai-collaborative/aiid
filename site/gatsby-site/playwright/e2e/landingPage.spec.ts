@@ -39,7 +39,7 @@ test.describe('The Landing page', () => {
       'InsertQuickAdd'
     );
 
-    await page.goto('/');
+    await page.goto('/apps/submit');
     await page.locator('[data-cy="quick-add"] [name="url"]').fill('https://example.com');
     await page.locator('[data-cy="quick-add"] [type="submit"]').click();
 
@@ -100,7 +100,8 @@ test.describe('The Landing page', () => {
     }
   );
 
-  test('Loads the random incidents carousel', async ({ page, skipOnEmptyEnvironment }) => {
+  // Random Incidents block is temporarily hidden on the landing page
+  test.skip('Loads the random incidents carousel', async ({ page, skipOnEmptyEnvironment }) => {
     await page.goto('/');
     await page.locator('[data-cy="random-incidents-carousel"]').scrollIntoViewIfNeeded();
     await expect(page.locator('[data-cy="random-incidents-carousel"]')).toBeVisible();

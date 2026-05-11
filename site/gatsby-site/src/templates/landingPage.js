@@ -6,7 +6,6 @@ import Sponsors from 'components/landing/Sponsors';
 import AboutDatabase from 'components/landing/AboutDatabase ';
 import LatestReports from 'components/landing/LatestReports';
 import QuickSearch from 'components/landing/QuickSearch';
-import QuickAdd from 'components/landing/QuickAdd';
 import RandomIncidents from 'components/landing/RandomIncidents';
 import Hero from 'components/landing/Hero';
 import NewsletterSignup from 'components/landing/NewsletterSignup';
@@ -98,12 +97,6 @@ const LandingPage = (props) => {
             </div>
           </div>
         )}
-
-        <div className="mb-5 md:mb-10">
-          <div className="flex flex-col items-center">
-            <QuickAdd />
-          </div>
-        </div>
 
         <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-5 md:gap-10 mb-5 md:mb-10 flex-wrap">
           <div className="flex-1 max-w-full sm:max-w-[50%] md:max-w-full lg:max-w-[50%]">

@@ -18,7 +18,7 @@ export const Head = (props) => {
 
   const { t } = useTranslation(['submit']);
 
-  const metaTitle = t('New Incident Report');
+  const metaTitle = t('Submit a New Report');
 
   const metaDescription = t(
     'Submit a new incident report to the Artificial Intelligence Incident Database'

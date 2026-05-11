@@ -31,7 +31,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const QuickAddForm = ({ className = '' }) => {
-  const { t } = useTranslation(['translation', 'landing']);
+  const { t } = useTranslation(['translation', 'submit']);
 
   const addToast = useToastContext();
 
@@ -79,7 +79,7 @@ const QuickAddForm = ({ className = '' }) => {
   return (
     <div className="w-full">
       <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-        <Trans ns="landing">Quick Add New Report URL</Trans>
+        <Trans ns="submit">Add Report Address Without the Full Details</Trans>
       </h5>
       <form onSubmit={handleSubmit} className={className} data-cy="quick-add">
         <div className="relative">
@@ -134,12 +134,10 @@ const QuickAddForm = ({ className = '' }) => {
         <Row className="mt-2">
           <Col>
             <div className="text-muted-gray text-xs leading-5">
-              <Trans i18nKey="quickaddDescription" ns="landing">
+              <Trans i18nKey="quickaddDescription" ns="submit">
                 Submitted links are added to a{' '}
                 <LocalizedLink to="/apps/submitted">review queue </LocalizedLink>
-                to be resolved to a new or existing incident record. Incidents submitted with
-                <LocalizedLink to="/apps/submit"> full details </LocalizedLink> are processed before
-                URLs not possessing the full details.
+                to be resolved to a new or existing incident record.
               </Trans>
             </div>
           </Col>
