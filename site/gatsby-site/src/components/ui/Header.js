@@ -282,6 +282,7 @@ const SearchBar = () => {
       />
       <button id="header-search-submit">
         <FontAwesomeIcon
+          titleId="header-search"
           icon={faSearch}
           color={'white'}
           className="pointer fa fa-lg ml-4 mr-0 transition-all"
