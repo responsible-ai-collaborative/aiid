@@ -233,6 +233,6 @@
     }
   },
   "optionalDependencies": {
-    "@parcel/watcher-linux-x64-glibc": "^2.4.1"
+    "@parcel/watcher-linux-x64-glibc": "^2.5.6"
   }
 }
