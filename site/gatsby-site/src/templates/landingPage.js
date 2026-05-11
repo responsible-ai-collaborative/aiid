@@ -119,14 +119,12 @@ const LandingPage = (props) => {
           </div>
         </div>
 
-        <div className="mb-5 md:mb-10 flex flex-col sm:flex-row md:flex-col lg:flex-row gap-5 md:gap-10 flex-wrap">
-          <div className="flex-1 lg:max-w-[50%]">
-            <NewsletterSignup />
-          </div>
-        </div>
-
         <div>
           <Sponsors sponsors={sponsors} />
+        </div>
+
+        <div className="mt-5 md:mt-10">
+          <NewsletterSignup />
         </div>
       </Container>
     </div>
