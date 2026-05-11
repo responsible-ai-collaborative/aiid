@@ -1,0 +1,8 @@
+{
+  "Incident List": "Lista de Incidentes",
+  "This is a simple numeric listing of all incidents and their reports within the database. If you would like to explore the contents of the reports, you should work through the<1> Discover app</1>.": "Esta é uma lista numérica simples de todos os incidentes e seus relatórios no banco de dados. Se quiser explorar o conteúdo dos relatórios, use o<1> aplicativo Discover</1>.",
+  "Sort by incident ID": "Ordenar por ID do incidente",
+  "ascending": "crescente",
+  "descending": "decrescente",
+  "Summary of all the incidents present in the database": "Resumo de todos os incidentes presentes no banco de dados"
+}
