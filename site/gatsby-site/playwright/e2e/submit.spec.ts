@@ -76,7 +76,7 @@ test.describe('The Submit form', () => {
 
         await expect(page.locator('[name="incident_editors"]')).not.toBeVisible();
 
-        await page.locator('button[type="submit"]').click();
+        await page.locator('[data-cy="submit-step-3"]').click();
 
         await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
 
@@ -149,7 +149,7 @@ test.describe('The Submit form', () => {
 
         await page.locator('input[name="deployers"]').fill('NewDeployer');
         await page.keyboard.press('Enter');
-        await page.locator('button[type="submit"]').click();
+        await page.locator('[data-cy="submit-step-3"]').click();
 
         await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
         await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
@@ -210,7 +210,7 @@ test.describe('The Submit form', () => {
 
         await fillAutoComplete(page, "#input-incident_editors", 'John', 'John Doe');
 
-        await page.locator('button[type="submit"]').click();
+        await page.locator('[data-cy="submit-step-3"]').click();
 
         await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue")')).toBeVisible();
 
@@ -854,7 +854,7 @@ test.describe('The Submit form', () => {
 
         await page.locator('[data-cy="to-step-3"]').click();
 
-        await page.locator('button[type="submit"]').click();
+        await page.locator('[data-cy="submit-step-3"]').click();
 
         await expect(page.locator('.tw-toast:has-text("Informe agregado exitosamente a la cola de revisión.")')).toBeVisible();
     });
@@ -1539,7 +1539,7 @@ test.describe('The Submit form', () => {
 
         await page.locator('#deployers-tags .dropdown-item[aria-label="New entity"]').click();
 
-        await page.locator('button[type="submit"]').click();
+        await page.locator('[data-cy="submit-step-3"]').click();
 
         await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
         await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
@@ -1630,7 +1630,7 @@ test.describe('The Submit form', () => {
         await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).not.toBeVisible();
 
         // Submit to ensure the form does not proceed with errors
-        await page.locator('button[type="submit"]').click();
+        await page.locator('[data-cy="submit-step-3"]').click();
         await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
         await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
     });
@@ -1721,7 +1721,7 @@ test.describe('The Submit form', () => {
         await expect(page.locator('text=Each alleged Developer must have at least 3 characters and less than 200')).not.toBeVisible();
 
         // Submit to ensure the form does not proceed with errors
-        await page.locator('button[type="submit"]').click();
+        await page.locator('[data-cy="submit-step-3"]').click();
         await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
         await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
     });
@@ -1834,7 +1834,7 @@ test.describe('The Submit form', () => {
       await page.keyboard.press('Enter');
       await expect(page.locator('text=Each alleged Implicated AI system must have at least 3 characters and less than 200')).not.toBeVisible();
 
-      await page.locator('button[type="submit"]').click();
+      await page.locator('[data-cy="submit-step-3"]').click();
       await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
       await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
     });
@@ -1892,7 +1892,7 @@ test.describe('The Submit form', () => {
       await page.keyboard.press('Enter');
       await page.locator('body').click();
 
-      await page.locator('button[type="submit"]').click();
+      await page.locator('[data-cy="submit-step-3"]').click();
       await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
 
       const { data } = await query({
