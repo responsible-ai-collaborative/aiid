@@ -40,7 +40,7 @@ test.describe('The Landing page', () => {
     );
 
     await page.goto('/apps/submit');
-    await page.locator('[data-cy="quick-add"] [name="url"]').fill('https://example.com');
+    await page.locator('[data-cy="quick-add"] [name="quickAddUrl"]').fill('https://example.com');
     await page.locator('[data-cy="quick-add"] [type="submit"]').click();
 
     const insertQuickAddRequest = await waitForRequest('InsertQuickAdd');

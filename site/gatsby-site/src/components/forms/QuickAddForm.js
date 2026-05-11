@@ -25,7 +25,7 @@ import { Spinner } from 'flowbite-react';
 
 // Schema for yup
 const validationSchema = Yup.object().shape({
-  url: Yup.string()
+  quickAddUrl: Yup.string()
     .url('*Must enter URL in http://www.example.com format')
     .required('*URL required'),
 });
@@ -38,13 +38,13 @@ const QuickAddForm = ({ className = '' }) => {
   const [insertQuickAdd] = useMutation(INSERT_QUICKADD);
 
   const { values, errors, isSubmitting, handleChange, handleBlur, handleSubmit } = useFormik({
-    initialValues: { url: '' },
+    initialValues: { quickAddUrl: '' },
     validationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       setSubmitting(true);
 
       try {
-        const url = new URL(values.url);
+        const url = new URL(values.quickAddUrl);
 
         const quickAdd = {
           incident_id: 0,
@@ -102,21 +102,20 @@ const QuickAddForm = ({ className = '' }) => {
           </div>
           <input
             type="text"
-            name="url"
+            name="quickAddUrl"
             placeholder={t('Report URL')}
             onChange={handleChange}
             onBlur={handleBlur}
-            value={values.url}
-            // isInvalid={!!errors.url}
+            value={values.quickAddUrl}
             className={`block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${
-              errors.url ? 'is-invalid' : ''
+              errors.quickAddUrl ? 'is-invalid' : ''
             }`}
           />
 
           <button
             type="submit"
             className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex disabled:opacity-50 z-10"
-            disabled={isSubmitting || !!errors.url}
+            disabled={isSubmitting || !!errors.quickAddUrl}
           >
             {isSubmitting ? (
               <>
@@ -130,7 +129,7 @@ const QuickAddForm = ({ className = '' }) => {
             )}
           </button>
         </div>
-        <p className="mt-2 text-sm text-red-600 dark:text-red-500">{errors.url}</p>
+        <p className="mt-2 text-sm text-red-600 dark:text-red-500">{errors.quickAddUrl}</p>
         <Row className="mt-2">
           <Col>
             <div className="text-muted-gray text-xs leading-5">
