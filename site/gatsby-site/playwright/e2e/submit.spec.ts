@@ -951,7 +951,7 @@ test.describe('The Submit form', () => {
 
         await page.goto(url);
 
-        await page.locator('button:has-text("Submit")').click();
+        await page.locator('[data-cy="submit-step-1"]').click();
 
         await expect(page.locator('text=Please review. Some data is missing.')).toBeVisible();
     });
@@ -1433,7 +1433,7 @@ test.describe('The Submit form', () => {
 
         await page.locator('input[name="date_published"]').fill('3000-01-01');
 
-        await page.locator('button:has-text("Submit")').click();
+        await page.locator('[data-cy="submit-step-1"]').click();
 
         await expect(page.locator(':has-text("*Date must be in the past")').first()).toBeVisible();
     });
@@ -1443,7 +1443,7 @@ test.describe('The Submit form', () => {
 
         await page.locator('input[name="date_downloaded"]').fill('3000-01-01');
 
-        await page.locator('button:has-text("Submit")').click();
+        await page.locator('[data-cy="submit-step-1"]').click();
 
         await expect(page.locator('form:has-text("*Date must be in the past")')).toBeVisible();
     });
