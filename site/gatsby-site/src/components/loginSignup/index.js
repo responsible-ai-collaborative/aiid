@@ -35,7 +35,7 @@ const Subscribe = ({ location = null }) => {
         size={'sm'}
         data-cy="subscribe-btn"
       >
-        <Trans ns="login">Sign Up</Trans>
+        <Trans ns="login">Notification Emails</Trans>
       </Button>
     </>
   );
