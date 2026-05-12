@@ -23,7 +23,7 @@ const VerifyRequest = ({ location: { state } }) => {
     );
   }
 
-  if (state?.operation == 'login') {
+  if (state?.email) {
     return (
       <>
         <h1>
@@ -31,19 +31,6 @@ const VerifyRequest = ({ location: { state } }) => {
         </h1>
         <p>
           <Trans>A sign in link has been sent to {state.email}</Trans>
-        </p>
-      </>
-    );
-  }
-
-  if (state?.operation == 'signup') {
-    return (
-      <>
-        <h1>
-          <Trans>Check your email</Trans>
-        </h1>
-        <p>
-          <Trans>A sign up link has been sent to {state.email}</Trans>
         </p>
       </>
     );

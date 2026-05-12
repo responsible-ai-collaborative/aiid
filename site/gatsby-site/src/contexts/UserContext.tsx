@@ -20,8 +20,7 @@ interface UserContextValue {
   isAdmin: boolean;
   actions: {
     logOut: () => Promise<void>;
-    logIn: (email: string, callbackUrl: string) => Promise<SignInResponse | undefined>;
-    signUp: (email: string, callbackUrl: string) => Promise<SignInResponse | undefined>;
+    sendMagicLink: (email: string, callbackUrl: string) => Promise<SignInResponse | undefined>;
   };
 }
 
@@ -125,13 +124,7 @@ export const UserContextProvider: React.FC<UserContextProviderProps> = ({ childr
       logOut: async () => {
         await signOut({ redirect: false });
       },
-      logIn: async (email: string, callbackUrl: string) => {
-
-        const result = await signIn('http-email', { email, redirect: false, callbackUrl }, { operation: 'login' });
-
-        return result;
-      },
-      signUp: async (email: string, callbackUrl: string) => {
+      sendMagicLink: async (email: string, callbackUrl: string) => {
 
         const result = await signIn('http-email', { email, redirect: false, callbackUrl }, { operation: 'signup' });
 
