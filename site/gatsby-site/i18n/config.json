@@ -30,5 +30,13 @@
     "localName": "日本語",
     "langDir": "ltr",
     "dateFormat": "YYYY/MM/DD"
+  },
+  {
+    "code": "pt",
+    "hrefLang": "pt-BR",
+    "name": "Portuguese",
+    "localName": "Português",
+    "langDir": "ltr",
+    "dateFormat": "DD/MM/YYYY"
   }
 ]

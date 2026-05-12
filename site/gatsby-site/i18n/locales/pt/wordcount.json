@@ -1,0 +1,3 @@
+{
+  "wordcountAbout": "Esta é uma lista das palavras nos relatórios de incidentes classificadas por suas contagens. Palavras comuns (isto é, &quot;stop words&quot;) são removidas da lista, e os radicais das palavras são exibidos em vez das conjugações encontradas no texto. Palavras com menos de 10 ocorrências e menos de 3 letras não são incluídas. Se quiser explorar o conteúdo dos relatórios, use o <1>aplicativo Discover</1>."
+}
