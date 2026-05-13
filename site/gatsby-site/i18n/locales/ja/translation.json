@@ -16,6 +16,7 @@
   "From Date": "開始日",
   "To Date": "終了日",
   "Close": "閉じる",
+  "Donate": "寄付する",
   "Show Details on Incident #{{id}}": "インシデント#{{id}}の詳細を表示",
   "Filter by Incident ID #{{id}}": "インシデントID #{{id}}でフィルタリング",
   "Flag Report": "レポートにフラグを立てる",
