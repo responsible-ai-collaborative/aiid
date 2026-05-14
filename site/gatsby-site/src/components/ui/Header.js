@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StaticQuery, graphql, navigate } from 'gatsby';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
+import { Button } from 'flowbite-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faRssSquare, faSearch } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -185,8 +186,20 @@ const Header = ({ location = null }) => {
                   onClick={() => setNavCollapsed(!navCollapsed)}
                 />
               </div>
+              <Button
+                color="gray"
+                size="sm"
+                href="https://donate.stripe.com/28E7sDbq18xN82kbJ8bQY00"
+                target="_blank"
+                rel="noopener noreferrer"
+                data-cy="donate-btn"
+                className="hidden lg:inline-flex ml-4"
+              >
+                <Trans>Donate</Trans>
+              </Button>
+
               <LoginSignup
-                className="hidden lg:flex ml-4"
+                className="hidden lg:flex ml-2"
                 logoutClassName="text-white hover:text-primary-blue"
                 loginClassName="text-white hover:text-primary-blue"
                 location={location}
@@ -282,6 +295,7 @@ const SearchBar = () => {
       />
       <button id="header-search-submit">
         <FontAwesomeIcon
+          titleId="header-search"
           icon={faSearch}
           color={'white'}
           className="pointer fa fa-lg ml-4 mr-0 transition-all"

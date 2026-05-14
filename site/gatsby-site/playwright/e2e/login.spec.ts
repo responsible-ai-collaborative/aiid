@@ -27,8 +27,6 @@ test.describe('Login', () => {
 
     await page.locator('[data-cy="subscribe-btn"]').click();
 
-    await page.getByText('Login').click();
-
     const email = 'test.user@incidentdatabase.ai';
 
     await page.route('**/api/auth/signin/http-email*', async (route) => {

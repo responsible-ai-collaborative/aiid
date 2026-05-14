@@ -11,6 +11,7 @@ import DateLabel from 'components/ui/DateLabel';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { useLayoutContext } from 'contexts/LayoutContext';
 import HeadContent from 'components/HeadContent';
+import NewsletterSignup from 'components/landing/NewsletterSignup';
 
 export default function Post(props) {
   let {
@@ -96,6 +97,9 @@ export default function Post(props) {
       )}
       <div data-testid="blog-content" className={`prose post-styled-main-wrapper`}>
         <MDXProvider components={MdxComponents}>{children}</MDXProvider>
+      </div>
+      <div className="mt-8 md:mt-10">
+        <NewsletterSignup />
       </div>
     </>
   );

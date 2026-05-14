@@ -1,12 +1,16 @@
 import React from 'react';
 import HeadContent from 'components/HeadContent';
 import Discover from 'components/discover/Discover';
+import NewsletterSignup from 'components/landing/NewsletterSignup';
 import { useTranslation } from 'react-i18next';
 
 function DiscoverApp() {
   return (
     <div className="w-full">
       <Discover />
+      <div className="mt-5 md:mt-10">
+        <NewsletterSignup />
+      </div>
     </div>
   );
 }

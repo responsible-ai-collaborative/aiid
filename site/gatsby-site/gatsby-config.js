@@ -251,6 +251,7 @@ const plugins = [
           'reports',
           'incidents',
           'auth',
+          'gallery',
         ],
         debug: process.env.GATSBY_I18N_DEBUG,
         nsSeparator: false,
