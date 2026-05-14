@@ -57,6 +57,8 @@ module.exports = {
     './src/components/**/*.{js,jsx,ts,tsx}',
     './src/elements/**/*.{js,jsx,ts,tsx}',
     './src/templates/**/*.{js,jsx,ts,tsx}',
+    './src/hooks/**/*.{js,jsx,ts,tsx}',
+    './src/contexts/**/*.{js,jsx,ts,tsx}',
     'node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}',
   ],
   variants: {

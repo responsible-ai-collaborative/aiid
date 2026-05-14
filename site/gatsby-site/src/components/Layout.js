@@ -32,8 +32,8 @@ const Layout = ({ children, className, sidebarCollapsed = false, location }) => 
           className={`flex flex-grow pt-4 px-4 pb-5 md:px-10 md:pb-10 relative flex-1 overflow-clip
             w-full max-w-full ${
               isCollapsed
-                ? 'lg:w-content lg:max-w-content'
-                : 'lg:w-content-sidebar lg:max-w-content-sidebar'
+                ? 'md:w-content md:max-w-content'
+                : 'md:w-content-sidebar md:max-w-content-sidebar'
             }
             ${rightSidebar ? ' xl:pr-5' : ''}`}
         >

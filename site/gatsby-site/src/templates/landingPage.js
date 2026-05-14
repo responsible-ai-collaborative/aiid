@@ -1,13 +1,10 @@
 import React from 'react';
 import Featured from 'components/landing/Featured';
-import Leaderboards from 'components/landing/Leaderboards';
 import Blog from 'components/landing/Blog';
 import Sponsors from 'components/landing/Sponsors';
 import AboutDatabase from 'components/landing/AboutDatabase ';
 import LatestReports from 'components/landing/LatestReports';
 import QuickSearch from 'components/landing/QuickSearch';
-import QuickAdd from 'components/landing/QuickAdd';
-import RandomIncidents from 'components/landing/RandomIncidents';
 import Hero from 'components/landing/Hero';
 import NewsletterSignup from 'components/landing/NewsletterSignup';
 import { useTranslation } from 'react-i18next';
@@ -99,12 +96,6 @@ const LandingPage = (props) => {
           </div>
         )}
 
-        <div className="mb-5 md:mb-10">
-          <div className="flex flex-col items-center">
-            <QuickAdd />
-          </div>
-        </div>
-
         <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-5 md:gap-10 mb-5 md:mb-10 flex-wrap">
           <div className="flex-1 max-w-full sm:max-w-[50%] md:max-w-full lg:max-w-[50%]">
             <AboutDatabase />
@@ -128,25 +119,12 @@ const LandingPage = (props) => {
           </div>
         </div>
 
-        <div className="mb-10 md:mb-16">
-          <div>
-            <Leaderboards />
-          </div>
-        </div>
-
-        <div className="mb-5 md:mb-10 flex flex-col sm:flex-row md:flex-col lg:flex-row gap-5 md:gap-10 flex-wrap">
-          <div className="flex-1 lg:max-w-[50%]">
-            <NewsletterSignup />
-          </div>
-          {latestIncidents.length > 0 && (
-            <div className="flex-1 lg:max-w-[50%]">
-              <RandomIncidents />
-            </div>
-          )}
-        </div>
-
         <div>
           <Sponsors sponsors={sponsors} />
+        </div>
+
+        <div className="mt-5 md:mt-10">
+          <NewsletterSignup />
         </div>
       </Container>
     </div>
