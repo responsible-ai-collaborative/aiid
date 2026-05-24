@@ -338,6 +338,22 @@ test.describe('Cite pages', () => {
         }).toPass();
     });
 
+    test('Should render a placeholder thumbnail for similar incidents whose first report has no image', async ({ page }) => {
+        // Incident 1 has editor_similar_incidents = [4]; incident 4's first report
+        // (report 100) has empty image_url and cloudinary_id, so the similar-incident
+        // card must fall back to PlaceholderImage rather than skipping the image
+        // area entirely (regression for issue #3648).
+        await page.goto('/cite/1');
+
+        const card = page.locator('[data-cy="similar-incident-card"]', {
+            has: page.locator('h3', { hasText: 'Test title 4' }),
+        });
+
+        await expect(card).toBeVisible();
+        await expect(card.locator('[data-cy="cloudinary-image-wrapper"]')).toBeVisible();
+        await expect(card.locator('[data-cy="cloudinary-image-placeholder"]')).toBeVisible();
+    });
+
     test('Should not display duplicate similar incidents', async ({ page }) => {
         await page.goto('/cite/9');
 

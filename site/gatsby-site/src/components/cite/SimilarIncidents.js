@@ -100,20 +100,18 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
         data-cy="cite-link"
         className="hover:no-underline"
       >
-        {(incident.reports[0].cloudinary_id || incident.reports[0]?.image_url) && (
-          <div className="object-cover w-full aspect-[16/9]">
-            <Image
-              publicID={
-                incident.reports[0]?.cloudinary_id ||
-                `legacy/${md5(incident.reports[0]?.image_url)}`
-              }
-              transformation={fill().height(480)}
-              alt={incidentTitle}
-              itemIdentifier={t('Incident {{id}}', { id: incident.incident_id }).replace(' ', '.')}
-              className="rounded-t-lg"
-            />
-          </div>
-        )}
+        <div className="object-cover w-full aspect-[16/9]">
+          <Image
+            publicID={
+              incident.reports[0]?.cloudinary_id ||
+              (incident.reports[0]?.image_url ? `legacy/${md5(incident.reports[0].image_url)}` : '')
+            }
+            transformation={fill().height(480)}
+            alt={incidentTitle}
+            itemIdentifier={t('Incident {{id}}', { id: incident.incident_id }).replace(' ', '.')}
+            className="rounded-t-lg"
+          />
+        </div>
 
         <h3 className="text-base m-4 text-gray-900 hover:text-primary-blue">
           {incidentTitle ? incidentTitle : incident.reports[0].title}
