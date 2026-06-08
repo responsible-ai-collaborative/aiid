@@ -175,7 +175,7 @@
     "@netlify/plugin-gatsby": "^3.8.4",
     "@playwright/test": "^1.47.2",
     "@sentry/webpack-plugin": "^4.0.2",
-    "@tailwindcss/typography": "^0.5.19",
+    "@tailwindcss/typography": "^0.5.20",
     "@types/async": "^3.2.25",
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.10",
