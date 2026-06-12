@@ -108,7 +108,9 @@ function createApolloClient(endpoint: string, sessionToken: string): ApolloClien
       uri: endpoint,
       fetch,
       headers: {
-        'Cookie': `__Secure-next-auth.session-token=${encodeURIComponent(sessionToken)};next-auth.session-token=${encodeURIComponent(sessionToken)}`
+        'Cookie': `__Secure-next-auth.session-token=${encodeURIComponent(sessionToken)};next-auth.session-token=${encodeURIComponent(sessionToken)}`,
+        'Origin': 'https://incidentdatabase.ai',
+        'Referer': 'https://incidentdatabase.ai/',
       }
     }),
     cache: new InMemoryCache({ addTypename: false }),
@@ -491,6 +493,14 @@ async function importClassifications(
   `;
 
   for (const classification of classifications) {
+
+    // Rate limiting means we need to slow down the update loop so
+    // we don't block ourselves
+    const sab = new SharedArrayBuffer(4);
+    const view = new Int32Array(sab);
+    console.log("sleeping 3 seconds...");
+    Atomics.wait(view, 0, 0, 3000);
+
     const incidentId = classification.incidents?.link[0] as number;
     const spinner = ora(`Processing incident ID: ${incidentId}`).start();
 
