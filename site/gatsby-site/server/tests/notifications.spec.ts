@@ -1892,6 +1892,7 @@ describe(`Notifications`, () => {
                     incidentUrl: config.SITE_URL + '/cite/741',
                     incidentDescription: 'desc',
                     incidentDate: '2023-10-02',
+                    reportImageUrl: '', // a report with no image stores image_url: '' (server/fields/reports.ts)
                     developers: '',
                     deployers: '',
                     entitiesHarmed: '',
@@ -1909,5 +1910,10 @@ describe(`Notifications`, () => {
         expect(html).not.toContain('Entity Updates');
         expect(html).not.toContain('Updates to Incidents You Follow');
         expect(html).not.toContain('Your Approved Submissions');
+
+        // An empty (or missing) image_url is falsy, so no incident <img> is emitted — the card
+        // renders without an image rather than a broken icon or placeholder. (The AIID header
+        // logo uses alt="AIID", so it is unaffected by this assertion.)
+        expect(html).not.toContain('alt="Incident image"');
     });
 });
