@@ -153,7 +153,6 @@ export const pageQuery = graphql`
       nodes {
         incident_id
         title
-        date
         reports {
           report_number
           title

@@ -131,16 +131,6 @@ export const pageQuery = graphql`
           short_name
           value_json
         }
-        publish
-      }
-    }
-    allMongodbAiidprodTaxa(limit: 9999999) {
-      nodes {
-        namespace
-        field_list {
-          short_name
-          hide_search
-        }
       }
     }
   }

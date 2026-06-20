@@ -25,17 +25,9 @@ export default function Footer() {
     query FooterQuery {
       site {
         siteMetadata {
-          headerTitle
           githubUrl
           facebookUrl
           linkedInUrl
-          helpUrl
-          tweetText
-          logo {
-            link
-            image
-            mobile
-          }
         }
       }
       allPrismicFooter(sort: { data: { order: ASC } }) {
@@ -50,7 +42,6 @@ export default function Footer() {
                 }
                 path
               }
-              order
               social {
                 name
                 url {

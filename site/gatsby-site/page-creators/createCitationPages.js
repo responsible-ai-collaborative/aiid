@@ -13,14 +13,11 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
           reports {
             title
             report_number
-            language
             image_url
             cloudinary_id
           }
           editor_similar_incidents
           editor_dissimilar_incidents
-          flagged_dissimilar_incidents
-          description
           nlp_similar_incidents {
             incident_id
             similarity
@@ -66,7 +63,6 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
     );
 
     pageContexts.push({
-      incident,
       incident_id,
       report_numbers: incident.reports.map((r) => r.report_number),
       nextIncident:

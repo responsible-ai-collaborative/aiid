@@ -140,21 +140,9 @@ export const Head = (props) => {
 
 export const pageQuery = graphql`
   query PostTemplateQuery($slug: String!, $locale: String!) {
-    site {
-      siteMetadata {
-        title
-        docsLocation
-      }
-    }
     mdx(fields: { locale: { eq: $locale } }, frontmatter: { slug: { eq: $slug } }) {
       fields {
         title
-      }
-      tableOfContents
-      parent {
-        ... on File {
-          relativePath
-        }
       }
       frontmatter {
         metaTitle
@@ -173,12 +161,6 @@ export const pageQuery = graphql`
     enMdx: mdx(fields: { locale: { eq: "en" } }, frontmatter: { slug: { eq: $slug } }) {
       fields {
         title
-      }
-      tableOfContents
-      parent {
-        ... on File {
-          relativePath
-        }
       }
       frontmatter {
         metaTitle

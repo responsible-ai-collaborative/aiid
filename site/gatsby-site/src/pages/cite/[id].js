@@ -76,17 +76,11 @@ export const query = graphql`
         field_list {
           field_number
           short_name
-          long_name
           short_description
           long_description
           display_type
-          mongo_type
-          default
-          placeholder
           permitted_values
           weight
-          instant_facet
-          required
           public
           complete_from {
             all
@@ -96,17 +90,11 @@ export const query = graphql`
           subfields {
             field_number
             short_name
-            long_name
             short_description
             long_description
             display_type
-            mongo_type
-            default
-            placeholder
             permitted_values
             weight
-            instant_facet
-            required
             public
             complete_from {
               all

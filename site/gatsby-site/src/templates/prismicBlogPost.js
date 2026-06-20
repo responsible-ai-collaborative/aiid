@@ -44,27 +44,17 @@ export const Head = (props) => {
 
 export const pageQuery = graphql`
   query Post($slug: String!, $locale: String!) {
-    site {
-      siteMetadata {
-        title
-        docsLocation
-      }
-    }
     post: prismicBlog(data: { language: { eq: $locale }, slug: { eq: $slug } }) {
-      uid
       data {
         metatitle
         metadescription
         slug
         aitranslated
-        language
         title {
           text
         }
         content {
           richText
-          text
-          html
         }
         image {
           url
@@ -75,20 +65,16 @@ export const pageQuery = graphql`
       }
     }
     originalPost: prismicBlog(data: { language: { eq: "en" }, slug: { eq: $slug } }) {
-      uid
       data {
         metatitle
         metadescription
         slug
         aitranslated
-        language
         title {
           text
         }
         content {
           richText
-          text
-          html
         }
         image {
           url

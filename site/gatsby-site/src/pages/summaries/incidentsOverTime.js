@@ -138,24 +138,8 @@ export const pageQuery = graphql`
   query IncidentsOverTime {
     allMongodbAiidprodIncidents(sort: { reports: { date_submitted: ASC } }) {
       nodes {
-        incident_id
-        title
-        date
         reports {
-          report_number
-          title
-          url
-          authors
-          date_downloaded
-          date_modified
-          date_published
           date_submitted
-          description
-          flag
-          image_url
-          language
-          source_domain
-          submitters
         }
       }
     }

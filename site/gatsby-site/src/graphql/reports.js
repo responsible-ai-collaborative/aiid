@@ -178,28 +178,21 @@ export const FIND_REPORTS = gql(`
   }
 `);
 
+// Only fetch the fields rendered by ReportsTable: fetching all fields (especially
+// the full report text) for every report exceeds the 6 MB AWS Lambda response payload limit.
 export const FIND_REPORTS_TABLE = gql(`
   query FindReportsTable($filter: ReportFilterType!) {
     reports(filter: $filter, sort: { report_number: DESC }) {
-      _id
-      submitters
-      date_published
-      date_downloaded
-      date_submitted
-      date_modified
       report_number
       title
-      description
-      url
-      image_url
-      cloudinary_id
-      source_domain
-      text
+      date_published
+      date_submitted
+      date_modified
+      submitters
       authors
-      epoch_date_submitted
       language
       tags
-      inputs_outputs
+      flag
       editor_notes
       is_incident_report
     }

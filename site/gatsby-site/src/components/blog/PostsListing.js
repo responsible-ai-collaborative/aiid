@@ -29,7 +29,7 @@ export default function PostsListing({ posts, mdxBlogPosts }) {
           return p.mdx ? (
             <PostPreview key={p.fields.slug} post={p} />
           ) : (
-            <PrismicPostPreview key={p.node.id} post={p.node} />
+            <PrismicPostPreview key={p.node.data.slug} post={p.node} />
           );
         })}
       </div>

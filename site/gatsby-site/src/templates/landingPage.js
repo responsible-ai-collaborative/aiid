@@ -176,50 +176,10 @@ export function Head({ location }) {
 
 export const query = graphql`
   query LandingPageQuery(
-    $latestReportNumber: Int
     $latestIncidentsReportNumbers: [Int]
     $locale: String!
     $latestIncidentIds: [Int]
   ) {
-    latestReportIncident: allMongodbAiidprodIncidents(
-      filter: { reports: { elemMatch: { report_number: { eq: $latestReportNumber } } } }
-    ) {
-      edges {
-        node {
-          incident_id
-        }
-      }
-    }
-    latestReportIncidents: allMongodbAiidprodIncidents(
-      filter: { reports: { elemMatch: { report_number: { in: $latestIncidentsReportNumbers } } } }
-    ) {
-      edges {
-        node {
-          incident_id
-          reports {
-            report_number
-            title
-            text
-            epoch_date_submitted
-            image_url
-            report_number
-            cloudinary_id
-            language
-            source_domain
-            url
-          }
-        }
-      }
-    }
-    latestReport: mongodbAiidprodReports(report_number: { in: $latestIncidentsReportNumbers }) {
-      title
-      text
-      epoch_date_submitted
-      image_url
-      report_number
-      cloudinary_id
-      language
-    }
     latestIncidentsReportsTranslations: allMongodbTranslationsReports(
       filter: { report_number: { in: $latestIncidentsReportNumbers } }
     ) {
@@ -247,24 +207,15 @@ export const query = graphql`
       limit: 1
     ) {
       nodes {
-        uid
-        lang
         data {
-          metatitle
-          metadescription
           slug
-          aitranslated
-          language
           title {
             text
           }
           content {
-            richText
             text
-            html
           }
           image {
-            url
             gatsbyImageData
           }
           date
@@ -281,13 +232,11 @@ export const query = graphql`
         fields {
           slug
           title
-          locale
           previewText
         }
         body
         excerpt
         frontmatter {
-          metaDescription
           slug
           date
           author

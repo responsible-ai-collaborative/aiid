@@ -116,15 +116,6 @@ export const Head = (props) => {
 
 export const pageQuery = graphql`
   query TaxonomoyGraphCarouselTaxa {
-    allMongodbAiidprodTaxa {
-      nodes {
-        namespace
-        field_list {
-          permitted_values
-          short_name
-        }
-      }
-    }
     allMongodbAiidprodClassifications {
       nodes {
         namespace

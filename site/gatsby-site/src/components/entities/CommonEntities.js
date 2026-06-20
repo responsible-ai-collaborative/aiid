@@ -23,8 +23,6 @@ export default function CommonEntities() {
           reports {
             report_number
           }
-          title
-          description
           Alleged_deployer_of_AI_system
           Alleged_developer_of_AI_system
           Alleged_harmed_or_nearly_harmed_parties

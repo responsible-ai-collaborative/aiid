@@ -140,13 +140,6 @@ const StepThree = (props) => {
 
   const staticQueryData = useStaticQuery(graphql`
     query SubmissionFormQuery {
-      allMongodbAiidprodReports {
-        edges {
-          node {
-            tags
-          }
-        }
-      }
       allMongodbAiidprodEntities {
         nodes {
           name
@@ -158,18 +151,6 @@ const StepThree = (props) => {
   const entityNames = staticQueryData.allMongodbAiidprodEntities.nodes
     .map((node) => node.name)
     .sort();
-
-  const tags = [];
-
-  for (const node of staticQueryData.allMongodbAiidprodReports.edges) {
-    if (node.node.tags) {
-      for (const tag of node.node.tags) {
-        if (!tags.includes(tag)) {
-          tags.push(tag);
-        }
-      }
-    }
-  }
 
   return (
     <StepContainer name={props.name} childClassName="p-6">

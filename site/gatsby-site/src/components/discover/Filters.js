@@ -8,7 +8,9 @@ function Filters({ expandFilters }) {
     taxa: { nodes: taxa },
   } = useStaticQuery(graphql`
     query FiltersTaxaQuery {
-      taxa: allMongodbAiidprodTaxa(filter: { namespace: { in: ["CSETv1", "CSETv0", "GMF"] } }) {
+      taxa: allMongodbAiidprodTaxa(
+        filter: { namespace: { in: ["CSETv1", "CSETv0", "GMF", "MIT"] } }
+      ) {
         nodes {
           namespace
           field_list {

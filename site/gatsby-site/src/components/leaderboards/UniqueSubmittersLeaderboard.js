@@ -15,7 +15,6 @@ const UniqueSubmittersLeaderboard = ({ limit = 0, className = '' }) => {
           reports {
             report_number
             submitters
-            date_submitted
             is_incident_report
           }
         }

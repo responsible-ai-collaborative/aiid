@@ -172,7 +172,6 @@ export const pageQuery = graphql`
         incident_id
         title
         reports {
-          report_number
           image_url
           cloudinary_id
         }

@@ -15,24 +15,6 @@ import { useQueryParam } from 'use-query-params';
 const IncidentsPage = ({ data, ...props }) => {
   const [view] = useQueryParam('view');
 
-  const { data: incidents, loading: incidentsLoading } = useQuery(FIND_INCIDENTS_TABLE);
-
-  const { data: reports, loading: reportsLoading } = useQuery(FIND_REPORTS_TABLE, {
-    variables: {
-      filter: {
-        is_incident_report: { EQ: true },
-      },
-    },
-  });
-
-  const { data: issueReports, loading: issueReportsLoading } = useQuery(FIND_REPORTS_TABLE, {
-    variables: {
-      filter: {
-        is_incident_report: { EQ: false },
-      },
-    },
-  });
-
   const [incidentsData, setIncidentsData] = useState(null);
 
   const [issueReportsData, setIssueReportsData] = useState(null);
@@ -42,6 +24,30 @@ const IncidentsPage = ({ data, ...props }) => {
   const [isLiveData, setIsLiveData] = useState(false);
 
   const [selectedView, setSelectedView] = useState(null);
+
+  // Live queries are only fetched on demand: they are expensive, and the static
+  // build-time data is used unless the user enables the "Show Live data" toggle.
+  const { data: incidents, loading: incidentsLoading } = useQuery(FIND_INCIDENTS_TABLE, {
+    skip: !isLiveData || selectedView !== 'incidents',
+  });
+
+  const { data: reports, loading: reportsLoading } = useQuery(FIND_REPORTS_TABLE, {
+    variables: {
+      filter: {
+        is_incident_report: { EQ: true },
+      },
+    },
+    skip: !isLiveData || selectedView !== 'reports',
+  });
+
+  const { data: issueReports, loading: issueReportsLoading } = useQuery(FIND_REPORTS_TABLE, {
+    variables: {
+      filter: {
+        is_incident_report: { EQ: false },
+      },
+    },
+    skip: !isLiveData || selectedView !== 'issueReports',
+  });
 
   useEffect(() => {
     if (view) {
@@ -92,7 +98,7 @@ const IncidentsPage = ({ data, ...props }) => {
         break;
       default:
     }
-  }, [isLiveData, incidents, data, selectedView, reportsLoading]);
+  }, [isLiveData, incidents, reports, issueReports, data, selectedView, reportsLoading]);
 
   function transformReports(reports) {
     let reportsData = reports;
@@ -270,11 +276,6 @@ export const query = graphql`
         incident_id
         title
         description
-        editors {
-          userId
-          first_name
-          last_name
-        }
         date
         Alleged_deployer_of_AI_system
         Alleged_developer_of_AI_system
@@ -298,17 +299,12 @@ export const query = graphql`
         reports {
           report_number
           title
-          url
           authors
-          date_downloaded
           date_modified
           date_published
           date_submitted
-          description
           flag
-          image_url
           language
-          source_domain
           submitters
           is_incident_report
         }
@@ -322,17 +318,12 @@ export const query = graphql`
       nodes {
         report_number
         title
-        url
         authors
-        date_downloaded
         date_modified
         date_published
         date_submitted
-        description
         flag
-        image_url
         language
-        source_domain
         submitters
         is_incident_report
       }

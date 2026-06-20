@@ -41,24 +41,15 @@ export const IndexQuery = graphql`
     ) {
       edges {
         node {
-          uid
-          lang
           data {
-            metatitle
-            metadescription
             slug
-            aitranslated
-            language
             title {
               text
             }
             content {
-              richText
               text
-              html
             }
             image {
-              url
               gatsbyImageData
             }
             date
@@ -80,7 +71,6 @@ export const IndexQuery = graphql`
         body
         excerpt
         frontmatter {
-          metaDescription
           date
           author
           slug
