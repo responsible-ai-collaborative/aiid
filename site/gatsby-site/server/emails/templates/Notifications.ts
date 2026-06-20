@@ -36,7 +36,7 @@ const getEmailTemplate = () => {
         <a href="https://incidentdatabase.ai/account/">your account page</a>.
       </p>
 
-      {% if newIncidents %}
+      {% if newIncidents and newIncidents|length > 0 %}
         <div style="${sectionStyle}">
           <h2 style="font-size: 110%;">New Incidents</h2>
           {% for incident in newIncidents %}
@@ -57,7 +57,7 @@ const getEmailTemplate = () => {
         </div>
       {% endif %}
 
-      {% if entityEvents %}
+      {% if entityEvents and entityEvents|length > 0 %}
         <div style="${sectionStyle}">
           <h2 style="font-size: 110%;">Entity Updates</h2>
           {% for event in entityEvents %}
@@ -85,7 +85,7 @@ const getEmailTemplate = () => {
         </div>
       {% endif %}
 
-      {% if incidentUpdates %}
+      {% if incidentUpdates and incidentUpdates|length > 0 %}
         <div style="${sectionStyle}">
           <h2 style="font-size: 110%;">Updates to Incidents You Follow</h2>
           {% for update in incidentUpdates %}
@@ -106,7 +106,7 @@ const getEmailTemplate = () => {
         </div>
       {% endif %}
 
-      {% if submissionsPromoted %}
+      {% if submissionsPromoted and submissionsPromoted|length > 0 %}
         <div style="${sectionStyle}">
           <h2 style="font-size: 110%;">Your Approved Submissions</h2>
           {% for submission in submissionsPromoted %}
