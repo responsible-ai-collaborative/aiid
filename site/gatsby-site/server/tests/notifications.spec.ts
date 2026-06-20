@@ -9,6 +9,7 @@ import { IncidentFilterType, IncidentInsertType, IncidentUpdateType, PromoteSubm
 import { ObjectId } from 'bson';
 import templates from '../emails/templates';
 import { processNotifications } from '../../src/scripts/process-notifications';
+import nunjucks from 'nunjucks';
 
 describe(`Notifications`, () => {
     let server: ApolloServer, url: string;
@@ -1762,5 +1763,121 @@ describe(`Notifications`, () => {
                 entity_id: null,
             },
         ]);
+    });
+
+    // The data shape sent to MailerSend is asserted above; these tests exercise the
+    // consolidated Notifications template itself, rendering it with nunjucks the same
+    // way process-briefing-notifications.spec.ts does for the briefing template.
+    it('Notifications template renders every populated digest section', () => {
+
+        const digest = {
+            newIncidents: [
+                {
+                    incidentId: '741',
+                    incidentTitle: 'Test New Incident',
+                    incidentUrl: config.SITE_URL + '/cite/741',
+                    incidentDescription: 'A new incident description.',
+                    incidentDate: '2023-10-02',
+                    developers: `<a href="${config.SITE_URL}/entities/openai">OpenAI</a>`,
+                    deployers: `<a href="${config.SITE_URL}/entities/acme">Acme</a>`,
+                    entitiesHarmed: `<a href="${config.SITE_URL}/entities/the-public">The Public</a>`,
+                    implicatedSystems: '',
+                },
+            ],
+            entityEvents: [
+                {
+                    incidentId: '742',
+                    incidentTitle: 'Entity Incident',
+                    incidentUrl: config.SITE_URL + '/cite/742',
+                    incidentDescription: 'An entity-related incident.',
+                    incidentDate: '2023-10-03',
+                    developers: '',
+                    deployers: '',
+                    entitiesHarmed: '',
+                    implicatedSystems: '',
+                    entityName: 'OpenAI',
+                    entityUrl: config.SITE_URL + '/entities/openai',
+                    isUpdate: false,
+                },
+            ],
+            incidentUpdates: [
+                {
+                    incidentId: '1',
+                    incidentTitle: 'Followed Incident',
+                    incidentUrl: config.SITE_URL + '/cite/1',
+                    reportUrl: config.SITE_URL + '/cite/1#r2172',
+                    reportTitle: 'A Newly Added Report',
+                    reportAuthor: 'Jane Doe',
+                },
+            ],
+            submissionsPromoted: [
+                {
+                    incidentId: '743',
+                    incidentTitle: 'Promoted Submission',
+                    incidentUrl: config.SITE_URL + '/cite/743',
+                    incidentDescription: 'Your submission is now an incident.',
+                    incidentDate: '2023-11-15',
+                },
+            ],
+        };
+
+        const html = nunjucks.renderString(templates.Notifications, digest);
+
+        // All four section headers render when their arrays are populated.
+        expect(html).toContain('New Incidents');
+        expect(html).toContain('Entity Updates');
+        expect(html).toContain('Updates to Incidents You Follow');
+        expect(html).toContain('Your Approved Submissions');
+
+        // Incident links come from literal template markup, so they survive regardless
+        // of how the rendering engine escapes data-driven values.
+        expect(html).toContain(`href="${config.SITE_URL}/cite/741"`);
+        expect(html).toContain('Incident 741: Test New Incident');
+
+        // Conditional branches render correctly.
+        expect(html).toContain('A new incident involving'); // entityEvents, isUpdate === false
+        expect(html).toContain('A new report was added to'); // incidentUpdates carrying a report
+        expect(html).toContain(`href="${config.SITE_URL}/cite/1#r2172"`);
+        expect(html).toContain('by Jane Doe');
+        expect(html).toContain('Your submission has been approved!');
+
+        // Entity names are present. NOTE: the surrounding <a> tags in developers/deployers/
+        // entitiesHarmed may be escaped depending on the engine — whether MailerSend renders
+        // that HTML as links is engine-specific and is verified with a live send via
+        // src/scripts/sendEmailTest.ts.
+        expect(html).toContain('OpenAI');
+    });
+
+    it('Notifications template hides sections with no items', () => {
+
+        // A user matched by only one notification type is still sent every array, exactly
+        // as emptyDigest() produces. Empty arrays are truthy in nunjucks (and in Liquid), so
+        // a bare `{% if section %}` would emit a lonely header for each unused section; the
+        // `|length > 0` guard must keep them out of the email.
+        const digest = {
+            newIncidents: [
+                {
+                    incidentId: '741',
+                    incidentTitle: 'Only New Incident',
+                    incidentUrl: config.SITE_URL + '/cite/741',
+                    incidentDescription: 'desc',
+                    incidentDate: '2023-10-02',
+                    developers: '',
+                    deployers: '',
+                    entitiesHarmed: '',
+                    implicatedSystems: '',
+                },
+            ],
+            entityEvents: [],
+            incidentUpdates: [],
+            submissionsPromoted: [],
+        };
+
+        const html = nunjucks.renderString(templates.Notifications, digest);
+
+        expect(html).toContain('New Incidents');
+        expect(html).not.toContain('Entity Updates');
+        expect(html).not.toContain('Updates to Incidents You Follow');
+        expect(html).not.toContain('Your Approved Submissions');
     });
 });
