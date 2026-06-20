@@ -8,6 +8,8 @@ export interface SendBulkEmailParams {
     recipients: {
         email: string;
         userId?: string;
+        // Per-recipient subject override; falls back to the shared `subject` below.
+        subject?: string;
         // Per-recipient overrides; merged on top of the shared dynamicData below.
         dynamicData?: Record<string, any>;
     }[];
@@ -126,7 +128,11 @@ export const sendBulkEmails = async ({ recipients, subject, dynamicData, templat
             .setFrom({ email: config.NOTIFICATIONS_SENDER, name: config.NOTIFICATIONS_SENDER_NAME })
             .setTo([new Recipient(recipient.email)])
             .setPersonalization(personalizations)
-            .setSubject(subject)
+            .setSubject(recipient.subject ?? subject)
+            // Lets mail clients surface a native unsubscribe control. MailerSend forwards this
+            // to the List-Unsubscribe header. NOTE: verify the value format MailerSend expects
+            // with a test send; a true one-click (RFC 8058) flow also needs a POST endpoint.
+            .setListUnsubscribe(`${config.SITE_URL}/account/`)
             .setHtml(html);
         //TODO: add a text version of the email
         // .setText("Greetings from the team, you got this message through MailerSend.");

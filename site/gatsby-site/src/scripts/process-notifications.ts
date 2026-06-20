@@ -16,12 +16,32 @@ const buildEntityList = (allEntities: DBEntity[], entityIds: string[] = []) => {
     return `${entityNames.slice(0, - 1).join(', ')}, and ${entityNames[entityNames.length - 1]}`;
 }
 
+const DEFAULT_NOTIFICATION_SUBJECT = 'AI Incident Database Notifications';
+
+const DESCRIPTION_MAX_LENGTH = 500;
+
+// Keep one verbose incident from dominating the digest.
+const truncate = (text?: string | null, max = DESCRIPTION_MAX_LENGTH): string | undefined => {
+    if (!text) return undefined;
+    return text.length > max ? `${text.slice(0, max).trimEnd()}…` : text;
+};
+
+// Render stored dates (e.g. "2024-01-01") as "January 1, 2024".
+const formatIncidentDate = (date?: string | null): string | undefined => {
+    if (!date) return undefined;
+    const parsed = new Date(date);
+    if (isNaN(parsed.getTime())) return date;
+    return parsed.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+};
+
 interface NewIncidentEntry {
     incidentId: string;
     incidentTitle: string;
     incidentUrl: string;
     incidentDescription?: string;
     incidentDate?: string;
+    reportImageUrl?: string;
+    editorNotes?: string;
     developers: string;
     deployers: string;
     entitiesHarmed: string;
@@ -49,6 +69,7 @@ interface SubmissionPromotedEntry {
     incidentUrl: string;
     incidentDescription?: string;
     incidentDate?: string;
+    reportImageUrl?: string;
 }
 
 interface UserDigest {
@@ -65,12 +86,27 @@ const emptyDigest = (): UserDigest => ({
     submissionsPromoted: [],
 });
 
-const incidentToNewIncidentEntry = (incident: DBIncident, allEntities: DBEntity[]): NewIncidentEntry => ({
+const pluralize = (count: number, noun: string): string => `${count} ${noun}${count === 1 ? '' : 's'}`;
+
+// A per-recipient subject summarizing the digest,
+// e.g. "AI Incident Database: 2 new incidents, 1 incident update".
+const buildNotificationSubject = (digest: UserDigest): string => {
+    const parts: string[] = [];
+    if (digest.newIncidents.length) parts.push(pluralize(digest.newIncidents.length, 'new incident'));
+    if (digest.entityEvents.length) parts.push(pluralize(digest.entityEvents.length, 'entity update'));
+    if (digest.incidentUpdates.length) parts.push(pluralize(digest.incidentUpdates.length, 'incident update'));
+    if (digest.submissionsPromoted.length) parts.push(pluralize(digest.submissionsPromoted.length, 'approved submission'));
+    return parts.length > 0 ? `AI Incident Database: ${parts.join(', ')}` : DEFAULT_NOTIFICATION_SUBJECT;
+};
+
+const incidentToNewIncidentEntry = (incident: DBIncident, allEntities: DBEntity[], reportImageUrl?: string): NewIncidentEntry => ({
     incidentId: `${incident.incident_id}`,
     incidentTitle: incident.title,
     incidentUrl: `${config.SITE_URL}/cite/${incident.incident_id}`,
-    incidentDescription: incident.description ?? undefined,
-    incidentDate: incident.date,
+    incidentDescription: truncate(incident.description),
+    incidentDate: formatIncidentDate(incident.date),
+    reportImageUrl,
+    editorNotes: incident.editor_notes ?? undefined,
     developers: buildEntityList(allEntities, incident['Alleged developer of AI system']),
     deployers: buildEntityList(allEntities, incident['Alleged deployer of AI system']),
     entitiesHarmed: buildEntityList(allEntities, incident['Alleged harmed or nearly harmed parties']),
@@ -140,14 +176,29 @@ export const processNotifications = async () => {
             .filter((id): id is number => typeof id === 'number')
     )];
 
-    const [entitySubs, incidentSubs] = await Promise.all([
+    // The lead image for each incident card comes from the incident's first report.
+    const firstReportNumbers = [...new Set(
+        incidents.map(i => i.reports?.[0]).filter((n): n is number => typeof n === 'number')
+    )];
+
+    const [entitySubs, incidentSubs, firstReports] = await Promise.all([
         entityIdsTouched.length > 0
             ? subscriptionsCollection.find({ type: 'entity', entityId: { $in: entityIdsTouched } }).toArray()
             : Promise.resolve([] as DBSubscription[]),
         incidentIdsTouchedForUpdates.length > 0
             ? subscriptionsCollection.find({ type: 'incident', incident_id: { $in: incidentIdsTouchedForUpdates } }).toArray()
             : Promise.resolve([] as DBSubscription[]),
+        firstReportNumbers.length > 0
+            ? reportsCollection.find({ report_number: { $in: firstReportNumbers } }).toArray()
+            : Promise.resolve([] as DBReport[]),
     ]);
+
+    const firstReportByNumber = new Map<number, DBReport>(firstReports.map(r => [r.report_number!, r]));
+    const imageForIncident = (incident: DBIncident): string | undefined => {
+        const firstReportNumber = incident.reports?.[0];
+        if (typeof firstReportNumber !== 'number') return undefined;
+        return (firstReportByNumber.get(firstReportNumber) ?? reportByNumber.get(firstReportNumber))?.image_url ?? undefined;
+    };
 
     // Build the per-user digest by walking each pending notification.
     const digestByUser = new Map<string, UserDigest>();
@@ -186,7 +237,7 @@ export const processNotifications = async () => {
             if (!incident) continue;
             includedNotifications.push(notification);
 
-            const entry = incidentToNewIncidentEntry(incident, allEntities);
+            const entry = incidentToNewIncidentEntry(incident, allEntities, imageForIncident(incident));
             for (const sub of newIncidentsSubs) {
                 if (dedupeAdd(seenNewIncident, sub.userId, incident.incident_id!)) {
                     ensureDigest(sub.userId).newIncidents.push(entry);
@@ -202,7 +253,7 @@ export const processNotifications = async () => {
             includedNotifications.push(notification);
 
             const subs = entitySubs.filter(s => s.entityId === entity.entity_id);
-            const base = incidentToNewIncidentEntry(incident, allEntities);
+            const base = incidentToNewIncidentEntry(incident, allEntities, imageForIncident(incident));
             const entry: EntityEventEntry = {
                 ...base,
                 entityName: entity.name,
@@ -257,8 +308,9 @@ export const processNotifications = async () => {
                 incidentId: `${incident.incident_id}`,
                 incidentTitle: incident.title,
                 incidentUrl: `${config.SITE_URL}/cite/${incident.incident_id}`,
-                incidentDescription: incident.description ?? undefined,
-                incidentDate: incident.date,
+                incidentDescription: truncate(incident.description),
+                incidentDate: formatIncidentDate(incident.date),
+                reportImageUrl: imageForIncident(incident),
             };
             if (dedupeAdd(seenSubmission, userId, incident.incident_id!)) {
                 ensureDigest(userId).submissionsPromoted.push(entry);
@@ -278,11 +330,15 @@ export const processNotifications = async () => {
     const resolvedRecipients = await userCacheManager.getAndCacheRecipients(userIds, context);
     const recipients = resolvedRecipients
         .filter(r => digestByUser.has(r.userId))
-        .map(r => ({
-            email: r.email,
-            userId: r.userId,
-            dynamicData: digestByUser.get(r.userId)!,
-        }));
+        .map(r => {
+            const digest = digestByUser.get(r.userId)!;
+            return {
+                email: r.email,
+                userId: r.userId,
+                subject: buildNotificationSubject(digest),
+                dynamicData: digest,
+            };
+        });
 
     if (recipients.length === 0) {
         await markNotificationsAsProcessed(notificationsCollection, includedNotifications);
@@ -296,7 +352,7 @@ export const processNotifications = async () => {
     try {
         const params: SendBulkEmailParams = {
             recipients,
-            subject: 'AI Incident Database Notifications',
+            subject: DEFAULT_NOTIFICATION_SUBJECT,
             templateId: 'Notifications',
         };
         await sendBulkEmails(params);

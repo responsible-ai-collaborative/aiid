@@ -11,6 +11,10 @@ import templates from '../emails/templates';
 import { processNotifications } from '../../src/scripts/process-notifications';
 import nunjucks from 'nunjucks';
 
+// Mirrors formatIncidentDate() in process-notifications.ts so date assertions stay in sync.
+const formatDate = (date?: string) =>
+    date ? new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }) : undefined;
+
 describe(`Notifications`, () => {
     let server: ApolloServer, url: string;
 
@@ -169,13 +173,15 @@ describe(`Notifications`, () => {
                 {
                     email: "test@test.com",
                     userId: "5f8f4b3b9b3e6f001f3b3b3b",
+                    subject: "AI Incident Database: 1 new incident",
                     dynamicData: {
                         newIncidents: [{
                             incidentId: "1",
                             incidentTitle: "Incident 1",
                             incidentUrl: config.SITE_URL + "/cite/1",
                             incidentDescription: "Incident 1 description",
-                            incidentDate: incidents[0].date,
+                            incidentDate: formatDate(incidents[0].date),
+                            reportImageUrl: "image_url",
                             developers: "",
                             deployers: "",
                             entitiesHarmed: "",
@@ -307,6 +313,7 @@ describe(`Notifications`, () => {
                 {
                     email: "test@test.com",
                     userId: "5f8f4b3b9b3e6f001f3b3b3b",
+                    subject: "AI Incident Database: 1 entity update",
                     dynamicData: {
                         newIncidents: [],
                         entityEvents: [{
@@ -314,7 +321,8 @@ describe(`Notifications`, () => {
                             incidentTitle: "Incident 1",
                             incidentUrl: config.SITE_URL + "/cite/1",
                             incidentDescription: "Incident 1 description",
-                            incidentDate: incidents[0].date,
+                            incidentDate: formatDate(incidents[0].date),
+                            reportImageUrl: "image_url",
                             entityName: "Entity 1",
                             entityUrl: config.SITE_URL + "/entities/entity-1",
                             developers: "",
@@ -446,6 +454,7 @@ describe(`Notifications`, () => {
                 {
                     email: "test@test.com",
                     userId: "5f8f4b3b9b3e6f001f3b3b3b",
+                    subject: "AI Incident Database: 1 incident update",
                     dynamicData: {
                         newIncidents: [],
                         entityEvents: [],
@@ -578,6 +587,7 @@ describe(`Notifications`, () => {
                 {
                     email: "test@test.com",
                     userId: "5f8f4b3b9b3e6f001f3b3b3b",
+                    subject: "AI Incident Database: 1 incident update",
                     dynamicData: {
                         newIncidents: [],
                         entityEvents: [],
@@ -740,6 +750,7 @@ describe(`Notifications`, () => {
                 {
                     email: "test@test.com",
                     userId: "5f8f4b3b9b3e6f001f3b3b3b",
+                    subject: "AI Incident Database: 1 approved submission",
                     dynamicData: {
                         newIncidents: [],
                         entityEvents: [],
@@ -749,13 +760,15 @@ describe(`Notifications`, () => {
                             incidentTitle: "Incident 1",
                             incidentUrl: config.SITE_URL + "/cite/1",
                             incidentDescription: "Incident 1 description",
-                            incidentDate: incidents[0].date,
+                            incidentDate: formatDate(incidents[0].date),
+                            reportImageUrl: "image_url",
                         }],
                     },
                 },
                 {
                     email: "user2@test.com",
                     userId: "60a7c5b7b4f5b8a6d8f9c7e4",
+                    subject: "AI Incident Database: 1 approved submission",
                     dynamicData: {
                         newIncidents: [],
                         entityEvents: [],
@@ -765,7 +778,7 @@ describe(`Notifications`, () => {
                             incidentTitle: "Incident 2",
                             incidentUrl: config.SITE_URL + "/cite/2",
                             incidentDescription: "Incident 2 description",
-                            incidentDate: incidents[1].date,
+                            incidentDate: formatDate(incidents[1].date),
                         }],
                     },
                 },
@@ -1437,7 +1450,8 @@ describe(`Notifications`, () => {
             incidentTitle: "Incident 1",
             incidentUrl: "http://localhost:8000/cite/1",
             incidentDescription: "Incident 1 description",
-            incidentDate: incidents[0].date,
+            incidentDate: formatDate(incidents[0].date),
+            reportImageUrl: "image_url",
             deployers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
             developers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
             entitiesHarmed: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
@@ -1453,7 +1467,7 @@ describe(`Notifications`, () => {
                 name: config.NOTIFICATIONS_SENDER_NAME,
             },
             to: [{ email: "test@test.com", name: undefined }],
-            subject: "AI Incident Database Notifications",
+            subject: "AI Incident Database: 1 new incident",
             html: templates.Notifications,
             personalization: [
                 {
@@ -1477,7 +1491,7 @@ describe(`Notifications`, () => {
                 name: config.NOTIFICATIONS_SENDER_NAME,
             },
             to: [{ email: "test2@test.com", name: undefined }],
-            subject: "AI Incident Database Notifications",
+            subject: "AI Incident Database: 1 new incident",
             html: templates.Notifications,
             personalization: [
                 {
@@ -1777,11 +1791,13 @@ describe(`Notifications`, () => {
                     incidentTitle: 'Test New Incident',
                     incidentUrl: config.SITE_URL + '/cite/741',
                     incidentDescription: 'A new incident description.',
-                    incidentDate: '2023-10-02',
+                    incidentDate: 'October 2, 2023',
+                    reportImageUrl: config.SITE_URL + '/img/incident-741.jpg',
+                    editorNotes: 'Curated editor note for 741.',
                     developers: `<a href="${config.SITE_URL}/entities/openai">OpenAI</a>`,
                     deployers: `<a href="${config.SITE_URL}/entities/acme">Acme</a>`,
                     entitiesHarmed: `<a href="${config.SITE_URL}/entities/the-public">The Public</a>`,
-                    implicatedSystems: '',
+                    implicatedSystems: `<a href="${config.SITE_URL}/entities/gpt-4">GPT-4</a>`,
                 },
             ],
             entityEvents: [
@@ -1790,7 +1806,8 @@ describe(`Notifications`, () => {
                     incidentTitle: 'Entity Incident',
                     incidentUrl: config.SITE_URL + '/cite/742',
                     incidentDescription: 'An entity-related incident.',
-                    incidentDate: '2023-10-03',
+                    incidentDate: 'October 3, 2023',
+                    reportImageUrl: config.SITE_URL + '/img/incident-742.jpg',
                     developers: '',
                     deployers: '',
                     entitiesHarmed: '',
@@ -1816,18 +1833,31 @@ describe(`Notifications`, () => {
                     incidentTitle: 'Promoted Submission',
                     incidentUrl: config.SITE_URL + '/cite/743',
                     incidentDescription: 'Your submission is now an incident.',
-                    incidentDate: '2023-11-15',
+                    incidentDate: 'November 15, 2023',
+                    reportImageUrl: config.SITE_URL + '/img/incident-743.jpg',
                 },
             ],
         };
 
         const html = nunjucks.renderString(templates.Notifications, digest);
 
-        // All four section headers render when their arrays are populated.
-        expect(html).toContain('New Incidents');
-        expect(html).toContain('Entity Updates');
-        expect(html).toContain('Updates to Incidents You Follow');
-        expect(html).toContain('Your Approved Submissions');
+        // All four section headers render (with item counts) when populated.
+        expect(html).toContain('New Incidents (1)');
+        expect(html).toContain('Entity Updates (1)');
+        expect(html).toContain('Updates to Incidents You Follow (1)');
+        expect(html).toContain('Your Approved Submissions (1)');
+
+        // Hidden preheader (inbox preview) and the unsubscribe footer.
+        expect(html).toContain('The latest incidents and updates from the AI Incident Database');
+        expect(html).toContain('Manage your subscriptions or unsubscribe');
+
+        // Per-incident lead image.
+        expect(html).toContain(`src="${config.SITE_URL}/img/incident-741.jpg"`);
+
+        // Editor notes (New Incidents only) and implicated systems render when present.
+        expect(html).toContain('Editor Notes');
+        expect(html).toContain('Curated editor note for 741.');
+        expect(html).toContain('AI systems implicated');
 
         // Incident links come from literal template markup, so they survive regardless
         // of how the rendering engine escapes data-driven values.
@@ -1875,7 +1905,7 @@ describe(`Notifications`, () => {
 
         const html = nunjucks.renderString(templates.Notifications, digest);
 
-        expect(html).toContain('New Incidents');
+        expect(html).toContain('New Incidents (1)');
         expect(html).not.toContain('Entity Updates');
         expect(html).not.toContain('Updates to Incidents You Follow');
         expect(html).not.toContain('Your Approved Submissions');
