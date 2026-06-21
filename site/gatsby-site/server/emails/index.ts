@@ -129,12 +129,14 @@ export const sendBulkEmails = async ({ recipients, subject, dynamicData, templat
             .setTo([new Recipient(recipient.email)])
             .setPersonalization(personalizations)
             .setSubject(recipient.subject ?? subject)
-            // Lets mail clients surface a native unsubscribe control via the List-Unsubscribe
-            // header. RFC 2369 requires the URI to be wrapped in angle brackets; a bare URL is
-            // rejected by MailerSend's validator, which silently dropped the whole bulk batch.
-            // One-click (RFC 8058) would also need List-Unsubscribe-Post + a POST endpoint,
-            // which we don't have yet, so this stays a plain "click to manage" link.
-            .setListUnsubscribe(`<${config.SITE_URL}/account/>`)
+            // NOTE: do not add .setListUnsubscribe() here without first confirming the
+            // MailerSend plan. The list_unsubscribe field is gated to Professional/Enterprise
+            // plans; on lower tiers MailerSend rejects every message in the bulk batch during
+            // async validation (a 202 is still returned at POST time), so nothing is delivered
+            // while the run looks successful. This regressed delivery in #3943/#3950 and was
+            // removed to restore the working behavior. If reintroduced, it must be a *bare* URL
+            // (e.g. `${config.SITE_URL}/account/`, no angle brackets) on a Professional+ plan.
+            // The email footer already provides a manage/unsubscribe link.
             .setHtml(html);
         //TODO: add a text version of the email
         // .setText("Greetings from the team, you got this message through MailerSend.");
