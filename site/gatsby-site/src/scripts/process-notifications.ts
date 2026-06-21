@@ -362,7 +362,10 @@ export const processNotifications = async () => {
         throw error;
     }
 
-    console.log(`Process Pending Notifications: ${includedNotifications.length} notifications digested into ${recipients.length} email(s).`);
+    // The bulk endpoint only acknowledges receipt (HTTP 202); it does not confirm delivery,
+    // so report what we actually know — how many emails were handed off to MailerSend — rather
+    // than implying they were delivered. Confirm actual delivery in the MailerSend dashboard.
+    console.log(`Process Pending Notifications: ${includedNotifications.length} notifications digested into ${recipients.length} email(s) submitted to MailerSend (delivery not confirmed by this run).`);
 
     return includedNotifications.length;
 }
