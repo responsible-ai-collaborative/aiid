@@ -32,6 +32,11 @@ jobs:
         with:
           ref: ${{ inputs.sha }}
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
       - name: Read node modules from cache
         id: cache-nodemodules
         uses: actions/cache/restore@v4

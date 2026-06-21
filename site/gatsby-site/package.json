@@ -4,6 +4,9 @@
   "description": "Artificial Intelligence Incident Database",
   "author": "Sean <aiidpackage@seanbmcgregor.com> (@seanmcgregor)",
   "version": "0.2.0",
+  "engines": {
+    "node": ">=24 <26"
+  },
   "dependencies": {
     "@apollo/client": "^3.7.17",
     "@apollo/server": "^5.5.1",
@@ -179,7 +182,7 @@
     "@types/async": "^3.2.25",
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^20.12.14",
+    "@types/node": "^24.13.2",
     "@types/nunjucks": "^3.2.6",
     "@types/pluralize": "^0.0.33",
     "@types/sinon": "^17.0.4",

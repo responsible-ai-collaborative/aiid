@@ -2,6 +2,9 @@
   base = "/site/gatsby-site"
   publish = "public"
 
+[build.environment]
+  NODE_VERSION = "24"
+
 [[plugins]]
   package = "@netlify/plugin-gatsby"
 

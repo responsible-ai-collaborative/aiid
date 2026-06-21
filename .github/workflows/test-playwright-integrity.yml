@@ -27,7 +27,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: lts/*
+          node-version: "24"
 
       - name: Cache NPM dependencies
         id: cache-npm-dependencies
