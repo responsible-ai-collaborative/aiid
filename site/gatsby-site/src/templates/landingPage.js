@@ -18,7 +18,7 @@ import HeadContent from 'components/HeadContent';
 const LandingPage = (props) => {
   const { data } = props;
 
-  const { latestIncidents, latestIncidentsReportNumbers, sponsors } = props.pageContext;
+  const { latestIncidents, latestIncidentsReportNumbers } = props.pageContext;
 
   let { latestPrismicPost, latestPostOld } = data;
 
@@ -120,7 +120,7 @@ const LandingPage = (props) => {
         </div>
 
         <div>
-          <Sponsors sponsors={sponsors} />
+          <Sponsors />
         </div>
 
         <div className="mt-5 md:mt-10">

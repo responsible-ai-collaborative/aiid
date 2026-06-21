@@ -28,41 +28,6 @@ const createLandingPage = async (graphql, createPage) => {
           }
         }
       }
-
-      sponsors: allPrismicSponsor(sort: { data: { order: { text: ASC } } }) {
-        edges {
-          node {
-            data {
-              title {
-                text
-                richText
-              }
-              order {
-                text
-              }
-              language {
-                text
-              }
-              items {
-                name {
-                  text
-                }
-                description {
-                  richText
-                }
-                logo {
-                  gatsbyImageData
-                  url
-                }
-                link {
-                  url
-                }
-                direct_link
-              }
-            }
-          }
-        }
-      }
     }
   `);
 
@@ -104,7 +69,6 @@ const createLandingPage = async (graphql, createPage) => {
     context: {
       latestIncidents,
       latestIncidentsReportNumbers,
-      sponsors: result.data.sponsors.edges,
       latestIncidentIds: latestIncidents.map((incident) => incident.incident_id),
     },
   });
