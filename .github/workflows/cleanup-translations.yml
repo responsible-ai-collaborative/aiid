@@ -25,16 +25,16 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: lts/*
 
       - name: Cache NPM dependencies
         id: cache-npm-dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             site/gatsby-site/node_modules

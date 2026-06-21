@@ -42,13 +42,13 @@ jobs:
           df -h
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ inputs.sha }}
 
       - name: Cache node modules
         id: cache-nodemodules
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         env:
           cache-name: cache-install-folder
         with:
@@ -104,7 +104,7 @@ jobs:
           GOOGLE_TRANSLATE_API_KEY: dummy
 
       - name: Cache build
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         env:
           cache-name: cache-build-folder
         with:
