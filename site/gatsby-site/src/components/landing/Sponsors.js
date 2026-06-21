@@ -87,7 +87,6 @@ export default function Sponsors() {
                   richText
                 }
                 logo {
-                  gatsbyImageData
                   url
                 }
                 link {
