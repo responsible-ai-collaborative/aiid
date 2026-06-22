@@ -8,8 +8,12 @@ import config from '../config';
 import { IncidentFilterType, IncidentInsertType, IncidentUpdateType, PromoteSubmissionToReportInput } from '../generated/graphql';
 import { ObjectId } from 'bson';
 import templates from '../emails/templates';
-import { replacePlaceholdersWithAllowedKeys } from '../emails';
 import { processNotifications } from '../../src/scripts/process-notifications';
+import nunjucks from 'nunjucks';
+
+// Mirrors formatIncidentDate() in process-notifications.ts so date assertions stay in sync.
+const formatDate = (date?: string) =>
+    date ? new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }) : undefined;
 
 describe(`Notifications`, () => {
     let server: ApolloServer, url: string;
@@ -169,21 +173,28 @@ describe(`Notifications`, () => {
                 {
                     email: "test@test.com",
                     userId: "5f8f4b3b9b3e6f001f3b3b3b",
+                    subject: "AI Incident Database: 1 new incident",
+                    dynamicData: {
+                        newIncidents: [{
+                            incidentId: "1",
+                            incidentTitle: "Incident 1",
+                            incidentUrl: config.SITE_URL + "/cite/1",
+                            incidentDescription: "Incident 1 description",
+                            incidentDate: formatDate(incidents[0].date),
+                            reportImageUrl: "image_url",
+                            developers: "",
+                            deployers: "",
+                            entitiesHarmed: "",
+                            implicatedSystems: "",
+                        }],
+                        entityEvents: [],
+                        incidentUpdates: [],
+                        submissionsPromoted: [],
+                    },
                 },
             ],
-            subject: "New Incident {{incidentId}} was created",
-            dynamicData: {
-                incidentId: "1",
-                incidentTitle: "Incident 1",
-                incidentUrl: config.SITE_URL + "/cite/1",
-                incidentDescription: "Incident 1 description",
-                incidentDate: incidents[0].date,
-                developers: "",
-                deployers: "",
-                entitiesHarmed: "",
-                implicatedSystems: "",
-            },
-            templateId: "NewIncident",
+            subject: "AI Incident Database Notifications",
+            templateId: "Notifications",
         }));
 
         expect(result).toBe(1);
@@ -302,23 +313,31 @@ describe(`Notifications`, () => {
                 {
                     email: "test@test.com",
                     userId: "5f8f4b3b9b3e6f001f3b3b3b",
+                    subject: "AI Incident Database: 1 entity update",
+                    dynamicData: {
+                        newIncidents: [],
+                        entityEvents: [{
+                            incidentId: "1",
+                            incidentTitle: "Incident 1",
+                            incidentUrl: config.SITE_URL + "/cite/1",
+                            incidentDescription: "Incident 1 description",
+                            incidentDate: formatDate(incidents[0].date),
+                            reportImageUrl: "image_url",
+                            entityName: "Entity 1",
+                            entityUrl: config.SITE_URL + "/entities/entity-1",
+                            developers: "",
+                            deployers: "",
+                            entitiesHarmed: "",
+                            implicatedSystems: "",
+                            isUpdate: false,
+                        }],
+                        incidentUpdates: [],
+                        submissionsPromoted: [],
+                    },
                 },
             ],
-            subject: "New Incident for {{entityName}}",
-            dynamicData: {
-                incidentId: "1",
-                incidentTitle: "Incident 1",
-                incidentUrl: config.SITE_URL + "/cite/1",
-                incidentDescription: "Incident 1 description",
-                incidentDate: incidents[0].date,
-                entityName: "Entity 1",
-                entityUrl: config.SITE_URL + "/entities/entity-1",
-                developers: "",
-                deployers: "",
-                entitiesHarmed: "",
-                implicatedSystems: "",
-            },
-            templateId: "NewEntityIncident",
+            subject: "AI Incident Database Notifications",
+            templateId: "Notifications",
         }));
         expect(result).toBe(1);
     });
@@ -435,18 +454,24 @@ describe(`Notifications`, () => {
                 {
                     email: "test@test.com",
                     userId: "5f8f4b3b9b3e6f001f3b3b3b",
+                    subject: "AI Incident Database: 1 incident update",
+                    dynamicData: {
+                        newIncidents: [],
+                        entityEvents: [],
+                        incidentUpdates: [{
+                            incidentId: "1",
+                            incidentTitle: "Incident 1",
+                            incidentUrl: config.SITE_URL + "/cite/1",
+                            reportUrl: config.SITE_URL + "/cite/1#r1",
+                            reportTitle: "Report 1",
+                            reportAuthor: undefined,
+                        }],
+                        submissionsPromoted: [],
+                    },
                 },
             ],
-            subject: "Incident {{incidentId}} was updated",
-            dynamicData: {
-                incidentId: "1",
-                incidentTitle: "Incident 1",
-                incidentUrl: config.SITE_URL + "/cite/1",
-                reportUrl: config.SITE_URL + "/cite/1#r1",
-                reportTitle: "Report 1",
-                reportAuthor: "",
-            },
-            templateId: "NewReportAddedToAnIncident",
+            subject: "AI Incident Database Notifications",
+            templateId: "Notifications",
         }));
         expect(result).toBe(1);
     });
@@ -562,18 +587,24 @@ describe(`Notifications`, () => {
                 {
                     email: "test@test.com",
                     userId: "5f8f4b3b9b3e6f001f3b3b3b",
+                    subject: "AI Incident Database: 1 incident update",
+                    dynamicData: {
+                        newIncidents: [],
+                        entityEvents: [],
+                        incidentUpdates: [{
+                            incidentId: "1",
+                            incidentTitle: "Incident 1",
+                            incidentUrl: config.SITE_URL + "/cite/1",
+                            reportUrl: undefined,
+                            reportTitle: undefined,
+                            reportAuthor: undefined,
+                        }],
+                        submissionsPromoted: [],
+                    },
                 },
             ],
-            subject: "Incident {{incidentId}} was updated",
-            dynamicData: {
-                incidentId: "1",
-                incidentTitle: "Incident 1",
-                incidentUrl: config.SITE_URL + "/cite/1",
-                reportUrl: config.SITE_URL + "/cite/1#rundefined",
-                reportTitle: "",
-                reportAuthor: "",
-            },
-            templateId: "IncidentUpdate",
+            subject: "AI Incident Database Notifications",
+            templateId: "Notifications",
         }));
         expect(result).toBe(1);
     });
@@ -713,41 +744,47 @@ describe(`Notifications`, () => {
 
         const result = await processNotifications();
 
-        expect(sendEmailMock).toHaveBeenCalledTimes(2);
+        expect(sendEmailMock).toHaveBeenCalledTimes(1);
         expect(sendEmailMock).nthCalledWith(1, expect.objectContaining({
             recipients: [
                 {
                     email: "test@test.com",
                     userId: "5f8f4b3b9b3e6f001f3b3b3b",
+                    subject: "AI Incident Database: 1 approved submission",
+                    dynamicData: {
+                        newIncidents: [],
+                        entityEvents: [],
+                        incidentUpdates: [],
+                        submissionsPromoted: [{
+                            incidentId: "1",
+                            incidentTitle: "Incident 1",
+                            incidentUrl: config.SITE_URL + "/cite/1",
+                            incidentDescription: "Incident 1 description",
+                            incidentDate: formatDate(incidents[0].date),
+                            reportImageUrl: "image_url",
+                        }],
+                    },
                 },
-            ],
-            subject: "Your submission has been approved!",
-            dynamicData: {
-                incidentId: "1",
-                incidentTitle: "Incident 1",
-                incidentUrl: config.SITE_URL + "/cite/1",
-                incidentDescription: "Incident 1 description",
-                incidentDate: incidents[0].date,
-            },
-            templateId: "SubmissionApproved",
-        }));
-        
-        expect(sendEmailMock).nthCalledWith(2, expect.objectContaining({
-            recipients: [
                 {
                     email: "user2@test.com",
                     userId: "60a7c5b7b4f5b8a6d8f9c7e4",
+                    subject: "AI Incident Database: 1 approved submission",
+                    dynamicData: {
+                        newIncidents: [],
+                        entityEvents: [],
+                        incidentUpdates: [],
+                        submissionsPromoted: [{
+                            incidentId: "2",
+                            incidentTitle: "Incident 2",
+                            incidentUrl: config.SITE_URL + "/cite/2",
+                            incidentDescription: "Incident 2 description",
+                            incidentDate: formatDate(incidents[1].date),
+                        }],
+                    },
                 },
             ],
-            subject: "Your submission has been approved!",
-            dynamicData: {
-                incidentId: "2",
-                incidentTitle: "Incident 2",
-                incidentUrl: config.SITE_URL + "/cite/2",
-                incidentDescription: "Incident 2 description",
-                incidentDate: incidents[1].date,
-            },
-            templateId: "SubmissionApproved",
+            subject: "AI Incident Database Notifications",
+            templateId: "Notifications",
         }));
 
         expect(result).toBe(2);
@@ -1408,103 +1445,69 @@ describe(`Notifications`, () => {
 
         expect(result).toBe(1);
 
+        const expectedNewIncidentEntry = {
+            incidentId: "1",
+            incidentTitle: "Incident 1",
+            incidentUrl: "http://localhost:8000/cite/1",
+            incidentDescription: "Incident 1 description",
+            incidentDate: formatDate(incidents[0].date),
+            reportImageUrl: "image_url",
+            deployers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
+            developers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
+            entitiesHarmed: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
+            implicatedSystems: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
+        };
+
+        expect(mockMailersendBulkSend.mock.calls).toHaveLength(1);
+        expect(mockMailersendBulkSend.mock.calls[0][0]).toHaveLength(2);
+
         expect(mockMailersendBulkSend.mock.calls[0][0][0]).toMatchObject({
             from: {
                 email: config.NOTIFICATIONS_SENDER,
                 name: config.NOTIFICATIONS_SENDER_NAME,
             },
-            to: [
-                {
-                    email: "test@test.com",
-                    name: undefined,
-                },
-            ],
-            cc: undefined,
-            bcc: undefined,
-            reply_to: undefined,
-            in_reply_to: undefined,
-            subject: "New Incident {{incidentId}} was created",
-            text: undefined,
-            html: replacePlaceholdersWithAllowedKeys(templates.NewIncident, {
-                deployers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
-                developers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
-                entitiesHarmed: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
-                implicatedSystems: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
-            }, ['developers', 'deployers', 'entitiesHarmed', 'implicatedSystems']),
-            send_at: undefined,
-            attachments: undefined,
-            template_id: undefined,
-            tags: undefined,
+            to: [{ email: "test@test.com", name: undefined }],
+            subject: "AI Incident Database: 1 new incident",
+            html: templates.Notifications,
             personalization: [
                 {
                     email: "test@test.com",
                     data: {
-                        incidentId: "1",
-                        incidentTitle: "Incident 1",
-                        incidentUrl: "http://localhost:8000/cite/1",
-                        incidentDescription: "Incident 1 description",
-                        incidentDate: incidents[0].date,
-                        deployers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
-                        developers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
-                        entitiesHarmed: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
+                        newIncidents: [expectedNewIncidentEntry],
+                        entityEvents: [],
+                        incidentUpdates: [],
+                        submissionsPromoted: [],
                         email: "test@test.com",
                         userId: "5f8f4b3b9b3e6f001f3b3b3b",
                         siteUrl: "http://localhost:8000",
-                        implicatedSystems: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
                     },
                 },
             ],
-            precedence_bulk: undefined,
-        })
+        });
 
         expect(mockMailersendBulkSend.mock.calls[0][0][1]).toMatchObject({
             from: {
                 email: config.NOTIFICATIONS_SENDER,
                 name: config.NOTIFICATIONS_SENDER_NAME,
             },
-            to: [
-                {
-                    email: "test2@test.com",
-                    name: undefined,
-                },
-            ],
-            cc: undefined,
-            bcc: undefined,
-            reply_to: undefined,
-            in_reply_to: undefined,
-            subject: "New Incident {{incidentId}} was created",
-            text: undefined,
-            html: replacePlaceholdersWithAllowedKeys(templates.NewIncident, {
-                deployers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
-                developers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
-                entitiesHarmed: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
-                implicatedSystems: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
-            }, ['developers', 'deployers', 'entitiesHarmed', 'implicatedSystems']),
-            send_at: undefined,
-            attachments: undefined,
-            template_id: undefined,
-            tags: undefined,
+            to: [{ email: "test2@test.com", name: undefined }],
+            subject: "AI Incident Database: 1 new incident",
+            html: templates.Notifications,
             personalization: [
                 {
                     email: "test2@test.com",
                     data: {
-                        incidentId: "1",
-                        incidentTitle: "Incident 1",
-                        incidentUrl: "http://localhost:8000/cite/1",
-                        incidentDescription: "Incident 1 description",
-                        incidentDate: incidents[0].date,
-                        deployers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
-                        developers: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
-                        entitiesHarmed: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
+                        newIncidents: [expectedNewIncidentEntry],
+                        entityEvents: [],
+                        incidentUpdates: [],
+                        submissionsPromoted: [],
                         email: "test2@test.com",
                         userId: "5f8f4b3b9b3e6f001f3b3b3c",
                         siteUrl: "http://localhost:8000",
-                        implicatedSystems: "<a href=\"http://localhost:8000/entities/entity-1\">Entity 1</a>",
                     },
                 },
             ],
-            precedence_bulk: undefined,
-        })
+        });
     });
 
     it('Should throw and revert notifications status on error', async () => {
@@ -1618,7 +1621,7 @@ describe(`Notifications`, () => {
             throw new Error('Failed to send email');
         });
 
-        const expectedErrorMessage = "[Process Pending Notifications: New Incidents]: Failed to send email";
+        const expectedErrorMessage = "[Process Pending Notifications]: Failed to send email";
         await expect(processNotifications()).rejects.toThrow(expectedErrorMessage);
 
         expect(sendEmailMock).toHaveBeenCalledTimes(1);
@@ -1774,5 +1777,143 @@ describe(`Notifications`, () => {
                 entity_id: null,
             },
         ]);
+    });
+
+    // The data shape sent to MailerSend is asserted above; these tests exercise the
+    // consolidated Notifications template itself, rendering it with nunjucks the same
+    // way process-briefing-notifications.spec.ts does for the briefing template.
+    it('Notifications template renders every populated digest section', () => {
+
+        const digest = {
+            newIncidents: [
+                {
+                    incidentId: '741',
+                    incidentTitle: 'Test New Incident',
+                    incidentUrl: config.SITE_URL + '/cite/741',
+                    incidentDescription: 'A new incident description.',
+                    incidentDate: 'October 2, 2023',
+                    reportImageUrl: config.SITE_URL + '/img/incident-741.jpg',
+                    editorNotes: 'Curated editor note for 741.',
+                    developers: `<a href="${config.SITE_URL}/entities/openai">OpenAI</a>`,
+                    deployers: `<a href="${config.SITE_URL}/entities/acme">Acme</a>`,
+                    entitiesHarmed: `<a href="${config.SITE_URL}/entities/the-public">The Public</a>`,
+                    implicatedSystems: `<a href="${config.SITE_URL}/entities/gpt-4">GPT-4</a>`,
+                },
+            ],
+            entityEvents: [
+                {
+                    incidentId: '742',
+                    incidentTitle: 'Entity Incident',
+                    incidentUrl: config.SITE_URL + '/cite/742',
+                    incidentDescription: 'An entity-related incident.',
+                    incidentDate: 'October 3, 2023',
+                    reportImageUrl: config.SITE_URL + '/img/incident-742.jpg',
+                    developers: '',
+                    deployers: '',
+                    entitiesHarmed: '',
+                    implicatedSystems: '',
+                    entityName: 'OpenAI',
+                    entityUrl: config.SITE_URL + '/entities/openai',
+                    isUpdate: false,
+                },
+            ],
+            incidentUpdates: [
+                {
+                    incidentId: '1',
+                    incidentTitle: 'Followed Incident',
+                    incidentUrl: config.SITE_URL + '/cite/1',
+                    reportUrl: config.SITE_URL + '/cite/1#r2172',
+                    reportTitle: 'A Newly Added Report',
+                    reportAuthor: 'Jane Doe',
+                },
+            ],
+            submissionsPromoted: [
+                {
+                    incidentId: '743',
+                    incidentTitle: 'Promoted Submission',
+                    incidentUrl: config.SITE_URL + '/cite/743',
+                    incidentDescription: 'Your submission is now an incident.',
+                    incidentDate: 'November 15, 2023',
+                    reportImageUrl: config.SITE_URL + '/img/incident-743.jpg',
+                },
+            ],
+        };
+
+        const html = nunjucks.renderString(templates.Notifications, digest);
+
+        // All four section headers render (with item counts) when populated.
+        expect(html).toContain('New Incidents (1)');
+        expect(html).toContain('Entity Updates (1)');
+        expect(html).toContain('Updates to Incidents You Follow (1)');
+        expect(html).toContain('Your Approved Submissions (1)');
+
+        // Hidden preheader (inbox preview) and the unsubscribe footer.
+        expect(html).toContain('The latest incidents and updates from the AI Incident Database');
+        expect(html).toContain('Manage your subscriptions or unsubscribe');
+
+        // Per-incident lead image.
+        expect(html).toContain(`src="${config.SITE_URL}/img/incident-741.jpg"`);
+
+        // Editor notes (New Incidents only) and implicated systems render when present.
+        expect(html).toContain('Editor Notes');
+        expect(html).toContain('Curated editor note for 741.');
+        expect(html).toContain('AI systems implicated');
+
+        // Incident links come from literal template markup, so they survive regardless
+        // of how the rendering engine escapes data-driven values.
+        expect(html).toContain(`href="${config.SITE_URL}/cite/741"`);
+        expect(html).toContain('Incident 741: Test New Incident');
+
+        // Conditional branches render correctly.
+        expect(html).toContain('A new incident involving'); // entityEvents, isUpdate === false
+        expect(html).toContain('A new report was added to'); // incidentUpdates carrying a report
+        expect(html).toContain(`href="${config.SITE_URL}/cite/1#r2172"`);
+        expect(html).toContain('by Jane Doe');
+        expect(html).toContain('Your submission has been approved!');
+
+        // Entity names are present. NOTE: the surrounding <a> tags in developers/deployers/
+        // entitiesHarmed may be escaped depending on the engine — whether MailerSend renders
+        // that HTML as links is engine-specific and is verified with a live send via
+        // src/scripts/sendEmailTest.ts.
+        expect(html).toContain('OpenAI');
+    });
+
+    it('Notifications template hides sections with no items', () => {
+
+        // A user matched by only one notification type is still sent every array, exactly
+        // as emptyDigest() produces. Empty arrays are truthy in nunjucks (and in Liquid), so
+        // a bare `{% if section %}` would emit a lonely header for each unused section; the
+        // `|length > 0` guard must keep them out of the email.
+        const digest = {
+            newIncidents: [
+                {
+                    incidentId: '741',
+                    incidentTitle: 'Only New Incident',
+                    incidentUrl: config.SITE_URL + '/cite/741',
+                    incidentDescription: 'desc',
+                    incidentDate: '2023-10-02',
+                    reportImageUrl: '', // a report with no image stores image_url: '' (server/fields/reports.ts)
+                    developers: '',
+                    deployers: '',
+                    entitiesHarmed: '',
+                    implicatedSystems: '',
+                },
+            ],
+            entityEvents: [],
+            incidentUpdates: [],
+            submissionsPromoted: [],
+        };
+
+        const html = nunjucks.renderString(templates.Notifications, digest);
+
+        expect(html).toContain('New Incidents (1)');
+        expect(html).not.toContain('Entity Updates');
+        expect(html).not.toContain('Updates to Incidents You Follow');
+        expect(html).not.toContain('Your Approved Submissions');
+
+        // An empty (or missing) image_url is falsy, so no incident <img> is emitted — the card
+        // renders without an image rather than a broken icon or placeholder. (The AIID header
+        // logo uses alt="AIID", so it is unaffected by this assertion.)
+        expect(html).not.toContain('alt="Incident image"');
     });
 });

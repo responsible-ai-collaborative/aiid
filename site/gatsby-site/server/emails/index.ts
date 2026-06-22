@@ -8,50 +8,13 @@ export interface SendBulkEmailParams {
     recipients: {
         email: string;
         userId?: string;
+        // Per-recipient subject override; falls back to the shared `subject` below.
+        subject?: string;
+        // Per-recipient overrides; merged on top of the shared dynamicData below.
+        dynamicData?: Record<string, any>;
     }[];
     subject: string;
-    dynamicData?: {
-        incidentId?: string;
-        incidentTitle?: string;
-        incidentUrl?: string;
-        incidentDescription?: string;
-        incidentDate?: string;
-        developers?: string;
-        deployers?: string;
-        entitiesHarmed?: string;
-        implicatedSystems?: string;
-        reportUrl?: string;
-        reportTitle?: string;
-        reportAuthor?: string;
-        entityName?: string;
-        entityUrl?: string;
-        magicLink?: string;    // URL for magic link (optional)
-        newIncidents?: {
-            id: number;
-            title: string;
-            url: string;
-            date: string;
-            description: string;
-        }[];
-        updatedIncidents?: {
-            id: number;
-            title: string;
-            url: string;
-            date_modified: string;
-        }[];
-        newBlogPosts?: {
-            title: string;
-            url: string;
-            date: string;
-            description: string;
-        }[];
-        updates?: {
-            title: string;
-            url: string;
-            date: string;
-            description: string;
-        }[];
-    };
+    dynamicData?: Record<string, any>;
     templateId: string; // Email template ID
 }
 
@@ -145,24 +108,35 @@ export const sendBulkEmails = async ({ recipients, subject, dynamicData, templat
 
     for (const recipient of recipients) {
 
+        const mergedData = {
+            ...dynamicData,
+            ...recipient.dynamicData,
+            email: recipient.email,
+            userId: recipient.userId,
+            siteUrl: config.SITE_URL,
+        };
+
         const personalizations = [{
             email: recipient.email,
-            data: {
-                ...dynamicData,
-                email: recipient.email,
-                userId: recipient.userId,
-                siteUrl: config.SITE_URL,
-            }
+            data: mergedData,
         }]
 
         // We have to do this because MailerSend is escaping the placeholders containing html tags
-        const html = replacePlaceholdersWithAllowedKeys(emailTemplateBody, dynamicData, ['developers', 'deployers', 'entitiesHarmed', 'implicatedSystems'])
+        const html = replacePlaceholdersWithAllowedKeys(emailTemplateBody, mergedData, ['developers', 'deployers', 'entitiesHarmed', 'implicatedSystems'])
 
         const emailParams = new EmailParams()
             .setFrom({ email: config.NOTIFICATIONS_SENDER, name: config.NOTIFICATIONS_SENDER_NAME })
             .setTo([new Recipient(recipient.email)])
             .setPersonalization(personalizations)
-            .setSubject(subject)
+            .setSubject(recipient.subject ?? subject)
+            // NOTE: do not add .setListUnsubscribe() here without first confirming the
+            // MailerSend plan. The list_unsubscribe field is gated to Professional/Enterprise
+            // plans; on lower tiers MailerSend rejects every message in the bulk batch during
+            // async validation (a 202 is still returned at POST time), so nothing is delivered
+            // while the run looks successful. This regressed delivery in #3943/#3950 and was
+            // removed to restore the working behavior. If reintroduced, it must be a *bare* URL
+            // (e.g. `${config.SITE_URL}/account/`, no angle brackets) on a Professional+ plan.
+            // The email footer already provides a manage/unsubscribe link.
             .setHtml(html);
         //TODO: add a text version of the email
         // .setText("Greetings from the team, you got this message through MailerSend.");

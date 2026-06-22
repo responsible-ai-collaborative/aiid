@@ -109,10 +109,32 @@ These subscription types are also documented in [subscriptions.js](..//gatsby-si
 
 [MailerSend](https://www.mailersend.com/) is used to send email notifications.
 
-Email notifications to New Incidents (subscription type **New Incident**), Incident updates (subscription type **Incident**) and Submission Promoted (subscription type **Submission Promoted**) are sent when the next build finishes. This is because we have to wait until the new Incident page is generated and accessible.
-When a new Incident is created or updates, a pending notification item is saved into the `notifications` DB collection with `processed=false` field.
-And finally, as part of the site build process, we processed all pending notifications (`processed=false`), send the emails to all recipients, and update the items with `processed=true` and `sentDate=[now]`.
-Email notifications for **AI Briefing** is sent once a week, on Sunday at 15:00 UTC and triggered by a Github action. For more information refer to [AI Briefing email](./BRIEFING.md)
+Notifications for the **New Incident**, **Incident**, **Entities** and **Submission Promoted** subscription types are all sent when the next site build finishes. This is because we have to wait until the new/updated Incident page is generated and accessible. When a relevant Incident is created or updated (or a submission is promoted), a pending notification item is saved into the `notifications` DB collection with `processed=false`.
+
+As part of the site build process, the `site/gatsby-site/src/scripts/process-notifications.ts` script processes every pending notification (`processed=false`) of these types in a single pass:
+
+1. It loads all pending notifications and batch-fetches the incidents, reports, entities and subscriptions they reference.
+2. It builds **one digest per recipient**, grouping that user's matching notifications into up to four sections (see the table below).
+3. It marks the included notifications as `processed=true` (with `sentDate=[now]`) **before** sending, then sends every digest in a **single MailerSend bulk send** (automatically split into chunks of 500 recipients). If the send fails, the notifications are reverted to `processed=false` so the next build retries them.
+
+This means a user who matches several notifications in the same build now receives **one** consolidated email instead of one email per notification type. All digests share the single `server/emails/templates/Notifications.ts` template, and each section only renders when it has items:
+
+| Section | Built from notification type(s) | Recipients |
+| --- | --- | --- |
+| **New Incidents** | `new-incidents` | `new-incidents` subscribers |
+| **Entity Updates** | `entity` | `entity` subscribers of the affected entity |
+| **Updates to Incidents You Follow** | `new-report-incident`, `incident-updated` | `incident` subscribers of that incident |
+| **Your Approved Submissions** | `submission-promoted` | the user who made the submission |
+
+Email notifications for the **AI Briefing** are sent once a week, on Sunday at 15:00 UTC, and are triggered by a separate GitHub action using their own template. For more information refer to the [AI Briefing email](./BRIEFING.md) doc.
+
+#### Key files
+
+- **Core logic:** `site/gatsby-site/src/scripts/process-notifications.ts`
+- **Email template:** `site/gatsby-site/server/emails/templates/Notifications.ts`
+- **Bulk send helper:** `site/gatsby-site/server/emails/index.ts` (`sendBulkEmails`)
+- **GitHub Action:** `./.github/workflows/process-notifications.yml`
+- **Tests:** `site/gatsby-site/server/tests/notifications.spec.ts`
 
 #### Notifications collection definition
 

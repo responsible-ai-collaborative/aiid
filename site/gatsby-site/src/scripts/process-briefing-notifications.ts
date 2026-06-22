@@ -230,7 +230,14 @@ async function notificationsToBriefingIncidents(context: Context) {
     );
   }
 
-  console.log(`Sent AI Incident Briefing to ${recipients.length} users.`);
+  // Reached only when the send was skipped, or when sendBulkEmails resolved — a send
+  // failure rethrows in handleNotificationError above. MailerSend's bulk endpoint only
+  // acknowledges receipt (HTTP 202), so report a hand-off, not a confirmed delivery.
+  if (shouldSendEmail) {
+    console.log(`AI Incident Briefing: submitted ${recipients.length} email(s) to MailerSend (delivery not confirmed by this run).`);
+  } else {
+    console.log(`AI Incident Briefing: nothing sent (recipients: ${recipients.length}, content to send: ${hasContentToSend}).`);
+  }
 
   return result;
 }

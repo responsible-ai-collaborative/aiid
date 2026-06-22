@@ -81,21 +81,12 @@ const config = {
   sidebar: {
     navConfig: [
       { title: 'Welcome to the AIID', label: 'welcome', url: '/', items: [] },
-      { title: 'Discover Incidents', label: 'discover', url: '/apps/discover/', items: [] },
       { title: 'Spatial View', label: 'spatial', url: '/summaries/spatial/', items: [] },
       { title: 'Table View', label: 'incidents', url: '/apps/incidents/', items: [] },
       { title: 'List View', label: 'list', url: '/summaries/incidents/', items: [] },
       { title: 'Entities', label: 'entities', url: '/entities/', items: [] },
       { title: 'Taxonomies', label: 'taxonomies', url: '/taxonomies/', items: [] },
       { title: 'Random Incident', label: 'random', url: '/random/', items: [] },
-      { title: 'Submit Incident Reports', label: 'submit', url: '/apps/submit/', items: [] },
-      { title: 'Risk Checklists', label: 'checklists', url: '/apps/checklists/', items: [] },
-      {
-        title: 'Submission Leaderboard',
-        label: 'leaderboard',
-        url: '/summaries/leaderboard/',
-        items: [],
-      },
       { title: 'Blog', label: 'blog', url: '/blog/', items: [] },
       { title: 'AI News Digest', label: 'newsdigest', url: '/apps/newsdigest/', items: [] },
     ],
@@ -137,6 +128,11 @@ const config = {
           { title: 'Contact and Follow', label: 'contact', url: '/contact' },
           { title: 'Apps and Summaries', label: 'about_apps', url: '/about_apps' },
           { title: 'Editor’s Guide', label: 'editors-guide', url: '/editors-guide' },
+          {
+            title: 'Submission Leaderboard',
+            label: 'leaderboard',
+            url: '/summaries/leaderboard/',
+          },
         ],
       },
       {
