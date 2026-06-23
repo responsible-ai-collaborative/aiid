@@ -35,17 +35,17 @@ jobs:
         shardTotal: [6]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ inputs.sha }}
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: lts/*
 
       - name: Cache NPM dependencies
         id: cache-npm-dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             site/gatsby-site/node_modules
@@ -58,7 +58,7 @@ jobs:
 
       - name: Cache Playwright Browsers
         id: cache-playwright-browsers
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-browsers-${{ hashFiles('**/gatsby-site/package-lock.json') }}-${{ inputs.cache-modifier }}

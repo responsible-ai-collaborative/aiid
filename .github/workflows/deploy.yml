@@ -53,20 +53,20 @@ jobs:
           df -h
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ inputs.sha }}
           fetch-depth: 0
 
       - name: Cache NPM dependencies
         id: cache-npm-dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: site/gatsby-site/node_modules
           key: ${{ runner.os }}-npm-dependencies-${{ hashFiles('**/gatsby-site/package-lock.json') }}-${{ inputs.cache-modifier }}
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
 
       - name: Install dependencies
         if: steps.cache-npm-dependencies.outputs.cache-hit != 'true'
@@ -196,7 +196,7 @@ jobs:
 
       - name: Validate deploy output
         id: validate-deploy
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -215,7 +215,7 @@ jobs:
 
       - name: Comment on PR
         continue-on-error: true
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
