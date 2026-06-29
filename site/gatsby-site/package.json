@@ -179,7 +179,7 @@
     "@types/async": "^3.2.25",
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^20.12.14",
+    "@types/node": "^26.0.1",
     "@types/nunjucks": "^3.2.6",
     "@types/pluralize": "^0.0.33",
     "@types/sinon": "^17.0.4",
