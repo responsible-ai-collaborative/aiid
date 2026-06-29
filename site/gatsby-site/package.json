@@ -39,7 +39,7 @@
     "chalk": "^5.3.0",
     "cloudinary": "^1.36.4",
     "cors": "^2.8.6",
-    "cross-fetch": "^3.1.8",
+    "cross-fetch": "^4.1.0",
     "csv-parse": "^5.5.6",
     "csvtojson": "^2.0.14",
     "d3": "^7.1.1",
