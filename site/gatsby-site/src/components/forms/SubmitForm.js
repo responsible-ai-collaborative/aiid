@@ -28,6 +28,8 @@ import getSourceDomain from 'utils/getSourceDomain';
 import { Helmet } from 'react-helmet';
 import { Button } from 'flowbite-react';
 import { getCloudinaryPublicID } from 'utils/cloudinary';
+import ApiLoginRequired from 'components/ui/ApiLoginRequired';
+import useApiAccess from 'hooks/useApiAccess';
 import { SUBMISSION_INITIAL_VALUES } from 'utils/submit';
 import isEqual from 'lodash/isEqual';
 import isEmpty from 'lodash/isEmpty';
@@ -137,8 +139,12 @@ const SubmitForm = () => {
 
   const { locale } = useLocalization();
 
+  const { hasApiAccess, loading: apiAccessLoading } = useApiAccess();
+
   // See https://github.com/apollographql/apollo-client/issues/5419
-  useQuery(FIND_SUBMISSIONS);
+  // Skipped without API access: submitting requires a login (SEE:
+  // server/apiAccess.ts), so this cache-priming read would only ever be refused.
+  useQuery(FIND_SUBMISSIONS, { skip: !hasApiAccess });
 
   const [insertSubmission] = useMutation(INSERT_SUBMISSION, { refetchQueries: [FIND_SUBMISSIONS] });
 
@@ -267,6 +273,28 @@ const SubmitForm = () => {
   const submissionRef = useRef(null);
 
   if (!submission || isEmpty(submission)) return <></>;
+
+  const formTitle = isIncidentResponse ? 'New Incident Response' : 'Submit a New Report';
+
+  // A submission is a write through the API, so it needs a login. The heading is
+  // kept so the visitor can see they reached the right page, and the notice
+  // explains why the form itself is not there — rather than presenting a form
+  // whose submit button would fail. SEE: server/apiAccess.ts
+  if (!apiAccessLoading && !hasApiAccess) {
+    return (
+      <>
+        <Helmet>
+          <title>{t(formTitle)}</title>
+        </Helmet>
+        <div className={'titleWrapper'}>
+          <h1 data-cy="submit-form-title">
+            <Trans ns="submit">{formTitle}</Trans>
+          </h1>
+        </div>
+        <ApiLoginRequired className="mt-4" />
+      </>
+    );
+  }
 
   return (
     <>

@@ -36,6 +36,11 @@ Details about the AIID API, including how to access and interact with it, and in
 
 Complete guide to the authentication system including NextAuth.js configuration, user roles, permissions, and security features.
 
+10a. [API Access, Usage Accounting, and Blocking](API_ACCESS.md)
+
+Why the GraphQL API requires a logged-in account, how components explain that requirement to
+visitors, how per-account request usage is recorded, and how an account is blocked.
+
 11. [Prismic setup](PRISMIC.md)
 
 Guide to connect a Prismic account to this project, to create Documents, Blog posts and much more.

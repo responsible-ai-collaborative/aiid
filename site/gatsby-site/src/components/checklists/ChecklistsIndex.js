@@ -27,6 +27,7 @@ import {
 } from 'utils/checklists';
 import { FIND_CHECKLISTS, INSERT_CHECKLIST, DELETE_CHECKLIST } from '../../graphql/checklists';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import ApiLoginRequired from 'components/ui/ApiLoginRequired';
 
 const ChecklistsIndex = ({ users }) => {
   const { t } = useTranslation();
@@ -240,12 +241,12 @@ const ChecklistsIndex = ({ users }) => {
               {loggedIn ? (
                 <Trans>You haven’t made any checklists (yet).</Trans>
               ) : (
-                <Trans>
-                  <LocalizedLink className="text-gray-600 underline" to="/login">
-                    Sign in
-                  </LocalizedLink>{' '}
-                  to create checklists.
-                </Trans>
+                // Checklists are stored per account and read through the API, so
+                // there is nothing to list until the visitor logs in. The shared
+                // notice is used in place of a bare "Sign in to create
+                // checklists" so the reason for the requirement is given here too.
+                // SEE: server/apiAccess.ts
+                <ApiLoginRequired compact />
               )}
             </p>
           </div>

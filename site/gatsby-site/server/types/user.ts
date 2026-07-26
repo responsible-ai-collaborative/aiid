@@ -41,6 +41,17 @@ export const UserType = new GraphQLObjectType({
         last_name: { type: GraphQLString },
         roles: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
         userId: { type: new GraphQLNonNull(GraphQLString) },
+
+        /**
+         * Blocks this account from the GraphQL API. Enforced by the access gate
+         * in `server/apiAccess.ts`; only an admin may change it, which is
+         * enforced by `canEditProtectedUserFields` in `server/rules.ts` because
+         * the `updateOneUser` mutation is otherwise open to a user editing their
+         * own record.
+         */
+        api_access_blocked: { type: GraphQLBoolean },
+        api_access_blocked_at: { type: GraphQLDateTime },
+        api_access_blocked_reason: { type: GraphQLString },
     },
 });
 

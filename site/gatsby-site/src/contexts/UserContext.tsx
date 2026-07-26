@@ -2,9 +2,11 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { ApolloProvider, ApolloClient, HttpLink, InMemoryCache, ApolloLink } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import { removeTypenameFromVariables } from '@apollo/client/link/remove-typename';
-import { signOut, signIn, useSession, getCsrfToken, SignInResponse } from "next-auth/react";
+import { onError } from '@apollo/client/link/error';
+import { signOut, signIn, useSession, getCsrfToken, SignInResponse } from 'next-auth/react';
 import '../utils/sentry'; // Initialize Sentry
 import * as Sentry from '@sentry/react';
+import { clearApiAccessDenial, getApiAccessDenial, setApiAccessDenial } from '../utils/apiAccess';
 
 interface User {
   roles?: string[];
@@ -37,17 +39,38 @@ const sentryLink = new ApolloLink((operation, forward) => {
       headers: {
         ...headers,
         'sentry-trace': Sentry.spanToTraceHeader(activeSpan),
-        'baggage': Sentry.spanToBaggageHeader(activeSpan),
+        baggage: Sentry.spanToBaggageHeader(activeSpan),
       },
     }));
   }
-  
+
   return forward(operation);
+});
+
+/**
+ * Publishes API access denials so components can explain them in place.
+ *
+ * The API requires a session (SEE: server/apiAccess.ts). A component can predict
+ * the logged-out case from the session alone, but not a *blocked* account — that
+ * session is valid, and the refusal only arrives with the rejected request. This
+ * link is where that arrival is noticed, once, for every query and mutation in
+ * the app, so no individual caller has to inspect its own error for the code.
+ */
+const apiAccessLink = onError((errorResponse) => {
+  const denial = getApiAccessDenial({
+    graphQLErrors: errorResponse.graphQLErrors,
+    networkError: errorResponse.networkError,
+  });
+
+  if (denial) {
+    setApiAccessDenial(denial);
+  }
 });
 
 const client = new ApolloClient({
   link: ApolloLink.from([
     sentryLink,
+    apiAccessLink,
     removeTypenameFromVariables(),
     new HttpLink({
       uri: '/api/graphql',
@@ -85,7 +108,6 @@ interface UserContextProviderProps {
 export const UserContext = React.createContext<UserContextValue | undefined>(undefined);
 
 export const useUserContext = () => {
-
   const context = useContext(UserContext);
 
   if (context === undefined) {
@@ -93,7 +115,7 @@ export const useUserContext = () => {
   }
 
   return context;
-}
+};
 
 export const UserContextProvider: React.FC<UserContextProviderProps> = ({ children }) => {
   const { data: session } = useSession();
@@ -110,6 +132,11 @@ export const UserContextProvider: React.FC<UserContextProviderProps> = ({ childr
     if (session?.user) {
       setUser(session.user as User);
       setLoading(false);
+
+      // A denial recorded while logged out would otherwise persist for the rest
+      // of the page's life and keep components showing the login notice after the
+      // session that resolves it has arrived.
+      clearApiAccessDenial();
     }
   }, [session]);
 
@@ -125,8 +152,11 @@ export const UserContextProvider: React.FC<UserContextProviderProps> = ({ childr
         await signOut({ redirect: false });
       },
       sendMagicLink: async (email: string, callbackUrl: string) => {
-
-        const result = await signIn('http-email', { email, redirect: false, callbackUrl }, { operation: 'signup' });
+        const result = await signIn(
+          'http-email',
+          { email, redirect: false, callbackUrl },
+          { operation: 'signup' }
+        );
 
         return result;
       },

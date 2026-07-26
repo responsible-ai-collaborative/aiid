@@ -4,6 +4,13 @@
 
 The AIID API is built to facilitate interactions with the AI Incident Database.
 
+> **Every query and mutation requires a logged-in account.** Requests without a session are
+> refused with `API_LOGIN_REQUIRED` (HTTP 401), and accounts can be blocked from the API
+> individually. Requests are counted per account. See
+> [API Access, Usage Accounting, and Blocking](API_ACCESS.md) for the rationale, the error
+> codes, how to render the requirement in a component, and how to read usage. Schema
+> introspection remains open, so the Apollo Explorer still loads while logged out.
+
 1. **Access the Apollo Explorer**
 
    Navigate to `http://localhost:8000/graphql` in your web browser. The Apollo Explorer instance should be displayed, allowing you to introspect and run queries against the API.
@@ -195,6 +202,11 @@ Email notifications for the **AI Briefing** are sent once a week, on Sunday at 1
 ## User Roles
 
 All site users have one or more roles assigned to them. The role determines what actions the user can take on the site.
+
+Roles govern *what* a logged-in user may do. Being logged in at all is a separate,
+prior requirement enforced for every root field by the access gate — a user with no roles can
+still read the public schema, and a user with every role is refused if their account is
+blocked. See [API_ACCESS.md](API_ACCESS.md).
 
 As soon as a user is signed in, the system assigns a `subscriber` role by default. Role assignment is handled manually by the site administrators.
 

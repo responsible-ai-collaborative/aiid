@@ -2,6 +2,7 @@ import { GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { shield, deny } from 'graphql-shield';
 import { applyMiddleware } from 'graphql-middleware';
 import { ObjectIdScalar } from './scalars';
+import { apiAccessMiddleware } from './apiAccess';
 
 import {
     queryFields as quickAddsQueryFields,
@@ -100,6 +101,11 @@ import {
     permissions as entityDuplicatesPermissions
 } from './fields/entityDuplicates';
 
+import {
+    queryFields as apiUsageQueryFields,
+    permissions as apiUsagePermissions
+} from './fields/apiUsage';
+
 export const getSchema = () => {
 
     const query = new GraphQLObjectType({
@@ -126,6 +132,7 @@ export const getSchema = () => {
             ...incidentsHistoryQueryFields,
             ...checklistsQueryFields,
             ...entityDuplicatesQueryFields,
+            ...apiUsageQueryFields,
         }
     });
 
@@ -187,6 +194,7 @@ export const getSchema = () => {
                 ...incidentsHistoryPermissions.Query,
                 ...checklistsPermissions.Query,
                 ...entityDuplicatesPermissions.Query,
+                ...apiUsagePermissions.Query,
             },
             Mutation: {
                 "*": deny,
@@ -209,7 +217,15 @@ export const getSchema = () => {
         }
     );
 
-    const schemaWithAuth = applyMiddleware(schema, permissions)
+    /**
+     * `apiAccessMiddleware` is listed first so it wraps `permissions`: the login
+     * requirement is evaluated before any role rule, and a logged-out caller
+     * gets the actionable `API_LOGIN_REQUIRED` error instead of shield's generic
+     * "not authorized". It also means shield's `allowExternalErrors` setting,
+     * which governs errors raised inside its own chain, cannot mask it in
+     * production.
+     */
+    const schemaWithAuth = applyMiddleware(schema, apiAccessMiddleware, permissions)
 
     return schemaWithAuth;
 }

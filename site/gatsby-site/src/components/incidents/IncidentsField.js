@@ -3,6 +3,7 @@ import { useField } from 'formik';
 import { AsyncTypeahead, Token } from 'react-bootstrap-typeahead';
 import { useQuery } from '@apollo/client';
 import { FIND_INCIDENTS_TITLE } from '../../graphql/incidents';
+import useApiAccess from 'hooks/useApiAccess';
 
 const filterBy = (option, text) => {
   return (
@@ -15,7 +16,13 @@ const filterBy = (option, text) => {
 export default function IncidentsField({ id, name, placeHolder = '', multiple = true, className }) {
   const [{ value }, , { setTouched, setValue }] = useField({ name });
 
-  const { data } = useQuery(FIND_INCIDENTS_TITLE);
+  const { hasApiAccess } = useApiAccess();
+
+  // The incident titles backing this typeahead come from the API, which requires a
+  // login (SEE: server/apiAccess.ts). Skipped rather than left to be refused: this
+  // field is mounted by the submission form, whose own notice already explains the
+  // requirement, so the only effect of issuing it would be a rejected request.
+  const { data } = useQuery(FIND_INCIDENTS_TITLE, { skip: !hasApiAccess });
 
   const [loading, setLoading] = useState(true);
 
