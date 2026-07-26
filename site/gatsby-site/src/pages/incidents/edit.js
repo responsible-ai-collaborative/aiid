@@ -18,9 +18,13 @@ import { Link } from 'gatsby';
 import { processEntities } from '../../utils/entities';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 import { useUserContext } from 'contexts/UserContext';
+import ApiLoginRequired from 'components/ui/ApiLoginRequired';
+import useApiAccess from 'hooks/useApiAccess';
 
 function EditCitePage(props) {
   const { user } = useUserContext();
+
+  const { hasApiAccess, loading: apiAccessLoading } = useApiAccess();
 
   const { t, i18n } = useTranslation();
 
@@ -30,14 +34,18 @@ function EditCitePage(props) {
 
   const [incidentId] = useQueryParam('incident_id', withDefault(NumberParam, 1));
 
+  // SEE: server/apiAccess.ts
   const { data: incidentData, loading: loadingIncident } = useQuery(FIND_FULL_INCIDENT, {
     variables: {
       filter: { incident_id: { EQ: incidentId } },
       translationLanguages: availableLanguages.filter((c) => c.code !== 'en').map((c) => c.code), // Exclude English since it's the default language
     },
+    skip: !hasApiAccess,
   });
 
-  const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES);
+  const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES, {
+    skip: !hasApiAccess,
+  });
 
   const [incidentTranslations, setIncidentTranslations] = useState(null);
 
@@ -237,6 +245,16 @@ function EditCitePage(props) {
   const entityNames = entitiesData?.entities
     ? entitiesData.entities.map((node) => node.name).sort()
     : [];
+
+  // Editing reads the incident through the API, so a logged-out visitor gets the
+  // reason rather than a form with nothing in it. SEE: server/apiAccess.ts
+  if (!apiAccessLoading && !hasApiAccess) {
+    return (
+      <div className={'w-full'} {...props}>
+        <ApiLoginRequired />
+      </div>
+    );
+  }
 
   return (
     <div className={'w-full'} {...props}>

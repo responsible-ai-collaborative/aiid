@@ -13,6 +13,7 @@ import Button from '../../elements/Button';
 import { useLocalization, LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
+import useApiAccess from 'hooks/useApiAccess';
 
 const blogPostUrl = '/blog/using-ai-to-connect-ai-incidents';
 
@@ -31,11 +32,20 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
 
   const [flagSimilarity] = useMutation(FLAG_INCIDENT_SIMILARITY);
 
+  const { hasApiAccess } = useApiAccess();
+
+  // Both queries are skipped without API access (SEE: server/apiAccess.ts). Each
+  // similar-incident card issues them, so on a busy incident page an unauthenticated
+  // visitor would otherwise fire a rejected request per card. Neither is needed to
+  // render the card: `parentIncidentData` only feeds the editor-only flagging
+  // action below, and `incidentData` only supplies a translated title, which falls
+  // back to the statically built one.
   const { data: parentIncidentData } = useQuery(FIND_FULL_INCIDENT, {
     variables: {
       filter: { incident_id: { EQ: parentIncident.incident_id } },
       translationLanguages: availableLanguages.filter((c) => c.code !== 'en').map((c) => c.code), // Exclude English since it's the default language
     },
+    skip: !hasApiAccess || !isRole('incident_editor'),
   });
 
   const { data: incidentData } = useQuery(FIND_FULL_INCIDENT, {
@@ -43,6 +53,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
       filter: { incident_id: { EQ: incident.incident_id } },
       translationLanguages: availableLanguages.filter((c) => c.code !== 'en').map((c) => c.code), // Exclude English since it's the default language
     },
+    skip: !hasApiAccess,
   });
 
   const addToast = useToastContext();

@@ -14,12 +14,16 @@ import { format } from 'date-fns';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import Label from '../../components/forms/Label';
 import { FIND_ENTITY_RELATIONSHIPS } from '../../graphql/entity_relationships';
+import ApiLoginRequired from 'components/ui/ApiLoginRequired';
+import useApiAccess from 'hooks/useApiAccess';
 
 const schema = Yup.object().shape({
   name: Yup.string().required(),
 });
 
 function EditEntityPage(props) {
+  const { hasApiAccess, loading: apiAccessLoading } = useApiAccess();
+
   const { t } = useTranslation();
 
   const [entity, setEntity] = useState(null);
@@ -32,13 +36,16 @@ function EditEntityPage(props) {
 
   const [updatedEntityRelationships, setUpdatedEntityRelationships] = useState([]);
 
-  const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES);
+  const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES, {
+    skip: !hasApiAccess,
+  });
 
   const {
     data: entityData,
     loading: loadingEntity,
     refetch,
   } = useQuery(FIND_ENTITY, {
+    skip: !hasApiAccess,
     variables: { filter: { entity_id: { EQ: entityId } } },
   });
 
@@ -51,6 +58,7 @@ function EditEntityPage(props) {
     refetch: refetchEntityRelationships,
     loading: loadingEntityRelationships,
   } = useQuery(FIND_ENTITY_RELATIONSHIPS, {
+    skip: !hasApiAccess,
     variables: {
       filter: {
         OR: [{ sub: { EQ: entityId } }, { obj: { EQ: entityId }, is_symmetric: { EQ: true } }],
@@ -146,6 +154,12 @@ function EditEntityPage(props) {
     }
   };
 
+  // Every read on this page goes through the API, which requires a login
+  // (SEE: server/apiAccess.ts), so a logged-out visitor is given the reason
+  // instead of an empty page.
+  if (!apiAccessLoading && !hasApiAccess) {
+    return <ApiLoginRequired />;
+  }
   return (
     <div className={'w-full'} {...props}>
       {!loading && entity && (

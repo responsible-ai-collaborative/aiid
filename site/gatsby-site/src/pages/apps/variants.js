@@ -8,9 +8,14 @@ import { FIND_INCIDENTS } from '../../graphql/incidents';
 import HeadContent from '../../components/HeadContent';
 import ListSkeleton from 'elements/Skeletons/List';
 import { getVariantStatus } from '../../utils/variants';
+import ApiLoginRequired from 'components/ui/ApiLoginRequired';
+import useApiAccess from 'hooks/useApiAccess';
 
 export default function VariantsPage(props) {
-  const { data: variantsData, refetch } = useQuery(FIND_VARIANTS);
+  const { hasApiAccess, loading: apiAccessLoading } = useApiAccess();
+
+  // SEE: server/apiAccess.ts
+  const { data: variantsData, refetch } = useQuery(FIND_VARIANTS, { skip: !hasApiAccess });
 
   const [data, setData] = useState(null);
 
@@ -67,6 +72,16 @@ export default function VariantsPage(props) {
   const setLoading = (loading) => {
     setIsLoading(loading);
   };
+
+  // Without this the `!data` branch below renders the skeleton indefinitely,
+  // since the query that would fill it is never issued.
+  if (!apiAccessLoading && !hasApiAccess) {
+    return (
+      <div className="w-full" {...props}>
+        <ApiLoginRequired className="ml-6" />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full" {...props}>

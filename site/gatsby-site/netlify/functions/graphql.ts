@@ -9,6 +9,8 @@ import { netlifyEventToLambdaEvent } from '../../src/utils/serverless';
 import * as Sentry from '@sentry/aws-serverless';
 import { HandlerContext, HandlerEvent } from '@netlify/functions';
 import { Context } from '../../server/interfaces';
+import { apiUsagePlugin } from '../../server/apiUsage';
+import { isApiAccessDenialCode } from '../../server/apiAccess';
 
 const sentryPlugin: ApolloServerPlugin<Context> = {
     async requestDidStart(requestContext) {
@@ -33,6 +35,16 @@ const sentryPlugin: ApolloServerPlugin<Context> = {
             },
             async didEncounterErrors(requestContext: any) {
                 requestContext.errors?.forEach((error: any) => {
+                    // API access denials are the expected response to a logged-out
+                    // or blocked caller, not a fault. Reporting them would bury
+                    // real errors under the very bot traffic the gate exists to
+                    // turn away. The volume is still observable: it is counted per
+                    // account in `customData.api_usage` (SEE: server/apiUsage.ts)
+                    // and, for callers with no account, in Netlify's own logs.
+                    if (isApiAccessDenialCode(error?.extensions?.code)) {
+                        return;
+                    }
+
                     Sentry.captureException(error);
                 });
             }
@@ -40,15 +52,18 @@ const sentryPlugin: ApolloServerPlugin<Context> = {
     }
 };
 
-const server = new ApolloServer({
-    schema,
-    plugins: [sentryPlugin]
-});
-
 const client = new MongoClient(config.API_MONGODB_CONNECTION_STRING, {
     maxPoolSize: 10,  // default 100
     minPoolSize: 1,  // default 0
     maxIdleTimeMS: 60000,
+});
+
+const server = new ApolloServer({
+    schema,
+    // `apiUsagePlugin` counts each request against the account that made it, so
+    // usage can be reported per account and abusive volume identified.
+    // SEE: server/apiUsage.ts
+    plugins: [sentryPlugin, apiUsagePlugin(client)]
 });
 
 const graphqlHandler = startServerAndCreateLambdaHandler(

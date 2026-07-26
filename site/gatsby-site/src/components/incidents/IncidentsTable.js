@@ -5,6 +5,8 @@ import IncidentEditModal from './IncidentEditModal';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
 import { Button, ToggleSwitch } from 'flowbite-react';
+import ApiLoginRequired from 'components/ui/ApiLoginRequired';
+import useApiAccess from 'hooks/useApiAccess';
 import Table, {
   DefaultColumnFilter,
   DefaultColumnHeader,
@@ -47,6 +49,8 @@ function ListCell({ cell }) {
 
 export default function IncidentsTable({ data, isLiveData, setIsLiveData }) {
   const [incidentIdToEdit, setIncindentIdToEdit] = useState(0);
+
+  const { hasApiAccess } = useApiAccess();
 
   const { loading, isRole } = useUserContext();
 
@@ -159,10 +163,18 @@ export default function IncidentsTable({ data, isLiveData, setIsLiveData }) {
 
   return (
     <>
-      <div className="flex items-center mb-2">
+      <div className="flex items-center mb-2 flex-wrap gap-2">
         <div className="flex justify-start ml-4 mb-2 pt-1 mr-2">
+          {/*
+            The table above is rendered from build-time data and needs no session.
+            Only live data is read through the API, so the switch is the one control
+            here that requires a login. It is left visible but disabled, with the
+            reason beside it, rather than hidden — a reader can then see that the
+            option exists and why it is unavailable. SEE: server/apiAccess.ts
+          */}
           <ToggleSwitch
             checked={isLiveData}
+            disabled={!hasApiAccess}
             label={t('Show Live data')}
             onChange={(checked) => {
               setIsLiveData(checked);
@@ -170,6 +182,7 @@ export default function IncidentsTable({ data, isLiveData, setIsLiveData }) {
             name="live-data-switch"
           />
         </div>
+        {!hasApiAccess && <ApiLoginRequired compact className="mr-2" />}
         <Button color="light" onClick={() => table.setAllFilters([])}>
           Reset filters
         </Button>

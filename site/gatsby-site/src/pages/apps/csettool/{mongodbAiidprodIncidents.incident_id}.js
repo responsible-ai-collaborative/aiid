@@ -5,19 +5,27 @@ import ListSkeleton from 'elements/Skeletons/List';
 import { FIND_CLASSIFICATION } from '../../../graphql/classifications';
 import CsetTable from 'components/classifications/CsetTable';
 import { graphql } from 'gatsby';
+import ApiLoginRequired from 'components/ui/ApiLoginRequired';
+import useApiAccess from 'hooks/useApiAccess';
 
 const allNamespaces = ['CSETv1_Annotator-1', 'CSETv1_Annotator-2', 'CSETv1_Annotator-3'];
 
 const ToolPage = (props) => {
+  const { hasApiAccess, loading: apiAccessLoading } = useApiAccess();
+
   const {
     params: { incident_id },
     data: { taxa },
   } = props;
 
+  // The page query supplies only the field vocabulary (`taxa`); the annotations
+  // themselves come from here, so there is nothing to show without a login.
+  // SEE: server/apiAccess.ts
   const { data, loading } = useQuery(FIND_CLASSIFICATION, {
     variables: {
       filter: { incidents: { IN: parseInt(incident_id) }, namespace: { IN: allNamespaces } },
     },
+    skip: !hasApiAccess,
   });
 
   const [tableData, setTableData] = useState([]);
@@ -60,6 +68,13 @@ const ToolPage = (props) => {
       setTableData(rows);
     }
   }, [data]);
+
+  // Every read on this page goes through the API, which requires a login
+  // (SEE: server/apiAccess.ts), so a logged-out visitor is given the reason
+  // instead of an empty page.
+  if (!apiAccessLoading && !hasApiAccess) {
+    return <ApiLoginRequired />;
+  }
 
   return (
     <div {...props} className="w-full">

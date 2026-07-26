@@ -17,8 +17,12 @@ import { Button, Spinner } from 'flowbite-react';
 import { useUserContext } from 'contexts/UserContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { graphql } from 'gatsby';
+import ApiLoginRequired from 'components/ui/ApiLoginRequired';
+import useApiAccess from 'hooks/useApiAccess';
 
 function IncidentHistoryPage(props) {
+  const { hasApiAccess, loading: apiAccessLoading } = useApiAccess();
+
   const allMongodbAiidprodTaxa = props.data.allMongodbAiidprodTaxa;
 
   const { t } = useTranslation();
@@ -39,9 +43,10 @@ function IncidentHistoryPage(props) {
 
   const [incidentClassifications, setIncidentClassifications] = useState([]);
 
-  const { data: usersData, loading: loadingUsers } = useQuery(FIND_USERS);
+  const { data: usersData, loading: loadingUsers } = useQuery(FIND_USERS, { skip: !hasApiAccess });
 
   const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES, {
+    skip: !hasApiAccess,
     fetchPolicy: 'network-only',
   });
 
@@ -52,6 +57,7 @@ function IncidentHistoryPage(props) {
     loading: loadingIncidentHistory,
     refetch: refetchHistory,
   } = useQuery(FIND_INCIDENT_HISTORY, {
+    skip: !hasApiAccess,
     fetchPolicy: 'network-only',
     variables: {
       filter: {
@@ -63,6 +69,7 @@ function IncidentHistoryPage(props) {
   const { data: classificationsData, loading: loadingIncidentClassifications } = useQuery(
     FIND_CLASSIFICATION,
     {
+      skip: !hasApiAccess,
       variables: { filter: { incidents: { EQ: incidentId } } },
     }
   );
@@ -199,6 +206,12 @@ function IncidentHistoryPage(props) {
     }
   };
 
+  // Every read on this page goes through the API, which requires a login
+  // (SEE: server/apiAccess.ts), so a logged-out visitor is given the reason
+  // instead of an empty page.
+  if (!apiAccessLoading && !hasApiAccess) {
+    return <ApiLoginRequired />;
+  }
   return (
     <div className={'w-full p-1'}>
       {loading && (

@@ -129,6 +129,12 @@ Once you have cloned the repository, to set up a local development environment f
 
 The project is now running locally and can be accessed at `http://localhost:8000`, and the API is available at `http://localhost:8000/api/graphql`.
 
+> **The API requires a logged-in account.** Queries without a session are refused with
+> `API_LOGIN_REQUIRED`. Locally, use the [magic links](#using-magic-links-for-local-authentication)
+> script below to sign in as one of the seeded users, or set `API_REQUIRE_LOGIN=false` in your
+> `.env` while working on something unrelated. See
+> [API Access, Usage Accounting, and Blocking](../docs/API_ACCESS.md).
+
 6. **Implementing a New Feature**
 
 Both the Gatsby frontend and the API are running in development mode, allowing you to make changes and see them reflected in real-time.

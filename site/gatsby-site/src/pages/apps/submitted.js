@@ -11,6 +11,8 @@ import ListSkeleton from 'elements/Skeletons/List';
 import { Badge, Button, ListGroup } from 'flowbite-react';
 import { useQueryParam } from 'use-query-params';
 import SubmissionEdit from 'components/submissions/SubmissionEdit';
+import ApiLoginRequired from 'components/ui/ApiLoginRequired';
+import useApiAccess from 'hooks/useApiAccess';
 
 const SubmittedIncidentsPage = () => {
   const [id] = useQueryParam('editSubmission');
@@ -27,7 +29,14 @@ const SubmittedIncidentsPage = () => {
 
   const [deleteQuickAdd] = useMutation(DELETE_QUICKADD);
 
-  const { loading, error, data } = useQuery(FIND_QUICKADD, { variables: { filter: {} } });
+  const { hasApiAccess, loading: apiAccessLoading } = useApiAccess();
+
+  // SEE: server/apiAccess.ts. Skipped rather than left to fail so the error toast
+  // in the effect below does not fire for the expected logged-out case.
+  const { loading, error, data } = useQuery(FIND_QUICKADD, {
+    variables: { filter: {} },
+    skip: !hasApiAccess,
+  });
 
   const { t, i18n } = useTranslation(['submitted']);
 
@@ -87,6 +96,12 @@ const SubmittedIncidentsPage = () => {
   const sortedQuickAdds = [...quickAdds].sort(function (a, b) {
     return a['date_submitted'] - b['date_submitted'];
   });
+
+  // The whole page is built from API reads, so there is nothing to show a
+  // logged-out visitor but the reason. SEE: server/apiAccess.ts
+  if (!apiAccessLoading && !hasApiAccess) {
+    return <ApiLoginRequired />;
+  }
 
   return (
     <>

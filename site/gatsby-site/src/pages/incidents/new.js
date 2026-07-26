@@ -11,21 +11,30 @@ import { LocalizedLink, useLocalization } from 'plugins/gatsby-theme-i18n';
 import { useTranslation, Trans } from 'react-i18next';
 import { processEntities } from '../../utils/entities';
 import DefaultSkeleton from 'elements/Skeletons/Default';
+import ApiLoginRequired from 'components/ui/ApiLoginRequired';
+import useApiAccess from 'hooks/useApiAccess';
 
 function NewIncidentPage() {
+  const { hasApiAccess, loading: apiAccessLoading } = useApiAccess();
+
   const [incidentIdToClone] = useQueryParam('incident_id', withDefault(NumberParam, 0));
 
   const { t, i18n } = useTranslation();
 
   const { data: incidentToCloneData, loading: loadingIncidentToClone } = useQuery(FIND_INCIDENT, {
+    skip: !hasApiAccess,
     variables: { filter: { incident_id: { EQ: incidentIdToClone } } },
   });
 
   const [initialValues, setInitialValues] = useState(null);
 
-  const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES);
+  const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES, {
+    skip: !hasApiAccess,
+  });
 
-  const { data: lastIncident, loading: loadingLastIncident } = useQuery(GET_LATEST_INCIDENT_ID);
+  const { data: lastIncident, loading: loadingLastIncident } = useQuery(GET_LATEST_INCIDENT_ID, {
+    skip: !hasApiAccess,
+  });
 
   const loading = loadingLastIncident || loadingEntities || loadingIncidentToClone;
 
@@ -147,6 +156,12 @@ function NewIncidentPage() {
     ? entitiesData.entities.map((node) => node.name).sort()
     : [];
 
+  // Every read on this page goes through the API, which requires a login
+  // (SEE: server/apiAccess.ts), so a logged-out visitor is given the reason
+  // instead of an empty page.
+  if (!apiAccessLoading && !hasApiAccess) {
+    return <ApiLoginRequired />;
+  }
   return (
     <div className={'w-full'}>
       {!loading && (

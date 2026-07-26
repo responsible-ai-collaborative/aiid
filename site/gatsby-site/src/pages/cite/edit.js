@@ -22,6 +22,8 @@ import RelatedIncidents from '../../components/RelatedIncidents';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 import { Link } from 'gatsby';
 import { isEqual } from 'lodash';
+import ApiLoginRequired from 'components/ui/ApiLoginRequired';
+import useApiAccess from 'hooks/useApiAccess';
 
 const UPDATE_REPORT_TRANSLATION = gql`
   mutation UpdateReportTranslation($input: UpdateOneReportTranslationInput!) {
@@ -59,6 +61,8 @@ const reportFields = [
 const translationsFields = ['title', 'text'];
 
 function EditCitePage(props) {
+  const { hasApiAccess, loading: apiAccessLoading } = useApiAccess();
+
   const { t, i18n } = useTranslation();
 
   const { config: availableLanguages } = useLocalization();
@@ -72,6 +76,7 @@ function EditCitePage(props) {
     loading: loadingReport,
     refetch: refetchReport,
   } = useQuery(FIND_REPORT_WITH_TRANSLATIONS, {
+    skip: !hasApiAccess,
     variables: {
       filter: { report_number: { EQ: reportNumber } },
       translationLanguages: availableLanguages.map((c) => c.code),
@@ -91,6 +96,7 @@ function EditCitePage(props) {
     loading: loadingIncident,
     refetch: refetchIncidents,
   } = useQuery(FIND_INCIDENTS, {
+    skip: !hasApiAccess,
     variables: {
       filter: {
         reports: { IN: [reportNumber] },
@@ -300,6 +306,12 @@ function EditCitePage(props) {
     }
   };
 
+  // Every read on this page goes through the API, which requires a login
+  // (SEE: server/apiAccess.ts), so a logged-out visitor is given the reason
+  // instead of an empty page.
+  if (!apiAccessLoading && !hasApiAccess) {
+    return <ApiLoginRequired />;
+  }
   return (
     <div className={'w-full p-1'} {...props}>
       {!loading && (

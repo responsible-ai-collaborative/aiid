@@ -23,6 +23,16 @@ function RolesCell({ cell }) {
   );
 }
 
+function ApiAccessCell({ cell }) {
+  return cell.value ? (
+    <Badge color="failure" data-cy="api-access-blocked-badge">
+      Blocked
+    </Badge>
+  ) : (
+    <Badge color="success">Allowed</Badge>
+  );
+}
+
 export default function UsersTable({ data, className = '', ...props }) {
   const [userEditId, setUserEditId] = useState(null);
 
@@ -112,6 +122,14 @@ export default function UsersTable({ data, className = '', ...props }) {
         Cell: RolesCell,
       },
       {
+        // Surfaces the block on the list itself, so an admin can see at a glance
+        // which accounts are barred from the API without opening each one.
+        // SEE: server/apiAccess.ts
+        title: 'API Access',
+        accessor: 'api_access_blocked',
+        Cell: ApiAccessCell,
+      },
+      {
         title: 'Creation Date',
         accessor: 'adminData.creationDate',
         Filter: SelectDatePickerFilter,
@@ -139,6 +157,7 @@ export default function UsersTable({ data, className = '', ...props }) {
         className: 'w-[80px]',
         Cell: ({ row: { values } }) => (
           <Button
+            data-cy="edit-user-button"
             onClick={() => {
               setUserEditId(values.userId);
             }}

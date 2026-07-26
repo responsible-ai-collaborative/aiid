@@ -59,6 +59,16 @@ describe(`Utils`, () => {
                     }
                 ],
             },
+            // What this test asserts is that linking to an id that does not exist
+            // fails, so `entity-1` and report 1 must be absent. Seeding both
+            // collections empty states that requirement instead of inheriting it
+            // from whichever suite happened to run first: the Jest suites share one
+            // database (see the TODO in jest.config.ts), so without this the result
+            // depends on execution order.
+            aiidprod: {
+                entities: [],
+                reports: [],
+            },
         });
 
 
