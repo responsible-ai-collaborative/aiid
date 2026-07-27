@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSearchBox } from 'react-instantsearch';
-import { debounce } from 'debounce';
+import debounce from 'debounce';
 import SearchInput from 'components/forms/SearchInput';
 import Row from 'elements/Row';
 import Col from 'elements/Col';

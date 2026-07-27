@@ -2,7 +2,9 @@ const path = require('path');
 
 const stopword = require('stopword');
 
-const stemmer = require('stemmer');
+// stemmer v2+ is ESM and exports a named `stemmer` rather than a default,
+// so require() yields the module namespace here.
+const { stemmer } = require('stemmer');
 
 const customStopWords = require('../constants/customStopWords');
 

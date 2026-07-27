@@ -44,9 +44,10 @@ function ReportText({ text, maxUiChars = null, maxQuotationChars = null, continu
 
   return (
     <>
-      <ReactMarkdown rehypePlugins={rehypePlugins} className="react-markdown prose max-w-full">
-        {text}
-      </ReactMarkdown>
+      {/* react-markdown v9 removed the className prop; wrap to keep the same classes */}
+      <div className="react-markdown prose max-w-full">
+        <ReactMarkdown rehypePlugins={rehypePlugins}>{text}</ReactMarkdown>
+      </div>
       {displayContinueLink && (
         <p className="mt-4">
           <Trans>

@@ -1,4 +1,4 @@
-import remark from 'remark';
+import { remark } from 'remark';
 import remarkStrip from 'strip-markdown';
 
 /**
@@ -48,7 +48,7 @@ export function getFormattedName(str) {
 export async function stripMarkdown(markdown) {
   const result = await remark().use(remarkStrip).process(markdown);
 
-  return result.contents.toString();
+  return String(result);
 }
 
 export function arrayToList(array) {

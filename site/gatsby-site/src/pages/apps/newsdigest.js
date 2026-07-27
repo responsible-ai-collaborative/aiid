@@ -3,7 +3,8 @@ import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { gql, useQuery, useMutation } from '@apollo/client';
 import { Card, Badge, Dropdown } from 'flowbite-react';
-import { format, parse } from 'date-fns';
+import { format } from 'date-fns';
+import { safeParse } from '../../utils/date';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPlusCircle,
@@ -112,7 +113,7 @@ export default function NewsSearchPage() {
 
   let newsArticles = (newsArticlesData?.candidates ? [...newsArticlesData?.candidates] : []).map(
     (newsArticle) => {
-      const ageInMillis = parse(newsArticle.date_published, 'yyyy-MM-dd', new Date()).getTime();
+      const ageInMillis = safeParse(newsArticle.date_published, 'yyyy-MM-dd', new Date()).getTime();
 
       const ageInDays = millisToDays(new Date().getTime() - ageInMillis);
 
@@ -288,7 +289,7 @@ function CandidateCard({
   let date;
 
   try {
-    date = format(parse(newsArticle.date_published, 'yyyy-MM-dd', new Date()), 'yyyy-MM-dd');
+    date = format(safeParse(newsArticle.date_published, 'yyyy-MM-dd', new Date()), 'yyyy-MM-dd');
   } catch (e) {
     date = null;
   }

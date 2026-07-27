@@ -167,7 +167,9 @@ export default function VariantsTable({ data, refetch, setLoading }) {
         disableFilters: false,
         Cell: ({ row: { values } }) => (
           <div>
-            <Markdown className="variants-markdown overflow-auto">{values.text}</Markdown>
+            <div className="variants-markdown overflow-auto">
+              <Markdown>{values.text}</Markdown>
+            </div>
           </div>
         ),
       },

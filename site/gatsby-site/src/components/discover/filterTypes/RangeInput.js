@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRange } from 'react-instantsearch';
 import { Trans } from 'react-i18next';
-import { debounce } from 'debounce';
+import debounce from 'debounce';
 import { Button } from 'flowbite-react';
 import { Form, Formik } from 'formik';
 import Label from 'components/forms/Label';

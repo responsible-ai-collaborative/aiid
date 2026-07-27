@@ -28,7 +28,7 @@ import {
 import { RESPONSE_TAG } from 'utils/entities';
 import IncidentsField from 'components/incidents/IncidentsField';
 import { arrayToList } from 'utils/typography';
-import { debounce } from 'debounce';
+import debounce from 'debounce';
 import SubmissionButton from './SubmissionButton';
 
 const StepOne = (props) => {

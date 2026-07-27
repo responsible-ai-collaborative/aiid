@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { subWeeks, addWeeks, getUnixTime, parse, isValid } from 'date-fns';
+import { subWeeks, addWeeks, getUnixTime, isValid } from 'date-fns';
+import { safeParse } from '../utils/date';
 import { gql, useApolloClient } from '@apollo/client';
 import debounce from 'lodash/debounce';
 import isArray from 'lodash/isArray';
@@ -76,14 +77,14 @@ const allSearchColumns = {
     getReports: async (result, client) => reportsWithIncidentIds(result.data.reports, client),
     isSet: (incident) => {
       if (!incident.date_published) return false;
-      const parsedDate = parse(incident.date_published, 'yyyy-MM-dd', new Date());
+      const parsedDate = safeParse(incident.date_published, 'yyyy-MM-dd', new Date());
 
       return isValid(parsedDate) && getUnixTime(parsedDate) > 0;
     },
     getQueryVariables: (incident) => {
       const today = new Date();
 
-      let datePublished = parse(incident.date_published, 'yyyy-MM-dd', today);
+      let datePublished = safeParse(incident.date_published, 'yyyy-MM-dd', today);
 
       if (datePublished > today) {
         datePublished = today;

@@ -16,7 +16,7 @@ import {
   faUser,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import { debounce } from 'debounce';
+import debounce from 'debounce';
 import { STATUS } from 'utils/submissions';
 import StepContainer from 'components/forms/SubmissionWizard/StepContainer';
 import { useUserContext } from 'contexts/UserContext';
