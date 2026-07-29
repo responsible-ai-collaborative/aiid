@@ -1,5 +1,6 @@
 import { parse } from 'query-string';
 import { decodeQueryParams } from 'use-query-params';
+import SORTING_LIST from './SORTING_LISTS';
 
 const parseRefinements = ({ query }) => {
   const refinementKeys = [
@@ -57,7 +58,7 @@ const convertStringToRange = (query) => {
   return result;
 };
 
-const generateSearchState = ({ query }) => {
+const generateSearchState = ({ query, locale }) => {
   return {
     page: query.page,
     query: query.s ?? '',
@@ -67,7 +68,9 @@ const generateSearchState = ({ query }) => {
     range: {
       ...convertStringToRange(query),
     },
-    sortBy: query.sortBy,
+    // The URL stores the sorting option's short name, but instantsearch expects
+    // the index name and discards values it can't match against the sortBy items.
+    sortBy: SORTING_LIST.find((s) => s.name === query.sortBy)?.[`value_${locale}`] ?? query.sortBy,
     configure: {
       hitsPerPage: 28,
       distinct: query.hideDuplicates ? true : false,
@@ -75,12 +78,12 @@ const generateSearchState = ({ query }) => {
   };
 };
 
-export default function ({ location, indexName, queryConfig }) {
+export default function ({ location, indexName, queryConfig, locale = 'en' }) {
   const object = parse(location.search);
 
   const query = decodeQueryParams(queryConfig, object);
 
-  const searchState = generateSearchState({ query });
+  const searchState = generateSearchState({ query, locale });
 
   return { [indexName]: searchState };
 }
