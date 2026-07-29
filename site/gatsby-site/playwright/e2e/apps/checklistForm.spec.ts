@@ -118,7 +118,7 @@ test.describe('Checklists App Form', () => {
 
         const response = page.waitForResponse((response) => response.request()?.postDataJSON()?.operationName === 'upsertChecklist');
 
-        await page.locator('[option="GMF:Known AI Goal:Code Generation"] .close').click();
+        await page.locator('.rbt-token').filter({ hasText: 'Code Generation' }).locator('.rbt-close').click();
 
         await response;
     });

@@ -46,7 +46,7 @@ test.describe('Edit report', () => {
     await expect(page.locator('label:has-text("Incident IDs") + * [data-cy="token"]:has-text("Kronos Scheduling")')).toBeVisible();
 
 
-    await expect(page.locator('.submit-report-tags [option="Test Tag"]')).toHaveCount(1);
+    await expect(page.locator('.submit-report-tags .rbt-token').filter({ hasText: 'Test Tag' })).toHaveCount(1);
 
     const report_es = reportsTranslations.find((r) => r.report_number === 3 && r.language === 'es');
 

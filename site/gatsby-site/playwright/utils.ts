@@ -438,26 +438,16 @@ export function getLanguages() {
 export async function mockAlgolia(page: Page) {
 
     await page.route('**/*.algolia.net/1/indexes/*/queries*', async route => {
-        const response = await route.fetch();
-
         await route.fulfill({
             status: 200,
             json: algoliaMock,
-            headers: {
-                ...response.headers(),
-            }
         });
     });
 
     await page.route('**/*.algolianet.com/1/indexes/*/queries*', async route => {
-        const response = await route.fetch();
-
         await route.fulfill({
             status: 200,
             json: algoliaMock,
-            headers: {
-                ...response.headers(),
-            }
         });
     });
 }
