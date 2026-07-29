@@ -5,7 +5,10 @@
 
 import type { Config } from 'jest';
 
-require('dotenv').config();
+// Must be an `import`, not `require`: Jest 30 loads this config with Node's
+// native TypeScript support, which treats the file as ESM because of the
+// `export default` below.
+import 'dotenv/config';
 
 const config: Config = {
   preset: "ts-jest",
