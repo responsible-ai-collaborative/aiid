@@ -1,0 +1,60 @@
+name: Update OECD Relationships
+
+on:
+  schedule:
+    - cron: "0 12 * * 2" # At 12:00 on Tuesday.
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to update (production or staging)"
+        required: true
+        default: "staging"
+        type: choice
+        options:
+          - production
+          - staging
+      dry-run:
+        description: "Dry run (preview inserts without writing)"
+        required: true
+        default: true
+        type: boolean
+      max-new:
+        description: "Maximum number of new relationships allowed per run"
+        required: false
+        default: "50"
+
+jobs:
+  update:
+    name: Update OECD relationships (${{ matrix.environment }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        # Scheduled runs update staging and production; manual runs use the selected environment
+        environment: ${{ github.event_name == 'workflow_dispatch' && fromJSON(format('["{0}"]', inputs.environment)) || fromJSON('["staging","production"]') }}
+    environment: ${{ matrix.environment }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: site/gatsby-site/package-lock.json
+
+      - name: Install dependencies
+        working-directory: site/gatsby-site
+        run: npm ci
+
+      - name: Update OECD relationships
+        working-directory: site/gatsby-site
+        run: npx tsx src/scripts/update-oecd-relationships.ts
+        env:
+          API_MONGODB_CONNECTION_STRING: ${{ secrets.API_MONGODB_CONNECTION_STRING }}
+          OECD_MATCHES_GITHUB_TOKEN: ${{ secrets.OECD_MATCHES_GITHUB_TOKEN }}
+          OECD_UPDATE_MAX_NEW: ${{ inputs.max-new || '50' }}
+          DRY_RUN: ${{ inputs.dry-run || 'false' }}
