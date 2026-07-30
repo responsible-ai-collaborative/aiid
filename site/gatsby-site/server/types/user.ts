@@ -29,7 +29,11 @@ export const UserType = new GraphQLObjectType({
 
                 let response: UserAdminData = {}
 
-                if (user!.id === source.userId || user!.roles.includes('admin')) {
+                // `user` is null for anonymous callers. The `notQueriesAdminData` shield
+                // rule only inspects direct field selections, so a query that reaches
+                // `adminData` through a fragment spread gets here unauthenticated —
+                // dereferencing `user!` threw a TypeError instead of returning nothing.
+                if (user && (user.id === source.userId || user.roles.includes('admin'))) {
 
                     response = await userCacheManager.getUserAdminData(source.userId, context) ?? {};
                 }

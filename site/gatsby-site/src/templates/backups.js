@@ -2,15 +2,12 @@ import React from 'react';
 import HeadContent from 'components/HeadContent';
 import Link from 'components/ui/Link';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
-import Container from 'elements/Container';
-import Row from 'elements/Row';
-import Col from 'elements/Col';
 import { format } from 'date-fns';
 import config from '../../config';
 import { useTranslation } from 'react-i18next';
 
 const Backups = ({ pageContext }) => {
-  const { backups } = pageContext;
+  const { backups, excelExports } = pageContext;
 
   if (!backups) {
     return null;
@@ -41,6 +38,18 @@ const Backups = ({ pageContext }) => {
     return new Date(year, month - 1, day, hour, minute);
   };
 
+  const parseExcelExportDate = (key) => {
+    const stringDate = key.replace('AIID_Excel_Export-', '').replace('.xlsx', '');
+
+    const year = stringDate.substring(0, 4);
+
+    const month = stringDate.substring(4, 6);
+
+    const day = stringDate.substring(6, 8);
+
+    return new Date(year, month - 1, day);
+  };
+
   return (
     <>
       <div className="titleWrapper">
@@ -66,41 +75,57 @@ const Backups = ({ pageContext }) => {
           through time, our suggested citation format includes the access date. You can find
           incident citations at <code>https://incidentdatabase.ai/cite/INSERT_NUMBER_HERE</code>.
         </p>
-        <p className="paragraph">
-          In many cases it is necessary to have an unchanging and shared version of the database
-          This page lists weekly snapshots of the database in JSON, MongoDB, and CSV format taken
-          through time by the{' '}
-          <a href="https://github.com/aiincidentdatabase/mongodb-awesome-backup">
-            GitHub backup workflow
-          </a>
-          . We maintain these snapshots so you can create stable datasets for natural language
-          processing research and academic analysis. Please{' '}
-          <LocalizedLink to="/contact">contact us</LocalizedLink> to let us know what you are using
-          the database for so we can list your work in the incident database and ensure your use
-          case is not dropped from support.
-        </p>
-        <h2>Download</h2>
-        <Container>
-          <Row>
-            <Col xs={12}>
-              <ul className="pl-8 leading-6" data-cy="snapshots-list">
-                {backups
-                  .map((b) => ({
-                    ...b,
-                    Url: `${config.cloudflareR2.publicBucketUrl}/${b.Key}`,
-                    CreationDate: parseCreationDate(b.Key),
-                  }))
-                  .map((value) => (
-                    <li key={`snapshot-${value['Key']}`}>
-                      {format(new Date(value['CreationDate']), 'yyyy-MM-dd hh:mm a')} &middot;{' '}
-                      {(value['Size'] / 1000000).toFixed(2)} MB &middot;{' '}
-                      <Link to={value['Url']}>{value['Key']}</Link>
-                    </li>
-                  ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 mt-6">
+          <h2 className="mb-0 order-1 md:order-1">Snapshot Downloads</h2>
+          <p className="paragraph order-2 md:order-3">
+            Weekly point-in-time dumps of the full database, available in JSON, MongoDB archive, and
+            CSV formats. Please <LocalizedLink to="/contact">contact us</LocalizedLink> to let us
+            know what you are using the database for so we can list your work and ensure your use
+            case is not dropped from support. Best for developers and researchers building on the
+            raw database.
+          </p>
+          <ul className="pl-8 leading-6 order-3 md:order-5" data-cy="snapshots-list">
+            {backups
+              .map((b) => ({
+                ...b,
+                Url: `${config.cloudflareR2.publicBucketUrl}/${b.Key}`,
+                CreationDate: parseCreationDate(b.Key),
+              }))
+              .map((value) => (
+                <li key={`snapshot-${value['Key']}`}>
+                  {format(new Date(value['CreationDate']), 'yyyy-MM-dd hh:mm a')} &middot;{' '}
+                  {(value['Size'] / 1000000).toFixed(2)} MB &middot;{' '}
+                  <Link to={value['Url']}>{value['Key']}</Link>
+                </li>
+              ))}
+          </ul>
+
+          <h2 className="mb-0 order-4 md:order-2">Excel Export</h2>
+          <p className="order-5 md:order-4">
+            An Excel file, updated weekly, that combines all numbered incidents with many of their
+            taxonomy classifications. Suitable for analysis and research; updated every Monday. No
+            coding required — download and open directly in Excel or Google Sheets. Not all
+            relationships can be modeled in spreadsheet form. If the spreadsheet does not provide
+            the data you require, we recommend working with the MongoDB snapshots.
+          </p>
+          <div className="order-6 md:order-6">
+            {excelExports && excelExports.length > 0 ? (
+              <ul className="pl-8 leading-6" data-cy="excel-exports-list">
+                {excelExports.map((item) => (
+                  <li key={`excel-export-${item.Key}`}>
+                    {format(parseExcelExportDate(item.Key), 'yyyy-MM-dd')} &middot;{' '}
+                    {(item.Size / 1000000).toFixed(2)} MB &middot;{' '}
+                    <Link to={`${config.cloudflareR2.publicBucketUrl}/${item.Key}`}>
+                      {item.Key}
+                    </Link>
+                  </li>
+                ))}
               </ul>
-            </Col>
-          </Row>
-        </Container>
+            ) : (
+              <p className="text-gray-500 italic">No Excel exports available yet.</p>
+            )}
+          </div>
+        </div>
       </div>
     </>
   );

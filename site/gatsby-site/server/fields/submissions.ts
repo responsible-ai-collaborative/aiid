@@ -9,7 +9,7 @@ import {
 } from 'graphql';
 import { generateMutationFields, generateQueryFields } from '../utils';
 import { Context, DBIncident, DBNotification, DBSubmission } from '../interfaces';
-import { allow } from 'graphql-shield';
+import { allow, or } from 'graphql-shield';
 import { ObjectIdScalar } from '../scalars';
 import { isRole } from '../rules';
 import { createNotificationsOnNewIncident, linkReportsToIncidents } from './common';
@@ -282,8 +282,16 @@ export const permissions = {
     },
     Mutation: {
         deleteOneSubmission: isRole('incident_editor'),
-        updateOneSubmission: allow,
+
+        // Editing a queued submission is a review-queue action. The client already
+        // limits it to these roles (`canEditSubmissions` in SubmissionEditForm.js);
+        // `isRole` additionally lets admins through.
+        updateOneSubmission: or(isRole('submitter'), isRole('incident_editor')),
+
+        // Anyone may put a report into the review queue...
         insertOneSubmission: allow,
-        promoteSubmissionToReport: allow,
+
+        // ...but only an editor may publish one out of it.
+        promoteSubmissionToReport: isRole('incident_editor'),
     }
 }

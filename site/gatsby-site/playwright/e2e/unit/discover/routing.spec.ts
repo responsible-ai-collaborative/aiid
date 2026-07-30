@@ -13,13 +13,13 @@ test('Should parse back and forth a discover URL', async () => {
       '?authors=Christopher%20Knaus%7C%7CSam%20Levin&classifications=CSETv0%3AIntent%3AAccident&epoch_date_published_max=1670371200&hideDuplicates=1&is_incident_report=true&page=1&s=tesla&sortBy=published-date-asc&source_domain=theguardian.com',
   };
 
-  const result = parseURL({ location, indexName, queryConfig });
+  const result = parseURL({ location, indexName, queryConfig, locale: 'en' });
 
   const state = result[indexName];
 
   expect(state.query).toBe('tesla');
   expect(state.page).toBe(1);
-  expect(state.sortBy).toBe('published-date-asc');
+  expect(state.sortBy).toBe('instant_search-en_epoch_date_published_asc');
   expect(state.refinementList).toEqual({
     source_domain: ['theguardian.com'],
     authors: ['Christopher Knaus', 'Sam Levin'],

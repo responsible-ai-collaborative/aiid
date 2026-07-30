@@ -1,4 +1,5 @@
 import { rule } from "graphql-shield";
+import { SelectionSetNode } from "graphql";
 import { Context, DBChecklist, DBSubscription, DBUser } from "./interfaces";
 import { getMongoDbFilter } from "graphql-to-mongodb";
 import { SubscriptionType } from "./types/subscription";
@@ -154,19 +155,47 @@ export const notQueriesAdminData = () => rule()(
 
     async (parent, args, context: Context, info) => {
 
-        const fieldNodes = info.fieldNodes;
+        // Walks fragment spreads and inline fragments as well as direct selections;
+        // checking only direct selections let `{ user { ...f } } fragment f on User
+        // { adminData { email } }` slip past this rule.
+        const selectsAdminData = (selectionSet: SelectionSetNode | undefined): boolean => {
 
-        for (const fieldNode of fieldNodes) {
-            if (fieldNode.selectionSet) {
-                const selections = fieldNode.selectionSet.selections;
+            if (!selectionSet) {
 
-                for (const selection of selections) {
+                return false;
+            }
 
-                    if (selection.kind === 'Field' && selection.name.value === 'adminData') {
+            for (const selection of selectionSet.selections) {
 
-                        return new Error('not authorized')
+                if (selection.kind === 'Field' && selection.name.value === 'adminData') {
+
+                    return true;
+                }
+
+                if (selection.kind === 'InlineFragment' && selectsAdminData(selection.selectionSet)) {
+
+                    return true;
+                }
+
+                if (selection.kind === 'FragmentSpread') {
+
+                    const fragment = info.fragments[selection.name.value];
+
+                    if (fragment && selectsAdminData(fragment.selectionSet)) {
+
+                        return true;
                     }
                 }
+            }
+
+            return false;
+        }
+
+        for (const fieldNode of info.fieldNodes) {
+
+            if (selectsAdminData(fieldNode.selectionSet)) {
+
+                return new Error('not authorized')
             }
         }
 

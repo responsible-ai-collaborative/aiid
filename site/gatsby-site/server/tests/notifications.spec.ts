@@ -168,7 +168,7 @@ describe(`Notifications`, () => {
 
 
         expect(sendEmailMock).toHaveBeenCalledTimes(1);
-        expect(sendEmailMock).nthCalledWith(1, expect.objectContaining({
+        expect(sendEmailMock).toHaveBeenNthCalledWith(1, expect.objectContaining({
             recipients: [
                 {
                     email: "test@test.com",
@@ -308,7 +308,7 @@ describe(`Notifications`, () => {
         const result = await processNotifications();
 
         expect(sendEmailMock).toHaveBeenCalledTimes(1);
-        expect(sendEmailMock).nthCalledWith(1, expect.objectContaining({
+        expect(sendEmailMock).toHaveBeenNthCalledWith(1, expect.objectContaining({
             recipients: [
                 {
                     email: "test@test.com",
@@ -449,7 +449,7 @@ describe(`Notifications`, () => {
         const result = await processNotifications();
 
         expect(sendEmailMock).toHaveBeenCalledTimes(1);
-        expect(sendEmailMock).nthCalledWith(1, expect.objectContaining({
+        expect(sendEmailMock).toHaveBeenNthCalledWith(1, expect.objectContaining({
             recipients: [
                 {
                     email: "test@test.com",
@@ -582,7 +582,7 @@ describe(`Notifications`, () => {
         const result = await processNotifications();
 
         expect(sendEmailMock).toHaveBeenCalledTimes(1);
-        expect(sendEmailMock).nthCalledWith(1, expect.objectContaining({
+        expect(sendEmailMock).toHaveBeenNthCalledWith(1, expect.objectContaining({
             recipients: [
                 {
                     email: "test@test.com",
@@ -745,7 +745,7 @@ describe(`Notifications`, () => {
         const result = await processNotifications();
 
         expect(sendEmailMock).toHaveBeenCalledTimes(1);
-        expect(sendEmailMock).nthCalledWith(1, expect.objectContaining({
+        expect(sendEmailMock).toHaveBeenNthCalledWith(1, expect.objectContaining({
             recipients: [
                 {
                     email: "test@test.com",

@@ -15,6 +15,7 @@ The GitHub Action "Public backup to the cloud" [/.github/workflows/db-backup.yml
 
 After running this, `backup-YYYYMMdd.tar.bz2` will be placed on the Cloudflare R2 Bucket.
 
+A separate pipeline ([site/excel-export-pipeline](../excel-export-pipeline/README.md)) runs on the same schedule and produces `AIID_Excel_Export-YYYYMMDD.xlsx` — a curated Excel workbook that joins incident records with their taxonomy classifications (MIT, GMF, CSETv1). Both outputs are surfaced on the [snapshots page](https://incidentdatabase.ai/research/snapshots/).
 The GitHub Action "Private daily backup to the cloud" [/.github/workflows/db-daily-backup.yml](/.github/workflows/db-daily-backup.yml) runs the same backup script every day at approximately 3:27 AM US Eastern time and writes to a separate, private Cloudflare R2 bucket. Each run uploads `daily-DD.tar.bz2` (where `DD` is the two-digit day of the month in US Eastern time), so the file for any given calendar day is overwritten the next time that date comes around — yielding a rotating 30-day window of daily snapshots that are not surfaced on the public snapshots page.
 
 

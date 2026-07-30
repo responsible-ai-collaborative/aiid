@@ -1,0 +1,281 @@
+paths:
+  output_path: ../../output/AIID_Excel_Export.xlsx
+
+mongo:
+  # Connection string is supplied via the MONGODB_CONNECTION_STRING env var
+  # (an Atlas mongodb+srv:// URI) and is never stored here.
+  database: aiidprod
+  collections:
+    incidents: incidents
+    reports: reports
+    entities: entities
+    duplicates: duplicates
+    classifications: classifications
+
+columns:
+  incidents:
+    incident_id: Incident ID
+    date: date
+    title: title
+    description: description
+    reports: reports
+    Alleged deployer of AI system: deployer_raw
+    Alleged developer of AI system: developer_raw
+    Alleged harmed or nearly harmed parties: harmed_raw
+    editors: Editors
+    implicated_systems: Implicated Systems
+    date_modified: Date Modified
+    editor_notes: Editor Notes
+  reports:
+    report_number: Report Number
+    title: Title
+    url: URL
+    source_domain: Source Domain
+    date_published: Date Published
+    date_downloaded: Date Downloaded
+    authors: Authors
+    submitters: Submitters
+    language: Language
+    tags: Tags
+    description: Description
+    is_incident_report: Is Incident Report
+  entities:
+    entity_id: Entity ID
+    name: Name
+
+  duplicates_id_column: duplicate_incident_number
+
+taxonomies:
+  MIT:
+    color: "1A6B3C"
+    band_label: "RISK CLASSIFICATION - MIT"
+    mapping:
+      Incident ID: Incident ID
+      Risk Domain: Risk Domain
+      Risk Subdomain: Risk Subdomain
+      Entity: Responsible Entity
+      Timing: Timing
+      Intent: Intent
+  GMF:
+    color: "7B3F00"
+    band_label: "TECHNICAL ANALYSIS - GMF"
+    mapping:
+      Incident ID: Incident ID
+      Known AI Goal: AI Goal
+      Known AI Technology: AI Technology
+      Known AI Technical Failure: Technical Failure
+      Potential AI Technology: AI Technology (Potential)
+      Potential AI Technical Failure: Technical Failure (Potential)
+  CSETv1:
+    color: "4A235A"
+    band_label: "POLICY DETAIL - CSETv1"
+    mapping:
+      Incident ID: Incident ID
+      Harm Domain: Harm Domain
+      Tangible Harm: Tangible Harm
+      AI Harm Level: AI Harm Level
+      Rights Violation: Rights Violation
+      Harm Distribution Basis: Harm Distribution Basis
+      Special Interest Intangible Harm: Special Interest Intangible Harm
+      Lives Lost: Lives Lost
+      Injuries: Injuries
+      Estimated Harm Quantities: Estimated Harm Quantities
+      Sector of Deployment: Sector of Deployment
+      Public Sector Deployment: Public Sector Deployment
+      Infrastructure Sectors: Infrastructure Sectors
+      Location Region: Location Region
+      Location Country (two letters): Country Code
+      Location City: Location City
+      Date of Incident Year: Incident Year
+      Date of Incident Month: Incident Month
+      Date of Incident Day: Incident Day
+      Intentional Harm: Intentional Harm
+      Autonomy Level: Autonomy Level
+      AI Task: AI Task
+      AI tools and methods: AI Methods
+      AI System Description: AI System Description
+      Data Inputs: Data Inputs
+      Physical Objects: Physical Objects
+      Deployed: Deployed
+      Involving Minor: Involving Minor
+      Protected Characteristic: Protected Characteristic
+      AI System: AI System
+      Detrimental Content: Detrimental Content
+      Impact on Critical Services: Impact on Critical Services
+      Multiple AI Interaction: Multiple AI Interaction
+      Embedded: Embedded
+      Entities: Entities
+      Estimated Date: Estimated Date
+
+theme:
+  font: Arial
+  banner_color: "0D1B2A"
+  white: "FFFFFF"
+  alt_fill: "F5F5F5"
+  border_color: "D0D0D0"
+  total_fill: "D9E2F3"
+  generic_header: "1F3864"   # navy header for Reports/Entities/Dictionary/Coverage
+
+styles:
+  Identity:
+    color: "1F3864"
+    band_label: "INCIDENT IDENTITY (incidents.csv - 100% complete)"
+    columns:
+      - Incident ID
+      - date
+      - year
+      - title
+      - description
+      - deployer
+      - developer
+      - harmed
+      - Editors
+      - Implicated Systems
+      - Date Modified
+      - Editor Notes
+  Coverage:
+    color: "2E4057"
+    band_label: "COVERAGE (derived)"
+    columns:
+      - Data Sources
+      - report_count
+  Other:
+    color: "95A5A6"
+    columns: []
+
+output:
+  column_order:
+    - Incident ID
+    - date
+    - year
+    - title
+    - description
+    - deployer
+    - developer
+    - harmed
+    - Editors
+    - Implicated Systems
+    - Date Modified
+    - Editor Notes
+    - Data Sources
+    - report_count
+    - Risk Domain
+    - Risk Subdomain
+    - Responsible Entity
+    - Intent
+    - Timing
+    - AI Goal
+    - AI Technology
+    - AI Technology (Potential)
+    - Technical Failure
+    - Technical Failure (Potential)
+    - Harm Domain
+    - Tangible Harm
+    - AI Harm Level
+    - Rights Violation
+    - Harm Distribution Basis
+    - Lives Lost
+    - Injuries
+    - Sector of Deployment
+    - Public Sector Deployment
+    - Infrastructure Sectors
+    - Location Region
+    - Country Code
+    - Location City
+    - Incident Year
+    - Incident Month
+    - Incident Day
+    - Intentional Harm
+    - Autonomy Level
+    - AI Task
+    - AI Methods
+    - AI System Description
+    - Data Inputs
+    - Involving Minor
+    - Protected Characteristic
+    - AI System
+    - Detrimental Content
+    - Impact on Critical Services
+    - Multiple AI Interaction
+    - Embedded
+    - Entities
+    - Physical Objects
+    - Deployed
+    - Estimated Date
+    - Estimated Harm Quantities
+    - Special Interest Intangible Harm
+  reports_column_order:
+    - Report Number
+    - Title
+    - URL
+    - Source Domain
+    - Date Published
+    - Date Downloaded
+    - Authors
+    - Submitters
+    - Language
+    - Tags
+    - Description
+    - Is Incident Report
+  entities_column_order:
+    - Entity ID
+    - Name
+  column_widths:
+    Incident ID: 11
+    date: 13
+    year: 7
+    title: 40
+    description: 50
+    deployer: 25
+    developer: 25
+    harmed: 25
+    Data Sources: 22
+    report_count: 10
+    Risk Domain: 30
+    Risk Subdomain: 42
+    Responsible Entity: 16
+    Intent: 14
+    Timing: 16
+    AI Goal: 35
+    AI Technology: 30
+    Technical Failure: 35
+
+column_descriptions:
+  Incident ID: "Primary join key. Unique per incident."
+  date: "Date harm occurred (editor-resolved)."
+  year: "Year derived from date - best for time series."
+  title: "Short editor-written title of the incident."
+  description: "One to three sentence summary of what happened."
+  deployer: "Who deployed the AI. Cleaned from JSON slug format."
+  developer: "Who built the AI system."
+  harmed: "Who was harmed or nearly harmed."
+  Data Sources: "Which taxonomies classified this incident: MIT | GMF | CSETv1."
+  report_count: "Number of linked news articles."
+  Risk Domain: "High-level risk category."
+  Risk Subdomain: "Granular sub-category nested under Risk Domain."
+  Responsible Entity: "Who caused the risk: AI / Human / Other."
+  Intent: "Intentional vs Unintentional vs Other."
+  Timing: "Pre-deployment vs Post-deployment."
+  AI Goal: "What the AI was trying to do."
+  AI Technology: "ML/AI technique used."
+  AI Technology (Potential): "Candidate ML/AI technique, not yet confirmed."
+  Technical Failure: "What technically failed."
+  Technical Failure (Potential): "Candidate technical failure, not yet confirmed."
+  Harm Domain: "Whether harm occurred in a recognized domain."
+  Tangible Harm: "Level of tangible harm."
+  AI Harm Level: "AI contribution to harm severity."
+  Rights Violation: "Whether a legal or human rights violation occurred."
+  Lives Lost: "Fatality count."
+  Injuries: "Injury count."
+  Sector of Deployment: "Industry sector (ISIC classification)."
+  Location Region: "World region."
+  Country Code: "ISO 2-letter country code."
+  Intentional Harm: "Whether harm was intentionally designed into the system."
+  Autonomy Level: "Autonomy level of the system."
+
+coverage_analysis:
+  "MIT": "Risk domain trends, intent, timing, entity - broad lens"
+  "MIT | GMF": "MIT analysis plus technical failures and AI goals"
+  "MIT | GMF | CSETv1": "Full picture: risk, technical, policy, sector, geography, harm"
+  "MIT | CSETv1": "Risk plus policy: sector, lives lost, location, harm level, rights"
+  "None": "Title, description, deployer, developer, harmed, report count"

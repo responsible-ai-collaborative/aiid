@@ -102,7 +102,7 @@ export default function Discover() {
           getLocation: () => {
             return window.location;
           },
-          parseURL: ({ location }) => parseURL({ location, indexName, queryConfig, taxa }),
+          parseURL: ({ location }) => parseURL({ location, indexName, queryConfig, taxa, locale }),
           createURL: ({ routeState }) => {
             return createURL({ indexName, locale, queryConfig, routeState, taxa, display });
           },

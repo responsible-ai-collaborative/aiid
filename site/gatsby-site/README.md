@@ -125,6 +125,8 @@ Once you have cloned the repository, to set up a local development environment f
    npm run start
    ```
 
+   **Note (Windows / newer Node):** If this crashes with an error like `SlowBuffer.prototype.equal`, switch to Node LTS (20 or 22) and reinstall dependencies. 
+
 The project is now running locally and can be accessed at `http://localhost:8000`, and the API is available at `http://localhost:8000/api/graphql`.
 
 6. **Implementing a New Feature**

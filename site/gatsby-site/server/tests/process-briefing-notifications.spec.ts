@@ -564,7 +564,7 @@ describe(`Briefing Notifications`, () => {
     const result = await processBriefingNotifications();
 
     expect(sendEmailMock).toHaveBeenCalledTimes(1);
-    expect(sendEmailMock).nthCalledWith(1, expect.objectContaining({
+    expect(sendEmailMock).toHaveBeenNthCalledWith(1, expect.objectContaining({
       recipients: [
         {
           email: "test@test.com",

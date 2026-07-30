@@ -47,6 +47,12 @@ const Citation = ({ nodes, incidentDate, incident_id, incidentTitle, editors }) 
 
   const editorFirstNameInitial = first_name[0] + '.';
 
+  // This string is rendered with dangerouslySetInnerHTML (for the <i> tags), and the
+  // interpolated values come from the database — the incident title and the submitter
+  // name are both attacker-supplied at submission time. i18next is initialised with
+  // `escapeValue: false` globally (plugins/gatsby-theme-i18n-react-i18next), so
+  // escaping has to be re-enabled here or those values become stored XSS. The literal
+  // markup in the template above is part of the translation string and is not escaped.
   const text = t(
     '{{submitterCite}}. ({{incidentDate}}) Incident Number {{incidentId}}: {{incidentTitle}}. in {{editorLastName}}, {{editorFirstNameInitial}} (ed.) <i>Artificial Intelligence Incident Database.</i> Responsible AI Collaborative. {{retrievalString}}',
     {
@@ -57,6 +63,7 @@ const Citation = ({ nodes, incidentDate, incident_id, incidentTitle, editors }) 
       editorFirstNameInitial,
       retrievalString,
       incidentTitle,
+      interpolation: { escapeValue: true },
     }
   );
 

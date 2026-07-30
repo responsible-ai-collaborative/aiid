@@ -47,6 +47,14 @@ const anonymous = {
     userId: 'anon',
 }
 
+const editor = {
+    _id: new ObjectId('60a7c5b7b4f5b8a6d8f9c7ea'),
+    first_name: 'Editor',
+    last_name: 'One',
+    roles: ['incident_editor'],
+    userId: 'editor',
+}
+
 const fixture: Fixture<Entity, EntityUpdateType, EntityInsertType> = {
     name: 'entity',
     query: `
@@ -61,6 +69,7 @@ const fixture: Fixture<Entity, EntityUpdateType, EntityInsertType> = {
                 subscriber,
                 admin,
                 anonymous,
+                editor,
             ]
         },
         aiidprod: {
@@ -116,9 +125,11 @@ const fixture: Fixture<Entity, EntityUpdateType, EntityInsertType> = {
             { entity_id: 'entity3' },
         ]
     },
+    // Editing an existing entity is editorial. (upsertOneEntity below stays open to
+    // anonymous callers: the public submission form creates entities by name.)
     testUpdateOne: {
-        allowed: [anonymous],
-        denied: [],
+        allowed: [editor, admin],
+        denied: [anonymous, subscriber],
         filter: { _id: { EQ: new ObjectId('60a7c5b7b4f5b8a6d8f9c7e4') } },
         update: { set: { name: 'Updated Entity One' } },
         result: { name: 'Updated Entity One' }

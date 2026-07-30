@@ -1,5 +1,6 @@
 import { GraphQLFieldConfigMap, GraphQLObjectType } from "graphql";
 import { allow } from "graphql-shield";
+import { isRole } from "../rules";
 import { generateMutationFields, generateQueryFields } from "../utils";
 import { Context } from "../interfaces";
 import { Entity_relationshipType } from "../types/entity_relationship";
@@ -21,8 +22,9 @@ export const permissions = {
         entity_relationships: allow,
     },
     Mutation: {
-        updateOneEntity_relationship: allow,
-        upsertOneEntity_relationship: allow,
-        deleteOneEntity_relationship: allow,
+        // Entity relationships are shared editorial data; only editors may change them.
+        updateOneEntity_relationship: isRole('incident_editor'),
+        upsertOneEntity_relationship: isRole('incident_editor'),
+        deleteOneEntity_relationship: isRole('incident_editor'),
     }
 }

@@ -48,7 +48,7 @@ describe(`Entities`, () => {
         users: [
           {
             userId: "123",
-            roles: [],
+            roles: ['incident_editor'],
           }
         ],
       },
@@ -88,6 +88,58 @@ describe(`Entities`, () => {
         name: "Entity 1"
       }
     })
+  });
+
+  it(`Should not let a non-editor update an Entity and its relationships`, async () => {
+
+    const mutationData = {
+      query: `
+              mutation UpdateEntity($input: UpdateOneEntityInput!) {
+                  updateEntityAndRelationships(input: $input) {
+                    entity_id
+                    name
+                  }
+              }
+                    `,
+      variables: {
+        "input": {
+          "entity_id": "entity1",
+          "name": "Vandalised",
+          "entity_relationships_to_add": [],
+          "entity_relationships_to_remove": []
+        }
+      }
+    };
+
+    await seedFixture({
+      customData: {
+        users: [
+          {
+            userId: "123",
+            roles: ['subscriber'],
+          }
+        ],
+      },
+      aiidprod: {
+        entities: [
+          {
+            entity_id: "entity1",
+            name: "Entity 1",
+          }
+        ],
+        entity_relationships: []
+      }
+    });
+
+    mockSession("123");
+
+    const response = await makeRequest(url, mutationData);
+
+    expect(response.body.errors[0].message).toBe('not authorized');
+
+    const stored = await getCollection('aiidprod', 'entities').findOne({ entity_id: 'entity1' });
+
+    expect(stored?.name).toBe('Entity 1');
   });
 
   it(`Merge Entities`, async () => {

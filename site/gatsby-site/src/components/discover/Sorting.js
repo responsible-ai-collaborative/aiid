@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import { useSortBy } from 'react-instantsearch';
 import { Dropdown } from 'flowbite-react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -11,10 +11,19 @@ export default function Sorting() {
 
   const { indexUiState } = useInstantSearch();
 
-  const { refine, currentRefinement, options } = useSortBy({ items: SORTING_LIST });
+  // useSortBy validates values against its items' `value` property, which must
+  // match the locale-specific index names used to refine.
+  const items = useMemo(
+    () => SORTING_LIST.map((item) => ({ ...item, value: item[`value_${locale}`] })),
+    [locale]
+  );
+
+  const { refine, currentRefinement } = useSortBy({ items });
 
   const [selectedItem, setSelectedItem] = useState(
-    SORTING_LIST.find((s) => s.name === currentRefinement) || SORTING_LIST.find((s) => s.default)
+    SORTING_LIST.find(
+      (s) => s.name === currentRefinement || s[`value_${locale}`] === currentRefinement
+    ) || SORTING_LIST.find((s) => s.default)
   );
 
   const { t } = useTranslation();
@@ -45,12 +54,15 @@ export default function Sorting() {
           data-cy="discover-sort"
           className="min-w-max"
         >
-          {options.map((item) => (
+          {SORTING_LIST.map((item) => (
             <Fragment key={item.name}>
               <Dropdown.Item
                 key={item[`value_${locale}`]}
                 value={item[`value_${locale}`]}
-                style={{ fontWeight: item.isRefined ? 'bold' : 'normal' }}
+                style={{
+                  fontWeight:
+                    item[`value_${locale}`] === selectedItem[`value_${locale}`] ? 'bold' : 'normal',
+                }}
                 onClick={() => {
                   sortResults(item);
                 }}

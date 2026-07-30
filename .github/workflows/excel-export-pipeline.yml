@@ -1,0 +1,65 @@
+name: Excel export build
+
+on:
+  schedule:
+    - cron: "0 10 * * 1"
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: The Github environment to load secrets from
+        type: string
+        required: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build-excel-export:
+    environment: ${{ inputs.environment || 'production' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r site/excel-export-pipeline/requirements.txt
+          pip install boto3==1.35.97
+
+      - name: Build Excel export
+        env:
+          MONGODB_CONNECTION_STRING: ${{ secrets.MONGODB_CONNECTION_STRING }}
+          OUTPUT_PATH: ${{ github.workspace }}/.artifacts/AIID_Excel_Export.xlsx
+        run: |
+          python site/excel-export-pipeline/main.py --config site/excel-export-pipeline/config.yaml
+
+      - name: Validate output
+        run: |
+          test -s "${{ github.workspace }}/.artifacts/AIID_Excel_Export.xlsx"
+
+      - name: Upload to Cloudflare R2
+        env:
+          CLOUDFLARE_R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_R2_ACCOUNT_ID }}
+          CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID }}
+          CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY }}
+          CLOUDFLARE_R2_BUCKET_NAME: ${{ vars.CLOUDFLARE_R2_BUCKET_NAME }}
+        run: |
+          DATASET_DATE=$(date +%Y%m%d)
+          OBJECT_KEY="AIID_Excel_Export-${DATASET_DATE}.xlsx"
+          python3 site/db-backup/bin/cloudflare_operations.py \
+            --operation upload \
+            --account_id "${CLOUDFLARE_R2_ACCOUNT_ID}" \
+            --access_key "${CLOUDFLARE_R2_WRITE_ACCESS_KEY_ID}" \
+            --secret_key "${CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY}" \
+            --bucket_name "${CLOUDFLARE_R2_BUCKET_NAME}" \
+            --file_path "${{ github.workspace }}/.artifacts/AIID_Excel_Export.xlsx" \
+            --object_key "${OBJECT_KEY}" \
+            --content_type "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"

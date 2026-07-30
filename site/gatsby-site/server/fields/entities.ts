@@ -180,9 +180,16 @@ export const permissions = {
     similarEntities: allow,
   },
   Mutation: {
-    updateEntityAndRelationships: allow,
+    // Renaming an entity and rewiring its relationships is an editorial action on
+    // shared taxonomy — the same class of change as mergeEntities below. It is only
+    // reachable from /entities/edit, which is an editor page.
+    updateEntityAndRelationships: isRole('incident_editor'),
+
+    // `upsertOneEntity` stays open: the public submission form (SubmitForm.js) creates
+    // entities by name for anonymous submitters.
     upsertOneEntity: allow,
-    updateOneEntity: allow,
+
+    updateOneEntity: isRole('incident_editor'),
     mergeEntities: isRole('incident_editor')
   }
 }

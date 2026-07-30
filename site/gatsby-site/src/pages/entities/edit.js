@@ -14,6 +14,7 @@ import { format } from 'date-fns';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import Label from '../../components/forms/Label';
 import { FIND_ENTITY_RELATIONSHIPS } from '../../graphql/entity_relationships';
+import { useUserContext } from 'contexts/UserContext';
 
 const schema = Yup.object().shape({
   name: Yup.string().required(),
@@ -21,6 +22,8 @@ const schema = Yup.object().shape({
 
 function EditEntityPage(props) {
   const { t } = useTranslation();
+
+  const { isRole, loading: loadingAuth } = useUserContext();
 
   const [entity, setEntity] = useState(null);
 
@@ -145,6 +148,15 @@ function EditEntityPage(props) {
       });
     }
   };
+
+  if (loadingAuth) {
+    return <DefaultSkeleton />;
+  }
+
+  // Matches /entities/merge — editing an entity is an editorial action.
+  if (!isRole('incident_editor')) {
+    return <div>Not enough permissions</div>;
+  }
 
   return (
     <div className={'w-full'} {...props}>
