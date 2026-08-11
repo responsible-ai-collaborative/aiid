@@ -1,0 +1,22 @@
+{
+  "Account Details": "Detalhes da Conta",
+  "Subscriptions": "Inscrições",
+  "You don't have active subscriptions to Incident updates": "Você não tem inscrições ativas em atualizações de Incidentes",
+  "You don't have active subscriptions to Entities": "Você não tem inscrições ativas em Entidades",
+  "Do you want to delete this subscription?": "Deseja excluir esta inscrição?",
+  "Updates on incident ": "Atualizações sobre o incidente ",
+  "Notify me by email of new incidents immediately": "Notificar-me por e-mail sobre novos incidentes imediatamente",
+  "New <2>{{name}}</2> Entity incidents": "Novos incidentes da Entidade <2>{{name}}</2>",
+  "First Name": "Nome",
+  "Last Name": "Sobrenome",
+  "About You": "Sobre Você",
+  "completeInfoAlertTitle": "Gerenciando a identidade do usuário no envio de relatórios de incidentes",
+  "completeInfoAlertMessage": "Quando você editar ou enviar novos incidentes, essas ações serão associadas à sua conta de usuário e ao nome informado aqui. Se quiser permanecer anônimo a qualquer momento, abra o site em uma sessão de navegação anônima",
+  "Roles": "Funções",
+  "Email": "E-mail",
+  "The AI Incident Briefing is a weekly digest of new incidents, blog posts, and other AIID updates.": "O AI Incident Briefing é um resumo semanal de novos incidentes, posts do blog e outras atualizações do AIID.",
+  "NEW": "NOVO",
+  "General Updates": "Atualizações Gerais",
+  "Incident Updates": "Atualizações de Incidentes",
+  "Entity Updates": "Atualizações de Entidades"
+}
