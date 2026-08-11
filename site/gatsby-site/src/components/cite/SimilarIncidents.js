@@ -203,7 +203,9 @@ const SimilarIncidents = ({
             )}
           </div>
           <div
-            className={(orientation == 'column' ? 'flex flex-col gap-5' : 'tw-card-set') + ' mt-5'}
+            className={
+              (orientation == 'column' ? 'flex flex-col gap-5' : 'tw-card-set') + ' mt-5 mb-6'
+            }
           >
             {editor_similar_incidents.map((similarIncident) => (
               <SimilarIncidentCard
