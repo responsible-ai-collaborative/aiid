@@ -6,7 +6,7 @@ import Loader from 'components/ui/Loader';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import Tags from 'components/forms/Tags.js';
 import { getClassificationValue, serializeClassification } from 'utils/classifications';
-import { debounce } from 'debounce';
+import debounce from 'debounce';
 import { Button, Radio, Label, Checkbox, Select } from 'flowbite-react';
 import TextInputGroup from 'components/forms/TextInputGroup';
 import Card from 'elements/Card';

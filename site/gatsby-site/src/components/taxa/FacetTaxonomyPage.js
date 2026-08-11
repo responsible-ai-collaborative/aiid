@@ -46,22 +46,22 @@ export default function FacetTaxonomyPage(props) {
       <div className={'titleWrapper'}>
         <h1>{namespace}</h1>
       </div>
-      <Markdown
-        remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeRaw]}
+      <div
         className="
-          taxonomy-markdown 
+          taxonomy-markdown
           prose
           [&_.footnotes]:mt-6
           [&_.footnotes]:pt-4
           [&_.footnotes]:pl-4
-          [&_.footnotes]:text-xs 
+          [&_.footnotes]:text-xs
           [&_.footnotes]:border-t-2
           [&_.footnotes_ol]:list-decimal
         "
       >
-        {markdownDescription}
-      </Markdown>
+        <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+          {markdownDescription}
+        </Markdown>
+      </div>
       <h2 className="heading1">
         <Trans>Taxonomy Fields</Trans>
       </h2>
@@ -92,9 +92,9 @@ export default function FacetTaxonomyPage(props) {
                   stats={stats}
                   geocodes={geocodes}
                 />
-                <Markdown className="taxonomy-markdown">
-                  {`**${t('Definition')}**: ` + t(long_description)}
-                </Markdown>
+                <div className="taxonomy-markdown">
+                  <Markdown>{`**${t('Definition')}**: ` + t(long_description)}</Markdown>
+                </div>
               </Card>
             </div>
           ))}

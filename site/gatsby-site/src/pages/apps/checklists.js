@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Spinner } from 'flowbite-react';
-import { debounce } from 'debounce';
+import debounce from 'debounce';
 import { Formik } from 'formik';
 import { graphql } from 'gatsby';
 import { useQueryParams, StringParam } from 'use-query-params';

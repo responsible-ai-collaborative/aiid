@@ -257,9 +257,9 @@ export default function Sponsors() {
                   <PrismicRichText field={item.richText} />
                 </div>
               ) : (
-                <ReactMarkdown className="react-markdown prose max-w-full">
-                  {translatedText}
-                </ReactMarkdown>
+                <div className="react-markdown prose max-w-full">
+                  <ReactMarkdown>{translatedText}</ReactMarkdown>
+                </div>
               )}
             </SponsorModal>
           );

@@ -2,7 +2,7 @@ const { queue } = require('async');
 
 const { cloneDeep } = require('lodash');
 
-const remark = require('remark');
+const { remark } = require('remark');
 
 const remarkStrip = require('strip-markdown');
 
@@ -120,7 +120,7 @@ class ReportTranslator {
     for (const item of items) {
       const { report_number, text, title, dirty } = item;
 
-      const plain_text = (await remark().use(remarkStrip).process(text)).contents.toString();
+      const plain_text = String(await remark().use(remarkStrip).process(text));
 
       translated.push({ report_number, text, title, plain_text, dirty });
     }

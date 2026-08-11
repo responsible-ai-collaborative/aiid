@@ -19,7 +19,7 @@ import {
   faStickyNote,
 } from '@fortawesome/free-solid-svg-icons';
 import { useUserContext } from 'contexts/UserContext';
-import { debounce } from 'debounce';
+import debounce from 'debounce';
 import SubmissionButton from './SubmissionButton';
 import TextInputGroup from '../TextInputGroup';
 

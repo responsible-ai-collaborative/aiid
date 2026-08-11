@@ -11,7 +11,8 @@ import {
 import Link from 'components/ui/Link';
 import { useUserContext } from 'contexts/UserContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
-import { format, parse, getUnixTime } from 'date-fns';
+import { format, getUnixTime } from 'date-fns';
+import { safeParse } from '../../utils/date';
 import { useMutation, useQuery } from '@apollo/client';
 import { FIND_SUBMISSIONS, INSERT_SUBMISSION } from '../../graphql/submissions';
 import { UPSERT_ENTITY } from '../../graphql/entities';
@@ -38,7 +39,7 @@ import config from '../../../config';
 const CustomDateParam = {
   encode: encodeDate,
   decode: (value) => {
-    const result = parse(value, 'yyyy-MM-dd', new Date());
+    const result = safeParse(value, 'yyyy-MM-dd', new Date());
 
     if (result.toString() == 'Invalid Date') {
       return undefined;

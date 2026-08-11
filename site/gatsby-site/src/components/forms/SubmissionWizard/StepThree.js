@@ -18,7 +18,7 @@ import {
   faTenge,
   faGear,
 } from '@fortawesome/free-solid-svg-icons';
-import { debounce } from 'debounce';
+import debounce from 'debounce';
 import UsersInputGroup from '../UsersInputGroup';
 import SubmissionButton from './SubmissionButton';
 
