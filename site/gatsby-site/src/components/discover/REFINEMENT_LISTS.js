@@ -44,7 +44,7 @@ const REFINEMENT_LISTS = [
     type: 'range',
   },
   {
-    attribute: 'epoch_date_published',
+    attribute: 'date_published',
     placeholder: 'none',
     label: 'Published Date',
     faIcon: faCalendarAlt,
@@ -132,7 +132,7 @@ const FIRST_ROW = REFINEMENT_LISTS.filter((refinement) =>
   [
     'classifications',
     'epoch_incident_date',
-    'epoch_date_published',
+    'date_published',
     'source_domain',
     'language',
   ].includes(refinement.attribute)
