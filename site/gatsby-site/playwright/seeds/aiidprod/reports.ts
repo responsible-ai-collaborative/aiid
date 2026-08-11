@@ -288,11 +288,11 @@ const items: DBReport[] = [
         submitters: [
             "Catherine Olsson"
         ],
-        text: "Response report 9 text",
+        text: Array(1000).fill().map(_ => "Response report 9 text").join(" "),
         title: "Response Issue Report 9",
         url: "https://searchhrsoftware.techtarget.com/news/4500252451/Kronos-shift-scheduling-software-a-grind-for-Starbucks-worker",
         tags: ["response"],
-        plain_text: "Response report 9 text",
+        plain_text: Array(1000).fill().map(_ => "Response report 9 text").join(" "),
         editor_notes: "",
         cloudinary_id: "reports/cdn.ttgtmedia.com/visuals/searchFinancialApplications/hr_technology/financialapplications_article_004.jpg",
         embedding: {
