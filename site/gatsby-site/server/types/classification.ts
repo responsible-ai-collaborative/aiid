@@ -1,5 +1,5 @@
 import { GraphQLObjectType, GraphQLString, GraphQLBoolean, GraphQLList, GraphQLInt, GraphQLNonNull, GraphQLID } from 'graphql';
-import { ObjectIdScalar } from '../scalars';
+import { ObjectIdScalar, AttributeValueScalar } from '../scalars';
 import { IncidentType } from './incidents';
 import { getListRelationshipConfig } from '../utils';
 import { ReportType } from './report';
@@ -8,9 +8,22 @@ const AttributeType = new GraphQLObjectType({
     name: 'Attribute',
     fields: {
         short_name: { type: GraphQLString },
-        value_json: { type: GraphQLString }
+        value_json: { type: GraphQLString },
+        value: {
+            type: AttributeValueScalar,
+            resolve: (source: any) => {
+                try {
+                    return JSON.parse(source.value_json);
+                } catch (e) {
+                    return source.value_json;
+                }
+            }
+        }
     }
 });
+
+//@ts-ignore 
+AttributeType.getFields().value.dependencies = ['value_json'];
 
 export const ClassificationType = new GraphQLObjectType({
     name: 'Classification',
