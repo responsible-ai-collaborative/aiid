@@ -41,11 +41,11 @@ const Citation = ({ nodes, incidentDate, incident_id, incidentTitle, editors }) 
     setRetrievalString(text);
   }, []);
 
-  const [firstEditor] = editors;
+  const [firstEditor] = editors.filter((editor) => editor && editor.first_name && editor.last_name);
 
-  const { first_name, last_name: editorLastName } = firstEditor;
+  const { first_name = '', last_name: editorLastName = '' } = firstEditor ?? {};
 
-  const editorFirstNameInitial = first_name[0] + '.';
+  const editorFirstNameInitial = first_name ? first_name[0] + '.' : '';
 
   // This string is rendered with dangerouslySetInnerHTML (for the <i> tags), and the
   // interpolated values come from the database — the incident title and the submitter
