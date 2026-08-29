@@ -1,0 +1,70 @@
+name: Embed Incidents
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: The Github environment to load secrets from
+        type: string
+        required: true
+      limit:
+        description: Process at most this many incidents (blank = all)
+        type: string
+        required: false
+      resume:
+        description: Skip incidents already embedded with the current model
+        type: boolean
+        default: false
+        required: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  embed-incidents:
+    environment: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    # Generous because a rate-limited endpoint can stretch a full run over several hours.
+    timeout-minutes: 300
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: lts/*
+
+      - name: Install NPM dependencies
+        run: npm ci
+        working-directory: site/gatsby-site
+
+      - name: Embed incidents
+        run: |
+          npm run embed-incidents:ci -- \
+            ${{ inputs.limit && format('--limit {0}', inputs.limit) || '' }} \
+            ${{ inputs.resume == true && '--resume' || '' }}
+        working-directory: site/gatsby-site
+        # The two credentials are secrets only. Everything below reads from a variable
+        # first and a secret second, so either place works, and a value set as a secret
+        # is masked in the log. Unset on both falls back to the code default.
+        env:
+          MONGODB_CONNECTION_STRING: ${{ secrets.MONGODB_CONNECTION_STRING }}
+          EMBEDDING_API_KEY: ${{ secrets.EMBEDDING_API_KEY }}
+          EMBEDDING_API_BASE_URL: ${{ vars.EMBEDDING_API_BASE_URL || secrets.EMBEDDING_API_BASE_URL }}
+          EMBEDDING_MODEL: ${{ vars.EMBEDDING_MODEL || secrets.EMBEDDING_MODEL }}
+          EMBEDDING_CONCURRENCY: ${{ vars.EMBEDDING_CONCURRENCY || secrets.EMBEDDING_CONCURRENCY }}
+          EMBEDDING_TIMEOUT_MS: ${{ vars.EMBEDDING_TIMEOUT_MS || secrets.EMBEDDING_TIMEOUT_MS }}
+          EMBEDDING_MAX_ATTEMPTS: ${{ vars.EMBEDDING_MAX_ATTEMPTS || secrets.EMBEDDING_MAX_ATTEMPTS }}
+          EMBEDDING_MAX_INPUT_CHARS: ${{ vars.EMBEDDING_MAX_INPUT_CHARS || secrets.EMBEDDING_MAX_INPUT_CHARS }}
+
+      # Uploaded even on failure, because that is when the manifest is worth reading.
+      - name: Upload failure manifest
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: embed-failures
+          path: site/gatsby-site/embed-failures.json
+          if-no-files-found: ignore
