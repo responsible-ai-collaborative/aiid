@@ -38,9 +38,9 @@ it had already finished.
 
 | File | What it contains |
 |---|---|
-| `src/scripts/embed-incidents.ts` | Entry point and orchestration. Selects the incidents to process, fetches their reports, requests a vector for each, writes the results, and prints the progress and summary output. Also handles early stops from a signal or from repeated failures. |
-| `src/utils/embeddings/provider.ts` | HTTP client for the embedding endpoint. Builds and sends the request, validates the response shape, and retries with growing delays on transient errors. Holds every vendor-specific detail, which is what reduces a model change to a settings change. |
-| `src/utils/embeddings/incidentText.ts` | Text and vector helpers, with no network or database access. `buildIncidentText` joins a title and its report bodies into one string, `chunkText` splits text longer than the model accepts, and `poolVectors` averages chunk vectors into a single vector. |
+| `src/scripts/embed-incidents.ts` | Serves as the entry point and orchestration. Selects the incidents to process, fetches their reports, requests a vector for each, writes the results, and prints the progress and summary output. Also handles early stops from a signal or from repeated failures. |
+| `src/utils/embeddings/provider.ts` | HTTP client for the embedding endpoint. Builds and sends the request, validates the response shape, and retries with growing delays on transient errors. Holds every vendor-specific detail. |
+| `src/utils/embeddings/incidentText.ts` | Text and vector helpers. `buildIncidentText` joins a title and its report bodies into one string, `chunkText` splits text longer than the model accepts, and `poolVectors` averages chunk vectors into a single vector. |
 | `.github/workflows/embed-incidents.yml` | GitHub Action definition. Declares the dispatch inputs, installs Node and the project dependencies, runs the script with the configured secrets, and uploads the failure manifest. |
 
 ## Running It Locally
@@ -192,15 +192,6 @@ per-incident detail, then re-run with `resume` ticked once the cause is fixed.
 | `EMBEDDING_API_KEY is required` | The secret is not set on the environment you selected |
 | `Rate limit exceeded: free-models-per-day` | The free tier daily ceiling, which resets at midnight UTC |
 | `base url ***` or `model ***` in the banner | That setting was stored as a secret, so GitHub masked it |
-
-### Running the whole corpus
-
-The free tier allows 50 requests per day and the corpus needs roughly 1,550, one request
-per incident. A full backfill therefore cannot finish in a single run on the free tier.
-Three ways forward: run with `resume` ticked once a day until it completes, add credits to
-raise the daily ceiling, or switch to a paid model as described in
-[Changing The Model Or Provider](#changing-the-model-or-provider). Every finished incident
-is already stored, so stopping and resuming costs nothing.
 
 ## Configuration
 
