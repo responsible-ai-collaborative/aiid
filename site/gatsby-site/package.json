@@ -36,7 +36,7 @@
     "billboard.js": "^3.18.0",
     "bootstrap-daterangepicker": "^3.1.0",
     "bson": "^7.3.1",
-    "chalk": "^5.6.2",
+    "chalk": "^6.0.0",
     "cloudinary": "^2.10.0",
     "cors": "^2.8.6",
     "cross-fetch": "^4.1.0",
