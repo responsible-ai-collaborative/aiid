@@ -161,6 +161,8 @@
     "restore-mongodb": "npx tsx --env-file=.env src/scripts/restore-mongodb.ts",
     "import-classifications-csv": "npx tsx --env-file=.env src/scripts/import-classifications-csv.ts",
     "generate-oecd-relationships": "npx tsx --env-file=.env src/scripts/generate-oecd-relationships.ts",
+    "embed-incidents": "npx tsx --env-file=.env src/scripts/embed-incidents.ts",
+    "embed-incidents:ci": "npx tsx src/scripts/embed-incidents.ts",
     "algolia-update": "npx tsx --env-file=.env src/scripts/algolia-update.ts",
     "algolia-update:ci": "npx tsx src/scripts/algolia-update.ts",
     "db:migrator": "npx tsx migrator"

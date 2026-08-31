@@ -56,6 +56,10 @@ Instruction on how to add a new field to an existing collection in the database
 
 Guide for importing OECD incident relationships into the database
 
+16. [Incident Embeddings](../gatsby-site/src/utils/embeddings/README.md)
+
+Batch pipeline that embeds every incident's title and report text into a vector, run on demand via GitHub Actions
+
 ## Getting Help
 
 1. Open issues on [GitHub](https://github.com/responsible-ai-collaborative/aiid/issues)
