@@ -86,6 +86,12 @@ const config = {
       { title: 'List View', label: 'list', url: '/summaries/incidents/', items: [] },
       { title: 'Entities', label: 'entities', url: '/entities/', items: [] },
       { title: 'Taxonomies', label: 'taxonomies', url: '/taxonomies/', items: [] },
+      {
+        title: 'Cross-Taxonomy Visualizations',
+        label: 'cross-taxonomy',
+        url: '/apps/cross-taxonomy/',
+        items: [],
+      },
       { title: 'Random Incident', label: 'random', url: '/random/', items: [] },
       { title: 'Blog', label: 'blog', url: '/blog/', items: [] },
       { title: 'AI News Digest', label: 'newsdigest', url: '/apps/newsdigest/', items: [] },
