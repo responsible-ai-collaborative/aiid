@@ -40,7 +40,7 @@
     "cloudinary": "^2.10.0",
     "cors": "^2.8.6",
     "cross-fetch": "^4.1.0",
-    "csv-parse": "^7.0.1",
+    "csv-parse": "^7.0.2",
     "csvtojson": "^2.0.14",
     "d3": "^7.9.0",
     "date-fns": "^2.30.0",
