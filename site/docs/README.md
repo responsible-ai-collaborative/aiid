@@ -63,7 +63,7 @@ Guide for importing OECD incident relationships into the database
 
 16. [Incident Embeddings](../gatsby-site/src/utils/embeddings/README.md)
 
-Batch pipeline that embeds every incident's title and report text into a vector, run on demand via GitHub Actions
+Batch pipeline that embeds each incident overview and its report passages, run on demand via GitHub Actions
 
 ## Getting Help
 

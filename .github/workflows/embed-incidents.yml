@@ -5,14 +5,15 @@ on:
     inputs:
       environment:
         description: The Github environment to load secrets from
-        type: string
+        type: environment
         required: true
       limit:
-        description: Process at most this many incidents (blank = all)
-        type: string
+        description: Process at most this many incidents (0 = all)
+        type: number
+        default: 0
         required: false
       resume:
-        description: Skip incidents already embedded with the current model
+        description: Skip incidents whose source and embedding configuration are unchanged
         type: boolean
         default: false
         required: false
@@ -35,7 +36,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: lts/*
+          node-version: 22
 
       - name: Install NPM dependencies
         run: npm ci
@@ -43,9 +44,14 @@ jobs:
 
       - name: Embed incidents
         run: |
-          npm run embed-incidents:ci -- \
-            ${{ inputs.limit && format('--limit {0}', inputs.limit) || '' }} \
-            ${{ inputs.resume == true && '--resume' || '' }}
+          args=()
+          if (( RUN_LIMIT > 0 )); then
+            args+=(--limit "$RUN_LIMIT")
+          fi
+          if [[ "$RUN_RESUME" == "true" ]]; then
+            args+=(--resume)
+          fi
+          npm run embed-incidents:ci -- "${args[@]}"
         working-directory: site/gatsby-site
         # The two credentials are secrets only. Everything below reads from a variable
         # first and a secret second, so either place works, and a value set as a secret
@@ -59,6 +65,10 @@ jobs:
           EMBEDDING_TIMEOUT_MS: ${{ vars.EMBEDDING_TIMEOUT_MS || secrets.EMBEDDING_TIMEOUT_MS }}
           EMBEDDING_MAX_ATTEMPTS: ${{ vars.EMBEDDING_MAX_ATTEMPTS || secrets.EMBEDDING_MAX_ATTEMPTS }}
           EMBEDDING_MAX_INPUT_CHARS: ${{ vars.EMBEDDING_MAX_INPUT_CHARS || secrets.EMBEDDING_MAX_INPUT_CHARS }}
+          EMBEDDING_CHUNK_OVERLAP_CHARS: ${{ vars.EMBEDDING_CHUNK_OVERLAP_CHARS || secrets.EMBEDDING_CHUNK_OVERLAP_CHARS }}
+          EMBEDDING_BATCH_SIZE: ${{ vars.EMBEDDING_BATCH_SIZE || secrets.EMBEDDING_BATCH_SIZE }}
+          RUN_LIMIT: ${{ inputs.limit }}
+          RUN_RESUME: ${{ inputs.resume }}
 
       # Uploaded even on failure, because that is when the manifest is worth reading.
       - name: Upload failure manifest
