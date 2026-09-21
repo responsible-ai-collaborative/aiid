@@ -2,6 +2,8 @@ import { GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { shield, deny } from 'graphql-shield';
 import { applyMiddleware } from 'graphql-middleware';
 import { ObjectIdScalar } from './scalars';
+import { apiAccessMiddleware } from './apiAccess';
+import { userFieldVisibilityMiddleware } from './userFieldVisibility';
 
 import {
     queryFields as quickAddsQueryFields,
@@ -100,6 +102,11 @@ import {
     permissions as entityDuplicatesPermissions
 } from './fields/entityDuplicates';
 
+import {
+    queryFields as apiUsageQueryFields,
+    permissions as apiUsagePermissions
+} from './fields/apiUsage';
+
 export const getSchema = () => {
 
     const query = new GraphQLObjectType({
@@ -126,6 +133,7 @@ export const getSchema = () => {
             ...incidentsHistoryQueryFields,
             ...checklistsQueryFields,
             ...entityDuplicatesQueryFields,
+            ...apiUsageQueryFields,
         }
     });
 
@@ -187,6 +195,7 @@ export const getSchema = () => {
                 ...incidentsHistoryPermissions.Query,
                 ...checklistsPermissions.Query,
                 ...entityDuplicatesPermissions.Query,
+                ...apiUsagePermissions.Query,
             },
             Mutation: {
                 "*": deny,
@@ -209,7 +218,20 @@ export const getSchema = () => {
         }
     );
 
-    const schemaWithAuth = applyMiddleware(schema, permissions)
+    /**
+     * `apiAccessMiddleware` is listed first so it wraps `permissions`: the login
+     * requirement is evaluated before any role rule, and a logged-out caller
+     * gets the actionable `API_LOGIN_REQUIRED` error instead of shield's generic
+     * "not authorized". It also means shield's `allowExternalErrors` setting,
+     * which governs errors raised inside its own chain, cannot mask it in
+     * production.
+     *
+     * `userFieldVisibilityMiddleware` wraps individual `User` fields rather than
+     * root fields, so its position relative to the other two does not matter;
+     * it withholds an account's API-block state from other non-admin users.
+     * SEE: server/userFieldVisibility.ts
+     */
+    const schemaWithAuth = applyMiddleware(schema, apiAccessMiddleware, userFieldVisibilityMiddleware, permissions)
 
     return schemaWithAuth;
 }

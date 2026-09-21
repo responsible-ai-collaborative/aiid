@@ -594,5 +594,17 @@
   "See in OECD AIM": "Voir dans OECD AIM",
   "The OECD AI Incidents and Hazards Monitor (AIM) automatically collects and classifies AI-related incidents and hazards in real time from reputable news sources worldwide.": "Le Moniteur des incidents et risques liés à l'IA de l'OCDE (AIM) collecte et classe automatiquement les incidents et risques liés à l'IA en temps réel à partir de sources d'information réputées dans le monde entier.",
   "Image could not be loaded. The URL may be invalid, or the image host may block external access. Using fallback image.": "L'image n'a pas pu être chargée. L'URL peut être invalide, ou le hôte d'image peut bloquer l'accès externe. Utilisation d'une image de secours.",
-  "Continue reading at <1>the source</1>.": "Continuer à lire <1>à la source</1>."
+  "Continue reading at <1>the source</1>.": "Continuer à lire <1>à la source</1>.",
+  "To mitigate a very high load of bot traffic, this functionality requires that you log in to the database.": "Pour atténuer une charge très élevée de trafic de robots, cette fonctionnalité nécessite que vous vous connectiez à la base de données.",
+  "API access for this account has been blocked. If you believe this is a mistake, please contact the AI Incident Database team.": "L'accès à l'API pour ce compte a été bloqué. Si vous pensez qu'il s'agit d'une erreur, veuillez contacter l'équipe de l'AI Incident Database.",
+  "Log in": "Se connecter",
+  "API usage": "Utilisation de l'API",
+  "No API requests recorded for this account.": "Aucune requête API enregistrée pour ce compte.",
+  "Requests": "Requêtes",
+  "Active days": "Jours actifs",
+  "Requests with errors": "Requêtes avec erreurs",
+  "Refused while blocked": "Refusées pendant le blocage",
+  "First request": "Première requête",
+  "Last request": "Dernière requête",
+  "Could not load taxonomies": "Impossible de charger les taxonomies"
 }

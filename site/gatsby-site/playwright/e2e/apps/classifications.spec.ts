@@ -5,6 +5,13 @@ const url = '/apps/classifications/';
 
 
 test.describe('Classifications App', () => {
+
+    // The page reads through the API, which requires a login (SEE:
+    // server/apiAccess.ts); the logged-out notice is covered by
+    // e2e/apiAccess.spec.ts, so every test here starts from a session.
+    test.beforeEach(async ({ login }) => {
+      await login();
+    });
     test('Should successfully load', async ({ page }) => {
         await page.goto(url);
         await expect(page).toHaveURL(url);

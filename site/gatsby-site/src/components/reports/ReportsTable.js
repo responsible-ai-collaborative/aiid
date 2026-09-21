@@ -3,6 +3,8 @@ import React from 'react';
 import { useFilters, usePagination, useSortBy, useTable } from 'react-table';
 import { Trans, useTranslation } from 'react-i18next';
 import { Button, ToggleSwitch } from 'flowbite-react';
+import ApiLoginRequired from 'components/ui/ApiLoginRequired';
+import useApiAccess from 'hooks/useApiAccess';
 import Table, {
   DefaultColumnFilter,
   DefaultColumnHeader,
@@ -14,6 +16,8 @@ import Table, {
 } from 'components/ui/Table';
 
 export default function ReportsTable({ data, isLiveData, setIsLiveData }) {
+  const { hasApiAccess } = useApiAccess();
+
   const { loading, isRole } = useUserContext();
 
   const { t } = useTranslation();
@@ -164,10 +168,16 @@ export default function ReportsTable({ data, isLiveData, setIsLiveData }) {
 
   return (
     <>
-      <div className="flex items-center mb-2">
+      <div className="flex items-center mb-2 flex-wrap gap-2">
         <div className="flex justify-start ml-4 mb-2 pt-1 mr-2">
+          {/*
+            Only live data needs the API; the table is rendered from build-time
+            data. SEE: server/apiAccess.ts and the matching note in
+            components/incidents/IncidentsTable.js
+          */}
           <ToggleSwitch
             checked={isLiveData}
+            disabled={!hasApiAccess}
             label={t('Show Live data')}
             onChange={(checked) => {
               setIsLiveData(checked);
@@ -175,6 +185,7 @@ export default function ReportsTable({ data, isLiveData, setIsLiveData }) {
             name="live-data-switch"
           />
         </div>
+        {!hasApiAccess && <ApiLoginRequired compact className="mr-2" />}
         <Button color="light" onClick={() => table.setAllFilters([])}>
           Reset filters
         </Button>

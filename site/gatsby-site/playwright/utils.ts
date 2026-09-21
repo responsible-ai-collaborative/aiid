@@ -20,6 +20,11 @@ declare module '@playwright/test' {
 
 export type Options = { defaultItem: string };
 
+// Captured before any spec runs: some specs stub `global.Date` (sinon) to pin the
+// clock, and a token or session whose `expires` was computed with the stubbed
+// constructor would already be in the past when the server checks it.
+const RealDate = Date;
+
 type TestFixtures = {
     /** 
      * Skips the test when running in an empty environment
@@ -93,7 +98,7 @@ export function hashToken(token: string) {
 export const generateMagicLink = async (email: string, callbackUrl = '/', roles: string[] = null) => {
 
     const token = randomString(32);
-    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    const expires = new RealDate(RealDate.now() + 24 * 60 * 60 * 1000);
 
     await memoryMongo.execute(async (client) => {
 
@@ -188,6 +193,12 @@ export const test = base.extend<TestFixtures>({
 
     login: async ({ page }, use, testInfo) => {
 
+        // Accounts whose `customData.users` record a test customised, so it can be
+        // restored to its seeded state once the test is over. Without this a test
+        // that logged in as, say, a subscriber left that role behind for every
+        // later test in the same worker that called `login()` without options.
+        const customised = new Set<string>();
+
         await use(async ({ email = testUser.email, customData = null } = {}) => {
 
             const userId = await getUserIdFromAuth(email);
@@ -201,6 +212,8 @@ export const test = base.extend<TestFixtures>({
 
                     await collection.updateOne({ userId }, { $set: customData }, { upsert: true });
                 });
+
+                customised.add(userId);
             }
 
             const magicLink = await generateMagicLink(email);
@@ -211,10 +224,37 @@ export const test = base.extend<TestFixtures>({
 
             await page.waitForURL(url => !url.pathname.includes('/magic-link'), { timeout: 10000 });
 
+            // Leaving the interstitial is not the same as the callback having set the
+            // session cookie; a test that navigates straight away could otherwise
+            // abandon the callback and start logged out.
+            await expect
+                .poll(async () => (await page.context().cookies()).some((cookie) => cookie.name.includes('next-auth.session-token')), { timeout: 10000 })
+                .toBe(true);
+
             const sessionToken = await getSessionToken(userId);
 
             return [userId!, sessionToken!];
-        })
+        });
+
+        if (customised.size > 0) {
+
+            await memoryMongo.execute(async (client) => {
+
+                const collection = client.db('customData').collection('users');
+
+                for (const userId of customised) {
+
+                    const seeded = users.find((user) => user.userId === userId);
+
+                    if (seeded) {
+
+                        const { _id, ...record } = seeded as any;
+
+                        await collection.replaceOne({ userId }, record, { upsert: true });
+                    }
+                }
+            });
+        }
     },
 
     retryDelay: [async ({ }, use, testInfo) => {
@@ -359,11 +399,55 @@ export const getApolloClient = () => {
 
 const client = getApolloClient();
 
-export function query(data: QueryOptions<OperationVariables, any>, headers = {}) {
+/**
+ * Returns a `Cookie` header value carrying a valid session for `userId`.
+ *
+ * The GraphQL API requires a logged-in account (SEE: server/apiAccess.ts), so a
+ * request from the test runner needs a session just like the browser does. The
+ * session is written straight into the `auth.sessions` collection that the
+ * NextAuth MongoDB adapter reads, which is the same shape `login()` leaves behind
+ * after visiting a magic link — minus the browser round trip.
+ *
+ * Defaults to the seeded admin test user so that scaffolding reads (checking what
+ * the UI wrote) are never refused for lack of a role.
+ */
+export const getSessionCookie = async (userId: string = testUser.userId) => {
+
+    const sessionToken = randomString(32);
+
+    await memoryMongo.execute(async (client) => {
+
+        await client.db('auth').collection('sessions').insertOne({
+            sessionToken,
+            userId: new ObjectId(userId),
+            expires: new RealDate(RealDate.now() + 24 * 60 * 60 * 1000),
+        });
+    });
+
+    return `next-auth.session-token=${encodeURIComponent(sessionToken)};`;
+};
+
+const hasCookieHeader = (headers: Record<string, string>) =>
+    Object.keys(headers).some((name) => name.toLowerCase() === 'cookie');
+
+/**
+ * Runs a GraphQL query against the site under test.
+ *
+ * Authenticates as the seeded admin test user unless the caller supplies its own
+ * `Cookie` header: specs use this helper as scaffolding — to read back what the
+ * UI wrote — and not to exercise anonymous access, which the API refuses
+ * (SEE: server/apiAccess.ts). To make a deliberately anonymous request use
+ * `page.request.post('/api/graphql', ...)`, as `e2e/apiAccess.spec.ts` does.
+ */
+export async function query(data: QueryOptions<OperationVariables, any>, headers: Record<string, string> = {}) {
 
     const { query, variables } = data
 
-    return client.query({ query, variables, fetchPolicy: 'no-cache', context: { headers } });
+    const authenticatedHeaders = hasCookieHeader(headers)
+        ? headers
+        : { ...headers, Cookie: await getSessionCookie() };
+
+    return client.query({ query, variables, fetchPolicy: 'no-cache', context: { headers: authenticatedHeaders } });
 }
 
 const loginSteps = async (page: Page, email: string, password: string) => {

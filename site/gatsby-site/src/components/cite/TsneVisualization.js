@@ -6,6 +6,8 @@ import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import Color from 'color';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
+import ApiLoginRequired from 'components/ui/ApiLoginRequired';
+import useApiAccess from 'hooks/useApiAccess';
 
 export default function TsneVisualization({
   currentIncidentId,
@@ -258,6 +260,8 @@ function PlotPoint({
 }) {
   const client = useApolloClient();
 
+  const { hasApiAccess } = useApiAccess();
+
   const { t } = useTranslation();
 
   const [incidentData, setIncidentData] = useState(null);
@@ -305,7 +309,10 @@ function PlotPoint({
   const showIncidentCard = (event) => {
     setHover(true);
     setClientPosition({ x: event.clientX, y: event.clientY });
-    if (!incidentData) {
+    // The hover card's contents are fetched on demand and need a login
+    // (SEE: server/apiAccess.ts). Skipped rather than left to fail, because the
+    // card below shows a loading skeleton until this resolves.
+    if (!incidentData && hasApiAccess) {
       client
         .query({
           query: gql`
@@ -326,6 +333,10 @@ function PlotPoint({
         })
         .then((res) => {
           setIncidentData(res.data.incident);
+        })
+        .catch(() => {
+          // Leaves the card in its loading state. The Apollo error link has
+          // already recorded any access denial for the notice to read.
         });
     }
   };
@@ -431,6 +442,10 @@ function PlotPoint({
                 )}
               />
             </>
+          ) : !hasApiAccess ? (
+            <div className="p-3">
+              <ApiLoginRequired compact />
+            </div>
           ) : (
             <div role="status" className="animate-pulse md:flex md:items-center -m-4 mb-2">
               <div className="flex items-center justify-center w-full h-32 bg-gray-300 rounded sm:w-96 dark:bg-gray-700 rounded-b-none">

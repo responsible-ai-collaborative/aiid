@@ -103,10 +103,14 @@ test.describe('Cite pages', () => {
         await expect(incidentStats.locator('text=John Doe')).toBeVisible();
     });
 
-    test('Should flag an incident', async ({ page }) => {
+    test('Should flag an incident', async ({ page, login }) => {
         const _id = '3';
 
         await init();
+
+        // Flagging writes through the API, which requires a login; the logged-out
+        // notice inside the modal is covered by e2e/apiAccess.spec.ts.
+        await login();
 
         await page.goto(url + '#' + _id);
 
@@ -206,7 +210,10 @@ test.describe('Cite pages', () => {
         expect(data.incident_classifications_2).toHaveLength(4);
     });
 
-    test('Should pre-fill submit report form', async ({ page }) => {
+    test('Should pre-fill submit report form', async ({ page, login }) => {
+        // The submit form is shown only to a logged-in visitor. SEE: server/apiAccess.ts
+        await login();
+
         await page.goto(url);
 
         await page.locator('a:has-text("New Report")').click();
@@ -215,7 +222,9 @@ test.describe('Cite pages', () => {
         await expect(page.locator('.incident-ids-field [data-cy="token"]:has-text("3")')).toBeVisible();
     });
 
-    test('Should pre-fill submit report response form', async ({ page }) => {
+    test('Should pre-fill submit report response form', async ({ page, login }) => {
+        await login();
+
         await page.goto(url);
 
         await page.locator('a:has-text("New Response")').click();
@@ -368,9 +377,13 @@ test.describe('Cite pages', () => {
         await expect(page.locator('[data-cy="edit-similar-incidents"]').nth(1)).toBeVisible();
     });
 
-    test('Should flag an incident as not related (not authenticated)', async ({ page }) => {
+    test('Should flag an incident as not related (logged-in user without editor role)', async ({ page, login }) => {
 
         await init();
+
+        // Flagging writes through the API, which requires a login (SEE:
+        // server/apiAccess.ts); any logged-in account may flag, not only editors.
+        await login({ customData: { roles: ['subscriber'] } });
 
         await page.goto('/cite/3');
 
@@ -587,9 +600,13 @@ test.describe('Cite pages', () => {
         expect(data.incident_3).toMatchObject({ editor_dissimilar_incidents: [2], editor_similar_incidents: [1] });
     });
 
-    test('Should load incident data not yet in build', async ({ page }) => {
+    test('Should load incident data not yet in build', async ({ page, login }) => {
 
         await init();
+
+        // The client-rendered fallback reads the incident through the API, which
+        // requires a login; the logged-out notice is covered by e2e/apiAccess.spec.ts.
+        await login();
 
         const incident: DBIncident = {
             incident_id: 6,

@@ -62,6 +62,14 @@ test.describe('createCitationPages', () => {
       allMongodbAiidprodIncidentLinks: {
         nodes: incident_links.filter(link => link.incident_id === 1), 
       },
+      // Translated titles are attached to the similar incidents at build time, so a
+      // localized page can show them without an API call. SEE: #4056
+      allMongodbTranslationsIncidents: {
+        nodes: [
+          { incident_id: 55, language: 'es', title: 'Título del Incidente 55' },
+          { incident_id: 55, language: 'fr', title: 'Titre de l’incident 55' },
+        ],
+      },
     },
     extensions: {},
   };
@@ -83,6 +91,20 @@ test.describe('createCitationPages', () => {
     await createCitationPages(graphql as unknown as CreatePagesArgs['graphql'], createPage, { languages });
 
     expect(createPage.callCount).toEqual(languages.length);
+
+    // Every localized page carries the similar incidents' translated titles.
+    for (const call of createPage.getCalls()) {
+      const [{ context }] = call.args;
+
+      // (The mock lists only incident 1 itself, so the similar incident carries no
+      // other fields here; what matters is that the translations were attached.)
+      expect(context.nlp_similar_incidents[0]).toMatchObject({
+        translations: [
+          { language: 'es', title: 'Título del Incidente 55' },
+          { language: 'fr', title: 'Titre de l’incident 55' },
+        ],
+      });
+    }
 
     languages.forEach((language) => {
       // Assert each language has a page created

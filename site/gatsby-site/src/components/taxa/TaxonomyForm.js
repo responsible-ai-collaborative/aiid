@@ -13,6 +13,7 @@ import Card from 'elements/Card';
 import SubmitButton from 'components/ui/SubmitButton';
 import { uniq } from 'lodash';
 import { FIND_ENTITIES } from '../../graphql/entities';
+import useApiAccess from 'hooks/useApiAccess';
 
 const TaxonomyForm = forwardRef(function TaxonomyForm(
   { taxonomy, incidentId, reportNumber, onSubmit, active },
@@ -31,6 +32,8 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
   const [deletedSubClassificationIds, setDeletedSubClassificationIds] = useState([]);
 
   const addToast = useToastContext();
+
+  const { hasApiAccess } = useApiAccess();
 
   const formRef = useRef(null);
 
@@ -67,17 +70,29 @@ const TaxonomyForm = forwardRef(function TaxonomyForm(
   // only if it will be used.
   const client = useApolloClient();
 
+  // `Taxonomy` mounts this form for every taxonomy card on every incident page,
+  // including for a visitor who is only reading, so this deferred to `active` —
+  // which is what the comment above intends by "only if it will be used". Before
+  // the API required a login the unguarded request merely wasted a round trip per
+  // card; now it is refused, and because the promise had no rejection handler the
+  // refusal surfaced as an uncaught Apollo error on the page.
+  // SEE: server/apiAccess.ts
   useEffect(() => {
-    (async () => {
-      if (taxonomy.complete_entities) {
-        setEntitiesData(
-          await client.query({
-            query: FIND_ENTITIES,
-          })
-        );
-      }
-    })();
-  }, []);
+    if (!active || !hasApiAccess || !taxonomy.complete_entities) {
+      return;
+    }
+
+    client
+      .query({ query: FIND_ENTITIES })
+      .then(setEntitiesData)
+      .catch((error) => {
+        addToast({
+          message: <>Error loading entities: {error.message}</>,
+          severity: SEVERITY.danger,
+          error,
+        });
+      });
+  }, [active, hasApiAccess, taxonomy.complete_entities]);
 
   const classification =
     classificationsData &&

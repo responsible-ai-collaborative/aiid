@@ -10,9 +10,12 @@ test.describe('Unsubscribe pages', () => {
   let accessToken: string;
 
   test.beforeEach(async ({ page, login }) => {
-    if (!userId) {
-      [userId, accessToken] = await login();
-    }
+    // Every test gets a fresh browser context, so the session is created for each
+    // one: unsubscribing writes through the API, which requires a login (SEE:
+    // server/apiAccess.ts) and, server-side, ownership of the subscriptions. The
+    // earlier once-only login left later tests running logged out, which passed
+    // only because deleting nothing needs no owner.
+    [userId, accessToken] = await login();
   });
 
   test('Successfully loads', async ({ page }) => {

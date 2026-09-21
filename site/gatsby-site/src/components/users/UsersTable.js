@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useFilters, usePagination, useSortBy, useTable } from 'react-table';
 import Table, {
   DefaultColumnFilter,
@@ -23,6 +23,16 @@ function RolesCell({ cell }) {
   );
 }
 
+function ApiAccessCell({ cell }) {
+  return cell.value ? (
+    <Badge color="failure" data-cy="api-access-blocked-badge">
+      Blocked
+    </Badge>
+  ) : (
+    <Badge color="success">Allowed</Badge>
+  );
+}
+
 export default function UsersTable({ data, className = '', ...props }) {
   const [userEditId, setUserEditId] = useState(null);
 
@@ -41,44 +51,57 @@ export default function UsersTable({ data, className = '', ...props }) {
 
   const client = useApolloClient();
 
+  // The rows shown. They start from the list query and are enriched with each
+  // account's `adminData`, which is only readable one user at a time.
+  const rowsRef = useRef(updatedData);
+
   useEffect(() => {
+    rowsRef.current = updatedData;
+  }, [updatedData]);
+
+  useEffect(() => {
+    if (!data) return;
+
+    // Keep the rows in step with the list query. The edit modal's mutations update
+    // that query through the Apollo cache (roles, names, API access), and the rows
+    // used to be copied from it only once, so an edit — such as blocking an
+    // account — did not show until the page was reloaded. The adminData already
+    // fetched is kept and only fetched for accounts that still lack it.
+    const previousRows = rowsRef.current || [];
+
+    setUpdatedData(
+      data.map((user) => ({
+        ...previousRows.find((row) => row.userId === user.userId),
+        ...user,
+      }))
+    );
+
+    const missingAdminData = data.filter(
+      (user) => !previousRows.find((row) => row.userId === user.userId)?.adminData
+    );
+
     const fetchUserAdminData = async () => {
-      if (data) {
-        try {
-          const promises = data.map(async (user) => {
+      try {
+        await Promise.all(
+          missingAdminData.map(async (user) => {
             const result = await client.query({
               query: FIND_USER,
               variables: { filter: { userId: { EQ: user.userId } } },
             });
 
             if (result.data && result.data.user && result.data.user.adminData) {
-              const adminDataUserIndex = updatedData.findIndex(
-                (updatedUser) =>
-                  updatedUser.userId === result.data.user.userId && !updatedUser.adminData
+              setUpdatedData((prev) =>
+                prev.map((row) =>
+                  row.userId === result.data.user.userId ? { ...row, ...result.data.user } : row
+                )
               );
-
-              if (adminDataUserIndex !== -1) {
-                const updatedNode = {
-                  ...updatedData[adminDataUserIndex],
-                  ...result.data.user,
-                };
-
-                setUpdatedData((prev) => {
-                  const updatedData = [...prev];
-
-                  updatedData[adminDataUserIndex] = updatedNode;
-                  return updatedData;
-                });
-              }
             }
-          });
-
-          await Promise.all(promises);
-        } catch (error) {
-          console.error('Error querying user admin data:', error);
-        }
-        setLoading(false);
+          })
+        );
+      } catch (error) {
+        console.error('Error querying user admin data:', error);
       }
+      setLoading(false);
     };
 
     fetchUserAdminData();
@@ -112,6 +135,14 @@ export default function UsersTable({ data, className = '', ...props }) {
         Cell: RolesCell,
       },
       {
+        // Surfaces the block on the list itself, so an admin can see at a glance
+        // which accounts are barred from the API without opening each one.
+        // SEE: server/apiAccess.ts
+        title: 'API Access',
+        accessor: 'api_access_blocked',
+        Cell: ApiAccessCell,
+      },
+      {
         title: 'Creation Date',
         accessor: 'adminData.creationDate',
         Filter: SelectDatePickerFilter,
@@ -139,6 +170,7 @@ export default function UsersTable({ data, className = '', ...props }) {
         className: 'w-[80px]',
         Cell: ({ row: { values } }) => (
           <Button
+            data-cy="edit-user-button"
             onClick={() => {
               setUserEditId(values.userId);
             }}

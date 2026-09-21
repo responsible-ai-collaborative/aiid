@@ -9,7 +9,11 @@ test.describe('Admin', () => {
     await init();
   });
 
-  test('Should show not enough permissions message', async ({ page }) => {
+  test('Should show not enough permissions message', async ({ page, login }) => {
+    // A logged-in account without the admin role. A logged-out visitor is told
+    // to log in instead (covered by e2e/apiAccess.spec.ts). SEE: server/apiAccess.ts
+    await login({ customData: { roles: ['subscriber'] } });
+
     await page.goto(baseUrl);
     await expect(page.getByText("Not enough permissions")).toBeVisible({ timeout: 30000 });
   });

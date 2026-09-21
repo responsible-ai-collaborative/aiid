@@ -13,6 +13,8 @@ import ChecklistsIndex from 'components/checklists/ChecklistsIndex';
 import { checkedRiskStatus } from 'utils/checklists';
 import { FIND_CHECKLIST, UPSERT_CHECKLIST } from '../../graphql/checklists';
 import HeadContent from 'components/HeadContent';
+import ApiLoginRequired from 'components/ui/ApiLoginRequired';
+import useApiAccess from 'hooks/useApiAccess';
 
 const ChecklistsPage = (props) => {
   const { data } = props;
@@ -37,8 +39,13 @@ const ChecklistsPageBody = ({ taxa, classifications, users }) => {
 
   useEffect(() => setHydrated(true), []);
 
+  const { hasApiAccess, loading: apiAccessLoading } = useApiAccess();
+
+  // Also skipped when there is no `id`, in which case the index is rendered below
+  // and the result was never used. SEE: server/apiAccess.ts
   const { data: savedChecklistData, loading: savedChecklistLoading } = useQuery(FIND_CHECKLIST, {
     variables: { filter: { id: { EQ: query.id } } },
+    skip: !hasApiAccess || !query.id,
   });
 
   const savedChecklist = savedChecklistData?.checklist && savedChecklistData.checklist;
@@ -95,6 +102,13 @@ const ChecklistsPageBody = ({ taxa, classifications, users }) => {
       </>
     );
   }
+  // A saved checklist is read (and autosaved) through the API, so viewing one by
+  // id needs a login. Checked before the loading branch below, which would
+  // otherwise spin forever on a request that was never issued.
+  if (query.id && !apiAccessLoading && !hasApiAccess) {
+    return <ApiLoginRequired />;
+  }
+
   if (query.id && savedChecklistLoading) {
     return <Spinner />;
   } else if (query.id && savedChecklistData && savedChecklist) {

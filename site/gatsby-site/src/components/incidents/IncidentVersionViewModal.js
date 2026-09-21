@@ -9,6 +9,7 @@ import CiteTemplate from 'templates/citeTemplate';
 import { sortIncidentsByDatePublished } from 'utils/cite';
 import { isCompleteReport } from 'utils/variants';
 import DefaultSkeleton from 'elements/Skeletons/Default';
+import useApiAccess from 'hooks/useApiAccess';
 
 export default function IncidentVersionViewModal({
   show,
@@ -25,8 +26,13 @@ export default function IncidentVersionViewModal({
 
   const [timeline, setTimeline] = useState(null);
 
+  const { hasApiAccess } = useApiAccess();
+
+  // SEE: server/apiAccess.ts. Also skipped when the version carries no reports,
+  // which would otherwise query for an empty list on every mount.
   const { data: reportsData } = useQuery(FIND_REPORTS, {
     variables: { filter: { report_number: { IN: version?.reports || [] } } },
+    skip: !hasApiAccess || !version?.reports?.length,
   });
 
   useEffect(() => {

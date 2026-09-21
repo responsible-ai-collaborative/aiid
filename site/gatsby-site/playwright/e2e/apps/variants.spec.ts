@@ -11,7 +11,11 @@ test.describe('Variants App', () => {
         await expect(page).toHaveURL(`${url}/`);
     });
 
-    test('Should display a list of Unreviewed Variants and their values - Unauthenticated user', async ({ page }) => {
+    test('Should display a list of Unreviewed Variants and their values - Logged-in user without editor role', async ({ page, login }) => {
+
+        // The list is read through the API, which requires a login (SEE:
+        // server/apiAccess.ts); a subscriber still sees no editing controls.
+        await login({ customData: { roles: ['subscriber'] } });
 
         await page.goto(url);
 
@@ -29,7 +33,9 @@ test.describe('Variants App', () => {
         await expect(firstRow.locator('[data-cy="cell"]').nth(4).locator('div').nth(2)).toHaveText('Output 1 longer than 80 characters. This is some extra text to achieve the requirement.');
     });
 
-    test('Should display a list of all Variants and their values - Unauthenticated user', async ({ page }) => {
+    test('Should display a list of all Variants and their values - Logged-in user without editor role', async ({ page, login }) => {
+
+        await login({ customData: { roles: ['subscriber'] } });
 
         await page.goto(url);
 

@@ -19,6 +19,8 @@ import { Formik } from 'formik';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { CREATE_VARIANT, FIND_INCIDENT_VARIANTS } from '../../graphql/variants';
 import { format } from 'date-fns';
+import { ApiAccessGate } from 'components/ui/ApiLoginRequired';
+import useApiAccess from 'hooks/useApiAccess';
 
 export const VariantStatusBadge = ({ status }) => {
   let badgeClass;
@@ -180,11 +182,16 @@ const VariantList = ({ liveVersion, incidentId, variants, readOnly = false }) =>
     }
   );
 
+  const { hasApiAccess } = useApiAccess();
+
   useEffect(() => {
-    if (liveVersion) {
+    // `liveVersion` is an editor-only view, so this normally implies a session;
+    // the guard covers the ordering case where the flag is set from a URL
+    // parameter before the session has resolved.
+    if (liveVersion && hasApiAccess) {
       findIncidentVariants();
     }
-  }, [liveVersion]);
+  }, [liveVersion, hasApiAccess]);
 
   const onAddVariantClick = () => {
     setDisplayForm(!displayForm);
@@ -290,67 +297,82 @@ const VariantList = ({ liveVersion, incidentId, variants, readOnly = false }) =>
         </div>
       )}
 
+      {/*
+        Submitting a variant writes through the API, which now requires a login
+        (SEE: server/apiAccess.ts). The notice replaces the form only once the
+        visitor has asked for it by clicking "Submit a Variant", so the reason
+        appears at the moment it becomes relevant rather than as a standing banner
+        on every incident page.
+      */}
       {displayForm && (
-        <div className="p-4 mt-4 flex border-1 rounded-lg break-words flex-col shadow-md">
-          <Formik
-            initialValues={{ date_published: '', submitters: [], text: '', inputs_outputs: [''] }}
-            validationSchema={schema}
-            onSubmit={async (
-              { date_published, submitters, text, inputs_outputs },
-              { setSubmitting, resetForm }
-            ) => {
-              try {
-                await addVariant({ incidentId, date_published, submitters, text, inputs_outputs });
+        <ApiAccessGate className="mt-4">
+          <div className="p-4 mt-4 flex border-1 rounded-lg break-words flex-col shadow-md">
+            <Formik
+              initialValues={{ date_published: '', submitters: [], text: '', inputs_outputs: [''] }}
+              validationSchema={schema}
+              onSubmit={async (
+                { date_published, submitters, text, inputs_outputs },
+                { setSubmitting, resetForm }
+              ) => {
+                try {
+                  await addVariant({
+                    incidentId,
+                    date_published,
+                    submitters,
+                    text,
+                    inputs_outputs,
+                  });
 
-                addToast({
-                  message: t(
-                    'Your variant has been added to the review queue and will appear on this page within 12 hours.'
-                  ),
-                  severity: SEVERITY.success,
-                });
+                  addToast({
+                    message: t(
+                      'Your variant has been added to the review queue and will appear on this page within 12 hours.'
+                    ),
+                    severity: SEVERITY.success,
+                  });
 
-                resetForm();
-              } catch (e) {
-                addToast({
-                  message: (
-                    <label className="capitalize">
-                      {t(e.error || 'An unknown error has occurred')}
-                    </label>
-                  ),
-                  severity: SEVERITY.danger,
-                  error: e,
-                });
-              }
+                  resetForm();
+                } catch (e) {
+                  addToast({
+                    message: (
+                      <label className="capitalize">
+                        {t(e.error || 'An unknown error has occurred')}
+                      </label>
+                    ),
+                    severity: SEVERITY.danger,
+                    error: e,
+                  });
+                }
 
-              setSubmitting(false);
-            }}
-          >
-            {({ isSubmitting, isValid, submitForm }) => (
-              <div>
+                setSubmitting(false);
+              }}
+            >
+              {({ isSubmitting, isValid, submitForm }) => (
                 <div>
-                  <VariantForm />
+                  <div>
+                    <VariantForm />
+                  </div>
+                  <div className="flex justify-end gap-3 mt-3">
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting || !isValid}
+                      onClick={submitForm}
+                      data-cy="add-variant-submit-btn"
+                    >
+                      <div className="flex gap-2 items-center">
+                        {isSubmitting && (
+                          <div>
+                            <Spinner size="sm" />
+                          </div>
+                        )}
+                        <Trans>Submit</Trans>
+                      </div>
+                    </Button>
+                  </div>
                 </div>
-                <div className="flex justify-end gap-3 mt-3">
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting || !isValid}
-                    onClick={submitForm}
-                    data-cy="add-variant-submit-btn"
-                  >
-                    <div className="flex gap-2 items-center">
-                      {isSubmitting && (
-                        <div>
-                          <Spinner size="sm" />
-                        </div>
-                      )}
-                      <Trans>Submit</Trans>
-                    </div>
-                  </Button>
-                </div>
-              </div>
-            )}
-          </Formik>
-        </div>
+              )}
+            </Formik>
+          </div>
+        </ApiAccessGate>
       )}
     </div>
   );

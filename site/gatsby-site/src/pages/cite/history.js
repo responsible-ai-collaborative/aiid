@@ -18,8 +18,12 @@ import { Button, Spinner } from 'flowbite-react';
 import CustomButton from 'elements/Button';
 import { useUserContext } from 'contexts/UserContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
+import ApiLoginRequired from 'components/ui/ApiLoginRequired';
+import useApiAccess from 'hooks/useApiAccess';
 
 function IncidentHistoryPage() {
+  const { hasApiAccess, loading: apiAccessLoading } = useApiAccess();
+
   const { t } = useTranslation();
 
   const { isRole } = useUserContext();
@@ -38,13 +42,14 @@ function IncidentHistoryPage() {
 
   const [reportVersionDetails, setReportVersionDetails] = useState(null);
 
-  const { data: usersData, loading: loadingUsers } = useQuery(FIND_USERS);
+  const { data: usersData, loading: loadingUsers } = useQuery(FIND_USERS, { skip: !hasApiAccess });
 
   const {
     data: reportHistoryData,
     loading: loadingReportHistory,
     refetch: refetchHistory,
   } = useQuery(FIND_REPORT_HISTORY, {
+    skip: !hasApiAccess,
     fetchPolicy: 'network-only',
     variables: {
       filter: {
@@ -93,7 +98,9 @@ function IncidentHistoryPage() {
     }
   }, [reportHistoryData, usersData]);
 
-  const loading = loadingReportHistory || loadingUsers;
+  // `apiAccessLoading` is included because the queries above are skipped until the
+  // session has resolved; without it the page briefly rendered its empty state.
+  const loading = apiAccessLoading || loadingReportHistory || loadingUsers;
 
   const restoreVersion = async (version) => {
     if (confirm(t('Are you sure you want to restore this version?'))) {
@@ -145,6 +152,12 @@ function IncidentHistoryPage() {
     ? `/cite/${incidentId}#r${reportNumber}`
     : `/reports/${reportNumber}`;
 
+  // Every read on this page goes through the API, which requires a login
+  // (SEE: server/apiAccess.ts), so a logged-out visitor is given the reason
+  // instead of an empty page.
+  if (!apiAccessLoading && !hasApiAccess) {
+    return <ApiLoginRequired />;
+  }
   return (
     <div className={'w-full p-1'}>
       {!loading && (

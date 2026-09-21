@@ -18,5 +18,9 @@
     "NEW": "NOUVEAU",
     "General Updates": "Mises à jour générales",
     "Incident Updates": "Mises à jour d'incident",
-    "Entity Updates": "Mises à jour d'entité"
+    "Entity Updates": "Mises à jour d'entité",
+    "API access": "Accès à l'API",
+    "Block this account from the API": "Bloquer l'accès de ce compte à l'API",
+    "Reason": "Motif",
+    "e.g. automated scraping at 400 req/min": "p. ex. extraction automatisée à 400 req/min"
 }
