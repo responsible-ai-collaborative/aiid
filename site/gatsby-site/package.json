@@ -132,7 +132,7 @@
     "umzug": "^3.8.3",
     "use-query-params": "^1.2.3",
     "yargs": "^18.1.0",
-    "yup": "^0.29.3"
+    "yup": "^1.7.1"
   },
   "license": "MIT",
   "main": "n/a",
