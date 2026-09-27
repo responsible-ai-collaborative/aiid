@@ -23,8 +23,11 @@
   to = "/.netlify/functions/graphql"
   status = 200
   [redirects.rate_limit]
-    # 100 requests per 60 seconds, per unique IP + domain
-    window_limit = 100
+    # 1000 requests per 180 seconds, per unique IP + domain. Every request now
+    # needs an account and is counted per account (SEE: server/apiUsage.ts), so
+    # this is a coarse abuse ceiling; the previous 100 was low enough that one
+    # busy admin page could lock an office's shared IP out for three minutes.
+    window_limit = 1000
     window_size = 180
     aggregate_by = ["ip", "domain"]
 

@@ -14,6 +14,33 @@ export const FIND_USERS = gql(`
   }
 `);
 
+/**
+ * The admin page's list. `adminData` is only granted to admins (SEE: server/rules.ts,
+ * `notQueriesAdminData`), so this document is for the admin page alone; every other
+ * caller uses `FIND_USERS`. One request replaces the one-per-account `FindUser` calls
+ * the users table used to make, which tripped Netlify's per-IP rate limit on
+ * `/api/graphql` as soon as there were more accounts than the limit allows.
+ */
+export const FIND_USERS_ADMIN = gql(`
+  query FindUsersAdmin {
+    users {
+      roles
+      userId
+      first_name
+      last_name
+      api_access_blocked
+      api_access_blocked_at
+      api_access_blocked_reason
+      adminData {
+        email
+        disabled
+        creationDate
+        lastAuthenticationDate
+      }
+    }
+  }
+`);
+
 export const FIND_USER = gql(`
   query FindUser($filter: UserFilterType!) {
     user(filter: $filter) {

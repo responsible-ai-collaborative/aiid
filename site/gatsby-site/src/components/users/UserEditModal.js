@@ -113,6 +113,8 @@ export default function UserEditModal({ show, onClose, userId, alertTitle = '', 
     error,
   } = useQuery(FIND_USER, {
     variables: { filter: { userId: { EQ: userId } } },
+    // The modal is mounted closed with no user; do not query for nobody.
+    skip: !userId,
   });
 
   const { isRole } = useUserContext();

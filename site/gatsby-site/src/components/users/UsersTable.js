@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useFilters, usePagination, useSortBy, useTable } from 'react-table';
 import Table, {
   DefaultColumnFilter,
@@ -9,9 +9,6 @@ import Table, {
 import { Badge, Button } from 'flowbite-react';
 import UserEditModal from './UserEditModal';
 import { UserCreationDateCell, UserEmailCell, UserLastAuthDateCell } from './UserInfoCells';
-import { useApolloClient } from '@apollo/client';
-import { FIND_USER } from '../../graphql/users';
-import ListSkeleton from 'elements/Skeletons/List';
 
 function RolesCell({ cell }) {
   return (
@@ -36,10 +33,6 @@ function ApiAccessCell({ cell }) {
 export default function UsersTable({ data, className = '', ...props }) {
   const [userEditId, setUserEditId] = useState(null);
 
-  const [updatedData, setUpdatedData] = useState(data);
-
-  const [loading, setLoading] = useState(true);
-
   const defaultColumn = React.useMemo(
     () => ({
       className: 'w-[120px]',
@@ -49,63 +42,9 @@ export default function UsersTable({ data, className = '', ...props }) {
     []
   );
 
-  const client = useApolloClient();
-
-  // The rows shown. They start from the list query and are enriched with each
-  // account's `adminData`, which is only readable one user at a time.
-  const rowsRef = useRef(updatedData);
-
-  useEffect(() => {
-    rowsRef.current = updatedData;
-  }, [updatedData]);
-
-  useEffect(() => {
-    if (!data) return;
-
-    // Keep the rows in step with the list query. The edit modal's mutations update
-    // that query through the Apollo cache (roles, names, API access), and the rows
-    // used to be copied from it only once, so an edit — such as blocking an
-    // account — did not show until the page was reloaded. The adminData already
-    // fetched is kept and only fetched for accounts that still lack it.
-    const previousRows = rowsRef.current || [];
-
-    setUpdatedData(
-      data.map((user) => ({
-        ...previousRows.find((row) => row.userId === user.userId),
-        ...user,
-      }))
-    );
-
-    const missingAdminData = data.filter(
-      (user) => !previousRows.find((row) => row.userId === user.userId)?.adminData
-    );
-
-    const fetchUserAdminData = async () => {
-      try {
-        await Promise.all(
-          missingAdminData.map(async (user) => {
-            const result = await client.query({
-              query: FIND_USER,
-              variables: { filter: { userId: { EQ: user.userId } } },
-            });
-
-            if (result.data && result.data.user && result.data.user.adminData) {
-              setUpdatedData((prev) =>
-                prev.map((row) =>
-                  row.userId === result.data.user.userId ? { ...row, ...result.data.user } : row
-                )
-              );
-            }
-          })
-        );
-      } catch (error) {
-        console.error('Error querying user admin data:', error);
-      }
-      setLoading(false);
-    };
-
-    fetchUserAdminData();
-  }, [data]);
+  // The rows are the list query's result, admin data included (SEE:
+  // `FIND_USERS_ADMIN`). The edit modal's mutations return the user with its
+  // `userId`, which is the cache key, so an edit shows here without a refetch.
 
   const columns = React.useMemo(() => {
     const columns = [
@@ -182,20 +121,18 @@ export default function UsersTable({ data, className = '', ...props }) {
     ];
 
     return columns;
-  }, [setUserEditId, updatedData, setUpdatedData, loading]);
+  }, [setUserEditId]);
 
   const table = useTable(
     {
       columns,
-      data: updatedData,
+      data,
       defaultColumn,
     },
     useFilters,
     useSortBy,
     usePagination
   );
-
-  if (loading) return <ListSkeleton />;
 
   return (
     <>
