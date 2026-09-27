@@ -5,6 +5,13 @@ import { init } from '../../memory-mongo';
 const { gql } = require('@apollo/client');
 
 test.describe('Incidents', () => {
+
+  // The page reads through the API, which requires a login (SEE:
+  // server/apiAccess.ts); the logged-out notice is covered by
+  // e2e/apiAccess.spec.ts, so every test here starts from a session.
+  test.beforeEach(async ({ login }) => {
+    await login();
+  });
   const url = '/incidents/history/?incident_id=1';
   const urlNoHistory = '/incidents/history/?incident_id=2';
 
@@ -73,9 +80,16 @@ test.describe('Incidents', () => {
     await page.waitForURL('/cite/1/');
   });
 
-  test('Should not be able to restore a version if the user does not have the right permissions', async ({ page }) => {
+  test('Should not be able to restore a version if the user does not have the right permissions', async ({ page, login }) => {
+    // A logged-in account without the editor role: a logged-out visitor is
+    // shown the login notice instead of the history. SEE: server/apiAccess.ts
+    await login({ customData: { roles: ['subscriber'] } });
+
     await page.goto(url);
     await page.getByText('Restore Version').waitFor({ state: 'hidden' });
+
+    // Restores the seeded roles for the tests that follow.
+    await init();
   });
 
   test('Should restore an Incident previous version', async ({ page, login }) => {

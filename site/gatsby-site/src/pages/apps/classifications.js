@@ -20,6 +20,9 @@ import Table, {
 } from 'components/ui/Table';
 import { v4 as uuidv4 } from 'uuid';
 import HeadContent from 'components/HeadContent';
+import useToastContext, { SEVERITY } from 'hooks/useToast';
+import ApiLoginRequired from 'components/ui/ApiLoginRequired';
+import useApiAccess from 'hooks/useApiAccess';
 
 const DEFAULT_EMPTY_CELL_DATA = '-';
 
@@ -144,6 +147,10 @@ const SelectColumnFilter = ({ column: { filterValue, setFilter, preFilteredRows,
 export default function ClassificationsDbView(props) {
   const { isAdmin } = useUserContext();
 
+  const { hasApiAccess, loading: apiAccessLoading } = useApiAccess();
+
+  const addToast = useToastContext();
+
   const [loading, setLoading] = useState(false);
 
   const [allTaxonomies, setAllTaxonomies] = useState([]);
@@ -163,6 +170,14 @@ export default function ClassificationsDbView(props) {
   const client = useApolloClient();
 
   useEffect(() => {
+    // The taxonomies are read through the API, which requires a login
+    // (SEE: server/apiAccess.ts). Without this guard the rejected query became an
+    // unhandled promise rejection, because `setupTaxonomiesSelect()` is invoked
+    // without a catch and the page has no other error path.
+    if (apiAccessLoading || !hasApiAccess) {
+      return;
+    }
+
     setLoading(true);
     const setupTaxonomiesSelect = async () => {
       const taxonomies = await fetchTaxaData();
@@ -185,8 +200,15 @@ export default function ClassificationsDbView(props) {
       setLoading(false);
     };
 
-    setupTaxonomiesSelect();
-  }, [isAdmin]);
+    setupTaxonomiesSelect().catch((error) => {
+      setLoading(false);
+      addToast({
+        message: t('Could not load taxonomies'),
+        severity: SEVERITY.danger,
+        error,
+      });
+    });
+  }, [isAdmin, hasApiAccess, apiAccessLoading]);
 
   const fetchClassificationData = async (filter) => {
     const classificationsData = await client.query({
@@ -507,6 +529,16 @@ export default function ClassificationsDbView(props) {
   );
 
   const fullTextModal = useModal();
+
+  // The whole table is built from API reads, so a logged-out visitor is given the
+  // reason rather than an empty taxonomy selector. SEE: server/apiAccess.ts
+  if (!apiAccessLoading && !hasApiAccess) {
+    return (
+      <div {...props}>
+        <ApiLoginRequired />
+      </div>
+    );
+  }
 
   return (
     <div {...props}>

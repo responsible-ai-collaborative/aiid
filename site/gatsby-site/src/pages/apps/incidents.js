@@ -11,8 +11,16 @@ import { Button } from 'flowbite-react';
 import ReportsTable from 'components/reports/ReportsTable';
 import { FIND_REPORTS_TABLE } from '../../graphql/reports';
 import { useQueryParam } from 'use-query-params';
+import useApiAccess from 'hooks/useApiAccess';
 
 const IncidentsPage = ({ data, ...props }) => {
+  // The tables themselves are rendered from the build-time data in `data`, not from
+  // the API, so this page stays fully readable without a login. Only the "Show Live
+  // data" toggle needs one, and that is gated where it is offered — in
+  // `IncidentsTable` / `ReportsTable` — rather than over the whole page.
+  // SEE: server/apiAccess.ts
+  const { hasApiAccess } = useApiAccess();
+
   const [view] = useQueryParam('view');
 
   const [incidentsData, setIncidentsData] = useState(null);
@@ -28,7 +36,7 @@ const IncidentsPage = ({ data, ...props }) => {
   // Live queries are only fetched on demand: they are expensive, and the static
   // build-time data is used unless the user enables the "Show Live data" toggle.
   const { data: incidents, loading: incidentsLoading } = useQuery(FIND_INCIDENTS_TABLE, {
-    skip: !isLiveData || selectedView !== 'incidents',
+    skip: !hasApiAccess || !isLiveData || selectedView !== 'incidents',
   });
 
   const { data: reports, loading: reportsLoading } = useQuery(FIND_REPORTS_TABLE, {
@@ -37,7 +45,7 @@ const IncidentsPage = ({ data, ...props }) => {
         is_incident_report: { EQ: true },
       },
     },
-    skip: !isLiveData || selectedView !== 'reports',
+    skip: !hasApiAccess || !isLiveData || selectedView !== 'reports',
   });
 
   const { data: issueReports, loading: issueReportsLoading } = useQuery(FIND_REPORTS_TABLE, {
@@ -46,7 +54,7 @@ const IncidentsPage = ({ data, ...props }) => {
         is_incident_report: { EQ: false },
       },
     },
-    skip: !isLiveData || selectedView !== 'issueReports',
+    skip: !hasApiAccess || !isLiveData || selectedView !== 'issueReports',
   });
 
   useEffect(() => {

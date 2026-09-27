@@ -18,5 +18,9 @@
   "NEW": "新着",
   "General Updates": "一般更新",
   "Incident Updates": "インシデント更新",
-  "Entity Updates": "組織更新"
+  "Entity Updates": "組織更新",
+  "API access": "APIアクセス",
+  "Block this account from the API": "このアカウントのAPIアクセスをブロックする",
+  "Reason": "理由",
+  "e.g. automated scraping at 400 req/min": "例：毎分400リクエストの自動スクレイピング"
 }

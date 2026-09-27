@@ -7,7 +7,11 @@ test.describe('Dynamic Cite pages', () => {
   const incidentId = 3;
   const url = `/cite/${incidentId}`;
 
-  test('Successfully loads', async ({ page }) => {
+  test('Successfully loads', async ({ page, login }) => {
+    // This route reads the incident through the API, which requires a login.
+    // SEE: server/apiAccess.ts
+    await login();
+
     await page.goto(url);
   });
 

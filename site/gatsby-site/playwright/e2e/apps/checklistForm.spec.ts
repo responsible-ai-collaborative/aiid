@@ -37,15 +37,16 @@ test.describe('Checklists App Form', () => {
       "touched": false
     };
 
-    test('Should have read-only access for non-logged-in users', async ({ page }) => {
+    test('Should ask non-logged-in users to log in instead of showing the checklist', async ({ page }) => {
 
         await init({ aiidprod: { checklists: [defaultChecklist] } }, { drop: true });
 
         await page.goto(url);
 
-        await expect(page.getByText('Test Checklist')).toBeVisible();
-        await expect(page.locator('[data-cy="checklist-form"] textarea:not([disabled])')).not.toBeVisible();
-        await expect(page.locator('[data-cy="checklist-form"] input:not([disabled]):not([readonly])')).not.toBeVisible();
+        // A saved checklist is read through the API, which requires a login
+        // (SEE: server/apiAccess.ts), so the reason is shown in place of the form.
+        await expect(page.locator('[data-cy="api-login-required"]')).toBeVisible();
+        await expect(page.locator('[data-cy="checklist-form"]')).not.toBeVisible();
     });
 
     test('Should have read-only access for logged-in non-owners', async ({ page, login }) => {

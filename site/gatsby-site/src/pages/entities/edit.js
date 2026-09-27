@@ -15,12 +15,16 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import Label from '../../components/forms/Label';
 import { FIND_ENTITY_RELATIONSHIPS } from '../../graphql/entity_relationships';
 import { useUserContext } from 'contexts/UserContext';
+import ApiLoginRequired from 'components/ui/ApiLoginRequired';
+import useApiAccess from 'hooks/useApiAccess';
 
 const schema = Yup.object().shape({
   name: Yup.string().required(),
 });
 
 function EditEntityPage(props) {
+  const { hasApiAccess, loading: apiAccessLoading } = useApiAccess();
+
   const { t } = useTranslation();
 
   const { isRole, loading: loadingAuth } = useUserContext();
@@ -35,17 +39,20 @@ function EditEntityPage(props) {
 
   const [updatedEntityRelationships, setUpdatedEntityRelationships] = useState([]);
 
-  const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES);
+  const { data: entitiesData, loading: loadingEntities } = useQuery(FIND_ENTITIES, {
+    skip: !hasApiAccess,
+  });
 
   const {
     data: entityData,
     loading: loadingEntity,
     refetch,
   } = useQuery(FIND_ENTITY, {
+    skip: !hasApiAccess,
     variables: { filter: { entity_id: { EQ: entityId } } },
   });
 
-  const loading = loadingEntity;
+  const loading = apiAccessLoading || loadingEntity;
 
   const [updateEntityMutation] = useMutation(UPDATE_ENTITY);
 
@@ -54,6 +61,7 @@ function EditEntityPage(props) {
     refetch: refetchEntityRelationships,
     loading: loadingEntityRelationships,
   } = useQuery(FIND_ENTITY_RELATIONSHIPS, {
+    skip: !hasApiAccess,
     variables: {
       filter: {
         OR: [{ sub: { EQ: entityId } }, { obj: { EQ: entityId }, is_symmetric: { EQ: true } }],
@@ -149,8 +157,16 @@ function EditEntityPage(props) {
     }
   };
 
-  if (loadingAuth) {
+  if (loadingAuth || apiAccessLoading) {
     return <DefaultSkeleton />;
+  }
+
+  // Every read on this page goes through the API, which requires a login
+  // (SEE: server/apiAccess.ts). Checked before the role test below so a
+  // logged-out visitor is told to log in rather than that they lack a role
+  // they could not yet hold.
+  if (!hasApiAccess) {
+    return <ApiLoginRequired />;
   }
 
   // Matches /entities/merge — editing an entity is an editorial action.

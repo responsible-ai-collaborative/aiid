@@ -593,5 +593,17 @@
   "Sign Up": "Registrarse",
   "See in OECD AIM": "Ver en OCDE AIM",
   "The OECD AI Incidents and Hazards Monitor (AIM) automatically collects and classifies AI-related incidents and hazards in real time from reputable news sources worldwide.": "El Monitor de Incidentes y Riesgos de IA de la OCDE (AIM) recopila y clasifica automáticamente incidentes y riesgos relacionados con la IA en tiempo real a partir de fuentes de noticias reputadas en todo el mundo.",
-  "Image could not be loaded. The URL may be invalid, or the image host may block external access. Using fallback image.": "La imagen no pudo ser cargada. La URL puede ser inválida, o el host de la imagen puede bloquear el acceso externo. Se está usando una imagen de respaldo."
+  "Image could not be loaded. The URL may be invalid, or the image host may block external access. Using fallback image.": "La imagen no pudo ser cargada. La URL puede ser inválida, o el host de la imagen puede bloquear el acceso externo. Se está usando una imagen de respaldo.",
+  "To mitigate a very high load of bot traffic, this functionality requires that you log in to the database.": "Para mitigar una carga muy alta de tráfico de bots, esta funcionalidad requiere que inicies sesión en la base de datos.",
+  "API access for this account has been blocked. If you believe this is a mistake, please contact the AI Incident Database team.": "El acceso a la API de esta cuenta ha sido bloqueado. Si crees que se trata de un error, por favor contacta al equipo de la AI Incident Database.",
+  "Log in": "Iniciar sesión",
+  "API usage": "Uso de la API",
+  "No API requests recorded for this account.": "No se han registrado solicitudes a la API para esta cuenta.",
+  "Requests": "Solicitudes",
+  "Active days": "Días activos",
+  "Requests with errors": "Solicitudes con errores",
+  "Refused while blocked": "Rechazadas durante el bloqueo",
+  "First request": "Primera solicitud",
+  "Last request": "Última solicitud",
+  "Could not load taxonomies": "No se pudieron cargar las taxonomías"
 }

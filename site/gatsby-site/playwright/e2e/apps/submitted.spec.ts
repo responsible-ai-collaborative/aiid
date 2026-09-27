@@ -10,6 +10,13 @@ import sinon from 'sinon';
 test.describe('Submitted reports', () => {
     const url = '/apps/submitted';
 
+    // One test below pins the clock with `sinon.stub(global, 'Date')`. Restored here
+    // so the stub cannot leak into later tests in the same worker, where it made
+    // every login's magic link and session expire on creation.
+    test.afterEach(() => {
+        sinon.restore();
+    });
+
     const getSubmissions = async () => {
         const { data: { submissions } } = await query({
             query: gql`{
@@ -32,9 +39,14 @@ test.describe('Submitted reports', () => {
         return submissions;
     }
 
-    test('Loads submissions', async ({ page }) => {
+    test('Loads submissions', async ({ page, login }) => {
 
         await init();
+
+        // The queue is read through the API, which requires a login
+        // (SEE: server/apiAccess.ts). A subscriber is used because the assertions
+        // below describe the read-only view, without the editor's review buttons.
+        await login({ customData: { roles: ['subscriber'] } });
 
         const submissions = await getSubmissions();
 
@@ -654,9 +666,11 @@ test.describe('Submitted reports', () => {
         await expect(page.locator('.pagination [aria-current="page"] button')).toHaveText('2');
     });
 
-    test('Should display "No reports found" if no quick adds are found', async ({ page }) => {
+    test('Should display "No reports found" if no quick adds are found', async ({ page, login }) => {
 
         await init({ aiidprod: { quickadds: [] } }, { drop: true });
+
+        await login();
 
         await page.goto(url);
 

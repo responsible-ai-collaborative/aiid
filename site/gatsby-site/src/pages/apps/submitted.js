@@ -11,6 +11,8 @@ import ListSkeleton from 'elements/Skeletons/List';
 import { Badge, Button, ListGroup } from 'flowbite-react';
 import { useQueryParam } from 'use-query-params';
 import SubmissionEdit from 'components/submissions/SubmissionEdit';
+import ApiLoginRequired from 'components/ui/ApiLoginRequired';
+import useApiAccess from 'hooks/useApiAccess';
 
 const SubmittedIncidentsPage = () => {
   const [id] = useQueryParam('editSubmission');
@@ -27,7 +29,14 @@ const SubmittedIncidentsPage = () => {
 
   const [deleteQuickAdd] = useMutation(DELETE_QUICKADD);
 
-  const { loading, error, data } = useQuery(FIND_QUICKADD, { variables: { filter: {} } });
+  const { hasApiAccess, loading: apiAccessLoading } = useApiAccess();
+
+  // SEE: server/apiAccess.ts. Skipped rather than left to fail so the error toast
+  // in the effect below does not fire for the expected logged-out case.
+  const { loading, error, data } = useQuery(FIND_QUICKADD, {
+    variables: { filter: {} },
+    skip: !hasApiAccess,
+  });
 
   const { t, i18n } = useTranslation(['submitted']);
 
@@ -35,6 +44,11 @@ const SubmittedIncidentsPage = () => {
   useEffect(() => {
     if (id) {
       setPageLoading(false);
+    }
+    // The query is skipped until the session resolves (SEE: server/apiAccess.ts),
+    // so the page stays in its loading state until then rather than flashing empty.
+    if (apiAccessLoading) {
+      return;
     }
     if (!loading && !error && data) {
       setQuickAdds(data['quickadds']);
@@ -51,7 +65,7 @@ const SubmittedIncidentsPage = () => {
       });
       setPageLoading(false);
     }
-  }, [id, loading, data, error]);
+  }, [id, loading, data, error, apiAccessLoading]);
 
   const submitDeleteQuickAdd = async (id) => {
     const bsonID = new ObjectId(id);
@@ -87,6 +101,12 @@ const SubmittedIncidentsPage = () => {
   const sortedQuickAdds = [...quickAdds].sort(function (a, b) {
     return a['date_submitted'] - b['date_submitted'];
   });
+
+  // The whole page is built from API reads, so there is nothing to show a
+  // logged-out visitor but the reason. SEE: server/apiAccess.ts
+  if (!apiAccessLoading && !hasApiAccess) {
+    return <ApiLoginRequired />;
+  }
 
   return (
     <>

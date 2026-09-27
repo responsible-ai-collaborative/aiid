@@ -1,9 +1,9 @@
 import { GraphQLFieldConfigMap } from "graphql";
 import { generateMutationFields, generateQueryFields } from "../utils";
 import { Context } from "../interfaces";
-import { notQueriesAdminData, isRole, isSelf } from "../rules";
+import { notQueriesAdminData, isRole, isSelf, canEditProtectedUserFields, notFiltersByApiAccessFields } from "../rules";
 import { UserType } from "../types/user";
-import { or } from "graphql-shield";
+import { and, or } from "graphql-shield";
 
 export const queryFields: GraphQLFieldConfigMap<any, Context> = {
 
@@ -18,10 +18,17 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
 
 export const permissions = {
     Query: {
-        user: or(isSelf(), notQueriesAdminData()),
-        users: or(isRole('admin'), notQueriesAdminData()),
+        // The API-block fields are admin-or-self only. Their values are withheld
+        // by the field resolvers (SEE: server/types/user.ts); the rule keeps a
+        // non-admin from learning them through `filter` or `sort` instead.
+        user: or(isSelf(), and(notQueriesAdminData(), notFiltersByApiAccessFields())),
+        users: or(isRole('admin'), and(notQueriesAdminData(), notFiltersByApiAccessFields())),
     },
     Mutation: {
-        updateOneUser: isSelf(),
+        // `isSelf()` also passes for admins, and permits a user to edit their own
+        // record. `canEditProtectedUserFields()` narrows that for the fields no
+        // account may set on itself — `roles` and the API-access flags — and is
+        // transparent for ordinary profile edits. SEE: server/rules.ts
+        updateOneUser: and(isSelf(), canEditProtectedUserFields()),
     },
 }

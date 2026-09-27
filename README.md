@@ -125,24 +125,50 @@ This architecture maintains a serverless approach, with no need for a traditiona
 
 More details are available on our [documentation](site/docs/README.md).
 
-## Public GraphQL endpoint
+## GraphQL endpoint
 
 The site exposes a read-only GraphQL endpoint at `/api/graphql`.
 
-### Accessing the endpoint
+### Logging in is required
 
-You can check the endpoint [https://incidentdatabase.ai/api/graphql](https://incidentdatabase.ai/api/graphql)
+**The endpoint requires a logged-in account.** A request without a session is refused with
+HTTP 401 and `extensions.code: "API_LOGIN_REQUIRED"`.
+
+This is a response to the volume of automated traffic the endpoint receives. Requiring an
+account gives each request an identity, which lets us count usage per account and block an
+individual abusive account instead of guessing from IP addresses and user-agent strings.
+Requests are recorded per account; an account's own usage is not published.
+
+You can create an account at [https://incidentdatabase.ai/login](https://incidentdatabase.ai/login).
+If you maintain a research or product integration and need a higher volume than a normal
+account, please [get in touch](https://incidentdatabase.ai/contact) rather than working
+around the requirement.
+
+Schema introspection is still open, so
+[https://incidentdatabase.ai/api/graphql](https://incidentdatabase.ai/api/graphql) loads the
+Apollo Explorer and lets you browse the schema before signing in.
+
+The incident, report and entity pages of the site are statically generated and remain
+readable without an account — the requirement applies to the API, not to browsing the
+database.
+
+For the full details, see
+[site/docs/API_ACCESS.md](site/docs/API_ACCESS.md).
 
 ### Sample request
 
-The endpoint can be queried using any GraphQL client, but for example, if using Apollo:
+The endpoint can be queried using any GraphQL client. The session cookie issued at login must
+be sent with the request:
 
-```
+```js
     import { ApolloClient, HttpLink, InMemoryCache, gql } from '@apollo/client';
 
     const client = new ApolloClient({
         link: new HttpLink({
             uri: `https://incidentdatabase.ai/api/graphql`,
+            // Sends the `next-auth.session-token` cookie from an authenticated browser
+            // session. Outside a browser, set the Cookie header explicitly.
+            credentials: 'include',
         }),
         cache: new InMemoryCache()
     });

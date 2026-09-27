@@ -7,8 +7,12 @@ import { useTranslation, Trans } from 'react-i18next';
 import { useUserContext } from 'contexts/UserContext';
 import SimilarMergeModal from 'components/entities/SimilarMergeModal';
 import AnyMerge from 'components/entities/AnyMerge';
+import ApiLoginRequired from 'components/ui/ApiLoginRequired';
+import useApiAccess from 'hooks/useApiAccess';
 
 function MergeEntitiesPage() {
+  const { hasApiAccess, loading: apiAccessLoading } = useApiAccess();
+
   const { t } = useTranslation('entities');
 
   const addToast = useToastContext();
@@ -32,6 +36,7 @@ function MergeEntitiesPage() {
     fetchMore,
     refetch,
   } = useQuery(SIMILAR_ENTITIES, {
+    skip: !hasApiAccess,
     variables: { threshold, offset: 0, limit: PAGE_SIZE },
     notifyOnNetworkStatusChange: true,
   });
@@ -104,6 +109,13 @@ function MergeEntitiesPage() {
 
     setLoadingMore(false);
   };
+
+  // Checked before the role test below, so a logged-out visitor is told to log in
+  // rather than that they lack a role they could not yet hold. Every read on this
+  // page goes through the API, which requires a login. SEE: server/apiAccess.ts
+  if (!apiAccessLoading && !hasApiAccess) {
+    return <ApiLoginRequired />;
+  }
 
   if (loadingAuth || (!similarData && loadingSimilar)) {
     return <Spinner />;
