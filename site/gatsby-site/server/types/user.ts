@@ -27,7 +27,12 @@ export const UserType = new GraphQLObjectType({
 
                 const { user } = context;
 
-                let response: UserAdminData = {}
+                // Null, not `{}`, when there is nothing to show: `email` is non-nullable,
+                // so an empty object made GraphQL raise an error for the row, and one
+                // account without an auth record (anonymised on staging, or deleted) put
+                // an error into the admin page's single list response and blanked the
+                // whole table.
+                let response: UserAdminData | null = null;
 
                 // `user` is null for anonymous callers. The `notQueriesAdminData` shield
                 // rule only inspects direct field selections, so a query that reaches
@@ -35,7 +40,7 @@ export const UserType = new GraphQLObjectType({
                 // dereferencing `user!` threw a TypeError instead of returning nothing.
                 if (user && (user.id === source.userId || user.roles.includes('admin'))) {
 
-                    response = await userCacheManager.getUserAdminData(source.userId, context) ?? {};
+                    response = await userCacheManager.getUserAdminData(source.userId, context) ?? null;
                 }
 
                 return response;

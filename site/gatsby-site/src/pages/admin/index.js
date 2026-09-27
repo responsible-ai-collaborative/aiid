@@ -1,5 +1,5 @@
 import React from 'react';
-import { FIND_USERS } from '../../graphql/users';
+import { FIND_USERS_ADMIN } from '../../graphql/users';
 import { useQuery } from '@apollo/client/react';
 import UsersTable from 'components/users/UsersTable';
 import ListSkeleton from 'elements/Skeletons/List';
@@ -15,10 +15,16 @@ import useApiAccess from 'hooks/useApiAccess';
 const AdminPage = (props) => {
   const { hasApiAccess, loading: apiAccessLoading } = useApiAccess();
 
-  // SEE: server/apiAccess.ts
-  const { data, loading } = useQuery(FIND_USERS, { skip: !hasApiAccess });
-
   const { isRole, loading: loadingAuth } = useUserContext();
+
+  // One request for the whole table, admin data included; only an admin may ask
+  // for it, so nobody else issues a request that would be refused.
+  // SEE: server/apiAccess.ts
+  const { data, loading } = useQuery(FIND_USERS_ADMIN, {
+    skip: !hasApiAccess || loadingAuth || !isRole('admin'),
+    // One account's admin data failing to resolve must not blank the whole table.
+    errorPolicy: 'all',
+  });
 
   const { locale } = useLocalization();
 

@@ -138,6 +138,60 @@ describe(`Users`, () => {
         });
     });
 
+    it(`Should give an admin every account's admin data in the list query, in one request`, async () => {
+
+        // The admin page's table used to fetch `adminData` with one `FindUser`
+        // request per account, which tripped the per-IP rate limit on the API as
+        // soon as there were more accounts than the limit allows; the list query
+        // carries it for admins.
+        const { ObjectId } = require('bson');
+
+        const ids = [new ObjectId(), new ObjectId(), new ObjectId()];
+
+        await seedFixture({
+            customData: {
+                users: [
+                    { userId: ids[0].toString(), roles: ['subscriber'], first_name: 'A', last_name: 'One' },
+                    { userId: ids[1].toString(), roles: ['incident_editor'], first_name: 'B', last_name: 'Two' },
+                    { userId: ids[2].toString(), roles: ['admin'], first_name: 'C', last_name: 'Three' },
+                ],
+            },
+            auth: {
+                users: [
+                    { _id: ids[0], email: 'one@example.com', emailVerified: new Date().toString() },
+                    // ids[1] has no auth record (an anonymised or deleted account): no email, no error
+                    { _id: ids[2], email: 'three@example.com', emailVerified: new Date().toString() },
+                ],
+            },
+        });
+
+        mockSession(ids[2].toString());
+
+        const response = await makeRequest(url, {
+            query: `
+                query FindUsersAdmin {
+                    users {
+                        userId
+                        roles
+                        adminData {
+                            email
+                        }
+                    }
+                }
+            `,
+        });
+
+        expect(response.body.errors).toBeUndefined();
+
+        const byId = Object.fromEntries(response.body.data.users.map((u: any) => [u.userId, u.adminData?.email ?? null]));
+
+        expect(byId).toEqual({
+            [ids[0].toString()]: 'one@example.com',
+            [ids[1].toString()]: null,
+            [ids[2].toString()]: 'three@example.com',
+        });
+    });
+
     it(`Should allow user with admin role querying of users' private data`, async () => {
 
         const mutationData = {

@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { test } from '../utils';
+import { test, testUser } from '../utils';
 import { init } from '../memory-mongo';
 
 test.describe('Admin', () => {
@@ -51,6 +51,43 @@ test.describe('Admin', () => {
 
       // TODO: Fetch user roles and check if they were updated
     });
+
+  test(
+    'Should load the table with admin data in a single request',
+    async ({ page, login, skipOnEmptyEnvironment }) => {
+
+      // The table used to issue one `FindUser` request per account to fetch each
+      // account's admin data, which tripped Netlify's per-IP rate limit on
+      // `/api/graphql` as soon as there were more accounts than the limit allows.
+      // Admins may read every account's admin data in the list query itself.
+      const [userId] = await login();
+
+      const operations: { name: string; userId?: string }[] = [];
+
+      page.on('request', (request) => {
+        if (request.url().includes('/api/graphql')) {
+          const body = request.postDataJSON();
+          if (body?.operationName) {
+            operations.push({ name: body.operationName, userId: body.variables?.filter?.userId?.EQ });
+          }
+        }
+      });
+
+      await page.goto(baseUrl);
+
+      await page.locator('[data-cy="input-filter-Id"]').fill(userId);
+
+      const userRow = page.locator('[data-cy="cell"]:has-text("' + userId + '")').locator('..');
+
+      // The logged-in account has an auth record, so its email is known.
+      await expect(userRow.getByText(testUser.email)).toBeVisible();
+
+      expect(operations.filter((op) => op.name === 'FindUsersAdmin')).toHaveLength(1);
+
+      // No `FindUser` at all until an account is opened for editing.
+      expect(operations.filter((op) => op.name === 'FindUser')).toHaveLength(0);
+    }
+  );
 
   test(
     'Should display New Incident button',
