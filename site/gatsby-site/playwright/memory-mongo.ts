@@ -16,6 +16,7 @@ import entity_duplicates from './seeds/aiidprod/entity_duplicates';
 import users from './seeds/customData/users';
 import entity_relationships from './seeds/aiidprod/entity_relationships';
 import subscriptions from './seeds/customData/subscriptions';
+import apiUsage from './seeds/customData/apiUsage';
 
 import authUsers from './seeds/auth/users';
 
@@ -65,6 +66,7 @@ export const init = async (seed?: Record<string, Record<string, unknown[]>>, { d
         customData: {
             users,
             subscriptions,
+            api_usage: apiUsage,
         },
         translations: {
             reports: reportsTranslations,

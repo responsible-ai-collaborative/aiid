@@ -27,23 +27,25 @@ test.describe('Admin', () => {
 
       await page.goto(baseUrl);
 
-      for (const user of users.slice(0, 5)) {
-        await page.locator('[data-cy="input-filter-Id"]').fill(user.userId);
+      // The id is no longer a column; the logged-in account is found by its email.
+      await page.locator('[data-cy="input-filter-Email"]').fill(testUser.email);
 
-        const userRow = page.locator('[data-cy="cell"]:has-text("' + user.userId + '")').locator('..');
+      const userRow = page.locator('[data-cy="cell"]:has-text("' + testUser.email + '")').locator('..');
 
-        for (const role of user.roles) {
-          await expect(userRow.getByText(role)).toBeVisible();
-        }
+      for (const role of users[0].roles) {
+        await expect(userRow.getByText(role)).toBeVisible();
       }
 
       const [user] = users;
-      await page.locator('[data-cy="input-filter-Id"]').fill(user.userId);
 
       await page.getByRole('button', { name: 'Edit' }).click();
 
 
       const editModal = page.locator('[data-testid="edit-user-modal"]');
+
+      // The account id moved from the table into the modal, with a copy control.
+      await expect(editModal.locator('[data-cy="account-id"]')).toContainText(user.userId);
+
       await editModal.locator('[id="roles"]').fill('banana');
       await page.keyboard.press('Enter');
       await editModal.locator('[name="first_name"]').fill('Edited');
@@ -75,17 +77,94 @@ test.describe('Admin', () => {
 
       await page.goto(baseUrl);
 
-      await page.locator('[data-cy="input-filter-Id"]').fill(userId);
-
-      const userRow = page.locator('[data-cy="cell"]:has-text("' + userId + '")').locator('..');
+      await page.locator('[data-cy="input-filter-Email"]').fill(testUser.email);
 
       // The logged-in account has an auth record, so its email is known.
-      await expect(userRow.getByText(testUser.email)).toBeVisible();
+      await expect(page.locator('[data-cy="cell"]:has-text("' + testUser.email + '")')).toBeVisible();
 
       expect(operations.filter((op) => op.name === 'FindUsersAdmin')).toHaveLength(1);
 
       // No `FindUser` at all until an account is opened for editing.
       expect(operations.filter((op) => op.name === 'FindUser')).toHaveLength(0);
+
+      expect(userId).toBeTruthy();
+    }
+  );
+
+  test(
+    'Should show each account\'s API usage from one summaries request, over a selectable window',
+    async ({ page, login, skipOnEmptyEnvironment }) => {
+
+      // Seeded usage (playwright/seeds/customData/apiUsage.ts): John Doe has 30 + 12
+      // requests today and yesterday with one refused; the incident editor has 5
+      // requests 60 days ago, inside the 90-day window only. (The logged-in admin's
+      // own bucket grows with the requests this test makes, so it is not asserted.)
+      await login();
+
+      const summaries: { from?: string; to?: string }[] = [];
+
+      page.on('request', (request) => {
+        if (request.url().includes('/api/graphql')) {
+          const body = request.postDataJSON();
+          if (body?.operationName === 'FindApiUsageSummaries') summaries.push(body.variables || {});
+        }
+      });
+
+      await page.goto(baseUrl);
+
+      await page.locator('[data-cy="input-filter-First Name"]').fill('John');
+
+      const johnRow = page.locator('[data-cy="cell"]:has-text("John")').first().locator('..');
+
+      await expect(johnRow.locator('[data-cy="cell"]').nth(5)).toHaveText('42');
+      await expect(johnRow.locator('[data-cy="cell"]').nth(6)).toHaveText('2');
+      await expect(johnRow.locator('[data-cy="cell"]').nth(7)).toHaveText('1');
+
+      // One aggregation for the whole table, for the default 30-day window.
+      expect(summaries).toHaveLength(1);
+      expect(summaries[0].userId).toBeUndefined();
+      expect(summaries[0].to).toBe(new Date().toISOString().slice(0, 10));
+
+      // The incident editor's usage is outside the 30-day window...
+      await page.locator('[data-cy="input-filter-First Name"]').fill('');
+      await page.locator('[data-cy="input-filter-Roles"]').fill('incident_editor');
+
+      const editorRow = page.locator('[data-cy="row"]').first();
+
+      await expect(editorRow.locator('[data-cy="cell"]').nth(5)).toHaveText('0');
+
+      // ...and inside the 90-day one, which is one more request.
+      await page.locator('[data-cy="usage-window"]').selectOption('90');
+
+      await expect(editorRow.locator('[data-cy="cell"]').nth(5)).toHaveText('5');
+
+      expect(summaries).toHaveLength(2);
+    }
+  );
+
+  test(
+    'Should copy the account id from the edit modal',
+    async ({ page, context, login, skipOnEmptyEnvironment }) => {
+
+      const [userId] = await login();
+
+      await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+
+      await page.goto(baseUrl);
+
+      await page.locator('[data-cy="input-filter-Email"]').fill(testUser.email);
+
+      await page.getByRole('button', { name: 'Edit' }).click();
+
+      const editModal = page.locator('[data-testid="edit-user-modal"]');
+
+      await expect(editModal.locator('[data-cy="account-id"]')).toContainText(userId);
+
+      await editModal.locator('[data-cy="copy-user-id"]').click();
+
+      await expect(page.locator('[data-cy="toast"]')).toContainText('Copied');
+
+      expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(userId);
     }
   );
 

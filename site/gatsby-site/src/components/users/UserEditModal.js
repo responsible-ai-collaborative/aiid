@@ -1,8 +1,8 @@
 import React from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import { Alert, Modal } from 'flowbite-react';
+import { Alert, Button, Modal } from 'flowbite-react';
 import { Formik } from 'formik';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import UserForm, { schema } from './UserForm';
 import {
   FIND_USER,
@@ -136,6 +136,19 @@ export default function UserEditModal({ show, onClose, userId, alertTitle = '', 
 
   const addToast = useToastContext();
 
+  const { t } = useTranslation();
+
+  // The id used to be a table column; admins paste it into database queries and
+  // `?user=` links, so it stays one click away here.
+  const copyUserId = async () => {
+    try {
+      await navigator.clipboard.writeText(userId);
+      addToast({ message: t('Copied'), severity: SEVERITY.success });
+    } catch (e) {
+      addToast({ message: t('Could not copy to the clipboard'), severity: SEVERITY.danger });
+    }
+  };
+
   const handleSubmit = async (values) => {
     try {
       if (!lodash.isEqual(values.roles, userData.user.roles)) {
@@ -194,7 +207,20 @@ export default function UserEditModal({ show, onClose, userId, alertTitle = '', 
   return (
     <Modal show={show} onClose={onClose} data-testid="edit-user-modal" size="lg">
       <Modal.Header>
-        <Trans>Edit</Trans>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+          <Trans>Edit</Trans>
+          {userId && (
+            <span
+              className="flex items-center gap-2 text-sm font-normal text-gray-500"
+              data-cy="account-id"
+            >
+              <Trans>Account ID</Trans>: <code className="select-all">{userId}</code>
+              <Button size="xs" color="light" data-cy="copy-user-id" onClick={copyUserId}>
+                <Trans>Copy</Trans>
+              </Button>
+            </span>
+          )}
+        </div>
       </Modal.Header>
 
       {error && (

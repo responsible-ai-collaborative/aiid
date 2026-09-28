@@ -227,6 +227,11 @@ query {
 }
 ```
 
+The admin page's users table shows these totals per account (requests, active days, refused
+while blocked, last request) for a window of the last 7, 30 or 90 days, from a single
+`apiUsageSummaries(from, to)` request for the whole table; sorting by requests is the quickest
+way to see who is hammering the API. The edit modal shows the same figures for one account.
+
 Usage is not readable by the account it describes: neither of the uses above should be
 visible to the party being measured, and one customer must not be able to read another's
 volume.
