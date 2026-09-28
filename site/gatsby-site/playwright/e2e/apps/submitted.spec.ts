@@ -263,6 +263,56 @@ test.describe('Submitted reports', () => {
         expect(reports.find((r) => r.report_number === 9)).toBeDefined();
     });
 
+    test('Remembers the Dates sort direction and date field across reloads', async ({ page, login }) => {
+
+        // Editors work through the queue over many visits; the sort they chose used to
+        // reset on every return. SEE: #4035 and src/components/submissions/SubmissionList.js
+
+        await init();
+
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+        await page.goto(url);
+
+        await expect(page.locator('[data-cy="submissions"] [data-cy="row"]').first()).toBeVisible();
+
+        const datesHeader = page.locator('[data-cy="submissions"] th', { hasText: 'Dates' });
+
+        const sortButton = datesHeader.locator('button[title="Toggle SortBy"]');
+
+        await expect(sortButton).not.toHaveClass(/text-blue-500/);
+
+        // Sort by the date field once (ascending) and switch the field to the published date.
+        await sortButton.click();
+
+        await expect(sortButton).toHaveClass(/text-blue-500/);
+
+        await datesHeader.locator('select').selectOption('date_published');
+
+        const orderAfterSorting = await page.locator('[data-cy="submissions"] [data-cy="row"] [data-cy="cell"]:first-child').allTextContents();
+
+        await page.reload();
+
+        await expect(page.locator('[data-cy="submissions"] [data-cy="row"]').first()).toBeVisible();
+
+        await expect(datesHeader.locator('button[title="Toggle SortBy"]')).toHaveClass(/text-blue-500/);
+
+        await expect(datesHeader.locator('select')).toHaveValue('date_published');
+
+        expect(await page.locator('[data-cy="submissions"] [data-cy="row"] [data-cy="cell"]:first-child').allTextContents()).toEqual(orderAfterSorting);
+
+        // Leaving and coming back keeps it too.
+        await page.goto('/');
+
+        await page.goto(url);
+
+        await expect(page.locator('[data-cy="submissions"] [data-cy="row"]').first()).toBeVisible();
+
+        await expect(datesHeader.locator('button[title="Toggle SortBy"]')).toHaveClass(/text-blue-500/);
+
+        await expect(datesHeader.locator('select')).toHaveValue('date_published');
+    });
+
     test('Rejects a submission', async ({ page, login }) => {
 
         await init();
