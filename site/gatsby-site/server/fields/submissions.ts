@@ -14,6 +14,7 @@ import { ObjectIdScalar } from '../scalars';
 import { isRole } from '../rules';
 import { createNotificationsOnNewIncident, linkReportsToIncidents } from './common';
 import { SubmissionType } from '../types/submission';
+import { computeEvidence } from '../evidence';
 
 
 export const queryFields: GraphQLFieldConfigMap<any, Context> = {
@@ -241,6 +242,12 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
             };
             if (submission.embedding) {
                 newReport.embedding = submission.embedding;
+            }
+
+            const evidence = computeEvidence(submission.plain_text, new Date(submission.date_downloaded), submission.url);
+
+            if (evidence) {
+                newReport.evidence = evidence;
             }
 
             if (submission.user) {

@@ -1,6 +1,7 @@
 import { expect, jest, it } from '@jest/globals';
 import { ApolloServer } from "@apollo/server";
-import { makeRequest, mockSession, seedFixture, startTestServer } from "./utils";
+import { getCollection, makeRequest, mockSession, seedFixture, startTestServer } from "./utils";
+import { computeEvidence } from "../evidence";
 import * as context from '../context';
 import { ObjectId } from 'bson';
 import { PromoteSubmissionToReportInput } from '../generated/graphql';
@@ -78,6 +79,72 @@ describe(`Submissions`, () => {
                 report_number: 2,
             }
         })
+    });
+
+    it(`Promote submission records an evidence block over the stored text`, async () => {
+
+        const plain_text = "The model misidentified the defendant.\n\nThe company disputes the account.";
+
+        await seedFixture({
+            customData: {
+                users: [
+                    {
+                        userId: "123",
+                        roles: ['incident_editor'],
+                    }
+                ],
+            },
+            aiidprod: {
+                incidents: [
+                    {
+                        incident_id: 1,
+                        reports: [1]
+                    },
+                ],
+                reports: [
+                    {
+                        report_number: 1,
+                    },
+                ],
+                submissions: [
+                    {
+                        _id: new ObjectId("5f8f4b3b9b3e6f001f3b3b3c"),
+                        title: "Submission with text",
+                        plain_text,
+                        url: "http://example.com/story",
+                        date_downloaded: "2021-09-14T00:00:00.000Z",
+                    },
+                ]
+            }
+        });
+
+        mockSession('123');
+
+        const response = await makeRequest(url, {
+            query: `
+            mutation ($input: PromoteSubmissionToReportInput!) {
+                promoteSubmissionToReport(input: $input) {
+                    report_number
+                }
+            }
+            `,
+            variables: {
+                input: {
+                    submission_id: "5f8f4b3b9b3e6f001f3b3b3c",
+                    is_incident_report: true,
+                    incident_ids: [],
+                }
+            }
+        });
+
+        const report_number = response.body.data.promoteSubmissionToReport.report_number;
+
+        const report = await getCollection('aiidprod', 'reports').findOne({ report_number });
+
+        const expected = computeEvidence(plain_text, new Date("2021-09-14T00:00:00.000Z"), "http://example.com/story")!;
+
+        expect(report!.evidence).toEqual(expected);
+        expect(report!.evidence.archive_url).toBe("https://web.archive.org/web/20210914000000/http://example.com/story");
     });
 
     it(`Promote submission to existing incident`, async () => {
