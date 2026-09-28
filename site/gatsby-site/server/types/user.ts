@@ -1,4 +1,4 @@
-import { GraphQLBoolean, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
+import { GraphQLBoolean, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
 import { GraphQLDateTime } from "graphql-scalars";
 import { ObjectIdScalar } from "../scalars";
 import { getQueryResolver } from "../utils";
@@ -61,6 +61,18 @@ export const UserType = new GraphQLObjectType({
         api_access_blocked: { type: GraphQLBoolean },
         api_access_blocked_at: { type: GraphQLDateTime },
         api_access_blocked_reason: { type: GraphQLString },
+
+        /**
+         * The account's API token and its usage (#4070). Only issued by the
+         * `regenerateApiToken` mutation, never through `updateOneUser`
+         * (`canEditProtectedUserFields`); readable by the account itself alone
+         * (`api_token`) or by it and admins (the counters), through
+         * `server/userFieldVisibility.ts`. SEE: server/apiTokens.ts
+         */
+        api_token: { type: GraphQLString },
+        api_token_request_count: { type: GraphQLInt },
+        api_token_last_used_at: { type: GraphQLDateTime },
+        api_token_regenerated_at: { type: GraphQLDateTime },
     },
 });
 

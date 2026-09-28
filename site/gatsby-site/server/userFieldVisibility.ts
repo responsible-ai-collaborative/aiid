@@ -1,6 +1,7 @@
 import { IMiddlewareFunction } from 'graphql-middleware';
 import { Context } from './interfaces';
 import { API_ACCESS_USER_FIELDS } from './rules';
+import { API_TOKEN_SECRET_USER_FIELDS, API_TOKEN_USAGE_USER_FIELDS } from './apiTokens';
 
 /**
  * Withholds the API-block fields of a `User` from anyone but an admin or the
@@ -43,6 +44,27 @@ const adminOrSelfOnly: IMiddlewareFunction<any, Context> = async (resolve, paren
     return null;
 }
 
+/**
+ * A token is a credential: only the account it belongs to may read it. An admin
+ * can revoke it (`regenerateApiToken`) but never sees it. SEE: server/apiTokens.ts
+ */
+const selfOnly: IMiddlewareFunction<any, Context> = async (resolve, parent, args, context, info) => {
+
+    const value = await resolve(parent, args, context, info);
+
+    const { user } = context;
+
+    if (user && user.id === parent?.userId) {
+        return value;
+    }
+
+    return null;
+}
+
 export const userFieldVisibilityMiddleware = {
-    User: Object.fromEntries(API_ACCESS_USER_FIELDS.map((field) => [field, adminOrSelfOnly])),
+    User: {
+        ...Object.fromEntries(API_ACCESS_USER_FIELDS.map((field) => [field, adminOrSelfOnly])),
+        ...Object.fromEntries(API_TOKEN_USAGE_USER_FIELDS.map((field) => [field, adminOrSelfOnly])),
+        ...Object.fromEntries(API_TOKEN_SECRET_USER_FIELDS.map((field) => [field, selfOnly])),
+    },
 };

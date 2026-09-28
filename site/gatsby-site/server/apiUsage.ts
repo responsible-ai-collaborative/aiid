@@ -3,6 +3,7 @@ import { GraphQLError } from 'graphql';
 import { MongoClient } from 'mongodb';
 import { API_ACCESS_BLOCKED, API_LOGIN_REQUIRED } from './apiAccess';
 import { Context } from './interfaces';
+import { recordApiTokenRequest } from './apiTokens';
 
 /**
  * Per-account API usage accounting.
@@ -151,11 +152,24 @@ export const apiUsagePlugin = (client: MongoClient): ApolloServerPlugin<BaseCont
 
             async willSendResponse(requestContext) {
 
-                const userId = (requestContext.contextValue as Partial<Context>)?.user?.id;
+                                const contextUser = (requestContext.contextValue as Partial<Context>)?.user;
+
+                const userId = contextUser?.id;
 
                 if (!userId) {
-
                     return;
+                }
+
+                // Requests presented with the account's API token are also totalled on
+                // the account itself (#4070); denied ones included, since the point is
+                // how much traffic the token is bringing.
+                if (contextUser?.viaApiToken) {
+                    try {
+                        await recordApiTokenRequest(client, userId);
+                    }
+                    catch (e) {
+                        console.error('Failed to record API token request', e as Error);
+                    }
                 }
 
                 try {

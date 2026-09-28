@@ -316,11 +316,47 @@ or blocked caller, not a fault, and reporting them would bury real errors under 
 traffic the gate exists to turn away. Volume remains observable: per account in
 `customData.api_usage`, and for callers with no account in Netlify's own logs.
 
+### API tokens (#4070)
+
+Every account carries an API token that stands in for the session on `/api/graphql`, so a
+script or an agent does not have to replay a browser cookie. `server/apiTokens.ts` holds the
+mechanics; the pieces are:
+
+- **Token.** `aiid_` followed by 40 base64url characters from 30 random bytes (240 bits).
+  Stored in `customData.users.api_token`, unique partial index `users_api_token_unique`
+  (`migrations/2026.09.28T12.00.00.add-api-tokens.ts`, which also issues a token to every
+  existing account). A new account gets one on creation (`nextauth.config.ts`, `createUser`).
+- **Sending it.** `Authorization: Bearer <token>`. `server/context.ts` resolves the account from
+  the token before looking for a session, so a token wins when both are present. An unknown
+  token makes the request anonymous, which the gate answers with `API_LOGIN_REQUIRED`.
+- **Same account, same rules.** A token authenticates as the account it belongs to: its roles,
+  its block state (a blocked account's token is refused with `API_ACCESS_BLOCKED`) and its
+  usage accounting all apply unchanged. In addition each request presented with a token is
+  totalled on the account (`api_token_request_count`, `api_token_last_used_at`).
+- **No browser heuristics.** Requests carrying a well-formed token skip the origin and
+  user-agent checks in the Netlify handler; those exist to turn away anonymous automation,
+  and a token holder is automation by design.
+- **Rotation.** `regenerateApiToken(userId)` issues a fresh token and invalidates the previous
+  one at once. Anyone may rotate their own; an admin may rotate (revoke) any account's without
+  seeing it. The account page shows the token, a Copy button, a Regenerate button and the
+  request total.
+- **Who can read what.** `api_token` resolves for the account itself only, even for admins;
+  the counters for the account and admins (`server/userFieldVisibility.ts`). None of the token
+  fields can be written through `updateOneUser` by anyone, nor used in a non-admin `filter` or
+  `sort` (`canEditProtectedUserFields`, `notFiltersByApiAccessFields` in `server/rules.ts`).
+
+```bash
+curl -X POST https://incidentdatabase.ai/api/graphql \
+  -H "Authorization: Bearer aiid_..." \
+  -H "Content-Type: application/json" \
+  -d '{"query":"{ incidents(pagination: {limit: 3}) { incident_id title } }"}'
+```
+
 ### Existing API consumers
 
-This is a breaking change for anyone querying `/api/graphql` anonymously. A consumer now
-needs an account and must send its session cookie. The public GraphQL endpoint section of the
-root `README.md` documents the requirement.
+Anyone querying `/api/graphql` anonymously needs an account, and sends either its session
+cookie or, for scripts and agents, the account's API token (above). The public GraphQL
+endpoint section of the root `README.md` documents the requirement.
 
 ## Tests
 
@@ -329,6 +365,8 @@ root `README.md` documents the requirement.
 | `server/tests/apiAccess.spec.ts` | Session required for queries and mutations, and answered with the login code even where a role rule would also refuse; roleless user allowed; blocked account refused with reason; unblocking restores access; introspection still open; block state readable only by an admin or the account itself, including through `filter`/`sort`; blocking is admin-only and profile edits still work. |
 | `server/tests/apiUsage.spec.ts` | Counting and day bucketing; per-operation accumulation; anonymous not recorded; denied counted separately; error flagging; `apiUsageSummaries` totals, ranges, ranking and admin-only access; operation-name sanitisation. |
 | `playwright/e2e/apiAccess.spec.ts` | Logged-out visitor sees the notice and logged-in one sees the feature, on the real pages; endpoint returns 401 anonymously and data with a session; blocked account is refused. |
+| `server/tests/apiTokens.spec.ts` | Token format; a token authenticates as its account and wins over a session; unknown token is anonymous; blocked account's token refused; token requests totalled on the account; rotation for self and by admins, refused otherwise, and the old token dead at once; token readable by its account only, counters by admins too; no `updateOneUser` writes and no non-admin filtering on the token fields; the migration's index and backfill. |
+| `playwright/e2e/apiTokens.spec.ts` | The account page shows the token; a request with it succeeds without a session and the total increments; Regenerate replaces it, the old token is refused, the new one works. |
 
 The e2e helper `query()` in `playwright/utils.ts` authenticates as the seeded admin test user
 unless a spec passes its own `Cookie` header, because specs use it as scaffolding to read back

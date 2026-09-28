@@ -181,6 +181,20 @@ export const ADMIN_ONLY_USER_FIELDS = [
     ...API_ACCESS_USER_FIELDS,
 ];
 
+/**
+ * The API-token fields (SEE: server/apiTokens.ts). Never written through
+ * `updateOneUser` by anyone — a token is only ever issued by `regenerateApiToken`,
+ * so it is always random, and the counters are the server's — and, like the
+ * block fields, never usable as a `filter` or `sort` by a non-admin, which would
+ * otherwise let a caller probe for a token one guess at a time.
+ */
+export const API_TOKEN_USER_FIELDS = [
+    'api_token',
+    'api_token_request_count',
+    'api_token_last_used_at',
+    'api_token_regenerated_at',
+];
+
 const LOGICAL_FILTER_OPERATORS = ['AND', 'OR', 'NOR'];
 
 const mentionsApiAccessField = (node: unknown): boolean => {
@@ -194,6 +208,7 @@ const mentionsApiAccessField = (node: unknown): boolean => {
 
         return Object.entries(node as Record<string, unknown>).some(([key, value]) =>
             API_ACCESS_USER_FIELDS.includes(key)
+            || API_TOKEN_USER_FIELDS.includes(key)
             || (LOGICAL_FILTER_OPERATORS.includes(key) && mentionsApiAccessField(value))
         );
     }
@@ -237,6 +252,18 @@ export const canEditProtectedUserFields = () => rule()(
         // graphql-to-mongodb nests the payload under operator keys (`set`,
         // `unset`, ...). Every operator is inspected rather than just `set`, so a
         // new one cannot quietly open a path to these fields.
+        const touchesTokenField = Object.values(update).some(
+            (operatorPayload) =>
+                operatorPayload != null
+                && typeof operatorPayload === 'object'
+                && API_TOKEN_USER_FIELDS.some((field) => field in operatorPayload)
+        );
+
+        if (touchesTokenField) {
+
+            return new Error('API token fields cannot be edited; use regenerateApiToken');
+        }
+
         const touchesProtectedField = Object.values(update).some(
             (operatorPayload) =>
                 operatorPayload != null

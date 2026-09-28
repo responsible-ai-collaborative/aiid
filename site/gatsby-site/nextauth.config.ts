@@ -1,4 +1,5 @@
 import { MongoClient, ServerApiVersion } from "mongodb"
+import { generateApiToken } from './server/apiTokens';
 import { NextAuthOptions } from "next-auth"
 import config from './server/config'
 import { sendEmail } from "./server/emails"
@@ -128,7 +129,12 @@ export const getAuthConfig = async (req: any): Promise<NextAuthOptions> => {
               userId: user.id,
               createdAt: new Date(),
               roles: ['subscriber'],
-            }
+            },
+            // Every account carries an API token from the start (#4070).
+            // SEE: server/apiTokens.ts
+            $setOnInsert: {
+              api_token: generateApiToken(),
+            },
           },
           {
             upsert: true,

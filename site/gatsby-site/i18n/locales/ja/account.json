@@ -22,5 +22,15 @@
   "API access": "APIアクセス",
   "Block this account from the API": "このアカウントのAPIアクセスをブロックする",
   "Reason": "理由",
-  "e.g. automated scraping at 400 req/min": "例：毎分400リクエストの自動スクレイピング"
+  "e.g. automated scraping at 400 req/min": "例：毎分400リクエストの自動スクレイピング",
+  "API token": "APIトークン",
+  "apiTokenIntro": "このトークンはブラウザのセッションの代わりにAPIに対してアカウントを識別します。Authorizationヘッダーに Bearer として送信してください。パスワードと同様に扱ってください。",
+  "apiTokenMissing": "トークンはまだ生成されていません。",
+  "Regenerate token": "トークンを再生成",
+  "Generate token": "トークンを生成",
+  "regenerateApiTokenConfirm": "トークンを再生成しますか？現在のトークンはすぐに使えなくなります。",
+  "apiTokenRegenerated": "新しいAPIトークンを生成しました。",
+  "apiTokenRegenerateError": "APIトークンを再生成できませんでした。",
+  "apiTokenUsage": "このトークンで受信したリクエスト: {{count}}。最終使用: {{last}}。",
+  "never": "なし"
 }

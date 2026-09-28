@@ -6,6 +6,8 @@ export interface Context {
   user: {
     id: string,
     roles: string[],
+    /** Authenticated with an API token rather than a session. SEE: server/apiTokens.ts */
+    viaApiToken?: boolean,
   } | null,
   req: IncomingMessage,
   client: MongoClient,

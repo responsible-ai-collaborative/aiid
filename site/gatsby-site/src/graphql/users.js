@@ -51,6 +51,10 @@ export const FIND_USER = gql(`
       api_access_blocked
       api_access_blocked_at
       api_access_blocked_reason
+      api_token
+      api_token_request_count
+      api_token_last_used_at
+      api_token_regenerated_at
       adminData {
         email
         disabled
@@ -121,6 +125,22 @@ export const UPDATE_USER_PROFILE = gql(`
       userId
       first_name
       last_name
+    }
+  }
+`);
+
+/**
+ * Issues the account a fresh API token, invalidating the current one (#4070). The
+ * token comes back only for one's own account. SEE: server/apiTokens.ts
+ */
+export const REGENERATE_API_TOKEN = gql(`
+  mutation RegenerateApiToken($userId: String) {
+    regenerateApiToken(userId: $userId) {
+      userId
+      api_token
+      api_token_request_count
+      api_token_last_used_at
+      api_token_regenerated_at
     }
   }
 `);
