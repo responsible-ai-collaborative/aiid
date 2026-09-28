@@ -24,11 +24,11 @@ export default function Featured() {
           </a>
           ,{' '}
           <a
-            href="https://venturebeat.com/2021/01/15/the-ai-incident-database-wants-to-improve-the-safety-of-machine-learning/"
+            href="https://bdtechtalks.com/2021/01/14/ai-incident-database/"
             target="_blank"
             rel="noreferrer"
           >
-            Venture Beat
+            TechTalks
           </a>
           ,{' '}
           <a
@@ -106,9 +106,11 @@ export default function Featured() {
             alt: 'Arxiv Logo',
           },
           {
-            href: 'https://venturebeat.com/2021/01/15/the-ai-incident-database-wants-to-improve-the-safety-of-machine-learning/',
-            src: '/images/news/VentureBeat.png',
-            alt: 'Venture Beat Logo',
+            // The piece was written for TechTalks and syndicated to VentureBeat,
+            // whose copy has since gone offline.
+            href: 'https://bdtechtalks.com/2021/01/14/ai-incident-database/',
+            src: '/images/news/TechTalks.jpg',
+            alt: 'TechTalks Logo',
           },
           {
             href: 'https://www.wired.com/story/artificial-intelligence-hall-shame/',
