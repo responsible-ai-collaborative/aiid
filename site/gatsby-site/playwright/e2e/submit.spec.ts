@@ -909,6 +909,79 @@ test.describe('The Submit form', () => {
         await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
     });
 
+    test('Should accept a long list of authors and reject a single over-long name', async ({ page }) => {
+
+        // The authors field used to be validated as one comma-joined string capped at
+        // 200 characters, which rejected reports with many named authors. The bound
+        // now applies to each author. SEE: #4045
+
+        await conditionalIntercept(
+            page,
+            '**/parseNews**',
+            () => true,
+            parseNews,
+            'parseNews',
+        );
+
+        await trackRequest(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindSubmissions',
+            'findSubmissions'
+        );
+
+        await page.goto(url);
+
+        await waitForRequest('findSubmissions');
+
+        await page.locator('input[name="url"]').fill(
+            `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+        );
+
+        await page.locator('[data-cy="fetch-info"]').click();
+
+        await waitForRequest('parseNews');
+
+        // A list whose total length is well past 200 characters is accepted.
+        const authors = Array.from({ length: 12 }, (_, index) => `Author Number ${index + 1} With A Rather Long Name`);
+
+        expect(authors.join(',').length).toBeGreaterThan(200);
+
+        // The tags control splits the pasted text on commas.
+        await page.locator('input[name="authors"]').fill(authors.join(','));
+        await page.locator('input[name="authors"]').press('Enter');
+
+        await expect(page.getByText("*Each author can't be longer than 200 characters")).not.toBeVisible();
+
+        await page.locator('[name="incident_date"]').fill('2020-01-01');
+
+        await page.locator('[data-cy="submit-step-1"]').click();
+
+        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
+
+        const { data } = await query({
+            query: gql`
+                query {
+                    submission(sort: { _id: DESC }) {
+                        authors
+                    }
+                }
+            `,
+        });
+
+        expect(data.submission.authors).toEqual(expect.arrayContaining(authors));
+
+        // A single name longer than the per-author bound is still refused.
+        await page.goto(url);
+
+        await waitForRequest('findSubmissions');
+
+        await page.locator('input[name="authors"]').fill('A'.repeat(201));
+        await page.locator('input[name="authors"]').press('Enter');
+
+        await expect(page.getByText("*Each author can't be longer than 200 characters")).toBeVisible();
+    });
+
     test('Should submit on step 2', async ({ page }) => {
 
         await conditionalIntercept(
