@@ -21,6 +21,39 @@ import { useMutation } from '@apollo/client';
 import { DELETE_SUBMISSION, UPDATE_SUBMISSION } from '../../graphql/submissions';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 
+/**
+ * Editors work through the queue over many visits, and the sort direction they
+ * chose (typically newest incident first) resets on every return. The Dates
+ * column's sort and the date field it sorts by are therefore remembered in the
+ * browser. Storage is per browser and may be unavailable (private windows,
+ * cleared site data, build-time rendering), so every access is guarded and falls
+ * back to the default. SEE: #4035
+ */
+const STORAGE_KEYS = {
+  sortBy: 'submissionsTable.sortBy',
+  dateFilter: 'submissionsTable.dateFilter',
+};
+
+const readStoredSetting = (key, fallback) => {
+  if (typeof window === 'undefined') return fallback;
+  try {
+    const stored = window.localStorage.getItem(key);
+
+    return stored === null ? fallback : JSON.parse(stored);
+  } catch (e) {
+    return fallback;
+  }
+};
+
+const writeStoredSetting = (key, value) => {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  } catch (e) {
+    // Remembering the setting is a convenience; failing to is not an error.
+  }
+};
+
 const SubmissionList = ({ data }) => {
   const { t } = useTranslation('submitted');
 
@@ -169,7 +202,13 @@ const SubmissionList = ({ data }) => {
     );
   }
 
-  const [dateFilter, setDateFilter] = useState('incident_date');
+  const [dateFilter, setDateFilter] = useState(() =>
+    readStoredSetting(STORAGE_KEYS.dateFilter, 'incident_date')
+  );
+
+  useEffect(() => {
+    writeStoredSetting(STORAGE_KEYS.dateFilter, dateFilter);
+  }, [dateFilter]);
 
   const [dateValues, setDateValues] = useState([]);
 
@@ -572,7 +611,11 @@ const SubmissionList = ({ data }) => {
     return columns;
   }, [loading, user, claiming, reviewing, dateFilter, selectedRows, allSelected]);
 
-  const [tableState, setTableState] = useState({ pageIndex: 0, filters: [], sortBy: [] });
+  const [tableState, setTableState] = useState(() => ({
+    pageIndex: 0,
+    filters: [],
+    sortBy: readStoredSetting(STORAGE_KEYS.sortBy, []),
+  }));
 
   const table = useTable(
     {
@@ -594,6 +637,7 @@ const SubmissionList = ({ data }) => {
 
   useEffect(() => {
     setTableState({ pageIndex: 0, filters: table.state.filters, sortBy: table.state.sortBy });
+    writeStoredSetting(STORAGE_KEYS.sortBy, table.state.sortBy);
   }, [table.state.filters, table.state.sortBy]);
 
   useEffect(() => {
