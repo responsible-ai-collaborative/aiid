@@ -5,7 +5,7 @@
   "author": "Sean <aiidpackage@seanbmcgregor.com> (@seanmcgregor)",
   "version": "0.2.0",
   "dependencies": {
-    "@apollo/client": "^3.14.1",
+    "@apollo/client": "^4.3.1",
     "@apollo/server": "^5.5.1",
     "@as-integrations/aws-lambda": "^4.0.1",
     "@auth/core": "^0.34.3",
