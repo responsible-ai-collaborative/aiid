@@ -129,8 +129,10 @@ Once you have cloned the repository, to set up a local development environment f
 
 The project is now running locally and can be accessed at `http://localhost:8000`, and the API is available at `http://localhost:8000/api/graphql`.
 
-> **The API requires a logged-in account.** Queries without a session are refused with
-> `API_LOGIN_REQUIRED`. Locally, use the [magic links](#using-magic-links-for-local-authentication)
+> **The API requires an account.** Queries without a session are refused with
+> `API_LOGIN_REQUIRED`. Scripts and agents send the account's API token instead of a cookie:
+> `Authorization: Bearer <token>`, shown on the account page (`/account`), where it can also be
+> regenerated. Locally, use the [magic links](#using-magic-links-for-local-authentication)
 > script below to sign in as one of the seeded users, or set `API_REQUIRE_LOGIN=false` in your
 > `.env` while working on something unrelated. See
 > [API Access, Usage Accounting, and Blocking](../docs/API_ACCESS.md).

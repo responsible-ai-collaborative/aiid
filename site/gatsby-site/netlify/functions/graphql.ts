@@ -11,6 +11,7 @@ import { HandlerContext, HandlerEvent } from '@netlify/functions';
 import { Context } from '../../server/interfaces';
 import { apiUsagePlugin } from '../../server/apiUsage';
 import { isApiAccessDenialCode } from '../../server/apiAccess';
+import { hasApiTokenHeader } from '../../server/apiTokens';
 
 const sentryPlugin: ApolloServerPlugin<Context> = {
     async requestDidStart(requestContext) {
@@ -145,8 +146,12 @@ const handler = async (event: HandlerEvent, netlifyContext: HandlerContext) => {
             span.setAttribute('http.method', event.httpMethod);
             span.setAttribute('url', event.rawUrl);
 
-            // Only validate POST requests (mutations/queries), allow GET for Apollo Playground
-            if (event.httpMethod === 'POST') {
+            // Only validate POST requests (mutations/queries), allow GET for Apollo Playground.
+            // A request carrying an API token is a script or an agent by design; the
+            // origin and user-agent heuristics exist to turn away anonymous automation
+            // and are skipped for it (the token itself is checked in the context).
+            // SEE: server/apiTokens.ts
+            if (event.httpMethod === 'POST' && !hasApiTokenHeader(event.headers)) {
               if (process.env.API_VALIDATE_ORIGIN === 'true') {
                 const originError = validateOrigin(event);
                 if (originError) return originError;

@@ -22,5 +22,15 @@
     "API access": "Accès à l'API",
     "Block this account from the API": "Bloquer l'accès de ce compte à l'API",
     "Reason": "Motif",
-    "e.g. automated scraping at 400 req/min": "p. ex. extraction automatisée à 400 req/min"
+    "e.g. automated scraping at 400 req/min": "p. ex. extraction automatisée à 400 req/min",
+  "API token": "Jeton d'API",
+  "apiTokenIntro": "Ce jeton identifie votre compte auprès de l'API à la place de la session du navigateur : envoyez-le dans l'en-tête Authorization en tant que Bearer. Traitez-le comme un mot de passe.",
+  "apiTokenMissing": "Aucun jeton n'a encore été généré.",
+  "Regenerate token": "Régénérer le jeton",
+  "Generate token": "Générer un jeton",
+  "regenerateApiTokenConfirm": "Régénérer le jeton ? Le jeton actuel cessera de fonctionner immédiatement.",
+  "apiTokenRegenerated": "Nouveau jeton d'API généré.",
+  "apiTokenRegenerateError": "Impossible de régénérer le jeton d'API.",
+  "apiTokenUsage": "Requêtes reçues avec ce jeton : {{count}}. Dernière utilisation : {{last}}.",
+  "never": "jamais"
 }
