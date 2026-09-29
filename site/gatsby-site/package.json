@@ -131,6 +131,7 @@
     "tsne-js": "^1.0.3",
     "umzug": "^3.8.3",
     "use-query-params": "^1.2.3",
+    "write-excel-file": "^4.1.1",
     "yargs": "^18.1.0",
     "yup": "^0.29.3"
   },

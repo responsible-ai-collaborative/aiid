@@ -75,7 +75,7 @@ POST {baseUrl}/embeddings  {model, input}
 ```
 
 The model name selects an optional local request profile. The Nemotron embedding profile adds
-`input_type: passage` for pipeline inputs (and supports `query` for a future query caller).
+`input_type: passage` for pipeline inputs and `input_type: query` for semantic-search input.
 Unrecognized models add no vendor-specific fields, so switching an OpenAI-compatible model normally
 requires only changing `EMBEDDING_MODEL` and, if necessary, `EMBEDDING_API_BASE_URL`.
 
@@ -90,6 +90,10 @@ Set these values in `site/gatsby-site/.env`:
 MONGODB_CONNECTION_STRING=mongodb://127.0.0.1:4110
 EMBEDDING_API_KEY=your-key-here
 ```
+
+To use NVIDIA's OpenAI-compatible endpoint directly, set `NVIDIA_URL` and `NVIDIA_API_KEY`
+instead. When both are present, they take precedence and the default model becomes
+`nvidia/nemotron-3-embed-1b`.
 
 Then run from `site/gatsby-site`:
 

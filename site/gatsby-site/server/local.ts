@@ -107,6 +107,11 @@ import {
     permissions as apiUsagePermissions
 } from './fields/apiUsage';
 
+import {
+    queryFields as semanticSearchQueryFields,
+    permissions as semanticSearchPermissions
+} from './fields/semanticSearch';
+
 export const getSchema = () => {
 
     const query = new GraphQLObjectType({
@@ -134,6 +139,7 @@ export const getSchema = () => {
             ...checklistsQueryFields,
             ...entityDuplicatesQueryFields,
             ...apiUsageQueryFields,
+            ...semanticSearchQueryFields,
         }
     });
 
@@ -196,6 +202,7 @@ export const getSchema = () => {
                 ...checklistsPermissions.Query,
                 ...entityDuplicatesPermissions.Query,
                 ...apiUsagePermissions.Query,
+                ...semanticSearchPermissions.Query,
             },
             Mutation: {
                 "*": deny,

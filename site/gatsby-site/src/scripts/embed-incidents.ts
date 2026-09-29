@@ -146,7 +146,7 @@ const main = async (): Promise<number> => {
   if (argv.limit !== undefined) assertPositiveInteger(argv.limit, '--limit');
   for (const id of argv['incident-id'] || []) assertPositiveInteger(id, '--incident-id');
 
-  const provider = createEmbeddingProvider();
+  const provider = createEmbeddingProvider({ onRetry: (message) => console.warn(message) });
   const maxInputChars = positiveInteger(
     process.env.EMBEDDING_MAX_INPUT_CHARS,
     DEFAULT_MAX_INPUT_CHARS,
