@@ -60,6 +60,7 @@ type Documents = {
     "\n  query FindReportsTitles($filter: ReportFilterType!) {\n    reports(filter: $filter) {\n      report_number\n      title\n    }\n  }\n": typeof types.FindReportsTitlesDocument,
     "\n  query FindReportsTable($filter: ReportFilterType!) {\n    reports(filter: $filter, sort: { report_number: DESC }) {\n      report_number\n      title\n      date_published\n      date_submitted\n      date_modified\n      submitters\n      authors\n      language\n      tags\n      flag\n      editor_notes\n      is_incident_report\n    }\n  }\n": typeof types.FindReportsTableDocument,
     "\n  mutation FlagReport($report_number: Int!, $input: Boolean!) {\n    flagReport(report_number: $report_number, input: $input) {\n      report_number\n      flag\n      date_modified\n    }\n  }\n": typeof types.FlagReportDocument,
+    "\n  query SemanticSearch($query: String!, $limit: Int) {\n    semanticSearch(query: $query, limit: $limit) {\n      status\n      results {\n        score\n        incident {\n          incident_id\n          title\n          date\n          description\n        }\n      }\n    }\n  }\n": typeof types.SemanticSearchDocument,
     "\n  mutation DeleteSubmission($_id: ObjectId!) {\n    deleteOneSubmission(filter: { _id: { EQ: $_id } }) {\n      _id\n    }\n  }\n": typeof types.DeleteSubmissionDocument,
     "\n  mutation RejectSubmission($input: RejectSubmissionInput!) {\n    rejectSubmission(input: $input) {\n      _id\n      status\n      rejection_reason\n      rejected_at\n      rejected_by\n    }\n  }\n": typeof types.RejectSubmissionDocument,
     "\n  mutation RestoreSubmission($input: RestoreSubmissionInput!) {\n    restoreSubmission(input: $input) {\n      _id\n      status\n      rejection_reason\n      rejected_at\n      rejected_by\n    }\n  }\n": typeof types.RestoreSubmissionDocument,
@@ -136,6 +137,7 @@ const documents: Documents = {
     "\n  query FindReportsTitles($filter: ReportFilterType!) {\n    reports(filter: $filter) {\n      report_number\n      title\n    }\n  }\n": types.FindReportsTitlesDocument,
     "\n  query FindReportsTable($filter: ReportFilterType!) {\n    reports(filter: $filter, sort: { report_number: DESC }) {\n      report_number\n      title\n      date_published\n      date_submitted\n      date_modified\n      submitters\n      authors\n      language\n      tags\n      flag\n      editor_notes\n      is_incident_report\n    }\n  }\n": types.FindReportsTableDocument,
     "\n  mutation FlagReport($report_number: Int!, $input: Boolean!) {\n    flagReport(report_number: $report_number, input: $input) {\n      report_number\n      flag\n      date_modified\n    }\n  }\n": types.FlagReportDocument,
+    "\n  query SemanticSearch($query: String!, $limit: Int) {\n    semanticSearch(query: $query, limit: $limit) {\n      status\n      results {\n        score\n        incident {\n          incident_id\n          title\n          date\n          description\n        }\n      }\n    }\n  }\n": types.SemanticSearchDocument,
     "\n  mutation DeleteSubmission($_id: ObjectId!) {\n    deleteOneSubmission(filter: { _id: { EQ: $_id } }) {\n      _id\n    }\n  }\n": types.DeleteSubmissionDocument,
     "\n  mutation RejectSubmission($input: RejectSubmissionInput!) {\n    rejectSubmission(input: $input) {\n      _id\n      status\n      rejection_reason\n      rejected_at\n      rejected_by\n    }\n  }\n": types.RejectSubmissionDocument,
     "\n  mutation RestoreSubmission($input: RestoreSubmissionInput!) {\n    restoreSubmission(input: $input) {\n      _id\n      status\n      rejection_reason\n      rejected_at\n      rejected_by\n    }\n  }\n": types.RestoreSubmissionDocument,
@@ -364,6 +366,10 @@ export function gql(source: "\n  query FindReportsTable($filter: ReportFilterTyp
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation FlagReport($report_number: Int!, $input: Boolean!) {\n    flagReport(report_number: $report_number, input: $input) {\n      report_number\n      flag\n      date_modified\n    }\n  }\n"): (typeof documents)["\n  mutation FlagReport($report_number: Int!, $input: Boolean!) {\n    flagReport(report_number: $report_number, input: $input) {\n      report_number\n      flag\n      date_modified\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query SemanticSearch($query: String!, $limit: Int) {\n    semanticSearch(query: $query, limit: $limit) {\n      status\n      results {\n        score\n        incident {\n          incident_id\n          title\n          date\n          description\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query SemanticSearch($query: String!, $limit: Int) {\n    semanticSearch(query: $query, limit: $limit) {\n      status\n      results {\n        score\n        incident {\n          incident_id\n          title\n          date\n          description\n        }\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

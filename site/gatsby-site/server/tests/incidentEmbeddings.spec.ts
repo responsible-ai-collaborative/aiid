@@ -51,6 +51,8 @@ describe('embedding provider profiles and validation', () => {
       EMBEDDING_API_BASE_URL: 'https://embedding.test/v1',
       EMBEDDING_MAX_ATTEMPTS: '1',
     };
+    delete process.env.NVIDIA_URL;
+    delete process.env.NVIDIA_API_KEY;
   });
 
   afterEach(() => {
@@ -58,7 +60,7 @@ describe('embedding provider profiles and validation', () => {
     global.fetch = originalFetch;
   });
 
-  it('adds input_type only for the Nemotron profile', async () => {
+  it('uses the Nemotron document input type for indexed content', async () => {
     process.env.EMBEDDING_MODEL = 'nvidia/nemotron-3-embed-1b:free';
     const fetchMock = jest.fn().mockResolvedValue(
       new Response(JSON.stringify({ data: [{ index: 0, embedding: [0.1, 0.2] }] }), {
@@ -78,6 +80,51 @@ describe('embedding provider profiles and validation', () => {
     });
   });
 
+  it('uses the Nemotron query input type for search text', async () => {
+    process.env.EMBEDDING_MODEL = 'nvidia/nemotron-3-embed-1b:free';
+    const fetchMock = jest.fn().mockResolvedValue(
+      new Response(JSON.stringify({ data: [{ index: 0, embedding: [0.1, 0.2] }] }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    );
+    global.fetch = fetchMock;
+
+    await createEmbeddingProvider().embed(['query'], 'query');
+
+    const request = JSON.parse(fetchMock.mock.calls[0][1].body);
+    expect(request).toEqual({
+      model: 'nvidia/nemotron-3-embed-1b:free',
+      input: ['query'],
+      input_type: 'query',
+    });
+  });
+
+  it('uses the NVIDIA endpoint and model when its credentials are configured', async () => {
+    process.env.NVIDIA_URL = 'https://integrate.api.nvidia.com/v1/';
+    process.env.NVIDIA_API_KEY = 'nvidia-key';
+    delete process.env.EMBEDDING_MODEL;
+    const fetchMock = jest.fn().mockResolvedValue(
+      new Response(JSON.stringify({ data: [{ index: 0, embedding: [0.1, 0.2] }] }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    );
+    global.fetch = fetchMock;
+
+    const provider = createEmbeddingProvider();
+    await provider.embed(['document'], 'document');
+
+    expect(fetchMock.mock.calls[0][0]).toBe('https://integrate.api.nvidia.com/v1/embeddings');
+    expect(fetchMock.mock.calls[0][1].headers.Authorization).toBe('Bearer nvidia-key');
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({
+      model: 'nvidia/nemotron-3-embed-1b',
+      input: ['document'],
+      input_type: 'passage',
+    });
+    expect(provider.model).toBe('nvidia/nemotron-3-embed-1b');
+  });
+
   it('keeps the generic request portable for an unknown model', async () => {
     process.env.EMBEDDING_MODEL = 'vendor/new-model';
     const fetchMock = jest.fn().mockResolvedValue(
@@ -93,6 +140,30 @@ describe('embedding provider profiles and validation', () => {
     const request = JSON.parse(fetchMock.mock.calls[0][1].body);
     expect(request).toEqual({ model: 'vendor/new-model', input: ['query'] });
     expect(resolveEmbeddingProfile('vendor/new-model').id).toBe('openai-compatible-v1');
+  });
+
+  it('supports validated caller limits and opt-in retry reporting', async () => {
+    process.env.EMBEDDING_MODEL = 'vendor/new-model';
+    const onRetry = jest.fn();
+    global.fetch = jest
+      .fn()
+      .mockResolvedValueOnce(
+        new Response('try again', { status: 429, headers: { 'Retry-After': '0' } })
+      )
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ data: [{ index: 0, embedding: [0.1, 0.2] }] }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      );
+
+    const provider = createEmbeddingProvider({ timeoutMs: 8000, maxAttempts: 2, onRetry });
+    const result = await provider.embed(['query'], 'query');
+
+    expect(provider.timeoutMs).toBe(8000);
+    expect(provider.maxAttempts).toBe(2);
+    expect(result.attempts).toBe(2);
+    expect(onRetry).toHaveBeenCalledTimes(1);
   });
 
   it('rejects duplicate response indices', async () => {
@@ -116,14 +187,12 @@ describe('embedding provider profiles and validation', () => {
 
   it('rejects non-finite vector values', async () => {
     process.env.EMBEDDING_MODEL = 'vendor/new-model';
-    global.fetch = jest
-      .fn()
-      .mockResolvedValue(
-        new Response(JSON.stringify({ data: [{ index: 0, embedding: [0.1, null] }] }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
-      );
+    global.fetch = jest.fn().mockResolvedValue(
+      new Response(JSON.stringify({ data: [{ index: 0, embedding: [0.1, null] }] }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    );
 
     await expect(createEmbeddingProvider().embed(['one'])).rejects.toThrow(
       'empty or contains non-numbers'
