@@ -1,5 +1,6 @@
-import { expect, test } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
+import { test } from '../../utils';
 
 const url = '/apps/semantic-search/';
 
@@ -18,9 +19,21 @@ const results = Array.from({ length: 30 }, (_, index) => ({
 }));
 
 test.describe('Semantic Search', () => {
+  test('asks a logged-out visitor to log in instead of showing the search', async ({ page }) => {
+    await page.goto(url);
+
+    await expect(page.locator('[data-cy="api-login-required"]')).toBeVisible();
+    await expect(page.locator('[data-cy="semantic-search-form"]')).toHaveCount(0);
+    await expect(page.locator('[data-cy="semantic-search-examples"]')).toHaveCount(0);
+  });
+
   test('runs each example immediately and supports results, sorting, pagination, and export errors', async ({
     page,
+    login,
   }) => {
+    // The search reads through the API, which requires a login (SEE: server/apiAccess.ts).
+    await login({ customData: { roles: ['subscriber'] } });
+
     const queries: string[] = [];
     let releaseFirstRequest: (() => void) | undefined;
 
@@ -112,7 +125,12 @@ test.describe('Semantic Search', () => {
     ]);
   });
 
-  test('shows empty, quota, and unavailable states for submitted searches', async ({ page }) => {
+  test('shows empty, quota, and unavailable states for submitted searches', async ({
+    page,
+    login,
+  }) => {
+    await login({ customData: { roles: ['subscriber'] } });
+
     await page.route('**/graphql', async (route) => {
       const request = route.request().postDataJSON();
 

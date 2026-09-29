@@ -3,6 +3,7 @@ import { useLazyQuery } from '@apollo/client';
 import { Trans, useTranslation } from 'react-i18next';
 import { Button, Spinner, TextInput } from 'flowbite-react';
 import HeadContent from '../../components/HeadContent';
+import { ApiAccessGate } from '../../components/ui/ApiLoginRequired';
 import SemanticSearchTable from '../../components/semanticSearch/SemanticSearchTable';
 import ExcelExport from '../../components/semanticSearch/ExcelExport';
 import { SEMANTIC_SEARCH } from '../../graphql/semanticSearch';
@@ -56,69 +57,77 @@ export default function SemanticSearchPage() {
         </Trans>
       </p>
 
-      <div className="flex flex-wrap items-center gap-2 mb-4" data-cy="semantic-search-examples">
-        <span className="text-sm text-gray-600">
-          <Trans>Try an example:</Trans>
-        </span>
-        {exampleQueries.map((query, index) => (
-          <button
-            key={query}
-            type="button"
-            disabled={loading}
-            onClick={() => runSearch(query)}
-            className="rounded-full border border-blue-300 px-3 py-1 text-sm text-blue-700 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
-            data-cy={`semantic-search-example-${index + 1}`}
+      {/* The search reads through the API, which requires a logged-in, unblocked account.
+          SEE: server/apiAccess.ts */}
+      <ApiAccessGate>
+        <div className="flex flex-wrap items-center gap-2 mb-4" data-cy="semantic-search-examples">
+          <span className="text-sm text-gray-600">
+            <Trans>Try an example:</Trans>
+          </span>
+          {exampleQueries.map((query, index) => (
+            <button
+              key={query}
+              type="button"
+              disabled={loading}
+              onClick={() => runSearch(query)}
+              className="rounded-full border border-blue-300 px-3 py-1 text-sm text-blue-700 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
+              data-cy={`semantic-search-example-${index + 1}`}
+            >
+              {t(query)}
+            </button>
+          ))}
+        </div>
+
+        <form onSubmit={onSubmit} className="flex gap-2 mb-4" data-cy="semantic-search-form">
+          <TextInput
+            className="flex-1"
+            value={input}
+            maxLength={500}
+            onChange={(event) => setInput(event.target.value)}
+            placeholder={t('Describe an incident in your own words')}
+            data-cy="semantic-search-input"
+          />
+          <Button
+            type="submit"
+            disabled={loading || !input.trim()}
+            data-cy="semantic-search-submit"
           >
-            {t(query)}
-          </button>
-        ))}
-      </div>
+            <Trans>Search</Trans>
+          </Button>
+        </form>
 
-      <form onSubmit={onSubmit} className="flex gap-2 mb-4" data-cy="semantic-search-form">
-        <TextInput
-          className="flex-1"
-          value={input}
-          maxLength={500}
-          onChange={(event) => setInput(event.target.value)}
-          placeholder={t('Describe an incident in your own words')}
-          data-cy="semantic-search-input"
-        />
-        <Button type="submit" disabled={loading || !input.trim()} data-cy="semantic-search-submit">
-          <Trans>Search</Trans>
-        </Button>
-      </form>
+        {loading && <Spinner />}
 
-      {loading && <Spinner />}
+        {!loading && (error || response?.status === 'UNAVAILABLE') && (
+          <p className="text-red-700" data-cy="semantic-search-unavailable">
+            <Trans>Search is unavailable right now. Please try again later.</Trans>
+          </p>
+        )}
 
-      {!loading && (error || response?.status === 'UNAVAILABLE') && (
-        <p className="text-red-700" data-cy="semantic-search-unavailable">
-          <Trans>Search is unavailable right now. Please try again later.</Trans>
-        </p>
-      )}
+        {!loading && response?.status === 'QUOTA_EXHAUSTED' && (
+          <p className="text-amber-700" data-cy="semantic-search-limited">
+            <Trans>The search limit has been reached for now. Please try again later.</Trans>
+          </p>
+        )}
 
-      {!loading && response?.status === 'QUOTA_EXHAUSTED' && (
-        <p className="text-amber-700" data-cy="semantic-search-limited">
-          <Trans>The search limit has been reached for now. Please try again later.</Trans>
-        </p>
-      )}
+        {!loading && response?.status === 'OK' && results.length === 0 && (
+          <p data-cy="semantic-search-empty">
+            <Trans>No incidents closely match that description.</Trans>
+          </p>
+        )}
 
-      {!loading && response?.status === 'OK' && results.length === 0 && (
-        <p data-cy="semantic-search-empty">
-          <Trans>No incidents closely match that description.</Trans>
-        </p>
-      )}
-
-      {!loading && results.length > 0 && (
-        <>
-          <div className="flex items-center justify-between mb-2">
-            <span data-cy="semantic-search-count">
-              {t('{{count}} matching incidents', { count: results.length })}
-            </span>
-            <ExcelExport results={results} query={submitted} />
-          </div>
-          <SemanticSearchTable results={results} />
-        </>
-      )}
+        {!loading && results.length > 0 && (
+          <>
+            <div className="flex items-center justify-between mb-2">
+              <span data-cy="semantic-search-count">
+                {t('{{count}} matching incidents', { count: results.length })}
+              </span>
+              <ExcelExport results={results} query={submitted} />
+            </div>
+            <SemanticSearchTable results={results} />
+          </>
+        )}
+      </ApiAccessGate>
     </div>
   );
 }

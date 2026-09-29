@@ -1,12 +1,19 @@
 import { ApolloServer } from '@apollo/server';
 import * as Sentry from '@sentry/aws-serverless';
 import { Binary } from 'mongodb';
+import { API_LOGIN_REQUIRED } from '../apiAccess';
 import {
   normaliseBinaryVector,
   rankIncidentVectors,
   resetSemanticSearchCache,
 } from '../fields/semanticSearch';
-import { makeRequest, seedCollection, startTestServer } from './utils';
+import {
+  makeRequest,
+  mockAnonymousSession,
+  mockSession,
+  seedCollection,
+  startTestServer,
+} from './utils';
 
 jest.mock('@sentry/aws-serverless', () => ({ captureException: jest.fn() }));
 
@@ -85,6 +92,15 @@ describe('semanticSearch GraphQL field', () => {
     delete process.env.NVIDIA_URL;
     delete process.env.NVIDIA_API_KEY;
     resetSemanticSearchCache();
+
+    // The API requires a logged-in account (SEE: server/apiAccess.ts). A roleless
+    // subscriber is enough, since the gate checks identity and not permission.
+    await seedCollection({
+      name: 'users',
+      database: 'customData',
+      docs: [{ userId: 'subscriber1', roles: ['subscriber'] }],
+    });
+    mockSession('subscriber1');
 
     await seedCollection({
       name: 'incidents',
@@ -188,6 +204,16 @@ describe('semanticSearch GraphQL field', () => {
     expect(
       response.body.data.semanticSearch.results.map((result: any) => result.incident.incident_id)
     ).toEqual([1, 2]);
+  });
+
+  it('requires a logged-in account and does not call the provider without one', async () => {
+    global.fetch = jest.fn();
+    mockAnonymousSession();
+
+    const response = await execute('matching query');
+
+    expect(response.body.errors[0]).toMatchObject({ extensions: { code: API_LOGIN_REQUIRED } });
+    expect(global.fetch).not.toHaveBeenCalled();
   });
 
   it('does not call the provider for an empty query', async () => {
