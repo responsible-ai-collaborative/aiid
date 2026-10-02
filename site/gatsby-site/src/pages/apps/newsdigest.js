@@ -30,7 +30,7 @@ export default function NewsSearchPage() {
   const { data: newsArticlesData, loading } = useQuery(
     gql`
       query NewsArticles($filter: CandidateFilterType!) {
-        candidates(filter: $filter) {
+        candidates(filter: $filter, sort: { similarity: DESC }, pagination: { limit: 300 }) {
           title
           url
           similarity
