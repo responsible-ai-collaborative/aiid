@@ -178,6 +178,16 @@ export const FIND_REPORTS = gql(`
   }
 `);
 
+/** Just enough to name a report: used to pick existing reports by number. SEE: #4052 */
+export const FIND_REPORTS_TITLES = gql(`
+  query FindReportsTitles($filter: ReportFilterType!) {
+    reports(filter: $filter) {
+      report_number
+      title
+    }
+  }
+`);
+
 // Only fetch the fields rendered by ReportsTable: fetching all fields (especially
 // the full report text) for every report exceeds the 6 MB AWS Lambda response payload limit.
 export const FIND_REPORTS_TABLE = gql(`

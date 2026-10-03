@@ -13,6 +13,7 @@ import Label from 'components/forms/Label';
 import UsersField from 'components/users/UsersField';
 import IncidentsField from './IncidentsField';
 import LinkedReportsForm from './LinkedReportsForm';
+import ReportsField from './ReportsField';
 import { Spinner } from 'flowbite-react';
 
 const relatedIncidentIdsQuery = gql`
@@ -40,6 +41,18 @@ export const schema = Yup.object().shape({
   implicated_systems: Yup.array().required(),
   editors: Yup.array().of(Yup.string()).required(),
   editor_notes: Yup.string().nullable(),
+  // Existing reports to link when creating an incident, as report numbers. SEE: #4052
+  // The edit pages carry the incident's own report objects in this field (they are
+  // dropped on save), so only plain values are checked as numbers.
+  reports: Yup.array()
+    .of(
+      Yup.lazy((value) =>
+        value !== null && typeof value === 'object'
+          ? Yup.object()
+          : Yup.number().integer().positive()
+      )
+    )
+    .nullable(),
 });
 
 function IncidentForm({ entityNames = [], isNewIncident = false }) {
@@ -267,8 +280,18 @@ function IncidentForm({ entityNames = [], isNewIncident = false }) {
           />
         </FieldContainer>
 
-        {values.reports && values.reports.length > 0 && (
-          <LinkedReportsForm reports={values.reports} />
+        {isNewIncident ? (
+          // A new Incident ID can be created for a report that is already in the
+          // database — an article covering several distinct incidents should be the
+          // underlying report of each — instead of re-submitting the same report.
+          // SEE: #4052
+          <FieldContainer>
+            <Label popover="existingReports" label={t('Existing reports to include')} />
+            <ReportsField id="reports" name="reports" className="mt-2" />
+          </FieldContainer>
+        ) : (
+          values.reports &&
+          values.reports.length > 0 && <LinkedReportsForm reports={values.reports} />
         )}
 
         <div id="similar-incidents">

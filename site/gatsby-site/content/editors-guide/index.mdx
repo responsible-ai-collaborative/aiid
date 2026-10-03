@@ -135,6 +135,13 @@ an incident, variant, issue, or not relevant to the AIID.
    - Y: Add it as an issue to the database  
    - N: Reject the report
 
+One report can be the underlying report of more than one incident. When an
+article that is already in the database describes a further, distinct
+incident, do not submit the article again: open the new incident form
+(`/incidents/new`) and add the existing report's number under "Existing
+reports to include". The report becomes a report of the new incident while
+staying a report of the incidents it already belongs to.
+
 ### Examples and Discussion
 
 #### Case Analysis of “Incidents”
