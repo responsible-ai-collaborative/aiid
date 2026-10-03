@@ -17,7 +17,7 @@ const incidents: DBIncident[] = [
         // TODO: this aren't required but break the build if missing
         editor_notes: "",
         nlp_similar_incidents: [],
-        editor_similar_incidents: [],
+        editor_similar_incidents: [4],
         editor_dissimilar_incidents: [],
         flagged_dissimilar_incidents: [],
         date_modified: "2020-01-01T00:00:00.000Z",
@@ -101,6 +101,7 @@ const incidents: DBIncident[] = [
         incident_id: 4,
         date: "2014-08-14",
         reports: [
+            100,
             9
         ],
         "Alleged deployer of AI system": [
