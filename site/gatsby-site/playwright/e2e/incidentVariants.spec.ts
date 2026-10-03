@@ -71,9 +71,14 @@ test.describe('Variants pages', () => {
         }
     });
 
-    test('Should add a new Variant - Unauthenticated user', async ({ page }) => {
+    test('Should add a new Variant - Logged-in user without editor role', async ({ page, login }) => {
 
         await init();
+
+        // Submitting a variant writes through the API, which requires a login;
+        // the logged-out notice is covered by e2e/apiAccess.spec.ts.
+        // SEE: server/apiAccess.ts
+        await login({ customData: { roles: ['subscriber'] } });
 
         await page.goto(url);
 
@@ -103,9 +108,13 @@ test.describe('Variants pages', () => {
         );
     });
 
-    test('Should add a new Variant - without submitters', async ({ page }) => {
+    test('Should add a new Variant - without submitters', async ({ page, login }) => {
 
         await init();
+
+        // Submitting a variant writes through the API, which requires a login.
+        // SEE: server/apiAccess.ts
+        await login({ customData: { roles: ['subscriber'] } });
 
         await page.goto(url);
 

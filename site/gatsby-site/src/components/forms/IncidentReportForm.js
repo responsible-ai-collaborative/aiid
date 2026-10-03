@@ -55,6 +55,18 @@ import FlowbiteSearchInput from './FlowbiteSearchInput';
 // * language: "en" # (string) The language identifier of the report.
 
 // Schema for yup
+/**
+ * The authors field holds a list of names, and yup casts it to a comma-joined
+ * string before validating, so a `max()` on the field would cap the whole list
+ * rather than a name. Each author is bounded instead, matching
+ * `src/components/submissions/schemas.js`. SEE: #4045
+ */
+const eachAuthorIsShort = (value) =>
+  !value ||
+  String(value)
+    .split(',')
+    .every((author) => author.trim().length <= 200);
+
 export const schema = yup.object().shape({
   title: yup
     .string()
@@ -64,7 +76,7 @@ export const schema = yup.object().shape({
   authors: yup
     .string()
     .min(3, '*Authors must have at least 3 characters')
-    .max(200, "*Authors can't be longer than 200 characters")
+    .test('author-length', "*Each author can't be longer than 200 characters", eachAuthorIsShort)
     .required('*Author is required. Anonymous or the publication can be entered.'),
   submitters: yup
     .string()

@@ -1,10 +1,16 @@
 import React from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import { Alert, Modal } from 'flowbite-react';
+import { Alert, Button, Modal } from 'flowbite-react';
 import { Formik } from 'formik';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import UserForm, { schema } from './UserForm';
-import { FIND_USER, UPDATE_USER_PROFILE, UPDATE_USER_ROLES } from '../../graphql/users';
+import {
+  FIND_USER,
+  UPDATE_USER_API_ACCESS,
+  UPDATE_USER_PROFILE,
+  UPDATE_USER_ROLES,
+} from '../../graphql/users';
+import { FIND_API_USAGE_SUMMARIES } from '../../graphql/apiUsage';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 import SubmitButton from 'components/ui/SubmitButton';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
@@ -49,6 +55,57 @@ const RolesTable = ({ roles }) => (
   </table>
 );
 
+/**
+ * Read-only view of an account's recorded API usage, so an admin deciding whether
+ * to block has the volume in front of them. SEE: server/apiUsage.ts
+ */
+function ApiUsageSummary({ usage }) {
+  return (
+    <div className="mt-4 border-t pt-3" data-cy="api-usage-summary">
+      <h6 className="text-sm font-semibold mb-2">
+        <Trans>API usage</Trans>
+      </h6>
+      {!usage ? (
+        <p className="text-sm text-gray-500">
+          <Trans>No API requests recorded for this account.</Trans>
+        </p>
+      ) : (
+        <dl className="text-sm grid grid-cols-2 gap-x-4 gap-y-1">
+          <dt className="text-gray-500">
+            <Trans>Requests</Trans>
+          </dt>
+          <dd data-cy="api-usage-count">{usage.count.toLocaleString()}</dd>
+
+          <dt className="text-gray-500">
+            <Trans>Active days</Trans>
+          </dt>
+          <dd>{usage.activeDays.toLocaleString()}</dd>
+
+          <dt className="text-gray-500">
+            <Trans>Requests with errors</Trans>
+          </dt>
+          <dd>{usage.errorCount.toLocaleString()}</dd>
+
+          <dt className="text-gray-500">
+            <Trans>Refused while blocked</Trans>
+          </dt>
+          <dd>{usage.deniedCount.toLocaleString()}</dd>
+
+          <dt className="text-gray-500">
+            <Trans>First request</Trans>
+          </dt>
+          <dd>{usage.firstRequestAt ? new Date(usage.firstRequestAt).toLocaleString() : '—'}</dd>
+
+          <dt className="text-gray-500">
+            <Trans>Last request</Trans>
+          </dt>
+          <dd>{usage.lastRequestAt ? new Date(usage.lastRequestAt).toLocaleString() : '—'}</dd>
+        </dl>
+      )}
+    </div>
+  );
+}
+
 export default function UserEditModal({ show, onClose, userId, alertTitle = '', alertText = '' }) {
   const {
     data: userData,
@@ -56,6 +113,8 @@ export default function UserEditModal({ show, onClose, userId, alertTitle = '', 
     error,
   } = useQuery(FIND_USER, {
     variables: { filter: { userId: { EQ: userId } } },
+    // The modal is mounted closed with no user; do not query for nobody.
+    skip: !userId,
   });
 
   const { isRole } = useUserContext();
@@ -64,7 +123,31 @@ export default function UserEditModal({ show, onClose, userId, alertTitle = '', 
 
   const [updateUserProfile] = useMutation(UPDATE_USER_PROFILE);
 
+  const [updateUserApiAccess] = useMutation(UPDATE_USER_API_ACCESS);
+
+  // Usage is admin-only server-side (SEE: server/fields/apiUsage.ts), so it is
+  // only requested when the viewer is an admin.
+  const { data: usageData } = useQuery(FIND_API_USAGE_SUMMARIES, {
+    variables: { userId },
+    skip: !isRole('admin') || !userId,
+  });
+
+  const usage = usageData?.apiUsageSummaries?.[0];
+
   const addToast = useToastContext();
+
+  const { t } = useTranslation();
+
+  // The id used to be a table column; admins paste it into database queries and
+  // `?user=` links, so it stays one click away here.
+  const copyUserId = async () => {
+    try {
+      await navigator.clipboard.writeText(userId);
+      addToast({ message: t('Copied'), severity: SEVERITY.success });
+    } catch (e) {
+      addToast({ message: t('Could not copy to the clipboard'), severity: SEVERITY.danger });
+    }
+  };
 
   const handleSubmit = async (values) => {
     try {
@@ -79,6 +162,32 @@ export default function UserEditModal({ show, onClose, userId, alertTitle = '', 
           last_name: values.last_name,
         },
       });
+
+      const blocked = Boolean(values.api_access_blocked);
+
+      const wasBlocked = Boolean(userData.user.api_access_blocked);
+
+      const reason = values.api_access_blocked_reason || null;
+
+      // Records when access was withdrawn: stamped as the block goes on, left alone
+      // while it stays on (so editing the reason does not reset the date), and
+      // cleared on unblock so a stale timestamp cannot be read as a current one.
+      let blockedAt = null;
+
+      if (blocked) {
+        blockedAt = wasBlocked ? userData.user.api_access_blocked_at : new Date().toISOString();
+      }
+
+      if (blocked !== wasBlocked || reason !== (userData.user.api_access_blocked_reason || null)) {
+        await updateUserApiAccess({
+          variables: {
+            userId,
+            api_access_blocked: blocked,
+            api_access_blocked_at: blockedAt,
+            api_access_blocked_reason: blocked ? reason : null,
+          },
+        });
+      }
 
       addToast({
         message: <>User updated.</>,
@@ -98,7 +207,20 @@ export default function UserEditModal({ show, onClose, userId, alertTitle = '', 
   return (
     <Modal show={show} onClose={onClose} data-testid="edit-user-modal" size="lg">
       <Modal.Header>
-        <Trans>Edit</Trans>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+          <Trans>Edit</Trans>
+          {userId && (
+            <span
+              className="flex items-center gap-2 text-sm font-normal text-gray-500"
+              data-cy="account-id"
+            >
+              <Trans>Account ID</Trans>: <code className="select-all">{userId}</code>
+              <Button size="xs" color="light" data-cy="copy-user-id" onClick={copyUserId}>
+                <Trans>Copy</Trans>
+              </Button>
+            </span>
+          )}
+        </div>
       </Modal.Header>
 
       {error && (
@@ -132,6 +254,7 @@ export default function UserEditModal({ show, onClose, userId, alertTitle = '', 
                   </Alert>
                 )}
                 <UserForm />
+                {isRole('admin') && <ApiUsageSummary usage={usage} />}
                 {isRole('admin') && (
                   <details>
                     <summary className="cursor-pointer text-sm">Supported Roles</summary>

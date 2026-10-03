@@ -24,6 +24,54 @@ export type Scalars = {
   ObjectId: { input: any; output: any; }
 };
 
+export type ApiUsage = {
+  __typename?: 'ApiUsage';
+  _id?: Maybe<Scalars['ObjectId']['output']>;
+  count?: Maybe<Scalars['Int']['output']>;
+  date: Scalars['String']['output'];
+  deniedCount?: Maybe<Scalars['Int']['output']>;
+  errorCount?: Maybe<Scalars['Int']['output']>;
+  firstRequestAt?: Maybe<Scalars['DateTime']['output']>;
+  lastRequestAt?: Maybe<Scalars['DateTime']['output']>;
+  userId: Scalars['String']['output'];
+};
+
+export type ApiUsageFilterType = {
+  AND?: InputMaybe<Array<InputMaybe<ApiUsageFilterType>>>;
+  NOR?: InputMaybe<Array<InputMaybe<ApiUsageFilterType>>>;
+  OR?: InputMaybe<Array<InputMaybe<ApiUsageFilterType>>>;
+  _id?: InputMaybe<ObjectIdFilter>;
+  count?: InputMaybe<IntFilter>;
+  date?: InputMaybe<StringFilter>;
+  deniedCount?: InputMaybe<IntFilter>;
+  errorCount?: InputMaybe<IntFilter>;
+  firstRequestAt?: InputMaybe<DateTimeFilter>;
+  lastRequestAt?: InputMaybe<DateTimeFilter>;
+  userId?: InputMaybe<StringFilter>;
+};
+
+export type ApiUsageSortType = {
+  _id?: InputMaybe<SortType>;
+  count?: InputMaybe<SortType>;
+  date?: InputMaybe<SortType>;
+  deniedCount?: InputMaybe<SortType>;
+  errorCount?: InputMaybe<SortType>;
+  firstRequestAt?: InputMaybe<SortType>;
+  lastRequestAt?: InputMaybe<SortType>;
+  userId?: InputMaybe<SortType>;
+};
+
+export type ApiUsageSummary = {
+  __typename?: 'ApiUsageSummary';
+  activeDays: Scalars['Int']['output'];
+  count: Scalars['Int']['output'];
+  deniedCount: Scalars['Int']['output'];
+  errorCount: Scalars['Int']['output'];
+  firstRequestAt?: Maybe<Scalars['DateTime']['output']>;
+  lastRequestAt?: Maybe<Scalars['DateTime']['output']>;
+  userId: Scalars['String']['output'];
+};
+
 export type Attribute = {
   __typename?: 'Attribute';
   short_name?: Maybe<Scalars['String']['output']>;
@@ -1307,6 +1355,7 @@ export type Mutation = {
   linkReportsToIncidents?: Maybe<Array<Maybe<Incident>>>;
   mergeEntities: Entity;
   promoteSubmissionToReport: PromoteSubmissionToReportPayload;
+  regenerateApiToken: User;
   updateEntityAndRelationships: UpdateOneEntityPayload;
   updateManyCandidates?: Maybe<UpdateManyPayload>;
   updateManyDuplicates?: Maybe<UpdateManyPayload>;
@@ -1500,6 +1549,11 @@ export type MutationMergeEntitiesArgs = {
 
 export type MutationPromoteSubmissionToReportArgs = {
   input: PromoteSubmissionToReportInput;
+};
+
+
+export type MutationRegenerateApiTokenArgs = {
+  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -1809,6 +1863,9 @@ export type Query = {
   __typename?: 'Query';
   /** Custom scalar for MongoDB ObjectID */
   ObjectId?: Maybe<Scalars['ObjectId']['output']>;
+  apiUsage?: Maybe<ApiUsage>;
+  apiUsageSummaries?: Maybe<Array<Maybe<ApiUsageSummary>>>;
+  apiUsages?: Maybe<Array<Maybe<ApiUsage>>>;
   candidate?: Maybe<Candidate>;
   candidates?: Maybe<Array<Maybe<Candidate>>>;
   checklist?: Maybe<Checklist>;
@@ -1845,6 +1902,27 @@ export type Query = {
   taxas?: Maybe<Array<Maybe<Taxa>>>;
   user?: Maybe<User>;
   users?: Maybe<Array<Maybe<User>>>;
+};
+
+
+export type QueryApiUsageArgs = {
+  filter?: InputMaybe<ApiUsageFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<ApiUsageSortType>;
+};
+
+
+export type QueryApiUsageSummariesArgs = {
+  from?: InputMaybe<Scalars['String']['input']>;
+  to?: InputMaybe<Scalars['String']['input']>;
+  userId?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryApiUsagesArgs = {
+  filter?: InputMaybe<ApiUsageFilterType>;
+  pagination?: InputMaybe<PaginationType>;
+  sort?: InputMaybe<ApiUsageSortType>;
 };
 
 
@@ -2883,6 +2961,13 @@ export type User = {
   __typename?: 'User';
   _id?: Maybe<Scalars['ObjectId']['output']>;
   adminData?: Maybe<UserAdminDatum>;
+  api_access_blocked?: Maybe<Scalars['Boolean']['output']>;
+  api_access_blocked_at?: Maybe<Scalars['DateTime']['output']>;
+  api_access_blocked_reason?: Maybe<Scalars['String']['output']>;
+  api_token?: Maybe<Scalars['String']['output']>;
+  api_token_last_used_at?: Maybe<Scalars['DateTime']['output']>;
+  api_token_regenerated_at?: Maybe<Scalars['DateTime']['output']>;
+  api_token_request_count?: Maybe<Scalars['Int']['output']>;
   first_name?: Maybe<Scalars['String']['output']>;
   last_name?: Maybe<Scalars['String']['output']>;
   roles: Array<Maybe<Scalars['String']['output']>>;
@@ -2902,6 +2987,13 @@ export type UserFilterType = {
   NOR?: InputMaybe<Array<InputMaybe<UserFilterType>>>;
   OR?: InputMaybe<Array<InputMaybe<UserFilterType>>>;
   _id?: InputMaybe<ObjectIdFilter>;
+  api_access_blocked?: InputMaybe<BooleanFilter>;
+  api_access_blocked_at?: InputMaybe<DateTimeFilter>;
+  api_access_blocked_reason?: InputMaybe<StringFilter>;
+  api_token?: InputMaybe<StringFilter>;
+  api_token_last_used_at?: InputMaybe<DateTimeFilter>;
+  api_token_regenerated_at?: InputMaybe<DateTimeFilter>;
+  api_token_request_count?: InputMaybe<IntFilter>;
   first_name?: InputMaybe<StringFilter>;
   last_name?: InputMaybe<StringFilter>;
   roles?: InputMaybe<StringFilter>;
@@ -2910,6 +3002,13 @@ export type UserFilterType = {
 
 export type UserSetType = {
   _id?: InputMaybe<Scalars['ObjectId']['input']>;
+  api_access_blocked?: InputMaybe<Scalars['Boolean']['input']>;
+  api_access_blocked_at?: InputMaybe<Scalars['DateTime']['input']>;
+  api_access_blocked_reason?: InputMaybe<Scalars['String']['input']>;
+  api_token?: InputMaybe<Scalars['String']['input']>;
+  api_token_last_used_at?: InputMaybe<Scalars['DateTime']['input']>;
+  api_token_regenerated_at?: InputMaybe<Scalars['DateTime']['input']>;
+  api_token_request_count?: InputMaybe<Scalars['Int']['input']>;
   first_name?: InputMaybe<Scalars['String']['input']>;
   last_name?: InputMaybe<Scalars['String']['input']>;
   roles?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
@@ -2918,6 +3017,13 @@ export type UserSetType = {
 
 export type UserSortType = {
   _id?: InputMaybe<SortType>;
+  api_access_blocked?: InputMaybe<SortType>;
+  api_access_blocked_at?: InputMaybe<SortType>;
+  api_access_blocked_reason?: InputMaybe<SortType>;
+  api_token?: InputMaybe<SortType>;
+  api_token_last_used_at?: InputMaybe<SortType>;
+  api_token_regenerated_at?: InputMaybe<SortType>;
+  api_token_request_count?: InputMaybe<SortType>;
   first_name?: InputMaybe<SortType>;
   last_name?: InputMaybe<SortType>;
   userId?: InputMaybe<SortType>;
@@ -2926,6 +3032,24 @@ export type UserSortType = {
 export type UserUpdateType = {
   set?: InputMaybe<UserSetType>;
 };
+
+export type FindApiUsageQueryVariables = Exact<{
+  filter?: InputMaybe<ApiUsageFilterType>;
+  sort?: InputMaybe<ApiUsageSortType>;
+  pagination?: InputMaybe<PaginationType>;
+}>;
+
+
+export type FindApiUsageQuery = { __typename?: 'Query', apiUsages?: Array<{ __typename?: 'ApiUsage', _id?: any | null, userId: string, date: string, count?: number | null, errorCount?: number | null, deniedCount?: number | null, firstRequestAt?: any | null, lastRequestAt?: any | null } | null> | null };
+
+export type FindApiUsageSummariesQueryVariables = Exact<{
+  userId?: InputMaybe<Scalars['String']['input']>;
+  from?: InputMaybe<Scalars['String']['input']>;
+  to?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type FindApiUsageSummariesQuery = { __typename?: 'Query', apiUsageSummaries?: Array<{ __typename?: 'ApiUsageSummary', userId: string, count: number, errorCount: number, deniedCount: number, activeDays: number, firstRequestAt?: any | null, lastRequestAt?: any | null } | null> | null };
 
 export type FindChecklistsQueryVariables = Exact<{
   filter?: InputMaybe<ChecklistFilterType>;
@@ -3312,14 +3436,19 @@ export type FindUserSubscriptionsQuery = { __typename?: 'Query', subscriptions?:
 export type FindUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type FindUsersQuery = { __typename?: 'Query', users?: Array<{ __typename?: 'User', roles: Array<string | null>, userId: string, first_name?: string | null, last_name?: string | null } | null> | null };
+export type FindUsersQuery = { __typename?: 'Query', users?: Array<{ __typename?: 'User', roles: Array<string | null>, userId: string, first_name?: string | null, last_name?: string | null, api_access_blocked?: boolean | null, api_access_blocked_at?: any | null, api_access_blocked_reason?: string | null } | null> | null };
+
+export type FindUsersAdminQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FindUsersAdminQuery = { __typename?: 'Query', users?: Array<{ __typename?: 'User', roles: Array<string | null>, userId: string, first_name?: string | null, last_name?: string | null, api_access_blocked?: boolean | null, api_access_blocked_at?: any | null, api_access_blocked_reason?: string | null, adminData?: { __typename?: 'UserAdminDatum', email: string, disabled: boolean, creationDate: any, lastAuthenticationDate?: any | null } | null } | null> | null };
 
 export type FindUserQueryVariables = Exact<{
   filter: UserFilterType;
 }>;
 
 
-export type FindUserQuery = { __typename?: 'Query', user?: { __typename?: 'User', roles: Array<string | null>, userId: string, first_name?: string | null, last_name?: string | null, adminData?: { __typename?: 'UserAdminDatum', email: string, disabled: boolean, creationDate: any, lastAuthenticationDate?: any | null } | null } | null };
+export type FindUserQuery = { __typename?: 'Query', user?: { __typename?: 'User', roles: Array<string | null>, userId: string, first_name?: string | null, last_name?: string | null, api_access_blocked?: boolean | null, api_access_blocked_at?: any | null, api_access_blocked_reason?: string | null, api_token?: string | null, api_token_request_count?: number | null, api_token_last_used_at?: any | null, api_token_regenerated_at?: any | null, adminData?: { __typename?: 'UserAdminDatum', email: string, disabled: boolean, creationDate: any, lastAuthenticationDate?: any | null } | null } | null };
 
 export type FindUsersByRoleQueryVariables = Exact<{
   role?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
@@ -3336,6 +3465,16 @@ export type UpdateUserRolesMutationVariables = Exact<{
 
 export type UpdateUserRolesMutation = { __typename?: 'Mutation', updateOneUser?: { __typename?: 'User', roles: Array<string | null>, userId: string } | null };
 
+export type UpdateUserApiAccessMutationVariables = Exact<{
+  userId?: InputMaybe<Scalars['String']['input']>;
+  api_access_blocked?: InputMaybe<Scalars['Boolean']['input']>;
+  api_access_blocked_at?: InputMaybe<Scalars['DateTime']['input']>;
+  api_access_blocked_reason?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type UpdateUserApiAccessMutation = { __typename?: 'Mutation', updateOneUser?: { __typename?: 'User', userId: string, api_access_blocked?: boolean | null, api_access_blocked_at?: any | null, api_access_blocked_reason?: string | null } | null };
+
 export type UpdateUserProfileMutationVariables = Exact<{
   userId?: InputMaybe<Scalars['String']['input']>;
   first_name?: InputMaybe<Scalars['String']['input']>;
@@ -3344,6 +3483,13 @@ export type UpdateUserProfileMutationVariables = Exact<{
 
 
 export type UpdateUserProfileMutation = { __typename?: 'Mutation', updateOneUser?: { __typename?: 'User', userId: string, first_name?: string | null, last_name?: string | null } | null };
+
+export type RegenerateApiTokenMutationVariables = Exact<{
+  userId?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type RegenerateApiTokenMutation = { __typename?: 'Mutation', regenerateApiToken: { __typename?: 'User', userId: string, api_token?: string | null, api_token_request_count?: number | null, api_token_last_used_at?: any | null, api_token_regenerated_at?: any | null } };
 
 export type FindVariantsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3387,6 +3533,8 @@ export type DeleteOneVariantMutationVariables = Exact<{
 export type DeleteOneVariantMutation = { __typename?: 'Mutation', deleteOneReport?: { __typename?: 'Report', report_number: number } | null };
 
 
+export const FindApiUsageDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindApiUsage"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ApiUsageFilterType"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"sort"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ApiUsageSortType"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"PaginationType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"apiUsages"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}},{"kind":"Argument","name":{"kind":"Name","value":"sort"},"value":{"kind":"Variable","name":{"kind":"Name","value":"sort"}}},{"kind":"Argument","name":{"kind":"Name","value":"pagination"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"count"}},{"kind":"Field","name":{"kind":"Name","value":"errorCount"}},{"kind":"Field","name":{"kind":"Name","value":"deniedCount"}},{"kind":"Field","name":{"kind":"Name","value":"firstRequestAt"}},{"kind":"Field","name":{"kind":"Name","value":"lastRequestAt"}}]}}]}}]} as unknown as DocumentNode<FindApiUsageQuery, FindApiUsageQueryVariables>;
+export const FindApiUsageSummariesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindApiUsageSummaries"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userId"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"from"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"to"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"apiUsageSummaries"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userId"}}},{"kind":"Argument","name":{"kind":"Name","value":"from"},"value":{"kind":"Variable","name":{"kind":"Name","value":"from"}}},{"kind":"Argument","name":{"kind":"Name","value":"to"},"value":{"kind":"Variable","name":{"kind":"Name","value":"to"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"count"}},{"kind":"Field","name":{"kind":"Name","value":"errorCount"}},{"kind":"Field","name":{"kind":"Name","value":"deniedCount"}},{"kind":"Field","name":{"kind":"Name","value":"activeDays"}},{"kind":"Field","name":{"kind":"Name","value":"firstRequestAt"}},{"kind":"Field","name":{"kind":"Name","value":"lastRequestAt"}}]}}]}}]} as unknown as DocumentNode<FindApiUsageSummariesQuery, FindApiUsageSummariesQueryVariables>;
 export const FindChecklistsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"findChecklists"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ChecklistFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"checklists"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"owner_id"}},{"kind":"Field","name":{"kind":"Name","value":"date_created"}},{"kind":"Field","name":{"kind":"Name","value":"date_updated"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"about"}},{"kind":"Field","name":{"kind":"Name","value":"tags_goals"}},{"kind":"Field","name":{"kind":"Name","value":"tags_methods"}},{"kind":"Field","name":{"kind":"Name","value":"tags_other"}},{"kind":"Field","name":{"kind":"Name","value":"risks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"risk_status"}},{"kind":"Field","name":{"kind":"Name","value":"risk_notes"}},{"kind":"Field","name":{"kind":"Name","value":"severity"}},{"kind":"Field","name":{"kind":"Name","value":"likelihood"}},{"kind":"Field","name":{"kind":"Name","value":"touched"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"precedents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}}]}}]}}]}}]} as unknown as DocumentNode<FindChecklistsQuery, FindChecklistsQueryVariables>;
 export const FindChecklistDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"findChecklist"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ChecklistFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"checklist"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"owner_id"}},{"kind":"Field","name":{"kind":"Name","value":"date_created"}},{"kind":"Field","name":{"kind":"Name","value":"date_updated"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"about"}},{"kind":"Field","name":{"kind":"Name","value":"tags_goals"}},{"kind":"Field","name":{"kind":"Name","value":"tags_methods"}},{"kind":"Field","name":{"kind":"Name","value":"tags_other"}},{"kind":"Field","name":{"kind":"Name","value":"risks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"risk_status"}},{"kind":"Field","name":{"kind":"Name","value":"risk_notes"}},{"kind":"Field","name":{"kind":"Name","value":"severity"}},{"kind":"Field","name":{"kind":"Name","value":"likelihood"}},{"kind":"Field","name":{"kind":"Name","value":"touched"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"precedents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}}]}}]}}]}}]} as unknown as DocumentNode<FindChecklistQuery, FindChecklistQueryVariables>;
 export const UpsertChecklistDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"upsertChecklist"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ChecklistFilterType"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"checklist"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ChecklistInsertType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"upsertOneChecklist"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}},{"kind":"Argument","name":{"kind":"Name","value":"update"},"value":{"kind":"Variable","name":{"kind":"Name","value":"checklist"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"owner_id"}},{"kind":"Field","name":{"kind":"Name","value":"date_created"}},{"kind":"Field","name":{"kind":"Name","value":"date_updated"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"about"}},{"kind":"Field","name":{"kind":"Name","value":"tags_goals"}},{"kind":"Field","name":{"kind":"Name","value":"tags_methods"}},{"kind":"Field","name":{"kind":"Name","value":"tags_other"}},{"kind":"Field","name":{"kind":"Name","value":"risks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"risk_status"}},{"kind":"Field","name":{"kind":"Name","value":"risk_notes"}},{"kind":"Field","name":{"kind":"Name","value":"severity"}},{"kind":"Field","name":{"kind":"Name","value":"likelihood"}},{"kind":"Field","name":{"kind":"Name","value":"touched"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"precedents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}}]}}]}}]}}]} as unknown as DocumentNode<UpsertChecklistMutation, UpsertChecklistMutationVariables>;
@@ -3440,11 +3588,14 @@ export const FindSubscriptionsFullDocument = {"kind":"Document","definitions":[{
 export const DeleteSubscriptionsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteSubscriptions"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionFilterType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteManySubscriptions"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletedCount"}}]}}]}}]} as unknown as DocumentNode<DeleteSubscriptionsMutation, DeleteSubscriptionsMutationVariables>;
 export const DeleteSubscriptionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteSubscription"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionFilterType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteOneSubscription"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}}]}}]} as unknown as DocumentNode<DeleteSubscriptionMutation, DeleteSubscriptionMutationVariables>;
 export const FindUserSubscriptionsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindUserSubscriptions"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionFilterType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"subscriptions"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"incident_id"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}},{"kind":"Field","name":{"kind":"Name","value":"entityId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entity_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"userId"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}}]} as unknown as DocumentNode<FindUserSubscriptionsQuery, FindUserSubscriptionsQueryVariables>;
-export const FindUsersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindUsers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"users"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"roles"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"first_name"}},{"kind":"Field","name":{"kind":"Name","value":"last_name"}}]}}]}}]} as unknown as DocumentNode<FindUsersQuery, FindUsersQueryVariables>;
-export const FindUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UserFilterType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"roles"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"first_name"}},{"kind":"Field","name":{"kind":"Name","value":"last_name"}},{"kind":"Field","name":{"kind":"Name","value":"adminData"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"disabled"}},{"kind":"Field","name":{"kind":"Name","value":"creationDate"}},{"kind":"Field","name":{"kind":"Name","value":"lastAuthenticationDate"}}]}}]}}]}}]} as unknown as DocumentNode<FindUserQuery, FindUserQueryVariables>;
+export const FindUsersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindUsers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"users"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"roles"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"first_name"}},{"kind":"Field","name":{"kind":"Name","value":"last_name"}},{"kind":"Field","name":{"kind":"Name","value":"api_access_blocked"}},{"kind":"Field","name":{"kind":"Name","value":"api_access_blocked_at"}},{"kind":"Field","name":{"kind":"Name","value":"api_access_blocked_reason"}}]}}]}}]} as unknown as DocumentNode<FindUsersQuery, FindUsersQueryVariables>;
+export const FindUsersAdminDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindUsersAdmin"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"users"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"roles"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"first_name"}},{"kind":"Field","name":{"kind":"Name","value":"last_name"}},{"kind":"Field","name":{"kind":"Name","value":"api_access_blocked"}},{"kind":"Field","name":{"kind":"Name","value":"api_access_blocked_at"}},{"kind":"Field","name":{"kind":"Name","value":"api_access_blocked_reason"}},{"kind":"Field","name":{"kind":"Name","value":"adminData"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"disabled"}},{"kind":"Field","name":{"kind":"Name","value":"creationDate"}},{"kind":"Field","name":{"kind":"Name","value":"lastAuthenticationDate"}}]}}]}}]}}]} as unknown as DocumentNode<FindUsersAdminQuery, FindUsersAdminQueryVariables>;
+export const FindUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UserFilterType"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"roles"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"first_name"}},{"kind":"Field","name":{"kind":"Name","value":"last_name"}},{"kind":"Field","name":{"kind":"Name","value":"api_access_blocked"}},{"kind":"Field","name":{"kind":"Name","value":"api_access_blocked_at"}},{"kind":"Field","name":{"kind":"Name","value":"api_access_blocked_reason"}},{"kind":"Field","name":{"kind":"Name","value":"api_token"}},{"kind":"Field","name":{"kind":"Name","value":"api_token_request_count"}},{"kind":"Field","name":{"kind":"Name","value":"api_token_last_used_at"}},{"kind":"Field","name":{"kind":"Name","value":"api_token_regenerated_at"}},{"kind":"Field","name":{"kind":"Name","value":"adminData"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"disabled"}},{"kind":"Field","name":{"kind":"Name","value":"creationDate"}},{"kind":"Field","name":{"kind":"Name","value":"lastAuthenticationDate"}}]}}]}}]}}]} as unknown as DocumentNode<FindUserQuery, FindUserQueryVariables>;
 export const FindUsersByRoleDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindUsersByRole"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"role"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"users"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"roles"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"IN"},"value":{"kind":"Variable","name":{"kind":"Name","value":"role"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"roles"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"first_name"}},{"kind":"Field","name":{"kind":"Name","value":"last_name"}}]}}]}}]} as unknown as DocumentNode<FindUsersByRoleQuery, FindUsersByRoleQueryVariables>;
 export const UpdateUserRolesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateUserRoles"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"roles"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userId"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateOneUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"userId"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"EQ"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userId"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"update"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"set"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"roles"},"value":{"kind":"Variable","name":{"kind":"Name","value":"roles"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"roles"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}}]}}]} as unknown as DocumentNode<UpdateUserRolesMutation, UpdateUserRolesMutationVariables>;
+export const UpdateUserApiAccessDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateUserApiAccess"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userId"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"api_access_blocked"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"api_access_blocked_at"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"DateTime"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"api_access_blocked_reason"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateOneUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"userId"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"EQ"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userId"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"update"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"set"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"api_access_blocked"},"value":{"kind":"Variable","name":{"kind":"Name","value":"api_access_blocked"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"api_access_blocked_at"},"value":{"kind":"Variable","name":{"kind":"Name","value":"api_access_blocked_at"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"api_access_blocked_reason"},"value":{"kind":"Variable","name":{"kind":"Name","value":"api_access_blocked_reason"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"api_access_blocked"}},{"kind":"Field","name":{"kind":"Name","value":"api_access_blocked_at"}},{"kind":"Field","name":{"kind":"Name","value":"api_access_blocked_reason"}}]}}]}}]} as unknown as DocumentNode<UpdateUserApiAccessMutation, UpdateUserApiAccessMutationVariables>;
 export const UpdateUserProfileDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateUserProfile"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userId"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first_name"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"last_name"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateOneUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"userId"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"EQ"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userId"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"update"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"set"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"first_name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first_name"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"last_name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"last_name"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"first_name"}},{"kind":"Field","name":{"kind":"Name","value":"last_name"}}]}}]}}]} as unknown as DocumentNode<UpdateUserProfileMutation, UpdateUserProfileMutationVariables>;
+export const RegenerateApiTokenDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RegenerateApiToken"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userId"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"regenerateApiToken"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"api_token"}},{"kind":"Field","name":{"kind":"Name","value":"api_token_request_count"}},{"kind":"Field","name":{"kind":"Name","value":"api_token_last_used_at"}},{"kind":"Field","name":{"kind":"Name","value":"api_token_regenerated_at"}}]}}]}}]} as unknown as DocumentNode<RegenerateApiTokenMutation, RegenerateApiTokenMutationVariables>;
 export const FindVariantsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindVariants"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"reports"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"OR"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"title"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"EQ"},"value":{"kind":"StringValue","value":"","block":false}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"url"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"EQ"},"value":{"kind":"StringValue","value":"","block":false}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"source_domain"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"EQ"},"value":{"kind":"StringValue","value":"","block":false}}]}}]}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"submitters"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"image_url"}},{"kind":"Field","name":{"kind":"Name","value":"cloudinary_id"}},{"kind":"Field","name":{"kind":"Name","value":"source_domain"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"plain_text"}},{"kind":"Field","name":{"kind":"Name","value":"authors"}},{"kind":"Field","name":{"kind":"Name","value":"date_downloaded"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_published"}},{"kind":"Field","name":{"kind":"Name","value":"epoch_date_submitted"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"inputs_outputs"}}]}}]}}]} as unknown as DocumentNode<FindVariantsQuery, FindVariantsQueryVariables>;
 export const FindIncidentVariantsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindIncidentVariants"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"incident_id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"incident_id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"EQ"},"value":{"kind":"Variable","name":{"kind":"Name","value":"incident_id"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"incident_id"}},{"kind":"Field","name":{"kind":"Name","value":"reports"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"source_domain"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"inputs_outputs"}}]}}]}}]}}]} as unknown as DocumentNode<FindIncidentVariantsQuery, FindIncidentVariantsQueryVariables>;
 export const FindVariantDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindVariant"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ReportFilterType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"report_number"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"date_published"}},{"kind":"Field","name":{"kind":"Name","value":"submitters"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"tags"}},{"kind":"Field","name":{"kind":"Name","value":"inputs_outputs"}}]}}]}}]} as unknown as DocumentNode<FindVariantQuery, FindVariantQueryVariables>;

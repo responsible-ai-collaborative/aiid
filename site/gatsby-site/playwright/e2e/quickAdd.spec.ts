@@ -5,7 +5,11 @@ import { format } from 'date-fns';
 const now = new Date();
 
 test.describe('The Quick Add form', () => {
-  test('Should submit a report through the Quick Add form', async ({ page }) => {
+  test('Should submit a report through the Quick Add form', async ({ page, login }) => {
+    // A quick add is a write through the API, which requires a login.
+    // SEE: server/apiAccess.ts
+    await login();
+
     await conditionalIntercept(
       page,
       '**/graphql',
@@ -24,5 +28,16 @@ test.describe('The Quick Add form', () => {
     expect(variables.data.date_submitted).toBe(format(now, 'yyyy-MM-dd'));
 
     await expect(page.locator('.tw-toast')).toContainText('Report successfully added to review queue. You can see your submission here.');
+  });
+
+  test('Should ask a logged-out visitor to log in instead of offering the field', async ({ page }) => {
+    await page.goto('/apps/submit');
+
+    // The submit page explains the requirement in place of both forms
+    // (SEE: src/components/forms/SubmitForm.js and src/components/forms/QuickAddForm.js),
+    // so no field that would issue a refused request is offered.
+    await expect(page.locator('[data-cy="api-login-required"]').first()).toBeVisible();
+
+    await expect(page.locator('[data-cy="quick-add"]')).toHaveCount(0);
   });
 });

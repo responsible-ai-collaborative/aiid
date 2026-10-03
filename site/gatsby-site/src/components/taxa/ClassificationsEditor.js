@@ -10,6 +10,7 @@ import { FIND_CLASSIFICATION } from '../../graphql/classifications';
 import { useQuery } from '@apollo/client';
 import Card from 'elements/Card';
 import { StringParam, useQueryParams, withDefault } from 'use-query-params';
+import useApiAccess from 'hooks/useApiAccess';
 
 export default function TaxonomiesEditor({
   taxa,
@@ -38,8 +39,17 @@ export default function TaxonomiesEditor({
 
   const reportsQuery = reportNumber ? { reports: { EQ: reportNumber } } : {};
 
+  const { hasApiAccess } = useApiAccess();
+
+  // This component is mounted on every incident page but renders nothing unless
+  // the visitor can edit a taxonomy (see the `canEditTaxonomies` guard on the
+  // return below) — the hook still runs, though, so without a skip every reader
+  // issued a request that is now refused. `canEditTaxonomies` is included because
+  // the result is only ever used by the editor this renders.
+  // SEE: server/apiAccess.ts
   const { data } = useQuery(FIND_CLASSIFICATION, {
     variables: { filter: { ...incidentsQuery, ...reportsQuery } },
+    skip: !hasApiAccess || !canEditTaxonomies,
   });
 
   const [taxonomies, setTaxonomies] = useState([]);

@@ -10,6 +10,13 @@ import sinon from 'sinon';
 test.describe('Submitted reports', () => {
     const url = '/apps/submitted';
 
+    // One test below pins the clock with `sinon.stub(global, 'Date')`. Restored here
+    // so the stub cannot leak into later tests in the same worker, where it made
+    // every login's magic link and session expire on creation.
+    test.afterEach(() => {
+        sinon.restore();
+    });
+
     const getSubmissions = async () => {
         const { data: { submissions } } = await query({
             query: gql`{
@@ -32,9 +39,14 @@ test.describe('Submitted reports', () => {
         return submissions;
     }
 
-    test('Loads submissions', async ({ page }) => {
+    test('Loads submissions', async ({ page, login }) => {
 
         await init();
+
+        // The queue is read through the API, which requires a login
+        // (SEE: server/apiAccess.ts). A subscriber is used because the assertions
+        // below describe the read-only view, without the editor's review buttons.
+        await login({ customData: { roles: ['subscriber'] } });
 
         const submissions = await getSubmissions();
 
@@ -249,6 +261,56 @@ test.describe('Submitted reports', () => {
         });
 
         expect(reports.find((r) => r.report_number === 9)).toBeDefined();
+    });
+
+    test('Remembers the Dates sort direction and date field across reloads', async ({ page, login }) => {
+
+        // Editors work through the queue over many visits; the sort they chose used to
+        // reset on every return. SEE: #4035 and src/components/submissions/SubmissionList.js
+
+        await init();
+
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+        await page.goto(url);
+
+        await expect(page.locator('[data-cy="submissions"] [data-cy="row"]').first()).toBeVisible();
+
+        const datesHeader = page.locator('[data-cy="submissions"] th', { hasText: 'Dates' });
+
+        const sortButton = datesHeader.locator('button[title="Toggle SortBy"]');
+
+        await expect(sortButton).not.toHaveClass(/text-blue-500/);
+
+        // Sort by the date field once (ascending) and switch the field to the published date.
+        await sortButton.click();
+
+        await expect(sortButton).toHaveClass(/text-blue-500/);
+
+        await datesHeader.locator('select').selectOption('date_published');
+
+        const orderAfterSorting = await page.locator('[data-cy="submissions"] [data-cy="row"] [data-cy="cell"]:first-child').allTextContents();
+
+        await page.reload();
+
+        await expect(page.locator('[data-cy="submissions"] [data-cy="row"]').first()).toBeVisible();
+
+        await expect(datesHeader.locator('button[title="Toggle SortBy"]')).toHaveClass(/text-blue-500/);
+
+        await expect(datesHeader.locator('select')).toHaveValue('date_published');
+
+        expect(await page.locator('[data-cy="submissions"] [data-cy="row"] [data-cy="cell"]:first-child').allTextContents()).toEqual(orderAfterSorting);
+
+        // Leaving and coming back keeps it too.
+        await page.goto('/');
+
+        await page.goto(url);
+
+        await expect(page.locator('[data-cy="submissions"] [data-cy="row"]').first()).toBeVisible();
+
+        await expect(datesHeader.locator('button[title="Toggle SortBy"]')).toHaveClass(/text-blue-500/);
+
+        await expect(datesHeader.locator('select')).toHaveValue('date_published');
     });
 
     test('Rejects a submission', async ({ page, login }) => {
@@ -654,9 +716,11 @@ test.describe('Submitted reports', () => {
         await expect(page.locator('.pagination [aria-current="page"] button')).toHaveText('2');
     });
 
-    test('Should display "No reports found" if no quick adds are found', async ({ page }) => {
+    test('Should display "No reports found" if no quick adds are found', async ({ page, login }) => {
 
         await init({ aiidprod: { quickadds: [] } }, { drop: true });
+
+        await login();
 
         await page.goto(url);
 

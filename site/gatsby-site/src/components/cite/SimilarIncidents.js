@@ -1,11 +1,11 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState } from 'react';
 import { formatISO, format, parse } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFlag, faQuestionCircle, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { Image } from '../../utils/cloudinary';
 import { fill } from '@cloudinary/base/actions/resize';
-import { useMutation, useQuery } from '@apollo/client/react/hooks';
-import { FIND_FULL_INCIDENT, FLAG_INCIDENT_SIMILARITY } from '../../graphql/incidents';
+import { useMutation } from '@apollo/client/react/hooks';
+import { FLAG_INCIDENT_SIMILARITY } from '../../graphql/incidents';
 import md5 from 'md5';
 import { useUserContext } from 'contexts/UserContext';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
@@ -13,17 +13,16 @@ import Button from '../../elements/Button';
 import { useLocalization, LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import Link from 'components/ui/Link';
+import useApiAccess from 'hooks/useApiAccess';
 
 const blogPostUrl = '/blog/using-ai-to-connect-ai-incidents';
 
 const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncident }) => {
-  const [incidentTitle, setIncidentTitle] = useState(incident.title);
-
   const parsedDate = incident.date ? parse(incident.date, 'yyyy-MM-dd', new Date()) : null;
 
-  const { isRole, user } = useUserContext();
+  const { isRole } = useUserContext();
 
-  const { config: availableLanguages, locale: language } = useLocalization();
+  const { locale: language } = useLocalization();
 
   const { t } = useTranslation();
 
@@ -31,32 +30,21 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
 
   const [flagSimilarity] = useMutation(FLAG_INCIDENT_SIMILARITY);
 
-  const { data: parentIncidentData } = useQuery(FIND_FULL_INCIDENT, {
-    variables: {
-      filter: { incident_id: { EQ: parentIncident.incident_id } },
-      translationLanguages: availableLanguages.filter((c) => c.code !== 'en').map((c) => c.code), // Exclude English since it's the default language
-    },
-  });
+  // Flagging writes through the API, which requires a login (SEE:
+  // server/apiAccess.ts); the control is withheld from a logged-out reader rather
+  // than offered and refused.
+  const { hasApiAccess } = useApiAccess();
 
-  const { data: incidentData } = useQuery(FIND_FULL_INCIDENT, {
-    variables: {
-      filter: { incident_id: { EQ: incident.incident_id } },
-      translationLanguages: availableLanguages.filter((c) => c.code !== 'en').map((c) => c.code), // Exclude English since it's the default language
-    },
-  });
+  // The translated title comes with the page's build-time data
+  // (SEE: page-creators/createCitationPages.js). This card used to fetch it — and
+  // the parent incident — through the API on every mount, which on a busy incident
+  // page meant one or two requests per card for every reader; neither is needed to
+  // render the card or to flag it.
+  const incidentTitle =
+    incident.translations?.find((translation) => translation.language === language)?.title ||
+    incident.title;
 
   const addToast = useToastContext();
-
-  useEffect(() => {
-    if (incidentData?.incident) {
-      // set translated incident
-      const translation = incidentData?.incident?.translations.find((t) => t.language === language);
-
-      if (translation && translation.title && translation.description) {
-        setIncidentTitle(translation.title);
-      }
-    }
-  }, [incidentData]);
 
   const flagIncident = useCallback(async () => {
     const flagged_dissimilar_incidents = isFlagged
@@ -65,13 +53,8 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
           ?.filter((e) => e != incident.incident_id)
           .concat([incident.incident_id]);
 
-    const editors = parentIncidentData.incident.editors.map((e) => e.userId);
-
-    // Add the current user to the list of editors
-    if (user && user.providerType != 'anon-user' && !editors.includes(user.id)) {
-      editors.push(user.id);
-    }
-
+    // The server adds the flagging user to the incident's editors itself.
+    // SEE: server/fields/incidents.ts `flagIncidentSimilarity`
     await flagSimilarity({
       variables: {
         incidentId: parentIncident.incident_id,
@@ -88,7 +71,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
       severity: SEVERITY.success,
     });
     setFlagged(!isFlagged);
-  }, [parentIncidentData]);
+  }, [isFlagged, parentIncident, incident.incident_id]);
 
   return (
     <div
@@ -132,7 +115,7 @@ const SimilarIncidentCard = ({ incident, flaggable = true, flagged, parentIncide
         </div>
         <div className="inline-block ml-auto mr-auto" />
 
-        {flaggable && parentIncidentData && (
+        {flaggable && hasApiAccess && (
           <Button
             variant="link"
             className={`p-0 hover:text-gray-500 ${

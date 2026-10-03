@@ -16,12 +16,20 @@ import { Trans, useTranslation } from 'react-i18next';
 import CustomButton from '../../elements/Button';
 import { Modal } from 'flowbite-react';
 import useLocalizePath from 'components/i18n/useLocalizePath';
+import ApiLoginRequired from 'components/ui/ApiLoginRequired';
+import useApiAccess from 'hooks/useApiAccess';
 
 function FlagModalContent({ reportNumber }) {
+  const { hasApiAccess } = useApiAccess();
+
+  // Skipped without API access so the button below resolves to the login notice
+  // rather than a spinner waiting on a request that will be refused.
+  // SEE: server/apiAccess.ts
   const { data } = useQuery(FIND_REPORT, {
     variables: {
       filter: { report_number: { EQ: reportNumber } },
     },
+    skip: !hasApiAccess,
   });
 
   const [flagReportMutation, { loading }] = useMutation(FLAG_REPORT);
@@ -44,7 +52,9 @@ function FlagModalContent({ reportNumber }) {
       <div dangerouslySetInnerHTML={{ __html: t('flagReport', { ns: 'actions' }) }} />
 
       <div className="flex justify-center w-full pt-6">
-        {!report ? (
+        {!hasApiAccess ? (
+          <ApiLoginRequired />
+        ) : !report ? (
           <Spinner />
         ) : report.flag ? (
           <Button color="warning" disabled data-cy="flag-toggle">
@@ -154,7 +164,17 @@ export default function Actions({ item, toggleFilterByIncidentId = null }) {
           <Trans>Flag Report</Trans>
         </Modal.Header>
         <Modal.Body>
-          <FlagModalContent reportNumber={item.report_number} />
+          {/*
+            Mounted only while the modal is open. Flowbite renders modal children
+            even when `show` is false, so this component — and the report query it
+            issues — used to be instantiated once per search hit: roughly 28 API
+            requests per page of results, none of which a visitor asked for. That
+            was invisible when reads were anonymous; now every one of them is
+            attributed to the caller's account, so it would inflate the usage
+            figures the per-account counters exist to report.
+            SEE: server/apiUsage.ts
+          */}
+          {showFlag && <FlagModalContent reportNumber={item.report_number} />}
         </Modal.Body>
       </Modal>
 

@@ -8,6 +8,8 @@ import { DELETE_SUBSCRIPTIONS } from '../graphql/subscriptions';
 import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
+import ApiLoginRequired from 'components/ui/ApiLoginRequired';
+import useApiAccess from 'hooks/useApiAccess';
 
 const Unsubscribe = () => {
   const [unsubscribing, setUnsubscribing] = useState(false);
@@ -19,6 +21,13 @@ const Unsubscribe = () => {
   const addToast = useToastContext();
 
   const [DeleteSubscriptions] = useMutation(DELETE_SUBSCRIPTIONS);
+
+  // Deleting a subscription is a write through the API, which requires a login
+  // (SEE: server/apiAccess.ts) and, server-side, that the caller owns the
+  // subscription. Someone arriving from an email link is often logged out, so the
+  // reason is shown in place of the confirm button; the login link brings them
+  // back here with the same parameters.
+  const { hasApiAccess, loading: apiAccessLoading } = useApiAccess();
 
   const [{ type: subscriptionType, incidentId, userId }] = useQueryParams({
     type: StringParam,
@@ -110,12 +119,16 @@ const Unsubscribe = () => {
                       <Trans>Do you want to unsubscribe from all notifications?</Trans>
                     )}
                   </p>
-                  <Button variant="primary" onClick={unsubscribe}>
-                    <div className="flex gap-2">
-                      {unsubscribing && <Spinner size="sm" />}
-                      <Trans>Confirm</Trans>
-                    </div>
-                  </Button>
+                  {!apiAccessLoading && !hasApiAccess ? (
+                    <ApiLoginRequired />
+                  ) : (
+                    <Button variant="primary" onClick={unsubscribe}>
+                      <div className="flex gap-2">
+                        {unsubscribing && <Spinner size="sm" />}
+                        <Trans>Confirm</Trans>
+                      </div>
+                    </Button>
+                  )}
                 </>
               )}
             </>

@@ -19,8 +19,12 @@ import CardSkeleton from 'elements/Skeletons/Card';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import useLocalizePath from 'components/i18n/useLocalizePath';
 import useToast, { SEVERITY } from '../../hooks/useToast';
+import ApiLoginRequired from 'components/ui/ApiLoginRequired';
+import useApiAccess from 'hooks/useApiAccess';
 
 export default function NewsSearchPage() {
+  const { hasApiAccess, loading: apiAccessLoading } = useApiAccess();
+
   const { t } = useTranslation(['submit']);
 
   const { isRole } = useUserContext();
@@ -44,6 +48,7 @@ export default function NewsSearchPage() {
       }
     `,
     {
+      skip: !hasApiAccess,
       variables: {
         filter: {
           match: { EQ: true },
@@ -72,6 +77,7 @@ export default function NewsSearchPage() {
       }
     `,
     {
+      skip: !hasApiAccess,
       variables: {
         filter: {
           url: {
@@ -92,6 +98,7 @@ export default function NewsSearchPage() {
       }
     `,
     {
+      skip: !hasApiAccess,
       variables: {
         filter: {
           url: {
@@ -174,6 +181,13 @@ export default function NewsSearchPage() {
   );
 
   const title = t('Related News Digest');
+
+  // Every read on this page goes through the API, which requires a login
+  // (SEE: server/apiAccess.ts), so a logged-out visitor is given the reason
+  // instead of an empty page.
+  if (!apiAccessLoading && !hasApiAccess) {
+    return <ApiLoginRequired />;
+  }
 
   return (
     <>

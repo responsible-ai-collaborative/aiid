@@ -12,6 +12,8 @@ import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import Row from 'elements/Row';
 import Col from 'elements/Col';
 import { Spinner } from 'flowbite-react';
+import ApiLoginRequired from 'components/ui/ApiLoginRequired';
+import useApiAccess from 'hooks/useApiAccess';
 
 // set in form //
 // * url: "https://blogs.wsj.com/digits/2015/05/19/googles-youtube-kids-app-criti" # The fully qualified URL to the report as hosted on the web.
@@ -34,6 +36,8 @@ const QuickAddForm = ({ className = '' }) => {
   const { t } = useTranslation(['translation', 'submit']);
 
   const addToast = useToastContext();
+
+  const { hasApiAccess, loading: apiAccessLoading } = useApiAccess();
 
   const [insertQuickAdd] = useMutation(INSERT_QUICKADD);
 
@@ -81,67 +85,79 @@ const QuickAddForm = ({ className = '' }) => {
       <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
         <Trans ns="submit">Add Report Address Without the Full Details</Trans>
       </h5>
-      <form onSubmit={handleSubmit} className={className} data-cy="quick-add">
-        <div className="relative">
-          <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-            <svg
-              aria-hidden="true"
-              className="w-5 h-5 text-gray-500 dark:text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              ></path>
-            </svg>
-          </div>
-          <input
-            type="text"
-            name="quickAddUrl"
-            placeholder={t('Report URL')}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            value={values.quickAddUrl}
-            className={`block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${
-              errors.quickAddUrl ? 'is-invalid' : ''
-            }`}
-          />
-
-          <button
-            type="submit"
-            className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex disabled:opacity-50 z-10"
-            disabled={isSubmitting || !!errors.quickAddUrl}
-          >
-            {isSubmitting ? (
-              <>
-                <Spinner size="sm" />
-                <div className="ml-2">
-                  <Trans>Submitting...</Trans>
-                </div>
-              </>
-            ) : (
-              <Trans>Submit</Trans>
-            )}
-          </button>
-        </div>
-        <p className="mt-2 text-sm text-red-600 dark:text-red-500">{errors.quickAddUrl}</p>
-        <Row className="mt-2">
-          <Col>
-            <div className="text-muted-gray text-xs leading-5">
-              <Trans i18nKey="quickaddDescription" ns="submit">
-                Submitted links are added to a{' '}
-                <LocalizedLink to="/apps/submitted">review queue </LocalizedLink>
-                to be resolved to a new or existing incident record.
-              </Trans>
+      {/*
+        A quick add is a write through the API, which requires a login
+        (SEE: server/apiAccess.ts). The heading stays so the visitor can see what
+        this box is for, and the notice explains why the field itself is absent
+        rather than offering a submit button that would fail. The form is kept
+        while the session is still resolving so a logged-in visitor does not see
+        the notice flash on a page that was rendered at build time.
+      */}
+      {!apiAccessLoading && !hasApiAccess ? (
+        <ApiLoginRequired className={`mt-3 ${className}`} />
+      ) : (
+        <form onSubmit={handleSubmit} className={className} data-cy="quick-add">
+          <div className="relative">
+            <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+              <svg
+                aria-hidden="true"
+                className="w-5 h-5 text-gray-500 dark:text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                ></path>
+              </svg>
             </div>
-          </Col>
-        </Row>
-      </form>
+            <input
+              type="text"
+              name="quickAddUrl"
+              placeholder={t('Report URL')}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              value={values.quickAddUrl}
+              className={`block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${
+                errors.quickAddUrl ? 'is-invalid' : ''
+              }`}
+            />
+
+            <button
+              type="submit"
+              className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex disabled:opacity-50 z-10"
+              disabled={isSubmitting || !!errors.quickAddUrl}
+            >
+              {isSubmitting ? (
+                <>
+                  <Spinner size="sm" />
+                  <div className="ml-2">
+                    <Trans>Submitting...</Trans>
+                  </div>
+                </>
+              ) : (
+                <Trans>Submit</Trans>
+              )}
+            </button>
+          </div>
+          <p className="mt-2 text-sm text-red-600 dark:text-red-500">{errors.quickAddUrl}</p>
+          <Row className="mt-2">
+            <Col>
+              <div className="text-muted-gray text-xs leading-5">
+                <Trans i18nKey="quickaddDescription" ns="submit">
+                  Submitted links are added to a{' '}
+                  <LocalizedLink to="/apps/submitted">review queue </LocalizedLink>
+                  to be resolved to a new or existing incident record.
+                </Trans>
+              </div>
+            </Col>
+          </Row>
+        </form>
+      )}
     </div>
   );
 };

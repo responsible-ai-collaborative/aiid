@@ -6,6 +6,8 @@ import config from '../config';
 import supertest from 'supertest';
 import * as context from '../context';
 import { User } from "../generated/graphql";
+import { apiUsagePlugin } from "../apiUsage";
+import { clearApiAccessCache } from "../apiAccess";
 
 export const getClient = () => {
 
@@ -16,11 +18,15 @@ export const getClient = () => {
 
 export const startTestServer = async () => {
 
+    const client = getClient();
+
     const server = new ApolloServer({
         schema,
+        // Mirrors the plugin list of the Netlify lambda so usage accounting is
+        // covered by the same tests that cover the fields it counts.
+        // SEE: netlify/functions/graphql.ts
+        plugins: [apiUsagePlugin(client)],
     });
-
-    const client = getClient();
 
     const { url } = await startStandaloneServer(server, { context: ({ req }) => context.context({ req, client }), listen: { port: 0 } });
 
@@ -166,12 +172,28 @@ export const mockSession = (userId: string) => {
     const db = client.db('customData');
     const collection = db.collection('users');
 
+    // The API access gate caches each account's blocked flag for a few seconds
+    // (SEE: server/apiAccess.ts). Tests seed and re-seed that flag far faster
+    // than the TTL, so the cache is dropped whenever the acting user changes.
+    clearApiAccessCache();
+
     jest.spyOn(context, 'verifyToken').mockImplementation(async () => {
 
         const user = await collection.findOne<{ userId: string, roles: string[] }>({ userId: userId });
 
         return user ? { id: user.userId, roles: user.roles } : null;
     })
+}
+
+/**
+ * Simulates a request with no session, so the API access gate rejects it.
+ * SEE: server/apiAccess.ts
+ */
+export const mockAnonymousSession = () => {
+
+    clearApiAccessCache();
+
+    jest.spyOn(context, 'verifyToken').mockImplementation(async () => null);
 }
 
 export const getCollection = (databaseName: string, collectionName: string) => {

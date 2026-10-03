@@ -1,5 +1,5 @@
 import parseNews from '../fixtures/api/parseNews.json';
-import { conditionalIntercept, waitForRequest, setEditorText, test, trackRequest, query, fillAutoComplete } from '../utils';
+import { conditionalIntercept, waitForRequest, setEditorText, test, trackRequest, query, fillAutoComplete, testUser } from '../utils';
 import { expect } from '@playwright/test';
 import { init } from '../memory-mongo';
 import gql from 'graphql-tag';
@@ -10,8 +10,18 @@ test.describe('The Submit form', () => {
     const url = '/apps/submit';
     const parserURL = '/api/parseNews**';
 
-    // Listen for the dialog and handle it
-    test.beforeEach(async ({ page }) => {
+    // Submitting is a write through the API, which requires a login
+    // (SEE: server/apiAccess.ts): a logged-out visitor is shown the reason in
+    // place of the form, which `e2e/apiAccess.spec.ts` covers. Every test here
+    // exercises the form itself, so each starts from a logged-in session.
+    test.beforeEach(async ({ page, login }) => {
+        // Logged in as a plain account without a display name: the form pre-fills
+        // and locks the submitters field from the account's name and shows extra
+        // fields to editors, and these tests describe the ordinary submitter's form.
+        // The fixture restores the seeded record after each test.
+        await login({ customData: { first_name: '', last_name: '', roles: ['subscriber'] } });
+
+        // Listen for the dialog and handle it
         page.once('dialog', async dialog => {
             const dialogMessage = dialog.message();
             if (dialogMessage.includes('Please confirm you are ready to submit this report. Report details cannot be changed after submission.') || dialogMessage.includes('Por favor confirma que estás listo para enviar este informe. Los detalles del informe no se pueden cambiar después de la presentación.') || dialogMessage.includes('Veuillez confirmer que vous êtes prêt à soumettre ce rapport. Les détails du rapport ne peuvent pas être modifiés après la soumission.') || dialogMessage.includes('このレポートを送信する準備ができていることを確認してください。送信後にレポートの詳細を変更することはできません')) {
@@ -161,7 +171,9 @@ test.describe('The Submit form', () => {
 
         await init();
 
-        await login();
+        // The editor-only fields are under test here, so the seeded admin roles are
+        // restored for this account (the shared beforeEach logs in as a subscriber).
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['admin'] } });
 
         await conditionalIntercept(
             page,
@@ -897,6 +909,79 @@ test.describe('The Submit form', () => {
         await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
     });
 
+    test('Should accept a long list of authors and reject a single over-long name', async ({ page }) => {
+
+        // The authors field used to be validated as one comma-joined string capped at
+        // 200 characters, which rejected reports with many named authors. The bound
+        // now applies to each author. SEE: #4045
+
+        await conditionalIntercept(
+            page,
+            '**/parseNews**',
+            () => true,
+            parseNews,
+            'parseNews',
+        );
+
+        await trackRequest(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindSubmissions',
+            'findSubmissions'
+        );
+
+        await page.goto(url);
+
+        await waitForRequest('findSubmissions');
+
+        await page.locator('input[name="url"]').fill(
+            `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+        );
+
+        await page.locator('[data-cy="fetch-info"]').click();
+
+        await waitForRequest('parseNews');
+
+        // A list whose total length is well past 200 characters is accepted.
+        const authors = Array.from({ length: 12 }, (_, index) => `Author Number ${index + 1} With A Rather Long Name`);
+
+        expect(authors.join(',').length).toBeGreaterThan(200);
+
+        // The tags control splits the pasted text on commas.
+        await page.locator('input[name="authors"]').fill(authors.join(','));
+        await page.locator('input[name="authors"]').press('Enter');
+
+        await expect(page.getByText("*Each author can't be longer than 200 characters")).not.toBeVisible();
+
+        await page.locator('[name="incident_date"]').fill('2020-01-01');
+
+        await page.locator('[data-cy="submit-step-1"]').click();
+
+        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
+
+        const { data } = await query({
+            query: gql`
+                query {
+                    submission(sort: { _id: DESC }) {
+                        authors
+                    }
+                }
+            `,
+        });
+
+        expect(data.submission.authors).toEqual(expect.arrayContaining(authors));
+
+        // A single name longer than the per-author bound is still refused.
+        await page.goto(url);
+
+        await waitForRequest('findSubmissions');
+
+        await page.locator('input[name="authors"]').fill('A'.repeat(201));
+        await page.locator('input[name="authors"]').press('Enter');
+
+        await expect(page.getByText("*Each author can't be longer than 200 characters")).toBeVisible();
+    });
+
     test('Should submit on step 2', async ({ page }) => {
 
         await conditionalIntercept(
@@ -1305,7 +1390,9 @@ test.describe('The Submit form', () => {
             incident_ids: [
                 1,
             ],
-            user: null,
+            // Every submission is now made from a session (SEE: server/apiAccess.ts), so
+            // it is linked to the account that made it.
+            user: { userId: testUser.userId },
         });
     });
 
@@ -1726,8 +1813,14 @@ test.describe('The Submit form', () => {
         await expect(page.locator(':text("Please review. Some data is missing.")')).not.toBeVisible();
     });
 
-    test('Should set submitters to Anonymous if they are not provided', async ({ page }) => {
+    test('Should set submitters to Anonymous if they are not provided', async ({ page, login }) => {
       await init();
+
+      // The form pre-fills `submitters` from the account's name, so the case
+      // under test — a submission with no submitter given — needs an account
+      // that has none. `init()` above restored the seeded names, hence the
+      // second login.
+      await login({ customData: { first_name: '', last_name: '' } });
 
       await conditionalIntercept(
         page,

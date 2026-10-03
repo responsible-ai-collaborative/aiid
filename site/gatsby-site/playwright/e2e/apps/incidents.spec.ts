@@ -68,7 +68,11 @@ test.describe('Incidents App', () => {
     });
   });
 
-  test('Entities should link to entities page', async ({ page }) => {
+  test('Entities should link to entities page', async ({ page, login }) => {
+
+    // Uses the live-data toggle, which is disabled for a logged-out visitor
+    // because live data is read through the API. SEE: server/apiAccess.ts
+    await login();
 
     await init();
     await page.goto(url);
@@ -188,7 +192,7 @@ test.describe('Incidents App', () => {
     });
   });
 
-  test('Should display a list of live incidents', async ({ page }) => {
+  test('Should display a list of live incidents', async ({ page, login }) => {
 
     await init({
       aiidprod: {
@@ -197,6 +201,13 @@ test.describe('Incidents App', () => {
         ]
       }
     });
+
+    // Live data is read through the API, so the toggle is disabled for a
+    // logged-out visitor (SEE: src/components/incidents/IncidentsTable.js). A
+    // subscriber is used because an editor gets an extra actions column, and the
+    // cell count below describes the public columns. Logged in after `init()`,
+    // which re-seeds the users collection.
+    await login({ customData: { roles: ['subscriber'] } });
 
     const { data: { incidents } } = await query({
       query: gql`{
@@ -261,9 +272,13 @@ test.describe('Incidents App', () => {
     await page.goto(url);
 
     await page.waitForSelector('[data-cy="table-view"] button:has-text("Issue Reports")');
-    await page.locator('[data-cy="table-view"] button:has-text("Issue Reports")').click();
 
-    await expect(page).toHaveURL(/view=issueReports/);
+    // The button is in the static HTML before React attaches its handler; under load a
+    // click can land before hydration and do nothing, so retry until the view changes.
+    await expect(async () => {
+      await page.locator('[data-cy="table-view"] button:has-text("Issue Reports")').click();
+      await expect(page).toHaveURL(/view=issueReports/, { timeout: 3000 });
+    }).toPass({ timeout: 30000 });
     await expect(page.locator('[data-cy="row"]')).toHaveCount(2);
 
     const firstRowLink = await page.locator('[data-cy="row"] td a').first().getAttribute('href');

@@ -590,6 +590,23 @@
   "Sign Up": "サインアップ",
   "See in OECD AIM": "OECD AIMで表示",
   "The OECD AI Incidents and Hazards Monitor (AIM) automatically collects and classifies AI-related incidents and hazards in real time from reputable news sources worldwide.": "OECD AIインシデントおよびハザードモニター（AIM）は、世界中の信頼できるニュースソースからリアルタイムでAI関連のインシデントやハザードを自動的に収集・分類します。",
-  "Image could not be loaded. The URL may be invalid, or the image host may block external access. Using fallback image.": "画像を読み込めませんでした。URLが無効か、画像ホストが外部アクセスをブロックしている可能性があります。フォールバック画像を使用しています。"
-
+  "Image could not be loaded. The URL may be invalid, or the image host may block external access. Using fallback image.": "画像を読み込めませんでした。URLが無効か、画像ホストが外部アクセスをブロックしている可能性があります。フォールバック画像を使用しています。",
+  "To mitigate a very high load of bot traffic, this functionality requires that you log in to the database.": "ボットによる非常に高い負荷を軽減するため、この機能を利用するにはデータベースへのログインが必要です。",
+  "API access for this account has been blocked. If you believe this is a mistake, please contact the AI Incident Database team.": "このアカウントのAPIアクセスはブロックされています。誤りだと思われる場合は、AI Incident Databaseチームにお問い合わせください。",
+  "Log in": "ログイン",
+  "API usage": "API利用状況",
+  "No API requests recorded for this account.": "このアカウントのAPIリクエストは記録されていません。",
+  "Requests": "リクエスト数",
+  "Refused": "拒否",
+  "API usage window": "API利用の集計期間",
+  "Last {{days}} days": "過去{{days}}日間",
+  "Account ID": "アカウントID",
+  "Copied": "コピーしました",
+  "Could not copy to the clipboard": "クリップボードにコピーできませんでした",
+  "Active days": "利用日数",
+  "Requests with errors": "エラーのあったリクエスト",
+  "Refused while blocked": "ブロック中に拒否されたリクエスト",
+  "First request": "最初のリクエスト",
+  "Last request": "最後のリクエスト",
+  "Could not load taxonomies": "分類法を読み込めませんでした"
 }

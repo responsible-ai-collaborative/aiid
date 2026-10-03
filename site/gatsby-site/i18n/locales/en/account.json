@@ -1,4 +1,10 @@
 {
     "completeInfoAlertTitle": "Managing User Identity in Incident Reporting",
-    "completeInfoAlertMessage": "When you make edits or submit new incidents those actions will be associated with your user account and the name you enter here. If you would like to remain anonymous at any point you can open the website in an anonymous browser session"
+    "completeInfoAlertMessage": "When you make edits or submit new incidents those actions will be associated with your user account and the name you enter here. If you would like to remain anonymous at any point you can open the website in an anonymous browser session",
+  "apiTokenIntro": "This token identifies your account to the API in place of the browser session: send it in the Authorization header as a Bearer token. Treat it like a password.",
+  "apiTokenMissing": "No token has been generated yet.",
+  "regenerateApiTokenConfirm": "Regenerate the token? The current token stops working immediately.",
+  "apiTokenRegenerated": "New API token generated.",
+  "apiTokenRegenerateError": "Could not regenerate the API token.",
+  "apiTokenUsage": "Requests received with this token: {{count}}. Last used: {{last}}."
 }
