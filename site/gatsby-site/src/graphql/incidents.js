@@ -161,6 +161,18 @@ export const FIND_INCIDENTS_TITLE = gql(`
   }
 `);
 
+/** Which incidents a set of reports already belong to. SEE: components/incidents/ReportsField.js */
+export const FIND_INCIDENTS_BY_REPORTS = gql(`
+  query FindIncidentsByReports($filter: IncidentFilterType) {
+    incidents(filter: $filter) {
+      incident_id
+      reports {
+        report_number
+      }
+    }
+  }
+`);
+
 export const UPDATE_INCIDENT = gql(`
   mutation UpdateIncident($filter: IncidentFilterType!, $update: IncidentUpdateType!) {
     updateOneIncident(filter: $filter, update: $update) {
