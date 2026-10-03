@@ -191,6 +191,89 @@ export async function mergeEntities(
     await entitiesCollection.deleteOne({ entity_id: secondaryIdToDelete });
 }
 
+export interface DeleteEntitySummary {
+    entity_id: string;
+    incidents_updated: number;
+    submissions_updated: number;
+    relationships_deleted: number;
+    subscriptions_deleted: number;
+}
+
+/**
+ * Deletes an entity outright and removes every reference to it. SEE: #4036
+ *
+ * Merging (above) is for a duplicate that should become another entity; deleting
+ * is for a tag that should not exist at all — a mistaken or meaningless entity.
+ * The same places `mergeEntities` rewrites are cleared here instead: the
+ * incidents' and submissions' entity arrays lose the id, its relationships and
+ * the subscriptions to it are removed, and duplicate records pointing at it are
+ * dropped so no mapping is left dangling. Nothing is written to
+ * `entity_duplicates`: there is no surviving entity to map to.
+ */
+export async function deleteEntity(entityId: string, client: MongoClient): Promise<DeleteEntitySummary> {
+
+    const db: Db = client.db('aiidprod');
+    const entitiesCollection: Collection = db.collection('entities');
+
+    const entity = await entitiesCollection.findOne({ entity_id: entityId });
+
+    if (!entity) {
+        throw new Error(`Entity not found: ${entityId}`);
+    }
+
+    const arrayReferences: { name: string, fields: string[] }[] = [
+        {
+            name: 'incidents',
+            fields: [
+                'Alleged deployer of AI system',
+                'Alleged developer of AI system',
+                'Alleged harmed or nearly harmed parties',
+                'implicated_systems',
+            ],
+        },
+        {
+            name: 'submissions',
+            fields: ['developers', 'deployers', 'harmed_parties', 'implicated_systems'],
+        },
+    ];
+
+    const updated: Record<string, number> = {};
+
+    for (const { name, fields } of arrayReferences) {
+
+        // Counted per document, not per field: one incident naming the entity as
+        // both developer and deployer is one incident updated.
+        const touched = await db.collection(name)
+            .find({ $or: fields.map((field) => ({ [field]: entityId })) }, { projection: { _id: 1 } })
+            .toArray();
+
+        for (const field of fields) {
+            await db.collection(name).updateMany({ [field]: entityId }, { $pull: { [field]: entityId } } as any);
+        }
+
+        updated[name] = touched.length;
+    }
+
+    const relationships = await db.collection('entity_relationships')
+        .deleteMany({ $or: [{ sub: entityId }, { obj: entityId }] });
+
+    const subscriptions = await client.db('customData').collection('subscriptions')
+        .deleteMany({ type: 'entity', entityId });
+
+    await db.collection('entity_duplicates')
+        .deleteMany({ $or: [{ duplicate_entity_id: entityId }, { true_entity_id: entityId }] });
+
+    await entitiesCollection.deleteOne({ entity_id: entityId });
+
+    return {
+        entity_id: entityId,
+        incidents_updated: updated.incidents ?? 0,
+        submissions_updated: updated.submissions ?? 0,
+        relationships_deleted: relationships.deletedCount ?? 0,
+        subscriptions_deleted: subscriptions.deletedCount ?? 0,
+    };
+}
+
 export interface SimilarEntityPair {
   entityId1: string;
   entityName1: string;

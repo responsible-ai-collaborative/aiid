@@ -28,6 +28,7 @@ type Documents = {
     "\n  query FindEntities {\n    entities {\n      entity_id\n      name\n    }\n  }\n": typeof types.FindEntitiesDocument,
     "\n  query FindEntity($filter: EntityFilterType) {\n    entity(filter: $filter) {\n      entity_id\n      name\n      created_at\n      date_modified\n    }\n  }\n": typeof types.FindEntityDocument,
     "\n  mutation UpdateEntity($input: UpdateOneEntityInput!) {\n    updateEntityAndRelationships(input: $input) {\n      entity_id\n    }\n  }\n": typeof types.UpdateEntityDocument,
+    "\n  mutation DeleteEntity($entityId: String!) {\n    deleteEntity(entityId: $entityId) {\n      entity_id\n      incidents_updated\n      submissions_updated\n      relationships_deleted\n      subscriptions_deleted\n    }\n  }\n": typeof types.DeleteEntityDocument,
     "\n  mutation MergeEntities($primaryId: String!, $secondaryId: String!, $keepEntity: Int!) {\n    mergeEntities(primaryId: $primaryId, secondaryId: $secondaryId, keepEntity: $keepEntity){\n      entity_id\n      name\n    }\n  }\n": typeof types.MergeEntitiesDocument,
     "\n  query SimilarEntities($threshold: Int!, $offset: Int!, $limit: Int!) {\n    similarEntities(threshold: $threshold, offset: $offset, limit: $limit) {\n      pairs {\n        entityId1\n        entityName1\n        entityId2\n        entityName2\n        similarity\n      }\n      hasMore\n    }\n  }\n": typeof types.SimilarEntitiesDocument,
     "\n  query FindEntity_relationships($filter: Entity_relationshipFilterType) {\n    entity_relationships(filter: $filter) {\n      _id\n      created_at\n      pred\n      sub {\n        entity_id\n        name\n      }\n      obj {\n        entity_id\n        name\n      }\n      is_symmetric\n    }\n  }\n": typeof types.FindEntity_RelationshipsDocument,
@@ -99,6 +100,7 @@ const documents: Documents = {
     "\n  query FindEntities {\n    entities {\n      entity_id\n      name\n    }\n  }\n": types.FindEntitiesDocument,
     "\n  query FindEntity($filter: EntityFilterType) {\n    entity(filter: $filter) {\n      entity_id\n      name\n      created_at\n      date_modified\n    }\n  }\n": types.FindEntityDocument,
     "\n  mutation UpdateEntity($input: UpdateOneEntityInput!) {\n    updateEntityAndRelationships(input: $input) {\n      entity_id\n    }\n  }\n": types.UpdateEntityDocument,
+    "\n  mutation DeleteEntity($entityId: String!) {\n    deleteEntity(entityId: $entityId) {\n      entity_id\n      incidents_updated\n      submissions_updated\n      relationships_deleted\n      subscriptions_deleted\n    }\n  }\n": types.DeleteEntityDocument,
     "\n  mutation MergeEntities($primaryId: String!, $secondaryId: String!, $keepEntity: Int!) {\n    mergeEntities(primaryId: $primaryId, secondaryId: $secondaryId, keepEntity: $keepEntity){\n      entity_id\n      name\n    }\n  }\n": types.MergeEntitiesDocument,
     "\n  query SimilarEntities($threshold: Int!, $offset: Int!, $limit: Int!) {\n    similarEntities(threshold: $threshold, offset: $offset, limit: $limit) {\n      pairs {\n        entityId1\n        entityName1\n        entityId2\n        entityName2\n        similarity\n      }\n      hasMore\n    }\n  }\n": types.SimilarEntitiesDocument,
     "\n  query FindEntity_relationships($filter: Entity_relationshipFilterType) {\n    entity_relationships(filter: $filter) {\n      _id\n      created_at\n      pred\n      sub {\n        entity_id\n        name\n      }\n      obj {\n        entity_id\n        name\n      }\n      is_symmetric\n    }\n  }\n": types.FindEntity_RelationshipsDocument,
@@ -226,6 +228,10 @@ export function gql(source: "\n  query FindEntity($filter: EntityFilterType) {\n
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation UpdateEntity($input: UpdateOneEntityInput!) {\n    updateEntityAndRelationships(input: $input) {\n      entity_id\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateEntity($input: UpdateOneEntityInput!) {\n    updateEntityAndRelationships(input: $input) {\n      entity_id\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation DeleteEntity($entityId: String!) {\n    deleteEntity(entityId: $entityId) {\n      entity_id\n      incidents_updated\n      submissions_updated\n      relationships_deleted\n      subscriptions_deleted\n    }\n  }\n"): (typeof documents)["\n  mutation DeleteEntity($entityId: String!) {\n    deleteEntity(entityId: $entityId) {\n      entity_id\n      incidents_updated\n      submissions_updated\n      relationships_deleted\n      subscriptions_deleted\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

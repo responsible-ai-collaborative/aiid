@@ -104,6 +104,71 @@ test.describe('Edit Entity', () => {
     }
   );
 
+  test('Should delete an Entity and remove it from the incidents that referred to it', async ({ page, login, skipOnEmptyEnvironment }) => {
+
+    // Deleting is for a tag that should not exist at all, as opposed to merging a
+    // duplicate. SEE: #4036
+
+    await init();
+
+    await login();
+
+    const before = await query({
+      query: gql`{
+        incidents(filter: { incident_id: { IN: [1, 2, 3, 4] } }) {
+          incident_id
+          AllegedDeployerOfAISystem { entity_id }
+          AllegedDeveloperOfAISystem { entity_id }
+          AllegedHarmedOrNearlyHarmedParties { entity_id }
+          implicated_systems { entity_id }
+        }
+      }`,
+    });
+
+    const refersTo = (incident) =>
+      [
+        ...incident.AllegedDeployerOfAISystem,
+        ...incident.AllegedDeveloperOfAISystem,
+        ...incident.AllegedHarmedOrNearlyHarmedParties,
+        ...incident.implicated_systems,
+      ].some((e) => e.entity_id === entity_id);
+
+    const referencingBefore = before.data.incidents.filter(refersTo).map((i) => i.incident_id);
+
+    expect(referencingBefore.length).toBeGreaterThan(0);
+
+    await page.goto(url);
+
+    await expect(page.locator('[data-cy="delete-entity-btn"]')).toBeVisible();
+
+    page.once('dialog', (dialog) => dialog.accept());
+
+    await page.locator('[data-cy="delete-entity-btn"]').click();
+
+    await expect(page.locator('[data-cy="toast"]').first()).toContainText(
+      `Removed from ${referencingBefore.length} incident(s)`
+    );
+
+    await page.waitForURL('**/entities/');
+
+    const { data } = await query({
+      query: gql`{
+        entity(filter: { entity_id: { EQ: "${entity_id}" } }) { entity_id }
+        incidents(filter: { incident_id: { IN: [1, 2, 3, 4] } }) {
+          incident_id
+          AllegedDeployerOfAISystem { entity_id }
+          AllegedDeveloperOfAISystem { entity_id }
+          AllegedHarmedOrNearlyHarmedParties { entity_id }
+          implicated_systems { entity_id }
+        }
+      }`,
+    });
+
+    expect(data.entity).toBeNull();
+
+    expect(data.incidents.filter(refersTo)).toEqual([]);
+  });
+
   test('Should successfully add Entity Relationship', async ({ page, login, skipOnEmptyEnvironment }) => {
   
     await init();

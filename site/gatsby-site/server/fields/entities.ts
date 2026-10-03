@@ -5,7 +5,7 @@ import { generateMutationFields, generateQueryFields } from "../utils";
 import { Context } from "../interfaces";
 import { EntityType } from "../types/entity";
 import { GraphQLDateTime, GraphQLJSONObject } from "graphql-scalars";
-import { mergeEntities, findSimilarEntities, SimilarEntityPair } from "../shared/entities";
+import { mergeEntities, deleteEntity, findSimilarEntities, SimilarEntityPair } from "../shared/entities";
 import { Entity } from "../generated/graphql";
 
 const SimilarEntityPairType = new GraphQLObjectType({
@@ -85,6 +85,17 @@ const UpdateOneEntityPayload = new GraphQLObjectType({
   },
 });
 
+const DeleteEntityPayload = new GraphQLObjectType({
+  name: 'DeleteEntityPayload',
+  fields: {
+    entity_id: { type: new GraphQLNonNull(GraphQLString) },
+    incidents_updated: { type: new GraphQLNonNull(GraphQLInt) },
+    submissions_updated: { type: new GraphQLNonNull(GraphQLInt) },
+    relationships_deleted: { type: new GraphQLNonNull(GraphQLInt) },
+    subscriptions_deleted: { type: new GraphQLNonNull(GraphQLInt) },
+  },
+});
+
 const UpdateOneEntityInput = new GraphQLInputObjectType({
   name: 'UpdateOneEntityInput',
   fields: {
@@ -156,6 +167,17 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
       };
     }
   },
+  /**
+   * Deletes an entity and every reference to it. SEE: server/shared/entities.ts, #4036
+   */
+  deleteEntity: {
+    type: new GraphQLNonNull(DeleteEntityPayload),
+    args: {
+      entityId: { type: new GraphQLNonNull(GraphQLString) },
+    },
+    resolve: async (_source, { entityId }, context) => deleteEntity(entityId, context.client),
+  },
+
   mergeEntities: {
     type: new GraphQLNonNull(EntityType),
     args: {
@@ -190,6 +212,10 @@ export const permissions = {
     upsertOneEntity: allow,
 
     updateOneEntity: isRole('incident_editor'),
-    mergeEntities: isRole('incident_editor')
+    mergeEntities: isRole('incident_editor'),
+
+    // Removing a tag from the shared taxonomy is the same class of editorial
+    // action as merging; the button lives on /entities/edit, an editor page.
+    deleteEntity: isRole('incident_editor'),
   }
 }
