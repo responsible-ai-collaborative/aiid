@@ -3,11 +3,12 @@ import TextInputGroup from '../../components/forms/TextInputGroup';
 import { StringParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Button, Spinner } from 'flowbite-react';
-import { FIND_ENTITIES, FIND_ENTITY, UPDATE_ENTITY } from '../../graphql/entities';
+import { DELETE_ENTITY, FIND_ENTITIES, FIND_ENTITY, UPDATE_ENTITY } from '../../graphql/entities';
 import { useMutation, useQuery } from '@apollo/client/react/hooks';
 import { Form, Formik } from 'formik';
 import { useTranslation, Trans } from 'react-i18next';
-import { Link } from 'gatsby';
+import { Link, navigate } from 'gatsby';
+import useLocalizePath from 'components/i18n/useLocalizePath';
 import DefaultSkeleton from 'elements/Skeletons/Default';
 import * as Yup from 'yup';
 import { format } from 'date-fns';
@@ -55,6 +56,53 @@ function EditEntityPage(props) {
   const loading = apiAccessLoading || loadingEntity;
 
   const [updateEntityMutation] = useMutation(UPDATE_ENTITY);
+
+  const [deleteEntityMutation, { loading: deleting }] = useMutation(DELETE_ENTITY);
+
+  const localizePath = useLocalizePath();
+
+  // Deleting is for a tag that should not exist at all; merging (on /entities/merge)
+  // is for a duplicate of another entity. Every reference — incidents, submissions,
+  // relationships, subscriptions — is removed with it. SEE: #4036
+  const handleDelete = async () => {
+    if (
+      !confirm(
+        t(
+          'Delete the entity "{{name}}"? It will be removed from every incident, submission, relationship and subscription that refers to it. This cannot be undone.',
+          { name: entity?.name }
+        )
+      )
+    ) {
+      return;
+    }
+
+    try {
+      const { data } = await deleteEntityMutation({ variables: { entityId } });
+
+      const summary = data.deleteEntity;
+
+      addToast({
+        message: t(
+          'Entity deleted. Removed from {{incidents}} incident(s), {{submissions}} submission(s), {{relationships}} relationship(s) and {{subscriptions}} subscription(s).',
+          {
+            incidents: summary.incidents_updated,
+            submissions: summary.submissions_updated,
+            relationships: summary.relationships_deleted,
+            subscriptions: summary.subscriptions_deleted,
+          }
+        ),
+        severity: SEVERITY.success,
+      });
+
+      navigate(localizePath({ path: '/entities/' }));
+    } catch (error) {
+      addToast({
+        message: t('Error deleting Entity.'),
+        severity: SEVERITY.danger,
+        error,
+      });
+    }
+  };
 
   const {
     data: entityRelationshipsData,
@@ -295,6 +343,26 @@ function EditEntityPage(props) {
                     <Trans>Save</Trans>
                   )}
                 </Button>
+                <div className="mt-8 pt-4 border-t border-gray-200">
+                  <Button
+                    color="failure"
+                    onClick={handleDelete}
+                    disabled={isSubmitting || deleting}
+                    className="flex disabled:opacity-50"
+                    data-cy="delete-entity-btn"
+                  >
+                    {deleting ? (
+                      <>
+                        <Spinner size="sm" />
+                        <div className="ml-2">
+                          <Trans>Deleting...</Trans>
+                        </div>
+                      </>
+                    ) : (
+                      <Trans>Delete entity</Trans>
+                    )}
+                  </Button>
+                </div>
               </>
             )}
           </Formik>

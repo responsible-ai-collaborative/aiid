@@ -29,6 +29,7 @@ import { Helmet } from 'react-helmet';
 import { Button } from 'flowbite-react';
 import { getCloudinaryPublicID } from 'utils/cloudinary';
 import ApiLoginRequired from 'components/ui/ApiLoginRequired';
+import DefaultSkeleton from 'elements/Skeletons/Default';
 import useApiAccess from 'hooks/useApiAccess';
 import { SUBMISSION_INITIAL_VALUES } from 'utils/submit';
 import isEqual from 'lodash/isEqual';
@@ -78,6 +79,12 @@ const SubmitForm = () => {
 
   const [submission, setSubmission] = useState({});
 
+  // Set once the submission has been built for the resolved session (in the
+  // effect below). The wizard mounts only then: mounted earlier, it was
+  // reinitialized with the session's values a moment after it appeared, which
+  // discarded anything entered in that moment.
+  const [sessionApplied, setSessionApplied] = useState(false);
+
   const [submissionReset, setSubmissionReset] = useState({ reset: false, forceUpdate: false });
 
   const [savingInLocalStorage, setSavingInLocalStorage] = useState(false);
@@ -125,6 +132,10 @@ const SubmitForm = () => {
       }
     }
     setSubmission(submission);
+
+    if (!loading) {
+      setSessionApplied(true);
+    }
   }, [loading, user?.profile]);
 
   const [displayCsvSection] = useState(false);
@@ -391,7 +402,8 @@ const SubmitForm = () => {
       </p>
 
       <div className="my-5">
-        {submission && (
+        {!sessionApplied && <DefaultSkeleton />}
+        {submission && sessionApplied && (
           <SubmissionWizard
             submitForm={handleSubmit}
             initialValues={submission}

@@ -37,6 +37,19 @@ export const UPDATE_ENTITY = gql(`
   }
 `);
 
+/** Deletes an entity and removes every reference to it. SEE: #4036 */
+export const DELETE_ENTITY = gql(`
+  mutation DeleteEntity($entityId: String!) {
+    deleteEntity(entityId: $entityId) {
+      entity_id
+      incidents_updated
+      submissions_updated
+      relationships_deleted
+      subscriptions_deleted
+    }
+  }
+`);
+
 export const MERGE_ENTITIES = gql(`
   mutation MergeEntities($primaryId: String!, $secondaryId: String!, $keepEntity: Int!) {
     mergeEntities(primaryId: $primaryId, secondaryId: $secondaryId, keepEntity: $keepEntity){
