@@ -1,6 +1,7 @@
 import { expect, it } from '@jest/globals';
 import { ApolloServer } from "@apollo/server";
 import { getCollection, makeRequest, mockSession, seedFixture, startTestServer } from "./utils";
+import { API_LOGIN_REQUIRED } from "../apiAccess";
 
 const UPDATE_ROLES = `
     mutation UpdateRoles($userId: String, $roles: [String]!) {
@@ -88,7 +89,9 @@ describe(`Privilege escalation`, () => {
             variables: { userId: 'subscriber1', roles: ['admin'] },
         });
 
-        expect(response.body.errors[0].message).toBe('not authorized');
+        // An anonymous caller is refused by the API access gate before the role
+        // rule can answer "not authorized". SEE: server/apiAccess.ts
+        expect(response.body.errors[0].extensions.code).toBe(API_LOGIN_REQUIRED);
 
         const stored = await getCollection('customData', 'users').findOne({ userId: 'subscriber1' });
 
