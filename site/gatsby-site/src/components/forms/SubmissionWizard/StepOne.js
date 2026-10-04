@@ -31,8 +31,20 @@ import { arrayToList } from 'utils/typography';
 import { debounce } from 'debounce';
 import SubmissionButton from './SubmissionButton';
 
+/**
+ * Date Downloaded defaults to today. The default is part of the form's initial
+ * values rather than set by an effect after mount: the form only mounts once the
+ * session resolves (SEE: server/apiAccess.ts), and a value entered in the
+ * moment between the field appearing and a mount effect running was overwritten
+ * by that effect.
+ */
+const withDateDownloaded = (data) => ({
+  ...data,
+  date_downloaded: data?.date_downloaded || format(new Date(), 'yyyy-MM-dd'),
+});
+
 const StepOne = (props) => {
-  const [data, setData] = useState(props.data);
+  const [data, setData] = useState(() => withDateDownloaded(props.data));
 
   /**
    * The authors field holds a list of names, and yup casts it to a comma-joined
@@ -90,7 +102,7 @@ const StepOne = (props) => {
   };
 
   useEffect(() => {
-    setData({ ...props.data });
+    setData(withDateDownloaded(props.data));
   }, [props.data]);
 
   return (
@@ -343,7 +355,6 @@ const FormDetails = ({
             handleBlur={handleBlur}
             schema={schema}
             disabled={parsingNews}
-            defaultValue={format(new Date(), 'yyyy-MM-dd')}
             icon={faDownload}
           />
         </FieldContainer>
