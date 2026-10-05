@@ -98,5 +98,9 @@
     "report_type": {
         "title": "Type de rapport",
         "text": "Incident = Dommage (ou quasi-dommage) qui s'est déjà produit.<br />Problème = Un dommage potentiel qui ne s'est pas encore produit.<br />Choisissez en fonction de savoir si le système d'IA a déjà eu un impact."
+    },
+    "existingReports": {
+        "title": "Rapports existants à inclure",
+        "text": "Numéros de rapports déjà présents dans la base de données qui doivent aussi être les rapports sous-jacents de ce nouvel incident, par exemple lorsqu'un article couvre plusieurs incidents distincts. Les rapports restent liés aux incidents auxquels ils appartiennent déjà."
     }
 }
