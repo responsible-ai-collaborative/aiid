@@ -1,22 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { Configure, useCurrentRefinements } from 'react-instantsearch';
-import { useInstantSearch } from 'react-instantsearch';
+import React, { useContext } from 'react';
+import { useCurrentRefinements, useInstantSearch } from 'react-instantsearch';
+import DiscoverConfigureContext from './DiscoverConfigureContext';
 
 function ClearButton({ children }) {
   const { indexUiState, setIndexUiState } = useInstantSearch();
 
-  const [configure, setConfigure] = useState({ ...indexUiState.configure });
+  // `distinct` is declared on the single <Configure> in Discover.js.
+  // SEE: DiscoverConfigureContext.
+  const { distinct, setDistinct } = useContext(DiscoverConfigureContext);
 
   const { items } = useCurrentRefinements();
-
-  useEffect(() => {
-    setConfigure((configure) => ({ ...configure, ...indexUiState.configure }));
-  }, [indexUiState]);
 
   const disabled =
     items.length == 1 &&
     items?.[0]?.refinements?.[0].value == 'true' &&
-    configure?.distinct == true &&
+    distinct == true &&
     !indexUiState.query;
 
   return (
@@ -28,15 +26,12 @@ function ClearButton({ children }) {
           refinementList: { is_incident_report: ['true'] },
           range: {},
           query: '',
-          configure: { distinct: true, hitsPerPage: 28 },
         }));
 
-        setConfigure((configure) => ({ ...configure, distinct: true }));
+        setDistinct(true);
       }}
       disabled={disabled}
     >
-      <Configure {...configure} />
-
       {children}
     </button>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Col from 'elements/Col';
 import Row from 'elements/Row';
 import Container from 'elements/Container';
@@ -17,6 +17,7 @@ import { queryConfig } from './queryParams';
 import { history } from 'instantsearch.js/es/lib/routers';
 import Pagination from './Pagination';
 import debounce from 'lodash/debounce';
+import DiscoverConfigureContext from './DiscoverConfigureContext';
 
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
@@ -38,6 +39,14 @@ export default function Discover() {
   const [width, setWidth] = useState(0);
 
   const [currentPage, setCurrentPage] = useState(0);
+
+  // Whether results are collapsed to one per incident (Algolia `distinct`).
+  // Owned here and declared on the single <Configure> below; the display
+  // options dropdown and the Clear Filters button change it through
+  // DiscoverConfigureContext (SEE: the comment in that module).
+  const [distinct, setDistinct] = useState(true);
+
+  const configureContext = useMemo(() => ({ distinct, setDistinct }), [distinct]);
 
   const handleWindowSizeChange = useRef(
     debounce(() => {
@@ -82,6 +91,9 @@ export default function Discover() {
       params.set('is_incident_report', 'true');
       navigate(`?${params.toString()}`, { replace: true });
     }
+
+    // Same mapping as parseURL.js: `hideDuplicates` present means distinct.
+    setDistinct(params.has('hideDuplicates'));
   }, []);
 
   if (width == 0) {
@@ -113,20 +125,22 @@ export default function Discover() {
         stateMapping: mapping(),
       }}
     >
-      <Configure hitsPerPage={28} page={currentPage} />
-      <Container className="ml-auto mr-auto w-full lg:max-w-6xl xl:max-w-7xl mt-6">
-        <Row className="px-0 mx-0">
-          <Col className="px-0 mx-0">
-            <SearchBox />
-          </Col>
-        </Row>
+      <Configure hitsPerPage={28} page={currentPage} distinct={distinct} />
+      <DiscoverConfigureContext.Provider value={configureContext}>
+        <Container className="ml-auto mr-auto w-full lg:max-w-6xl xl:max-w-7xl mt-6">
+          <Row className="px-0 mx-0">
+            <Col className="px-0 mx-0">
+              <SearchBox />
+            </Col>
+          </Row>
 
-        {width > 767 ? <Controls /> : <OptionsModal />}
+          {width > 767 ? <Controls /> : <OptionsModal />}
 
-        <Hits />
+          <Hits />
 
-        <Pagination />
-      </Container>
+          <Pagination />
+        </Container>
+      </DiscoverConfigureContext.Provider>
     </InstantSearch>
   );
 }
