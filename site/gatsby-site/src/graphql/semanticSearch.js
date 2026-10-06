@@ -12,6 +12,10 @@ export const SEMANTIC_SEARCH = gql(`
           date
           description
         }
+        image {
+          cloudinary_id
+          image_url
+        }
       }
     }
   }
