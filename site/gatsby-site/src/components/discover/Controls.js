@@ -19,7 +19,8 @@ const Controls = () => {
 
   const defaultKeys = ['is_incident_report', 'page', 'display', 'sortBy'];
 
-  const anySelected = Object.keys(indexUiState.refinementList).some(
+  // The UI state can be empty for a moment while InstantSearch (re)starts.
+  const anySelected = Object.keys(indexUiState.refinementList ?? {}).some(
     (key) => !defaultKeys.includes(key)
   );
 

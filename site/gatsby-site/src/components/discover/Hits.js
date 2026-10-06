@@ -32,9 +32,9 @@ export default function Hits({ ...props }) {
   }, [isLoading]);
 
   const viewType = useMemo(() => {
-    return indexUiState.configure.distinct === true &&
-      indexUiState.refinementList.is_incident_report.length > 0 &&
-      indexUiState.refinementList.is_incident_report[0] === 'true'
+    // The UI state can be empty for a moment while InstantSearch (re)starts.
+    return indexUiState.configure?.distinct === true &&
+      indexUiState.refinementList?.is_incident_report?.[0] === 'true'
       ? VIEW_TYPES.INCIDENTS
       : VIEW_TYPES.REPORTS;
   }, [indexUiState]);

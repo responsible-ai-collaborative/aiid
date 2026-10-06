@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Dropdown } from 'flowbite-react';
 import isEqual from 'lodash/isEqual';
 import { Trans, useTranslation } from 'react-i18next';
-import { Configure, useInstantSearch } from 'react-instantsearch';
+import { useInstantSearch } from 'react-instantsearch';
+import DiscoverConfigureContext from './DiscoverConfigureContext';
 
 const findIndex = (displayOptions, currentState) => {
   return displayOptions.findIndex(({ state }) => {
@@ -51,7 +52,9 @@ const displayOptions = [
 const DisplayOptions = () => {
   const { indexUiState, setIndexUiState } = useInstantSearch();
 
-  const [configure, setConfigure] = useState({ ...indexUiState.configure });
+  // `distinct` is declared on the single <Configure> in Discover.js.
+  // SEE: DiscoverConfigureContext.
+  const { setDistinct } = useContext(DiscoverConfigureContext);
 
   const [selectedIndex, setSelectedIndex] = useState(-1);
 
@@ -67,23 +70,16 @@ const DisplayOptions = () => {
           ...previousState.refinementList,
           ...state.refinementList,
         },
-        configure: {
-          ...previousState.configure,
-          ...state.configure,
-        },
       };
     });
 
-    setSelectedIndex(index);
+    setDistinct(state.configure.distinct);
 
-    setConfigure((configure) => ({ ...configure, ...state.configure }));
+    setSelectedIndex(index);
   }, []);
 
   useEffect(() => {
-    const index = findIndex(displayOptions, indexUiState);
-
-    setConfigure((configure) => ({ ...configure, ...indexUiState.configure }));
-    setSelectedIndex(index);
+    setSelectedIndex(findIndex(displayOptions, indexUiState));
   }, [indexUiState]);
 
   return (
@@ -91,8 +87,6 @@ const DisplayOptions = () => {
       <span className="absolute left-4 -top-2 text-xs text-gray-400 bg-white px-2">
         <Trans>Display Option</Trans>
       </span>
-
-      <Configure {...configure} />
 
       <Dropdown
         label={t(displayOptions[selectedIndex]?.text)}
