@@ -302,4 +302,181 @@ describe('semanticSearch GraphQL field', () => {
     expect(response.body.data.semanticSearch.results).toHaveLength(1);
     expect(response.body.data.semanticSearch.results[0].incident.incident_id).toBe(4);
   });
+
+  describe('every result, quickly', () => {
+    /** Every text the embedding endpoint received, in order. */
+    let embedded: string[];
+
+    const stubEmbedding = (response: () => Promise<Response>) => {
+      global.fetch = jest.fn(async (_url: unknown, init?: RequestInit) => {
+        embedded.push(...JSON.parse(String(init?.body)).input);
+        return response();
+      }) as unknown as typeof fetch;
+    };
+
+    const embedAs = (values: number[]) =>
+      stubEmbedding(
+        async () =>
+          new Response(JSON.stringify({ data: [{ index: 0, embedding: values }] }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          })
+      );
+
+    const incident = (incident_id: number, reports: number[] = []) => ({
+      incident_id,
+      title: `Incident ${incident_id}`,
+      description: 'Text',
+      date: '2026-01-01',
+      reports,
+    });
+
+    const vectors = (incident_id: number, values: number[]) => ({
+      incident_id,
+      embedding_schema_version: 2,
+      embedding_profile: 'nemotron-retrieval-v1',
+      model: 'nvidia/nemotron-3-embed-1b:free',
+      dims: 2,
+      overview: { vector: vector(values) },
+      passages: [],
+    });
+
+    const search = (query: string, selection: string, limit?: number) =>
+      makeRequest(url, {
+        query: `
+          query SemanticSearch($query: String!, $limit: Int) {
+            semanticSearch(query: $query, limit: $limit) {
+              status
+              results { ${selection} }
+            }
+          }
+        `,
+        variables: { query, limit },
+      });
+
+    const resultIds = (response: any) =>
+      response.body.data.semanticSearch.results.map((result: any) => result.incident.incident_id);
+
+    beforeEach(() => {
+      embedded = [];
+    });
+
+    it('returns every match when no limit is given, however many there are', async () => {
+      const ids = Array.from({ length: 130 }, (_, index) => 100 + index);
+
+      await seedCollection({ name: 'incidents', docs: ids.map((id) => incident(id)) });
+      await seedCollection({
+        name: 'incident_embeddings',
+        docs: ids.map((id) => vectors(id, [1, 0])),
+      });
+      embedAs([1, 0]);
+
+      expect(resultIds(await search('crashes', 'incident { incident_id }'))).toHaveLength(130);
+      expect(resultIds(await search('crashes', 'incident { incident_id }', 2))).toHaveLength(2);
+    });
+
+    it('embeds a text once, whatever its case and spacing, and again only after a reset', async () => {
+      embedAs([1, 0]);
+
+      await search('Self-driving crashes', 'score');
+      await search('self-driving   CRASHES', 'score');
+      await search('self-driving crashes', 'score');
+
+      expect(embedded).toEqual(['Self-driving crashes']);
+
+      resetSemanticSearchCache();
+      await search('self-driving crashes', 'score');
+
+      expect(embedded).toEqual(['Self-driving crashes', 'self-driving crashes']);
+    });
+
+    it('does not keep a failed embedding, so the next search asks again', async () => {
+      stubEmbedding(async () => new Response('unavailable', { status: 503 }));
+
+      expect((await search('crashes', 'score')).body.data.semanticSearch.status).toBe(
+        'UNAVAILABLE'
+      );
+
+      embedAs([1, 0]);
+
+      expect((await search('crashes', 'score')).body.data.semanticSearch.status).toBe('OK');
+      expect(embedded).toEqual(['crashes', 'crashes']);
+    });
+
+    it('gives each result the picture of its earliest report that has one', async () => {
+      await seedCollection({
+        name: 'incidents',
+        docs: [incident(10, [202, 201, 203]), incident(11, [204]), incident(12, [205])],
+      });
+      await seedCollection({
+        name: 'incident_embeddings',
+        docs: [vectors(10, [1, 0]), vectors(11, [0.99, 0.14]), vectors(12, [0.95, 0.31])],
+      });
+      await seedCollection({
+        name: 'reports',
+        docs: [
+          { report_number: 201, cloudinary_id: '', image_url: '' },
+          {
+            report_number: 202,
+            cloudinary_id: 'reports/second.jpg',
+            image_url: 'https://example.com/second.jpg',
+          },
+          { report_number: 203, cloudinary_id: 'reports/third.jpg', image_url: '' },
+          { report_number: 204, image_url: 'https://example.com/link.jpg' },
+          { report_number: 205, cloudinary_id: null, image_url: null },
+        ],
+      });
+      embedAs([1, 0]);
+
+      const response = await search(
+        'crashes',
+        'incident { incident_id } image { cloudinary_id image_url }'
+      );
+
+      expect(response.body.errors).toBeUndefined();
+      expect(response.body.data.semanticSearch.results).toEqual([
+        {
+          incident: { incident_id: 10 },
+          image: {
+            cloudinary_id: 'reports/second.jpg',
+            image_url: 'https://example.com/second.jpg',
+          },
+        },
+        {
+          incident: { incident_id: 11 },
+          image: { cloudinary_id: null, image_url: 'https://example.com/link.jpg' },
+        },
+        { incident: { incident_id: 12 }, image: null },
+      ]);
+    });
+
+    it("loads an incident's stored embedding when asked for it, also through a fragment", async () => {
+      await seedCollection({
+        name: 'incidents',
+        docs: [{ ...incident(10), embedding: { vector: [0.5, 0.5] } }],
+      });
+      await seedCollection({ name: 'incident_embeddings', docs: [vectors(10, [1, 0])] });
+      embedAs([1, 0]);
+
+      const response = await makeRequest(url, {
+        query: `
+          query SemanticSearch($query: String!) {
+            semanticSearch(query: $query) {
+              results { incident { incident_id ...Stored } }
+            }
+          }
+
+          fragment Stored on Incident {
+            embedding { vector }
+          }
+        `,
+        variables: { query: 'crashes' },
+      });
+
+      expect(response.body.errors).toBeUndefined();
+      expect(response.body.data.semanticSearch.results).toEqual([
+        { incident: { incident_id: 10, embedding: { vector: [0.5, 0.5] } } },
+      ]);
+    });
+  });
 });
