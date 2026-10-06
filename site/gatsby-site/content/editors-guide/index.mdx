@@ -1,10 +1,800 @@
 ---
-title: "Editor's Guide"
-metaTitle: "Editor's Guide"
-metaDescription: "Editorial standards for the AI Incident Database"
+title: "Editorial and Research Guide for the AI Incident Database"
+metaTitle: "Editorial and Research Guide for the AI Incident Database"
+metaDescription: "Version 2 of the AI Incident Database Editor's Guide: editorial standards and research guidance for incidents, reports, entities, and record maintenance"
 slug: '/editors-guide'
+preferMdx: true
 ---
 
+*Editorial standards and research guidance*
+
+**Version 2 · October 1, 2026** · Daniel Atherton and Sean McGregor · Operational working guide
+
+<Box>
+
+**Governing principle.** The database records publicly documented allegations of harm or near harm. It does not independently adjudicate every factual claim. Editorial language should preserve that distinction while stating clearly what sources establish.
+
+</Box>
+
+**Quick access:** <a href="#quickdefinitions">Definitions</a> · <a href="#starthere|thetwo-passeditorworkflow">Start Here</a> · <a href="#howtocitethisguide">How to Cite This Guide</a>
+
+## Quick Definitions
+
+*The core terms used throughout the guide. Section 2 provides fuller boundary guidance and examples.*
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th>Term</th>
+        <th>Working definition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>AI incident</td>
+        <td>An alleged harm or near harm event to people, property, or the environment where an AI system is implicated.</td>
+      </tr>
+      <tr>
+        <td>AI issue</td>
+        <td>An alleged harm or near harm by an AI system that has yet to occur or be detected.</td>
+      </tr>
+      <tr>
+        <td>Incident ID</td>
+        <td>The AIID editorial record that bounds and summarizes a specific harmful or near-harm event or traceable episode.</td>
+      </tr>
+      <tr>
+        <td>Incident report</td>
+        <td>A source document attached to an incident ID. Multiple reports may document the same underlying event.</td>
+      </tr>
+      <tr>
+        <td>AI incident variant</td>
+        <td>A distinct incident involving the same intelligent system, substantially similar causative factors, and substantially similar harms as a known incident.</td>
+      </tr>
+      <tr>
+        <td>Incident response</td>
+        <td>A concrete action taken because of an incident to investigate, contain, correct, compensate for, regulate, litigate, or otherwise address it.</td>
+      </tr>
+      <tr>
+        <td>AI system</td>
+        <td>The technical or sociotechnical arrangement in which AI capabilities play a meaningful role, including relevant interfaces, tools, data, operators, and workflows.</td>
+      </tr>
+      <tr>
+        <td>Developer</td>
+        <td>The person or organization that built, trained, supplied, or materially produced the implicated AI technology.</td>
+      </tr>
+      <tr>
+        <td>Deployer</td>
+        <td>The person or organization that selected, operated, implemented, authorized, or intentionally used the system in the real-world setting.</td>
+      </tr>
+      <tr>
+        <td>Harmed / nearly harmed party</td>
+        <td>The person, group, institution, property interest, or social system that experienced the adverse consequence or credible near harm.</td>
+      </tr>
+      <tr>
+        <td>Implicated systems</td>
+        <td>The named products, models, system classes, platforms, workflows, or other technical or sociotechnical systems involved in the event.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<Box>
+
+**Fast boundary rule.** A report is evidence; an incident ID is the database’s normalized account of an event. A later source about the same underlying event is usually an additional report, not a new incident.
+
+</Box>
+
+## START HERE | The Two-Pass Editor Workflow
+
+*Use these two pages for ordinary submissions. The rest of the guide explains difficult boundaries, exceptions, tagging choices, and maintenance work.*
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>THE BASIC RULE</strong> First enter the source as a report. Then create or update the incident ID that the report supports. A report is evidence; an incident ID is the AIID's short, normalized account of the event.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+### 1. Decide What You Have
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Quick check</strong></th>
+        <th><strong>Proceed when …</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Specific event</td>
+        <td>You can say what happened, to whom, and in what setting.</td>
+      </tr>
+      <tr>
+        <td>AI implication</td>
+        <td>The harm probably would not have occurred in substantially the same way without the AI system, output, omission, or AI-enabled use.</td>
+      </tr>
+      <tr>
+        <td>Harm or near harm</td>
+        <td>The source describes a consequential adverse effect or a credible chain that nearly produced one.</td>
+      </tr>
+      <tr>
+        <td>Existing record</td>
+        <td>You searched incident summaries, likely entities, system names, locations, case names, and distinctive phrases.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>RECORD BOUNDARY</strong> Same underlying event: add the report to the existing incident ID. New qualifying event: leave Incident IDs blank so a new incident can be created. Unclear: do not guess; preserve the report and seek editorial review.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+### 2. Fill Out “Submit a Full Report”
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Form field</strong></th>
+        <th><strong>What to enter</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Report Address</td>
+        <td>The clean, stable URL. Remove tracking parameters when they are not needed for access.</td>
+      </tr>
+      <tr>
+        <td>Title</td>
+        <td>The source's published title. For untitled material, use a plain source-type title.</td>
+      </tr>
+      <tr>
+        <td>Author(s)</td>
+        <td>Named byline(s); if none, use the publishing organization. Use Anonymous only when the source is genuinely anonymous.</td>
+      </tr>
+      <tr>
+        <td>Date Published</td>
+        <td>The source's publication, filing, or posting date—not the incident ID date.</td>
+      </tr>
+      <tr>
+        <td>Date Downloaded</td>
+        <td>The date the source text was retrieved for entry.</td>
+      </tr>
+      <tr>
+        <td>Text</td>
+        <td>Complete substantive text with one blank line between paragraphs. Remove ads, menus, cookie notices, duplicate captions, and unrelated links. Treat Fetch Info as a draft and check it against the source.</td>
+      </tr>
+      <tr>
+        <td>Report Type</td>
+        <td>Choose Incident when the source documents a qualifying event; choose Issue for a hazard or concern without a qualifying event.</td>
+      </tr>
+      <tr>
+        <td>Incident IDs</td>
+        <td>Enter an existing incident ID only when this is the same event. Leave blank for a genuinely new incident.</td>
+      </tr>
+      <tr>
+        <td>Incident Date</td>
+        <td>Enter the proposed incident ID date when supported: event date first, then earliest harm; use a documented fallback only when necessary.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+## START HERE | Build the Incident ID
+
+*Use Add more info or the editor review interface to supply the AIID-written fields. Keep them short, cautious, and retrievable.*
+
+### 3. Complete the Incident Fields
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Incident field</strong></th>
+        <th><strong>Default treatment</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Incident title</td>
+        <td>Title Case, past tense, concise. Name the system, developer, or deployer when useful and state the harm. Use reportedly, allegedly, or purportedly when warranted.</td>
+      </tr>
+      <tr>
+        <td>Incident ID date</td>
+        <td>Use the event date; then the date harm first occurred; then a supported filing or first-report date; use publication date only as a last resort.</td>
+      </tr>
+      <tr>
+        <td>Description</td>
+        <td>Usually one neutral paragraph of about 500 characters: what happened, how AI was implicated, who or what was harmed, and any immediate material response.</td>
+      </tr>
+      <tr>
+        <td>Developer</td>
+        <td>Who built, trained, supplied, or materially produced the implicated AI system.</td>
+      </tr>
+      <tr>
+        <td>Deployer</td>
+        <td>Who selected, operated, authorized, implemented, or intentionally used the system in this event.</td>
+      </tr>
+      <tr>
+        <td>Harmed / nearly harmed</td>
+        <td>Use the narrowest faithful harmed class first; add a named person only when materially useful and appropriate.</td>
+      </tr>
+      <tr>
+        <td>Implicated systems</td>
+        <td>Add the named product or model when known and a reusable system class when supported.</td>
+      </tr>
+      <tr>
+        <td>Editor's note field</td>
+        <td>Optional. Use for brief editorial clarification that a later editor could not reconstruct easily, including a non-obvious date or record-boundary choice. It may also contain optional chronology notes when useful to explain a meaningful gap between the incident date and ingestion or to mark a later development.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+### 4. Run the 60-Second Check
+
+- The report title, author, publication date, URL, and text match the source.
+- The incident ID is a specific event, AI passes the but-for test, and the harm is more than ordinary friction.
+- The title is cautious and distinguishable; the description states the event, AI role, and harm without a list of every detail.
+- A later article, lawsuit, correction, or response has not been mistaken for a new event.
+- Entities use canonical names; named actors are paired with useful classes; products and models are in Implicated Systems; routine Unknown tags are absent.
+- Any uncertainty another editor could not reconstruct is recorded briefly in editor notes.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>STOP AND USE THE DETAILED GUIDE WHEN …</strong> The material may be an issue rather than an incident; the same event may already exist; variant status is unclear; the date is disputed; a minor or vulnerable person may be named; attribution is contested; the source is inaccessible or incomplete; or an entity merge is being considered.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+- **Cold-reader check:** the title and opening description identify unfamiliar locations, institutions, and people well enough that the incident can be understood without prior knowledge of the source.
+
+## About Version 2
+
+Version 2 expands the original public guide into a more complete operational standard for current AIID work. It retains the guide's core distinctions among incidents, issues, variants, reports, and responses while incorporating sustained editorial practice developed through ongoing incident review, source ingestion, entity maintenance, and database research. Major additions include clearer cold-reader standards, campaign and constituent-event boundaries, source-text fidelity, expanded system and synthetic-media vocabulary, harmed-interest entities, legacy-system cleanup rules, and more explicit guidance for optional chronology notes and editorial reasoning.
+
+Rules in this guide are defaults. Editors may depart from them when strict application would make a record less accurate, less legible, or less fair to the evidence. Departures should be narrow and, when they affect the incident ID date, record boundary, attribution, naming of a harmed person, or entity merge, briefly preserved in editor notes.
+
+### What Is New or Clarified
+
+- A cold-reader rule for titles and descriptions: local geography, unfamiliar people, institutions, and systems should be contextualized so the incident remains legible outside the source's immediate news context.
+- Campaign-level incidents and separately retrievable constituent incidents may coexist when both boundaries are independently useful and supported.
+- Timeline and clarification notes are explicitly optional. When useful, they are entered in the Editor's note field to explain a meaningful gap between when an incident occurred and when it was ingested, or to mark later developments an editor wants to preserve.
+- Source ingestion is explicitly a preservation task: converting HTML, PDF, or other source material to Markdown or clean text must not silently rewrite substantive story content.
+- Controlled vocabulary has been expanded for AI agent systems, enterprise AI systems, AI coding assistants, synthetic-media modalities and creators, user classes, and harmed interests including Privacy, Environmental quality, Epistemic integrity, and Information integrity.
+- Legacy records may be edited without compulsory retrospective Implicated Systems research; backfilling should occur when readily supported or through a scoped audit.
+- The existing preferences for the earliest reliable non-paywalled baseline source, approximately 500-character descriptions, specific-plus-class tagging, and cautious attribution remain in force.
+
+### How to Use the Guide
+
+Use Quick Definitions above for the core vocabulary. For ordinary editing, begin with the two Start Here sections. Consult Sections 1 through 4 for data-model, scope, and record-boundary questions; Sections 5 through 7 for source research, incident construction, and entity work; and the remaining sections when a recurring case type, maintenance problem, automated workflow, or research question requires more detail.
+
+## 0 Editorial Standard at a Glance
+
+*The shortest usable statement of the AIID editorial method.*
+
+An AIID incident is a specific event or traceable episode in which an AI system played a meaningful causal role in alleged harm or near harm. The record should be anchored to evidence, written with proportionate caution, and structured so that later users can understand the event without reproducing the source’s rhetoric or the editor’s assumptions.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Question</strong></th>
+        <th><strong>Editorial test</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Event</td>
+        <td>Can you identify what happened, to whom, where or in what institutional setting, and when?</td>
+      </tr>
+      <tr>
+        <td>AI role</td>
+        <td>Would the specific harm probably have occurred in substantially the same way without the AI system?</td>
+      </tr>
+      <tr>
+        <td>Harm</td>
+        <td>Is there actual harm or a credible near-harm chain, rather than a hypothetical risk, routine inconvenience, or product criticism?</td>
+      </tr>
+      <tr>
+        <td>Record boundary</td>
+        <td>Is this the same event as an existing incident, a distinct variant, or a new incident?</td>
+      </tr>
+      <tr>
+        <td>Evidence</td>
+        <td>Does at least one source clearly support the date, system, mechanism, and harm described?</td>
+      </tr>
+      <tr>
+        <td>Language</td>
+        <td>Does the title and description distinguish reported allegation from established fact?</td>
+      </tr>
+      <tr>
+        <td>Tags</td>
+        <td>Do the tags identify both the specific actors and reusable classes supported by the evidence?</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>DEFAULT POSTURE</strong><br />Include documented harm, whether accidental, negligent, malicious, or institutionally produced. Exclude a source when AI is merely adjacent to the story or when no event-level harm or near harm can be identified.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+## 1 Data Model and Editor Interfaces
+
+*How evidence, editorial records, entity vocabulary, and public views fit together.*
+
+The AIID is both an evidentiary archive and a normalization system. Reports preserve public sources; incident IDs define editorially bounded events; entity records make actors, harmed groups, and systems retrievable across incidents. Editors should understand these layers before changing a record because an apparently local edit can alter public aggregation elsewhere in the database.
+
+### 1.1 Core Record Types
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Object</strong></th>
+        <th><strong>Function</strong></th>
+        <th><strong>Editorial implication</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Report</td>
+        <td>A source document with its own title, author, dates, URL, text, and metadata.</td>
+        <td>Several reports may document one incident ID. A later report is not automatically a new incident.</td>
+      </tr>
+      <tr>
+        <td>Incident ID</td>
+        <td>The database record that bounds and summarizes a specific harmful or near-harm event or traceable episode.</td>
+        <td>The title, description, date, tags, notes, reports, and relationships belong to this editorial object.</td>
+      </tr>
+      <tr>
+        <td>AI issue</td>
+        <td>A hazard, vulnerability, recurring concern, or potential harm not yet tied to a qualifying event.</td>
+        <td>Do not force issue-level evidence into an incident ID simply because the topic is important.</td>
+      </tr>
+      <tr>
+        <td>Incident variant</td>
+        <td>A distinct incident involving the same intelligent system, substantially similar causative factors, and substantially similar harms.</td>
+        <td>Variant status is narrower than broad topical similarity.</td>
+      </tr>
+      <tr>
+        <td>Entity</td>
+        <td>A shared vocabulary record used in developer, deployer, harmed-party, and implicated-system fields.</td>
+        <td>Entities include people, organizations, classes, products, models, institutions, and system categories; field placement supplies role.</td>
+      </tr>
+      <tr>
+        <td>Duplicate mapping</td>
+        <td>A retired entity or incident identifier redirected to the canonical record that replaced it.</td>
+        <td>A merge should preserve discoverability while preventing two active records from representing the same object.</td>
+      </tr>
+      <tr>
+        <td>Entity relationship</td>
+        <td>An editor-maintained relation between two entity records.</td>
+        <td>Treat explicit relationships separately from automatic co-occurrence on entity pages.</td>
+      </tr>
+      <tr>
+        <td>Incident response</td>
+        <td>A concrete action taken because of an incident.</td>
+        <td>Responses may be attached after publication without changing the original incident boundary.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+### 1.2 Reports and Incident IDs
+
+A report is evidence; an incident ID is an editorial synthesis. Report titles, publication dates, authors, URLs, and source text should normally reflect the source. The incident ID title, description, date, entities, systems, and notes are AIID-written or AIID-normalized fields. Editors should never allow a source’s headline or rhetoric to determine the incident boundary without independent review.
+
+The numeric incident list is the fastest archive-level check for existing records and report assignments. The Discover interface is better for thematic exploration. Before creating an incident ID, search the incident list, likely entity pages, system names, alternate spellings, case names, locations, and distinctive phrases from the source.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>MANY-TO-ONE RULE</strong> A new source about the same underlying event belongs as an additional report. Publication by a second outlet, a later lawsuit, or a regulator’s response does not by itself create a second incident ID.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+### 1.3 The Shared Entity Registry
+
+All four role and system fields draw from a shared entity registry. The registry is therefore broader than a conventional directory of named persons and organizations. A model such as ChatGPT, a class such as Chatbots, a court, a harmed group, and a named company can all be entity records, but they should appear in different fields according to their function in the incident.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Incident field</strong></th>
+        <th><strong>What it expresses</strong></th>
+        <th><strong>Typical records</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Alleged developer of AI system</td>
+        <td>Who created, trained, supplied, or materially built the implicated technology.</td>
+        <td>Model providers, vendors, research groups, supported developer classes.</td>
+      </tr>
+      <tr>
+        <td>Alleged deployer of AI system</td>
+        <td>Who selected, operated, implemented, authorized, or intentionally used the system in the setting.</td>
+        <td>Employers, agencies, platforms, law firms, schools, users, attackers, campaign operators.</td>
+      </tr>
+      <tr>
+        <td>Alleged harmed or nearly harmed parties</td>
+        <td>Who or what experienced the adverse consequence or credible near harm.</td>
+        <td>People, classes, institutions, property interests, proceedings, social or epistemic systems.</td>
+      </tr>
+      <tr>
+        <td>Implicated systems</td>
+        <td>What technical or sociotechnical system participated in the event.</td>
+        <td>Named products or models, system classes, vehicles, platforms, workflows, and relevant infrastructure.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>FIELD PLACEMENT MATTERS</strong> A product or model may exist in the shared entity registry, but it generally belongs in Implicated Systems. Its developer belongs in Developer. Do not place a system name in a company field merely because the same registry supplies both.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+### 1.4 Public Views and Editor Tools
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Interface</strong></th>
+        <th><strong>Primary use</strong></th>
+        <th><strong>Important limitation</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Incident list</td>
+        <td>Numeric review of incident IDs and attached reports; duplicate and novelty checking.</td>
+        <td>It is an index, not the richest exploratory interface.</td>
+      </tr>
+      <tr>
+        <td>Entity index</td>
+        <td>Role-specific incident counts, implicated-system counts, related-entity counts, explicit relationships, and responses.</td>
+        <td>Counts reflect current tagging practice and may change after retrospective cleanup.</td>
+      </tr>
+      <tr>
+        <td>Entity detail page</td>
+        <td>Review incidents by role and inspect other entities appearing in the same incidents.</td>
+        <td>The Related Entities section largely reflects co-occurrence, not an asserted direct relationship.</td>
+      </tr>
+      <tr>
+        <td>Entity merge tool</td>
+        <td>Manually merge two records or review name-similarity suggestions.</td>
+        <td>Editor-only and irreversible through the ordinary interface; similarity does not establish identity.</td>
+      </tr>
+      <tr>
+        <td>Database export or backup</td>
+        <td>Bulk searching, audits, historical comparison, and recovery support.</td>
+        <td>A snapshot is point-in-time evidence and may lag the live site.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+### 1.5 Related Entities, Explicit Relationships, and Co-occurrence
+
+Entity pages display other entities connected through shared incidents. This is analytically useful, but it can produce hundreds of associations for a frequently tagged organization. Editors and researchers must distinguish this automatic co-occurrence network from the much smaller set of explicit entity relationships created in the database.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Connection</strong></th>
+        <th><strong>Meaning</strong></th>
+        <th><strong>Permitted inference</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Related entity on a detail page</td>
+        <td>The records occur within at least one common incident, often in different fields.</td>
+        <td>They share an incident context. Do not infer ownership, partnership, control, or endorsement without evidence.</td>
+      </tr>
+      <tr>
+        <td>Explicit entity relationship</td>
+        <td>An editor-maintained relation between two records.</td>
+        <td>Infer only the relation actually recorded and supported.</td>
+      </tr>
+      <tr>
+        <td>Duplicate mapping</td>
+        <td>The retired and surviving IDs refer to the same canonical object.</td>
+        <td>Treat the retired label as an alias or historical identifier, not a separate actor.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+### 1.6 Live Data and Point-in-Time Snapshots
+
+The live site can change after an export is created. New incident IDs, reports, entities, and merges may appear while a backup remains fixed. When an audit uses a backup, record the snapshot date and verify any consequential finding against the live incident or entity page before editing.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>SNAPSHOT DISCIPLINE</strong> Use exports to find patterns and candidate records. Use the live site to confirm the current canonical state immediately before creating, merging, or retagging an entity.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+## 2 Definitions and Foundations
+
+*The concepts that define the database’s scope and the evidentiary posture of its records.*
+
+### 2.1 Core Definitions
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Term</strong></th>
+        <th><strong>Operational definition</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>AI incident</td>
+        <td>An alleged harm or near harm event to people, property, or the environment where an AI system is implicated.</td>
+      </tr>
+      <tr>
+        <td>AI issue</td>
+        <td>An alleged harm or near harm by an AI system that has yet to occur or be detected.</td>
+      </tr>
+      <tr>
+        <td>AI incident variant</td>
+        <td>A distinct incident that involves the same intelligent system, substantially similar causative factors, and substantially similar harms as a known incident.</td>
+      </tr>
+      <tr>
+        <td>Incident report</td>
+        <td>A source attached to an incident record. Several reports may document the same event.</td>
+      </tr>
+      <tr>
+        <td>Incident response</td>
+        <td>A concrete action taken after an incident to investigate, contain, correct, compensate for, regulate, litigate, or otherwise address the event.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+### 2.2 What Counts as an AI System
+
+For AIID purposes, artificial intelligence includes machine capabilities commonly associated with human intelligence, such as prediction, classification, perception, pattern recognition, reasoning, and natural-language generation or understanding. An AI system is the technical or sociotechnical arrangement in which those capabilities play a meaningful role. It may include interfaces, sensors, rules, databases, mechanical components, human operators, and organizational workflows.
+
+The relevant object is therefore not always a model in isolation. A legal-research assistant connected to a drafting workflow, an automated driving stack installed in a vehicle, or a chatbot authorized to alter account credentials may each be treated as an AI system even though the harmful event also depends on non-AI components.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>BOUNDARY RULE</strong><br />Do not classify an event as an AI incident merely because data were collected for AI training, an organization calls a program “AI,” or an AI company is involved. The AI component must be causally implicated in the harmful event.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+### 2.3 Implication and Causality
+
+An AI system is implicated when it played an important role in the chain of events that produced the alleged harm. It need not be the sole or dominant cause. A practical but-for question is usually sufficient: without the system’s action, output, omission, or delegated authority, would this specific harm probably have occurred in substantially the same way?
+
+Implication can arise through an erroneous output, a failed detection, a harmful ranking or recommendation, the automation of a consequential decision, or the system’s ability to execute an action. It can also arise in malicious use, where a person intentionally employs AI to impersonate, deceive, surveil, exploit, or generate harmful material.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>DO NOT OVERSTATE CAUSALITY</strong><br />“Implicated” does not mean that the system was solely responsible, that the developer acted unlawfully, or that a technical defect has been proven. Responsibility may be distributed across developers, deployers, operators, institutions, and users.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+### 2.4 Harm and Near Harm
+
+Real-world harm includes physical danger, injury, psychological harm, financial loss, damage to tangible or intangible property, reputational injury, interference with civil liberties, institutional or political harm, and environmental damage. Harm may affect an individual, a bounded group, an organization, a public institution, or a social system.
+
+A near-harm event exists when the system helped create a chain of events that could readily have produced harm but an external factor prevented the outcome. The external factor must be independent of the system and should not simply be a built-in safeguard functioning as designed.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Pattern</strong></th>
+        <th><strong>Treatment</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>A robot behaves dangerously until a nearby worker cuts power</td>
+        <td>Near harm: an external intervention prevented injury.</td>
+      </tr>
+      <tr>
+        <td>A robot detects its own abnormal movement and shuts down</td>
+        <td>Usually not near harm: the built-in safeguard contained the event.</td>
+      </tr>
+      <tr>
+        <td>A victim is about to transfer money after a voice-cloning scam, but a bank employee intervenes</td>
+        <td>Near harm, provided the chain and intervention are documented.</td>
+      </tr>
+      <tr>
+        <td>A chatbot produces an incorrect answer that no one relies upon</td>
+        <td>Usually an issue or product error unless a concrete harmful consequence follows.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+### 2.5 Misuse, Failure, and Security as Analytical Lenses
+
+The database includes intentional misuse and unintentional failure. Editors may also find it useful to distinguish security incidents in which an AI system is exploited, bypassed, or granted unsafe authority. These categories are analytical aids rather than mutually exclusive record types.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Lens</strong></th>
+        <th><strong>Typical mechanism</strong></th>
+        <th><strong>Example boundary</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Misuse</td>
+        <td>A person or organization intentionally uses AI to cause or facilitate harm.</td>
+        <td>A deepfake used in a scam can be misuse even if the generation tool functioned as designed.</td>
+      </tr>
+      <tr>
+        <td>Failure</td>
+        <td>A system produces, omits, or executes something harmful contrary to the intended task or reasonable expectations.</td>
+        <td>A legal drafting tool fabricates authority that is filed in court.</td>
+      </tr>
+      <tr>
+        <td>Security</td>
+        <td>An attacker exploits a vulnerability or unsafe permission structure involving an AI system.</td>
+        <td>A support chatbot is manipulated into transferring account control.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+## 3 The Inclusion Decision
+
+*A disciplined method for separating incidents from issues, ordinary failures, and AI-adjacent stories.*
+
+### 3.1 The Five-Question Test
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>1\. IS THERE A SPECIFIC EVENT?</strong><br />Identify a discrete occurrence or a traceable series of occurrences. A general risk, trend, or criticism is not enough.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>2\. IS AN AI SYSTEM IDENTIFIABLE?</strong><br />The exact model may be unknown, but the source must establish that an AI capability or AI-mediated workflow was involved.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>3\. IS THE AI SYSTEM CAUSALLY IMPLICATED?</strong><br />AI must help produce the harmful event. It cannot merely be the intended use of the data, the employer of a person, or the industry context.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>4\. IS THERE HARM OR CREDIBLE NEAR HARM?</strong><br />The record must identify an affected party, property interest, institution, or social system and a negative consequence beyond ordinary inconvenience.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>5\. IS THE EVIDENCE ADEQUATE?</strong><br />At least one source must support the essential event, and uncertainty must be expressible without turning the record into speculation.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+### 3.2 Incident, Issue, or Outside Scope
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Source describes</strong></th>
+        <th><strong>Default classification</strong></th>
+        <th><strong>Reason</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>A specific collision involving an automated driving system</td>
+        <td>Incident</td>
+        <td>A bounded event, identifiable system, and concrete physical or property harm.</td>
+      </tr>
+      <tr>
+        <td>A paper showing that a model class is vulnerable to a theoretical attack</td>
+        <td>Issue</td>
+        <td>The source demonstrates a hazard without a real-world exploit event.</td>
+      </tr>
+      <tr>
+        <td>A company’s AI program exposed employee data because of conventional access controls, with no AI component causing the exposure</td>
+        <td>Outside current AIID scope</td>
+        <td>AI is the purpose of the program, not the implicated mechanism.</td>
+      </tr>
+      <tr>
+        <td>Thousands of users report that a chatbot service was temporarily unavailable</td>
+        <td>Outside scope unless consequential harm is documented</td>
+        <td>Routine service unavailability alone does not satisfy the working harm threshold.</td>
+      </tr>
+      <tr>
+        <td>A false AI-generated video is circulated about a candidate and prompts an official complaint</td>
+        <td>Incident</td>
+        <td>The manipulation was deployed in a real political context and produced reputational or political harm.</td>
+      </tr>
+      <tr>
+        <td>A satire account labels an obvious parody as AI-generated</td>
+        <td>Usually outside scope</td>
+        <td>Deception and harm are not established.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+=======
 <div className="outlineDocument">
 
 ## Definitions
@@ -342,143 +1132,1698 @@ Format the text of reports according to the following,
 The following standards apply to fields that are written by AIID editors 
 and not directly provided by the incident reports.
 
-### Incident title
+### 3.3 Presumptive Exclusions
 
-#### Objectives
+- Thought experiments, forecasts, and speculative scenarios without an event.
+- General criticism of a product or technology class without identified harm.
+- Benchmark failures, model errors, or hallucinations that remain inside testing or private drafting and have no consequential use.
+- Proof-of-concept security demonstrations without exploitation-related harm or credible external near harm.
+- Routine downtime, degraded performance, or ordinary customer inconvenience without evidence of meaningful downstream effects.
+- Stories in which AI is only a funding goal, training-data destination, corporate affiliation, or rhetorical label.
+- Aggregate claims that cannot be resolved into identifiable events and do not themselves describe a bounded episode.
 
-- Should be short and concise
-- Should ideally be distinguishable from titles of other reports
-- Should communicate AI system of interest and the nature of harm
-- Should be easily understood without any specialized knowledge of AI
-- Should ideally require little update and correction over time, 
-  regardless of follow-up events
+These are presumptions rather than absolute prohibitions. A source in one of these categories may still qualify if it documents a concrete event that satisfies the causal and harm tests.
 
-#### Rule set
+### 3.4 Severity and the Working Harm Threshold
 
-1. Use [title case](https://en.wikipedia.org/wiki/Title_case)
-2. Use past tense (e.g. “they found” not “they have found” or “they find”)
-3. Use acronyms and abbreviations when applicable (e.g., US DHS, Tesla FSD)
-   - Ideally, acronym and abbreviations are spelled out in description
-4. Use operational keywords for factual reporting (e.g, allegedly, reportedly)
-5. Include
-   1. At least one of the following: 
-      name of AI, AI deployer, AI developer 
-      (e.g., DALL-E, Tesla Autopilot, Stanford’s vaccine distribution algorithm)
-   2. Nature of harm (e.g., injured a pedestrian) 
-      or implied nature of harm (e.g., exposed users to offensive content)
-   3. One of the following, if needed for distinguishability: 
-      broad location as state, large city (e.g., San Francisco), 
-      country (e.g., Korea), but avoid small city, district; 
-      broad time as year or time period (e.g., for decades, for six months), 
-      but avoid relative time (e.g., the past six months, two years ago)
+The AIID does not require catastrophic harm. A corrected filing, an unjustified account suspension, a short-lived reputational injury, or a narrowly avoided collision may qualify. The database should nevertheless distinguish harm from ordinary friction. The fact that a user was annoyed, a product failed to answer, or a service went offline does not by itself establish the sort of event-level harm the incident collection is meant to preserve.
 
-### Description
-
-Each incident has an editor written or editor approved description including the following properties and elements,
-
-1. Short, concise
-2. Use neutral terms
-3. Factual and complete description of the incident
-4. Must haves
-   1. Incident
-   2. Location
-   3. Harm
-
-### Developer, Deployer, and Harmed/Nearly Harmed Parties (Entities)
-
-All incidents have manually populated tags for,
-
-1. **Developer**:
-  the organizations or individuals responsible for producing 
-  either the parts or the whole intelligent system implicated in the incident.
-
-2. **Deployer**: 
-   the organizations or individuals responsible for the intelligent system 
-   when it is deployed in the real world.
-
-3. **Harmed/Nearly Harmed Parties**:
-   This field may have two different entity types entered:
-
-   1. Impacted class (e.g., teachers, black people, women):
-      This should be the largest identifiable group of people 
-      for which the harmed person is substitutable 
-      without changing the character of the harmed parties 
-      or the incident description.
-
-      - *Example:* [if an employee shift management system gives employees 
-         terrible shift scheduling requirements at Starbucks](/cite/10),
-        then the impacted class is “starbucks employees”. 
-        We cannot identify “hourly employees,” as the harmed party 
-        because this would imply a broader scope to the incident 
-        than solely Starbucks.
-
-   2. Individuals (e.g., “John Basilone”): 
-      Further, in some cases it may be possible 
-      to identify specific people that have been harmed. 
-      They can be specifically tagged, 
-      but these are secondary to the impacted class to which they belong.
-
-### Operational keywords
-
-1. If incident elements are not universally agreed upon or undisputed, 
-   then add wiggle words, for example,
-   - “Tesla Injured Pedestrian” should read as 
-     “Tesla Allegedly Injured Pedestrian” or
-     “Tesla Reportedly Injured Pedestrian”
-
-2. In cases where lawsuits are on-going,
-   1. **Report: “X did Y, violating Z”** – use “allege” 
-      (e.g., X was alleged to have done Y, potentially violating Z)
-   2. **Lawsuit filed** – use “allege”
-   3. **Lawsuit settled** – use “allege,” 
-      because admission of guilt cannot be inferred
-   4. **Report: “court found X violated Z”** – “allege” no longer used, 
-      due to admission of guilt being found (e.g., X violated Z)
-   5. **Report: “X was fined”** — “allege” no longer used, 
-      due to a fine being issued (e.g., X did Y and violated Z)
-
-## Credit
-
-Various drafts and versions of this document have been authored 
-by Sean McGregor, Khoa Lam, and Zachary Arnold
-
-## Working with Automated Systems
-
-### Bias
-
-Editors working with automated systems as set up for the editors 
-should all the more be vigilant of various biases 
-as they permeate the work we do. 
-The following is a list of documented biases
-as experienced by editors of the AIID:
-
-1. Automation bias
-   1. What is it?
-      - Bias introduced by the use of automated tooling
-   2. What does it look like in practice?
-      - Trusting the automated tool to do what it does without checking
-        (e.g., “Fetch Info” sometimes does not extract all the text from the site)
-2. Confirmation bias
-   1. What is it?
-      - The tendency to accept or reject new information
-        based on whether it conforms to pre-existing beliefs.
-   2. What does it look like in practice?
-      - Favoring submissions, wording, other content
-        that conforms to pre-existing beliefs
-        (e.g. Accepting, with insufficient evidence,
-         that allegations against an entity are accurate
-         because of general distaste for that entity)
-3. Cultural bias
-   1. What is it? 
-      - Interpretation and judgment by standards 
-        inherent to one's own culture
-   2. What does it look like in practice?
-      - Making it easier or harder 
-        for certain incidents to pass ingestion criteria
-        because of cultural perceptions 
-        of what is harmful, 
-        of how responsibility should be determined,
-        or of other factors that may be viewed differently
-        in other cultural contexts.
-
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>EDITORIAL BALANCE</strong><br />Do not raise the threshold so high that only severe injury qualifies. Do not lower it so far that every software defect or inconvenience becomes an incident. The deciding question is whether the event created a documented adverse consequence that matters beyond the bare fact of malfunction.</th>
+      </tr>
+    </thead>
+  </table>
 </div>
+
+## 4 Mapping Reports to Records
+
+*How to decide whether a new source belongs with an existing incident, a variant, or a new record.*
+
+### 4.1 Decision Sequence
+
+1. Search the incident summaries, relevant entity pages, and likely synonyms before creating a record.
+2. If the source mainly adds information about the same underlying event, attach it to the existing incident.
+3. If the source concerns a distinct event involving the same system, substantially similar causative factors, and similar harm, consider a variant.
+4. If the event is meaningfully different in actors, system, mechanism, setting, or harm, create a new incident and add a related-incident relationship when useful.
+5. If no qualifying event can be identified, classify the material as an issue or leave it outside current scope.
+
+### 4.2 Same Incident
+
+Reports belong to the same incident when they describe the same event, even if later sources add victims, corrected figures, legal consequences, regulatory findings, or a response. A lawsuit, recall, sanction, or apology does not automatically create a new incident when it is a later stage of the original event.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>EXAMPLE</strong><br />A local report describes a robotaxi blocking an ambulance. A later regulator notice investigates that obstruction. The notice is a response or additional report attached to the same incident, not a new collision incident.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+### 4.3 Variants
+
+A variant is a distinct event, not merely another report. It should normally satisfy all three inherited criteria: the same intelligent system, similar causative factors, and similar harms. If the system is unknown in either event, or if the mechanism differs substantially, a related-incident link is usually safer than a variant classification.
+
+Editors may create a new incident rather than a variant when collapsing repeated events would obscure distinct actors, locations, institutional responses, or historical significance. Use editor notes when departing from the default.
+
+### 4.4 Related Incidents and Similarity
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Relationship</strong></th>
+        <th><strong>Use when</strong></th>
+        <th><strong>Do not use as</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Variant</td>
+        <td>The same system and mechanism produce similar harm in a distinct event.</td>
+        <td>A general label for all incidents in the same domain.</td>
+      </tr>
+      <tr>
+        <td>Related incident</td>
+        <td>The events share a meaningful actor, mechanism, campaign, litigation history, or response but do not satisfy the full variant test.</td>
+        <td>Proof that the incidents have the same cause.</td>
+      </tr>
+      <tr>
+        <td>Similar incident</td>
+        <td>An informal research observation that two events resemble each other.</td>
+        <td>A substitute for a documented database relationship.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+### 4.5 Campaigns, Series, and Aggregated Harms
+
+A coordinated campaign may be one incident when the source presents it as a bounded operation involving the same actors, tools, targets, and objective. Separate incidents are usually preferable when distinct victims, dates, countries, or mechanisms are independently documented and useful for retrieval. Aggregate studies belong as issues when they report a pattern but do not identify event-level cases.
+
+**Campaign and constituent-event rule.** A campaign-level incident and a separately retrievable constituent incident may both be appropriate. Use both when the broader operation is itself a bounded episode, while one constituent event has an independently useful date, victim, location, mechanism, consequence, or response. The same report may support both records. Make the boundaries explicit and link the records as related incidents rather than treating one as a duplicate of the other.
+
+Do not create constituent incidents merely to multiply records for every post, image, transaction, or target in a campaign. The smaller event should be independently documentable and useful for retrieval.
+
+## 5 Source Research and Report Ingestion
+
+*How to build an evidentiary base that is useful, reproducible, and publicly accessible.*
+
+### 5.1 Selecting the Baseline Report
+
+The baseline report is the first source used to establish a new incident record. It need not be the first article chronologically. It should be the best publicly accessible source from which an editor can reliably identify the event, the AI role, the harmed parties, and a defensible incident date.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Priority</strong></th>
+        <th><strong>Prefer</strong></th>
+        <th><strong>Avoid when possible</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>A primary public document that directly establishes the event, such as a regulator notice, court filing, recall report, official investigation, or company disclosure.</td>
+        <td>A primary document that is inaccessible, fragmentary, or impossible for ordinary users to interpret without secondary reporting.</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>An independent report with clear sourcing, enough detail to support the record, and a stable public URL.</td>
+        <td>A paywalled article when an equally strong non-paywalled report exists.</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>A specialized or local source with unique facts unavailable elsewhere.</td>
+        <td>Derivative rewrites that add no reporting and obscure the original source.</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>A firsthand social-media post when it is the only direct evidence and can be preserved or corroborated.</td>
+        <td>Screenshots or reposts with no recoverable provenance.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>HOUSE PREFERENCE</strong><br />When quality and factual completeness are comparable, use the earliest non-paywalled report as the baseline. Add later authoritative reports and primary documents rather than replacing useful source diversity with redundant syndications.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+### 5.2 Source Evaluation
+
+Evaluate each source for independence, proximity to the event, transparency of sourcing, factual specificity, stability, and accessibility. Primary sources can be authoritative about what an institution said or did while remaining self-protective about responsibility. Journalism can provide independence while relying on partial access or anonymous sources. The strongest record often combines both.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Question</strong></th>
+        <th><strong>What to look for</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Does it establish AI involvement?</td>
+        <td>A named system, explicit admission, technical description, or credible attribution. Avoid inferring a model or developer from corporate relationships.</td>
+      </tr>
+      <tr>
+        <td>Does it establish harm?</td>
+        <td>Specific losses, injuries, disrupted proceedings, account loss, coercion, reputational consequences, official action, or a credible near-harm sequence.</td>
+      </tr>
+      <tr>
+        <td>Does it support the date?</td>
+        <td>A quoted filing date, crash date, transaction date, publication timeline, or other direct anchor.</td>
+      </tr>
+      <tr>
+        <td>Is the source stable?</td>
+        <td>A durable publisher page, official PDF, docket copy, archived notice, or other recoverable document.</td>
+      </tr>
+      <tr>
+        <td>Is it independent?</td>
+        <td>Consider whether the source is the alleged deployer, developer, harmed party, regulator, opposing party, or journalist.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+### 5.3 Report Metadata
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Field</strong></th>
+        <th><strong>Standard</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Report title</td>
+        <td>Use the source’s published title. For untitled material, use a clear type-based form such as “LinkedIn post: Name” or “Court filing: Case name.”</td>
+      </tr>
+      <tr>
+        <td>Author</td>
+        <td>Use named individual authors. When none are listed, use the publishing organization. Preserve bylines exactly enough to distinguish people.</td>
+      </tr>
+      <tr>
+        <td>Publication date</td>
+        <td>Use the source’s publication or filing date. Do not substitute the incident date.</td>
+      </tr>
+      <tr>
+        <td>URL</td>
+        <td>Use the canonical public URL when possible. Remove tracking query parameters such as utm\_source, utm\_medium, fbclid, and similar analytics tags unless they are required for access.</td>
+      </tr>
+      <tr>
+        <td>Text</td>
+        <td>Preserve complete substantive text, one blank line between paragraphs. Remove navigation, ads, unrelated recommendations, cookie notices, and duplicated captions.</td>
+      </tr>
+      <tr>
+        <td>Image URL</td>
+        <td>Prefer an image from the report, then a stable image of the relevant system, entity, or location. Remove resizing and tracking parameters when safe.</td>
+      </tr>
+      <tr>
+        <td>Submitter</td>
+        <td>Use the submitter identity and affiliation consistently. Do not confuse the report author with the AIID submitter or incident editor.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**Source-text fidelity.** Treat report ingestion as evidence preservation. Converting a webpage, saved HTML file, PDF, filing, or other source into clean text or Markdown is a formatting transformation, not an editorial rewrite. Preserve the source's substantive wording, headings, quotations, and meaningful links. Remove paratext such as navigation, advertising, cookie notices, unrelated recommendations, duplicate captions, and interface clutter. Do not silently paraphrase, normalize, summarize, or “improve” the story itself.
+
+When a transformation is unusually aggressive because the source is malformed or difficult to preserve, retain the original file or saved HTML when possible so another editor can verify the conversion.
+
+### 5.4 URL Hygiene and Public Documents
+
+A question mark begins a URL query string. Many query parameters are used for analytics or traffic attribution rather than access. Strip those tracking parameters before saving a URL. Preserve parameters that identify the document, select a required language, or are necessary to retrieve the content.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>CLEAN URL EXAMPLE</strong><br />Use <a href="https://example.org/report">https://example.org/report</a> rather than <a href="https://example.org/report?utm_source=chatgpt.com&amp;utm_medium=referral">https://example.org/report?utm\_source=chatgpt.com\&utm\_medium=referral</a></th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+When an incident has a particularly important public document, such as a court order, disclosure letter, regulator report, recall notice, or technical postmortem, include the most useful stable URL in the incident record or, when helpful, in an optional clarification note in the Editor's note field. Prefer the document that directly establishes the disputed fact, date, or response.
+
+### 5.5 Preserving Evidence and Handling Paywalls
+
+Do not rely on a search-result snippet as the report. Open the source, verify the text, and save enough metadata to recover it later. When the strongest report is paywalled, seek a primary document, a licensed republication, or a reliable non-paywalled source. A paywalled report may still be added when it contributes unique information, but the record should not depend exclusively on inaccessible evidence when an alternative exists.
+
+## 6 Writing and Dating the Incident Record
+
+*Standards for the AIID-written fields that determine how an incident is understood and retrieved.*
+
+### 6.1 Selecting the Incident ID Date
+
+The Incident Date field stores the incident ID date: the date assigned to the incident ID as its principal chronological anchor. This may be the date of a discrete harmful event, the first documented harm in an ongoing episode, or a justified fallback date when the underlying event cannot be established. It is distinct from the date an editor learned of the event, the publication date of a later report, and the date the incident ID was created.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Order</strong></th>
+        <th><strong>Date to use</strong></th>
+        <th><strong>Example</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>Date the harmful event occurred.</td>
+        <td>The date a defective motion was filed, a vehicle struck an object, or a deepfake was first distributed.</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Date harm first occurred in an ongoing episode.</td>
+        <td>The earliest documented discriminatory decision or first known unauthorized disclosure.</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Earliest identifiable event within a bounded series.</td>
+        <td>The first transaction or campaign deployment when the source presents later acts as one operation.</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>Lawsuit, complaint, recall, or investigation date when the underlying date cannot be established.</td>
+        <td>Use only as a fallback and explain the choice in editor notes.</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>First public report of harm.</td>
+        <td>Use when the event date remains unknown after reasonable searching.</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>Publication date of the baseline report.</td>
+        <td>Last resort.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>EVIDENCE PRACTICE</strong><br />When a source contains a sentence that directly ties the event to a date, preserve that quotation in the editor’s research notes. A filing that says an erroneous motion was “filed with the Court on April 9, 2026” is stronger date evidence than a later news publication date.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+### 6.2 Incident Titles
+
+A title should identify the event in a form that remains legible after the news cycle passes. It should be concise, written in title case and past tense, understandable without specialized knowledge, and distinguishable from neighboring records.
+
+- Include the implicated system, developer, or deployer when the evidence supports it.
+- State the harm or failure in concrete terms.
+- Use cautious language when facts remain alleged, disputed, or source-dependent.
+- Include a location, date, case name, or target only when it materially improves distinguishability.
+- Avoid outlet names, rhetorical framing, clickbait, unexplained acronyms, and conclusions that exceed the sources.
+- Prefer stable wording that will not require replacement whenever a response or lawsuit develops.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Evidentiary posture</strong></th>
+        <th><strong>Preferred wording</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Source allegation or pending lawsuit</td>
+        <td>Allegedly, reportedly, purportedly, was alleged to have</td>
+      </tr>
+      <tr>
+        <td>Company or institution admits the event but not broader wrongdoing</td>
+        <td>State the admitted event directly; retain caution for contested causation or harm.</td>
+      </tr>
+      <tr>
+        <td>Regulator or court formally finds a violation</td>
+        <td>State the finding directly and identify the adjudicating body when useful.</td>
+      </tr>
+      <tr>
+        <td>Settlement without admission</td>
+        <td>Continue to describe underlying wrongdoing as alleged.</td>
+      </tr>
+      <tr>
+        <td>Authenticity or AI generation disputed</td>
+        <td>Attribute the determination: “Video Reportedly Identified as AI-Generated.”</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>TITLE PATTERN</strong><br />\[Named system, developer, or deployer\] \[reportedly/allegedly\] \[performed or enabled the harmful event\] \[target, setting, or case name if needed\]</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>EXAMPLE</strong><br />Sullivan \& Cromwell’s Emergency Bankruptcy Motion in In re Prince Global Holdings Limited, et al. Contained AI-Generated Legal Errors</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+<Box>
+
+**Cold-reader rule.** A title should remain understandable to a reader who has not seen the source and does not already know the local geography, organization, case, or person involved. Supply compact context when a proper name alone would force the reader to guess. For local U.S. incidents, prefer the state name when a city or county is material and not globally self-explanatory. For non-U.S. incidents, include the country when the locality or institution would otherwise be ambiguous. Identify an unfamiliar person by role when that role is material to understanding the incident.
+
+</Box>
+
+Cold-reader context is not license to overload the title. Put secondary context in the opening sentence of the description when it would make the title unwieldy.
+
+### 6.3 Incident Descriptions
+
+The description should usually be one paragraph of approximately 500 characters, though clarity takes priority over a rigid limit. It should state what happened, how AI was implicated, who or what was harmed, and the most important immediate response when that response helps close the event.
+
+Avoid turning the description into a catalogue of every allegation, target, medium, or source. Combine related details into descriptive phrases. Do not repeat the title verbatim. Do not include analysis, moral judgment, speculative motives, or technical claims that the sources do not establish.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Include</strong></th>
+        <th><strong>Usually omit</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>The event and setting</td>
+        <td>Publisher names unless the publisher is an actor in the incident</td>
+      </tr>
+      <tr>
+        <td>The implicated AI system or AI-enabled mechanism</td>
+        <td>Long lists of examples or victims</td>
+      </tr>
+      <tr>
+        <td>The concrete harm or near harm</td>
+        <td>Taxonomy terms that do not help a general reader</td>
+      </tr>
+      <tr>
+        <td>Named actors when central and supported</td>
+        <td>The editor’s interpretation of intent</td>
+      </tr>
+      <tr>
+        <td>A significant corrective action or official response</td>
+        <td>Every later development</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>DESCRIPTION PATTERN</strong><br />On \[date or period\], \[deployer or user\] used or operated \[AI system\] in \[setting\], where it \[mechanism\]. The event \[harm\]. \[Response or evidentiary qualifier, when important\].</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>SYNTAX PREFERENCE</strong><br />Use ordinary prose rather than repetitive list syntax. Replace strings such as “false endorsements, fabricated articles, and deceptive videos targeting officials, organizations, and schools” with a phrase that describes the common function of the material when possible.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+**Cold-reader description standard.** The description should stand on its own. On first reference, give enough context to identify an unfamiliar person, organization, locality, or institution when its role is not evident from the name. A cold reader should not have to open the report to learn what town is being discussed, what country an institution belongs to, or why a named person matters to the event.
+
+Prefer concrete signifieds over taxonomy language. Use the ontology to make the record retrievable, but write the description for a general reader.
+
+### 6.4 Optional Timeline and Clarification Notes
+
+Timeline and clarification notes are **always optional**. When they are useful, place them in the **Editor's note field** of the incident ID. There is no requirement to add one simply because time has passed, because a record was ingested later than the event, or because a later update exists.
+
+Use an optional note when the chronology would otherwise be confusing or when preserving a later development would materially help a future editor or reader. One common use is to explain a meaningful gap between when the incident occurred and when it was ingested into the AIID. Another is to mark an investigation, correction, adjudication, remediation, disclosure, or other later development when recording it is useful or desired.
+
+Keep these notes brief and date-centered. They should clarify chronology rather than repeat the incident description. Editorial reasoning about classification, naming, attribution, or record boundaries may also belong in the Editor's note field, but should be stated as reasoning rather than disguised as timeline chronology.
+
+**OPTIONAL INGESTION-GAP CLARIFICATION**
+
+> The incident ID date is \[date\], based on \[the evidentiary basis\]. The incident ID was created on \[date\]. \[Add one brief sentence about the intervening public record only if it helps explain the gap.\]
+
+**OPTIONAL LATER-DEVELOPMENT NOTE**
+
+> \[MM/DD/YYYY\]: \[Actor\] \[investigated, corrected, disclosed, sanctioned, compensated, suspended, restored, or otherwise responded to\] \[the incident\], \[brief material consequence\].
+
+### 6.5 Editor Notes and Uncertainty
+
+Use the Editor's note field sparingly and only when clarification is useful. Appropriate subjects include a non-obvious date selection, disputed AI involvement, incident-versus-variant reasoning, the choice to create both a campaign record and a constituent incident, the decision to name a harmed person, an unusual entity placement, or a controlled departure from the tagging rules.
+
+The same field may also contain the optional timeline and clarification notes described above. Distinguish chronology from editorial reasoning, keep both concise, and do not treat either kind of note as mandatory. The public title and description should remain clear without depending on a private essay in the notes field.
+
+## 7 Entity and System Tagging
+
+*A layered ontology that preserves incident specificity while supporting comparison across the database.*
+
+### 7.1 The Four Core Fields
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Field</strong></th>
+        <th><strong>Question</strong></th>
+        <th><strong>Typical contents</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Alleged developer of AI system</td>
+        <td>Who created, trained, supplied, or materially built the implicated AI technology?</td>
+        <td>Named companies, research groups, model providers, and supported developer classes.</td>
+      </tr>
+      <tr>
+        <td>Alleged deployer of AI system</td>
+        <td>Who selected, operated, implemented, authorized, or used the system in the real-world setting?</td>
+        <td>Employers, agencies, platforms, law firms, schools, hospitals, users, or attackers.</td>
+      </tr>
+      <tr>
+        <td>Alleged harmed or nearly harmed parties</td>
+        <td>Who or what experienced the negative effect or credible near harm?</td>
+        <td>Impacted classes, named public-facing victims, institutions, property interests, and bounded collective parties.</td>
+      </tr>
+      <tr>
+        <td>Implicated systems</td>
+        <td>What technical and nontechnical systems were involved?</td>
+        <td>Named products or models, system classes, vehicles, legal workflows, social platforms, transit systems, or other relevant infrastructure.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+### 7.2 Pair Specific Entities with Reusable Classes
+
+Specific and broad tags are complementary. A named company makes the record precise; a reusable class makes it comparable. Add both when the source supports the role and the broader tag is useful for retrieval.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Specific tag</strong></th>
+        <th><strong>Broader tag</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Waymo LLC</td>
+        <td>Automated driving system developers</td>
+      </tr>
+      <tr>
+        <td>Sullivan \& Cromwell LLP</td>
+        <td>Law firms</td>
+      </tr>
+      <tr>
+        <td>Named politician targeted by a deepfake</td>
+        <td>Public officials</td>
+      </tr>
+      <tr>
+        <td>Named K-pop performer</td>
+        <td>Musicians or entertainment industry figures, as supported</td>
+      </tr>
+      <tr>
+        <td>United States Bankruptcy Court for the Southern District of New York</td>
+        <td>Courts</td>
+      </tr>
+      <tr>
+        <td>Parties in In re Prince Global Holdings Limited, et al.</td>
+        <td>Parties to legal proceedings</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>ONTOLOGICAL RULE</strong><br />A broad tag should describe the actor’s actual role in the incident. Do not add broad tags simply because they are adjacent to the entity or could be true in another context.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+### 7.3 Named People and Harmed Classes
+
+Tag harmed parties first as an impacted class and secondarily as named individuals when naming materially improves the record. Editorial discretion should favor anonymity when a person is identified only incidentally and their name is unnecessary to understand the harm. Naming is more appropriate when the person is central to the event or deliberately acts as a public-facing plaintiff, complainant, whistleblower, advocate, or warning voice.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Source situation</strong></th>
+        <th><strong>Preferred treatment</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>A local scam story names an elderly victim whose identity adds nothing to the incident</td>
+        <td>Use “elderly scam victims” or another faithful class; omit the person’s name.</td>
+      </tr>
+      <tr>
+        <td>A public official is the target of a political deepfake</td>
+        <td>Use the named official and an appropriate class such as “public officials.”</td>
+      </tr>
+      <tr>
+        <td>A lawyer signs and files a defective AI-assisted brief</td>
+        <td>The lawyer may be tagged when central to the legal event; also tag “lawyers.”</td>
+      </tr>
+      <tr>
+        <td>A plaintiff publicly brings a case about an AI system</td>
+        <td>Naming may be appropriate when the public role is material.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+### 7.4 Canonical Names and Aliases
+
+- Use one canonical tag for each real-world entity. Treat abbreviations, punctuation differences, legal suffixes, and translation variants as aliases.
+- Use proper names for people and organizations. Use plural noun phrases for classes.
+- Do not use forms such as “teacher(s),” “consumer(s),” or “Unknown Actor.”
+- Do not merge a company with its product, a parent with a subsidiary, a person with an office, or an individual with a class.
+- Before creating a tag, search likely abbreviations, former names, translations, and spelling variants.
+
+**User-class naming.** Prefer concise noun phrases of the form “x users” rather than “Users of x.” Examples include “AI coding assistant users,” “chatbot users,” and “AI agent system users.” Apply the same construction consistently when creating or canonicalizing comparable user classes.
+
+### 7.5 Controlled Fallbacks When a Name Is Unknown
+
+An unknown proper name does not require an “Unknown” entity. Use a supported role or class when it conveys real information. Examples include scammers, social media users, generative AI developers, chatbot developers, or automated driving system developers. Leave the field without a specific named entity when even the role is uncertain.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>DEVELOPER CAUTION</strong><br />Do not infer OpenAI, Anthropic, Google, or another developer from a law firm’s clients, a system’s visual style, or general market prevalence. Use only what the source establishes.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+### 7.6 Products and Models Belong in Implicated Systems
+
+A product, model, or system name generally belongs in Implicated Systems rather than as an entity tag. The developer field identifies who built the system; the system field identifies what technology or workflow was involved. Pair a specific system with a broader system class when both are supported.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Specific system</strong></th>
+        <th><strong>Broader system class</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Waymo Driver</td>
+        <td>Automated driving systems (ADS)</td>
+      </tr>
+      <tr>
+        <td>ChatGPT</td>
+        <td>Large language models; chatbots</td>
+      </tr>
+      <tr>
+        <td>An identified voice-cloning product</td>
+        <td>Synthetic voice/audio generation; voice cloning technology</td>
+      </tr>
+      <tr>
+        <td>An unidentified text-generating legal tool</td>
+        <td>Generative AI systems; AI-assisted legal drafting systems</td>
+      </tr>
+      <tr>
+        <td>An autonomous task-executing assistant</td>
+        <td>AI agent system</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**Enterprise AI systems.** Use this reusable system class when the incident materially depends on an AI system deployed inside an organizational or production workflow and the enterprise context is analytically useful. Do not apply it merely because a company happened to use AI. Pair it with the specific product or model and the more technical system class when known.
+
+**AI coding assistants.** Use this system class for tools that generate, transform, review, or execute code as part of a software-development workflow. When the harmed or exposed population is the people relying on those systems, prefer the class “AI coding assistant users.”
+
+### 7.7 Government Bodies and Public Institutions
+
+Government tags should be canonical, jurisdictionally legible, and consistent across countries. Prefer the institution’s established English name when one exists. Add the jurisdiction in a form that reads naturally and helps users retrieve related bodies.
+
+- Use a country or jurisdictional prefix when it is part of the conventional name or provides clear hierarchy, such as “United States Department of Justice,” “California Department of Motor Vehicles,” or “New York City Police Department.”
+- Use a parenthetical jurisdiction only when it is needed to disambiguate an otherwise generic translated title and a prefixed form would distort the institution’s name, such as “Ministry of Education (Singapore).”
+- Do not alternate casually between country nouns, demonyms, abbreviations, and parentheticals. Choose a canonical form and store the others as aliases.
+- Preserve a widely recognized acronym as an alias unless the acronym is itself the institution’s dominant public name.
+- Distinguish a ministry, department, regulator, court, officeholder, and government as separate entities.
+
+### 7.8 Courts, Cases, and Bounded Collective Tags
+
+A case caption is a proper title; “parties in” that case is a descriptive collective tag. Such a tag can be useful when the sources establish that the proceeding’s participants were burdened but do not identify every party separately. The tag should use the formal or accepted short caption and be paired with a reusable class.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>INCIDENT-SPECIFIC HARMED PARTY</strong><br />Parties in In re Prince Global Holdings Limited, et al.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>BROADER CLASS</strong><br />Parties to legal proceedings</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+Do not treat a defined legal phrase such as “Joint Provisional Liquidators” as an organization merely because a filing capitalizes it. Legal documents frequently capitalize defined roles. Use a role class such as court-appointed liquidators or insolvency practitioners unless the individual officeholders or a formal organization are identified and materially relevant.
+
+### 7.9 Merge Discipline
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Merge when</strong></th>
+        <th><strong>Do not merge when</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>The records differ only by punctuation, spacing, capitalization, legal suffix, minor misspelling, abbreviation, or clear translation variant.</td>
+        <td>The distinction represents a real difference: company/product, parent/subsidiary, agency/officeholder, person/role, class/individual, platform/feature.</td>
+      </tr>
+      <tr>
+        <td>The sources clearly identify both labels as the same real-world entity.</td>
+        <td>The similarity is only lexical or inferential.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+### 7.10 How the Entity Merge Tool Works
+
+The editor-only merge page supports two paths. Editors may select any two entity records manually, identifying a primary record to keep and a secondary record to delete. The page also presents potential duplicate pairs generated from name similarity, with an adjustable matching threshold. Suggested pairs are a review queue, not a judgment that the records are identical.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Stage</strong></th>
+        <th><strong>Editor action</strong></th>
+        <th><strong>System effect</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Select</td>
+        <td>Open both entity pages and compare names, roles, incident histories, products, jurisdictions, and organizational identity.</td>
+        <td>No data changes.</td>
+      </tr>
+      <tr>
+        <td>Choose canonical record</td>
+        <td>Select the record whose name and scope best represent the real-world object.</td>
+        <td>The chosen record becomes the surviving entity ID.</td>
+      </tr>
+      <tr>
+        <td>Confirm</td>
+        <td>Read the irreversible-operation warning and verify the kept and deleted names one final time.</td>
+        <td>The merge mutation is submitted.</td>
+      </tr>
+      <tr>
+        <td>Rewrite</td>
+        <td>No additional editor action during processing.</td>
+        <td>References to the deleted entity are updated to the surviving record; the secondary active record is removed.</td>
+      </tr>
+      <tr>
+        <td>Redirect</td>
+        <td>Verify the retired entity URL after completion.</td>
+        <td>The retired ID is preserved as a duplicate mapping pointing toward the canonical record.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>SIMILARITY IS NOT IDENTITY</strong> A high name-similarity percentage can reflect a true alias, a parent and subsidiary, a company and product, a person and office, or two different institutions with generic names. Never merge from the percentage alone.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+### 7.11 Choosing the Canonical Record
+
+Choose the canonical record that will be most legible and durable for future editors and researchers. The decision is about the object’s best public representation, not simply which record was created first or appears in more incidents.
+
+- Prefer the entity’s established current English name when one exists, while retaining a dominant public acronym when the acronym is the name users will actually search.
+- Preserve distinctive capitalization, punctuation, diacritics, and jurisdictional identifiers that are part of the recognized name.
+- Prefer a name broad enough to cover the same real-world object across incidents but not so broad that it collapses products, offices, subsidiaries, individuals, or role classes.
+- Treat legal suffixes, former names, abbreviations, and translation variants as aliases when the sources establish identity.
+- Do not choose solely by shorter slug, older creation date, incident count, or the order in which a similarity pair is displayed.
+
+### 7.12 Post-Merge Verification and Alias Chains
+
+1. Open the surviving entity page and confirm that its name and role-specific incident lists are correct.
+2. Open the retired entity URL and confirm that it points users toward the surviving record.
+3. Review several affected incidents, especially records in different fields, to ensure the merge did not move a product into a developer role or collapse a class into an individual.
+4. Search the entity index for additional spelling, punctuation, translation, singular/plural, or legal-suffix variants.
+5. If the canonical entity was itself previously merged, ensure that retired IDs resolve to the final active record rather than an avoidable chain of retired identifiers.
+6. Record any consequential merge decision or anomaly in the appropriate maintenance notes or audit log.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>DO NOT REPAIR A BAD MERGE CASUALLY</strong> If a merge appears to have collapsed genuinely distinct entities, stop further editing and preserve the affected IDs and incidents. Restoration may require database-level recovery; creating new counter-duplicates can compound the damage.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+### 7.13 Legacy Cleanup and Retroactive Editing
+
+The current guide governs new work by default, but retroactive cleanup should be organized as a reviewable project rather than performed opportunistically whenever an older label looks inelegant.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Priority</strong></th>
+        <th><strong>Typical legacy condition</strong></th>
+        <th><strong>Preferred treatment</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>High</td>
+        <td>A generic Unknown, Unspecified, Unnamed, or None tag conveys no useful role and distorts aggregation.</td>
+        <td>Replace it with a supported role or class, or leave the unsupported specific identity absent.</td>
+      </tr>
+      <tr>
+        <td>High</td>
+        <td>Two active records clearly represent the same real-world entity.</td>
+        <td>Verify across incidents and merge to the strongest canonical form.</td>
+      </tr>
+      <tr>
+        <td>High</td>
+        <td>A product, model, or system is placed in a developer or deployer field solely because the registry is shared.</td>
+        <td>Move it to Implicated Systems and tag the responsible actor separately when supported.</td>
+      </tr>
+      <tr>
+        <td>Medium</td>
+        <td>A deprecated vocabulary term fragments a major system or actor class.</td>
+        <td>Apply the controlled vocabulary consistently after confirming scope.</td>
+      </tr>
+      <tr>
+        <td>Medium</td>
+        <td>An old incident lacks an implicated-system tag despite clear evidence.</td>
+        <td>Add the specific system and reusable system class without changing unrelated fields.</td>
+      </tr>
+      <tr>
+        <td>Medium</td>
+        <td>A retired entity points through another retired entity before reaching the live canonical record.</td>
+        <td>Flatten the mapping when supported by maintenance tools and database review.</td>
+      </tr>
+      <tr>
+        <td>Low</td>
+        <td>Capitalization or punctuation differs but retrieval and meaning are not impaired.</td>
+        <td>Correct during a planned canonicalization pass rather than interrupting higher-value work.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>RETROACTIVITY RULE</strong> Use the current guide as the default for new and actively revised incidents. Broad historical cleanup should have a defined scope, a recoverable change record, and a consistent house rule.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+<Box>
+
+**Legacy Implicated Systems rule.** New incidents should include a specific implicated system and a reusable system class whenever the evidence supports them. Editing an older incident for an unrelated reason does not, by itself, require a new research project to reconstruct its Implicated Systems field. Backfill missing system tags when the evidence is already clear, when the system field is directly relevant to the edit, or as part of a scoped audit with a recoverable change record.
+
+</Box>
+
+## 8 Conventions for Recurring Incident Types
+
+*Domain-specific guidance for cases that repeatedly produce classification or wording problems.*
+
+### 8.1 Synthetic Media, Deepfakes, and Impersonation
+
+A synthetic-media incident requires real-world use or distribution tied to harm or near harm. The generation of a deceptive image in a laboratory demonstration is usually an issue. A video circulated to defraud investors, damage a person’s reputation, mislead voters, or coerce a victim is an incident.
+
+- Use “synthetic media technology” as the broad umbrella when the modality is mixed or unclear.
+- Use “synthetic voice/audio generation” for generated or manipulated audio.
+- Use “voice cloning technology” only when the source explicitly establishes cloning or imitation of a particular voice.
+- Attribute authenticity findings when contested. Detection-tool output alone may not be sufficient to state that material was AI-generated as fact.
+- Exclude clearly labeled satire or parody absent evidence of deception or harm.
+
+**Political synthetic content.** AI-generated political memes, attack images, troll posts, ordinary campaign creative, or other synthetic political material are not incident-level merely because they are political, misleading, or offensive. Look for a bounded deployment and a documented adverse consequence to a person, institution, political process, or epistemic environment. Diffuse recurring concern without a qualifying event may be better treated as an issue.
+
+**Ontology layering.** Use the broad synthetic-media umbrella together with modality-specific system classes when both improve retrieval. Add Deepfake technology when impersonation or deceptive depiction of a real person is established; add Voice cloning technology only when a particular voice is cloned or imitated. Creator classes such as Synthetic media creators and Deepfake creators describe deployers, not developers.
+
+### 8.2 Scams, Fraud, and Coercion
+
+The incident may begin when deceptive AI-generated material is deployed against a target, not only when money changes hands. Actual financial loss is strong harm evidence, while a documented transfer attempt interrupted by an external party may qualify as near harm. Identify the AI mechanism, the impersonated person or institution, the victim class, and the delivery platform when known.
+
+### 8.3 AI-Generated Legal Errors
+
+A hallucinated citation or quotation becomes an incident when it enters a consequential legal workflow, such as a filing submitted to a court, a decision relied upon by a client, or an official document that burdens parties or the legal process. A private draft caught before use is normally a product error or issue rather than an incident.
+
+Use the filing date as the incident date when the defective filing is the event. Tag the responsible firm or lawyer as deployer only to the extent supported by the public record. Do not infer the AI developer when the tool is undisclosed. Courts, clients, parties to proceedings, judicial integrity, or the legal system may be harmed-party tags when the evidence supports those effects.
+
+### 8.4 Automated Driving and Driver Assistance
+
+Use “Automated driving systems (ADS)” as the preferred umbrella for systems performing the dynamic driving task. Use “Driver assistance systems” when the human driver remains responsible for supervision or the source identifies an assistance feature rather than automated driving. Avoid treating marketing labels as technical conclusions.
+
+- A collision, traffic obstruction, unsafe maneuver, emergency-response interference, or property-damage event is ordinarily incident-level.
+- A recall is usually a response or later development when it addresses known events. A recall notice may also establish previously undocumented incidents.
+- Tag road users, pedestrians, passengers, emergency medical services, transit systems, or residential structures when they are directly affected.
+- Use “Transit systems” rather than “Public transit systems” when ownership is irrelevant or mixed.
+
+### 8.5 Algorithmic Decisions in Employment, Education, Finance, and Government
+
+A policy concern becomes an incident when an identifiable person or cohort is subjected to a consequential decision, classification, denial, ranking, investigation, or allocation. The harmed class should match the real scope. “Women job applicants” may be accurate where “women” is too broad and “women applying for engineering roles at one named company” is unnecessarily narrow.
+
+### 8.6 Chatbots, Large Language Models, and AI Agents
+
+A harmful response is not automatically an incident merely because it is false or offensive. Look for reliance, repeated harmful interaction, disclosure of private information, unauthorized action, material procedural burden, psychological injury, or a credible near-harm chain.
+
+Use **AI agent systems** when the evidence shows consequential, multi-step execution through tools, permissions, delegated authority, or external systems. Tool access alone is not enough, and marketing labels such as “agent” or “agentic” should not substitute for evidence about what the system actually did. Describe the consequential authority exercised: for example, deleting files, changing an account, sending messages, modifying code, initiating transactions, or acting across connected systems.
+
+### 8.7 Security Vulnerabilities and Exploits
+
+A vulnerability report without exploitation-related harm is generally an issue. It becomes an incident when attackers use the weakness, when a real target is placed in a credible near-harm chain, or when the system’s unsafe authority produces actual unauthorized access, disclosure, manipulation, or control. Distinguish the AI system’s role from ordinary cybersecurity failures.
+
+An attempted exploit can qualify as near harm even when the attacker does not ultimately succeed, provided a real target entered a documented chain in which harm was credible and an external intervention, failed step, or independent circumstance prevented the outcome. Do not treat every blocked probe or proof of concept as near harm.
+
+### 8.8 Service Outages and Availability Failures
+
+A service outage is not ordinarily an AI incident. Temporary unavailability, elevated error rates, or widespread failed requests do not establish harm beyond ordinary product inconvenience. Create an incident only when the outage causes a documented consequential effect, such as interruption of emergency care, loss of critical access, material financial loss, or another adverse event that satisfies the general threshold.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>DO NOT USE SCALE AS A SUBSTITUTE FOR HARM</strong><br />Thousands of outage reports may show that an event was widespread, but scale alone does not convert service unavailability into an AI incident.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+### 8.9 Ongoing and Aggregate Harms
+
+For recurring pricing, ranking, surveillance, or discrimination claims, identify whether the source describes a bounded deployment and traceable transactions or decisions. A class action may reveal an ongoing incident, but the lawsuit filing date should not replace an earlier documented start date. If the source only presents aggregate risk or statistical disparity without identifiable events, treat it as an issue until the underlying incidents can be resolved.
+
+### 8.10 Information Manipulation and Influence Operations
+
+AI-assisted information manipulation becomes incident-level when a source documents a bounded campaign, deployment, or traceable episode in which AI materially helped create, adapt, translate, target, distribute, or operationally support deceptive content tied to reputational, political, institutional, financial, or epistemic harm. A general claim that generative AI could be used for propaganda is an issue rather than an incident.
+
+Editors should separate the campaign actor, the AI developer, the AI system, the distribution platform, and the harmed audience or institution. The same company may occupy more than one role, but shared corporate ownership does not justify placing every product or subsidiary under the parent name.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Component</strong></th>
+        <th><strong>Preferred field</strong></th>
+        <th><strong>Example treatment</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Named or source-attributed campaign operator</td>
+        <td>Alleged deployer</td>
+        <td>Use the named organization, account cluster, government-linked group, or individual, paired with an appropriate actor class when useful.</td>
+      </tr>
+      <tr>
+        <td>Unidentified operators with a supported function</td>
+        <td>Alleged deployer</td>
+        <td>Use a role such as Information manipulation actors, scammers, or social media account operators; do not create an empty Unknown Actor.</td>
+      </tr>
+      <tr>
+        <td>Named model provider</td>
+        <td>Alleged developer</td>
+        <td>Tag only when the source identifies the technology or provider; do not infer from writing style or prevalence.</td>
+      </tr>
+      <tr>
+        <td>Chatbot, image generator, or other generative tool</td>
+        <td>Implicated systems</td>
+        <td>Tag the specific product when known and a reusable class such as Large language models or Synthetic media technology when supported.</td>
+      </tr>
+      <tr>
+        <td>Social platform or messaging service</td>
+        <td>Implicated systems or deployer, depending on conduct</td>
+        <td>Use as a system when it carried the campaign; use as deployer only when the platform itself operated or materially implemented the relevant AI system.</td>
+      </tr>
+      <tr>
+        <td>Targeted public, institution, or discourse</td>
+        <td>Harmed or nearly harmed parties</td>
+        <td>Use the narrowest faithful class, named targets when materially central, and broader classes only when their incident role is supported.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>ATTRIBUTION CAUTION</strong> Terms such as state-linked, government-aligned, coordinated, covert, or foreign influence operation must track the source’s evidentiary language. Account origin, language, or thematic alignment alone does not establish state control.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+Treat multiple content outputs as one incident when the source presents them as one bounded operation with common actors, infrastructure, objectives, and response. Create separate incidents when the campaigns have materially different operators, targets, time periods, or operational chains. Link them as related incidents when a common report or response makes the connection useful without satisfying the variant test.
+
+## 9 Responses, Updates, and Record Maintenance
+
+*How records should evolve after publication without losing their evidentiary history.*
+
+### 9.1 What Counts as an Incident Response
+
+An incident response is a concrete action taken because of the event. It may come from a developer, deployer, regulator, court, legislature, harmed party, insurer, platform, or other institution. A general policy announcement is not a response unless it is tied to the incident or a clearly defined cluster of incidents.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Response type</strong></th>
+        <th><strong>Examples</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Containment</td>
+        <td>Suspending a system, removing content, disabling a feature, securing affected accounts, or halting operations.</td>
+      </tr>
+      <tr>
+        <td>Correction</td>
+        <td>Replacing a filing, correcting an output, retracting a report, updating a model, or restoring an account.</td>
+      </tr>
+      <tr>
+        <td>Investigation</td>
+        <td>Internal review, regulator inquiry, safety audit, law-enforcement investigation, or independent assessment.</td>
+      </tr>
+      <tr>
+        <td>Accountability</td>
+        <td>Fine, sanction, recall, court order, disciplinary action, settlement, or prosecution.</td>
+      </tr>
+      <tr>
+        <td>Redress</td>
+        <td>Refund, compensation, medical support, reinstatement, apology, or direct assistance to harmed parties.</td>
+      </tr>
+      <tr>
+        <td>Governance change</td>
+        <td>New review controls, training requirements, logging, access restrictions, or revised deployment policy linked to the event.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+### 9.2 Updating an Existing Record
+
+- Add a new report when it contributes material facts, a primary document, a formal response, or a substantially different perspective.
+- Update the description only when the new information changes the essential event, harm, or AI mechanism. Avoid turning it into a rolling news digest.
+- Optionally add a brief timeline or clarification note in the Editor's note field for a major response, adjudication, correction, reversal, or other later development when preserving that chronology is useful.
+- Revise tags when a developer, system, victim class, or responsible actor becomes known.
+- Preserve caution when a settlement or apology does not establish every allegation.
+- Correct errors transparently and avoid silently changing the incident boundary without an editor note.
+
+### 9.3 Conflicting or Reversed Reporting
+
+When later reporting undermines a core premise, such as a forged forensic report or a disputed deepfake determination, pause ingestion or revise the record to reflect the uncertainty. Do not preserve a confident AI claim simply because it appeared in an earlier source. If AI involvement can no longer be supported, the record may need to be reclassified or removed from the incident collection.
+
+### 9.4 Record Audit Priorities
+
+Audits should focus on records where inconsistent naming, duplicate entities, unsupported “Unknown” tags, weak incident dates, overconfident titles, or legacy system terminology impair retrieval. Changes should follow a documented house rule rather than one-off aesthetic preference.
+
+## 10 Automated Tools and Editorial Quality Control
+
+*How to use AI-assisted research without allowing automation to replace evidence or judgment.*
+
+### 10.1 Common Editorial Biases
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Bias</strong></th>
+        <th><strong>How it appears in AIID work</strong></th>
+        <th><strong>Control</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Automation bias</td>
+        <td>Trusting fetched text, generated summaries, entity suggestions, or search results without checking the source.</td>
+        <td>Open the source, compare the text, and verify every material field.</td>
+      </tr>
+      <tr>
+        <td>Confirmation bias</td>
+        <td>Accepting weak allegations because they fit prior beliefs about a company, political actor, country, or technology.</td>
+        <td>Ask what evidence would change the classification and look for contrary reporting.</td>
+      </tr>
+      <tr>
+        <td>Cultural bias</td>
+        <td>Applying one jurisdiction’s assumptions about privacy, dignity, labor, speech, or harm to all contexts.</td>
+        <td>Use local reporting and describe the claimed harm in its institutional setting.</td>
+      </tr>
+      <tr>
+        <td>Availability bias</td>
+        <td>Overrepresenting English-language, highly publicized, or easily searchable incidents.</td>
+        <td>Search local outlets, regulators, technical notices, and non-English terms when feasible.</td>
+      </tr>
+      <tr>
+        <td>Hindsight bias</td>
+        <td>Treating a later recall, verdict, or disclosure as though the risk was obvious at the incident date.</td>
+        <td>Preserve the chronology and distinguish what was known at each stage.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+### 10.2 Required Verification for AI-Assisted Editing
+
+- Do not rely on an AI-generated citation, quotation, date, or URL without opening the source.
+- Do not infer that a candidate is absent from the AIID until searching the incident list, relevant entities, likely aliases, and the database backup or current export when available.
+- Check that the source actually says the material was AI-generated, rather than merely suspected, digitally altered, or assessed by an unreliable detector.
+- Distinguish facts reported by the source from the editor’s inference. Attribute the latter or omit it.
+- Verify that every named developer, deployer, harmed party, and system is placed in the correct field.
+- Re-read the final title and description against the baseline report before publishing.
+
+### 10.3 Final Publishing Checklist
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Check</strong></th>
+        <th><strong>Pass condition</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Scope</td>
+        <td>A specific event, implicated AI system, and harm or near harm are all identifiable.</td>
+      </tr>
+      <tr>
+        <td>Novelty</td>
+        <td>The event is not already represented as an incident or variant.</td>
+      </tr>
+      <tr>
+        <td>Sources</td>
+        <td>The baseline report is public, reliable, complete enough, and saved with clean metadata.</td>
+      </tr>
+      <tr>
+        <td>Date</td>
+        <td>The chosen date follows the hierarchy and is supported by a direct source passage where possible.</td>
+      </tr>
+      <tr>
+        <td>Title</td>
+        <td>Past tense, title case, concise, cautious, and distinguishable.</td>
+      </tr>
+      <tr>
+        <td>Description</td>
+        <td>One clear paragraph, roughly 500 characters, covering event, AI role, harm, and important response.</td>
+      </tr>
+      <tr>
+        <td>Entities</td>
+        <td>Specific actors and appropriate reusable classes are tagged; products remain in the system field.</td>
+      </tr>
+      <tr>
+        <td>Systems</td>
+        <td>Specific system and broad system class are both included when supported.</td>
+      </tr>
+      <tr>
+        <td>Relationships</td>
+        <td>Existing incident, variant, and related-incident decisions are correct.</td>
+      </tr>
+      <tr>
+        <td>Notes</td>
+        <td>Date or classification uncertainty is recorded briefly.</td>
+      </tr>
+      <tr>
+        <td>URLs</td>
+        <td>Tracking query parameters are removed and the most important public document is linked.</td>
+      </tr>
+      <tr>
+        <td>Tone</td>
+        <td>No unsupported inference, rhetorical inflation, or accidental assertion of disputed facts.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**Cold-reader pass.** Before publishing, read the title and first sentence as though you know nothing about the source. If a town, county, institution, case, or person would be opaque to a reasonable general reader, add the minimum geographic or role context needed to make the record self-contained.
+
+## 11 Guidance for Researchers
+
+*How to interpret the AIID as a selective, evolving public record rather than a complete census of AI harm.*
+
+### 11.1 What the Database Represents
+
+The AIID is a curated archive of publicly documented incidents, issues, reports, and responses. It records what sources allege or establish and how editors organize those claims. It is not a neutral mirror of all AI harms, a comprehensive denominator for risk rates, or an independent adjudication of every event.
+
+### 11.2 Coverage and Selection Effects
+
+Coverage depends on visibility, language, press freedom, legal access, institutional disclosure, editor capacity, and the searchability of sources. Wealthy countries, prominent companies, spectacular events, and English-language reporting are likely to be overrepresented. Harms affecting marginalized groups, occurring inside private organizations, or unfolding as ordinary administration may be underrepresented.
+
+### 11.3 Epistemic Status
+
+An incident title is an editorial summary of source-supported claims, not a finding of legal liability or technical causation. Researchers should read the attached reports, attend to cautious language, and distinguish allegations, admissions, official findings, settlements, and editor inference. A lack of records is not evidence that a sector or country has no incidents.
+
+### 11.4 Temporality and System Versioning
+
+The incident date, discovery date, publication date, and response date may differ by months or years. Products can also change substantially while retaining the same brand name. Analyses should not assume that a system named in 2022 is technically identical to a system carrying the same name in 2026.
+
+### 11.5 Ethical Use and Attribution
+
+Cite the specific incident page and the underlying reports used in the analysis. Do not identify private harmed individuals merely because a source or entity record contains their names. Avoid presenting incident counts as comparative safety rates without a defensible exposure denominator and a clear account of coverage bias.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>RESEARCH PRINCIPLE</strong><br />The AIID is strongest as a map of documented events, public claims, institutional responses, and changing ways of making AI harm legible. It is weakest when treated as a complete statistical census without attention to selection and source effects.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+### 11.6 Entity Counts and Graph Interpretation
+
+Entity pages aggregate incidents according to current field assignments. A high count may reflect a company’s broad product portfolio, the reuse of a class tag, historical overtagging, or later retrospective cleanup. It is not automatically a measure of culpability, prevalence, organizational size, or comparative safety.
+
+The Related Entities display largely reflects incident co-occurrence. Two entities may appear together because one developed a system, another deployed it, and a third was harmed. Researchers should describe this as shared incident context unless an explicit relationship or independent source establishes something stronger.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>LONGITUDINAL CAUTION</strong> Entity merges and canonical-name changes can alter aggregate counts without any new external incident occurring. Record the export or access date when conducting reproducible entity-level analysis.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+## A Quick Decision Checklist
+
+*A compact intake and publication workflow.*
+
+### A.1 Intake
+
+- What exact event or episode occurred?
+- What AI system or AI-mediated workflow was involved?
+- How did the system help produce the harm?
+- Who or what was harmed or nearly harmed?
+- What is the best date anchor?
+- Is the event already in the AIID?
+- Is it better treated as an issue, variant, or related incident?
+- What source best establishes the event for a public reader?
+
+### A.2 Record Construction
+
+- Ingest the baseline source with clean metadata and complete text.
+- Set the incident date and preserve the supporting quotation in research notes.
+- Write a stable, cautious title.
+- Write a single-paragraph description of approximately 500 characters.
+- Add specific and broad tags in each supported field.
+- Link the most important public document.
+- Add an optional timeline or clarification note in the Editor's note field only when it helps explain an ingestion gap, material later development, or other chronology that would otherwise be unclear.
+- Perform the final publishing checklist in Section 10.3.
+
+### A.3 Entity Creation and Merge Review
+
+- Search the live entity index for current name, acronym, former name, translation, punctuation, and singular/plural variants.
+- Confirm whether the candidate is a person, organization, class, product, model, platform, office, institution, or system category.
+- Check the role in every affected incident field before deciding that two records are duplicates.
+- Select the canonical name according to public identity and long-term legibility, not simply record age or incident count.
+- Treat the merge tool’s similarity score as triage only.
+- Verify the surviving page, retired URL, and representative affected incidents after merging.
+- Escalate a suspected mistaken merge rather than attempting an improvised reversal.
+
+## B Editorial Templates
+
+*Reusable starting points that should be adapted rather than copied mechanically.*
+
+### B.1 Title Templates
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>TECHNICAL FAILURE</strong><br />\[System or deployer\] Reportedly \[failed action\], \[causing harm\]</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>MISUSE</strong><br />AI-Generated \[media or mechanism\] Reportedly \[impersonated, defrauded, targeted, or coerced\] \[harmed party\]</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>LEGAL FILING</strong><br />\[Firm or lawyer\]’s \[filing type\] in \[case\] Contained AI-Generated Legal Errors</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>AUTOMATED DRIVING</strong><br />\[ADS developer or system\] \[collided with, obstructed, or endangered\] \[road user or property\] in \[location\]</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>ALGORITHMIC DECISION</strong><br />\[Deployer\]’s \[system\] Allegedly \[denied, screened out, ranked, or flagged\] \[impacted class\]</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+### B.2 Description Template
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>GENERAL</strong><br />On \[date\], \[actor\] used or operated \[system\] in \[setting\], where it \[mechanism\]. The event reportedly \[harm\]. \[Material response, admission, or correction\].</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+### B.3 Editor Note Templates
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th>DATE SELECTION The incident ID date is \[date\], based on \[direct source evidence\]. \[Brief clarification if the underlying conduct may have begun earlier or continued later.\]</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>VARIANT DECISION</strong><br />Created as a new incident rather than a variant because \[system, actors, mechanism, setting, or harm\] differs materially from Incident \[ID\].</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>AI UNCERTAINTY</strong><br />AI involvement is attributed to \[source\]; the specific model or developer has not been publicly identified.</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>NAMED HARMED PARTY</strong><br />The person is tagged by name because \[public-facing role or centrality to the event\].</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+### B.4 Optional Timeline / Clarification Note Templates
+
+Use these only when a note would add useful chronology. Both belong in the Editor's note field and neither is required.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>OPTIONAL INGESTION-GAP CLARIFICATION</strong><br />The incident ID date is \[date\], based on \[the evidentiary basis\]. The incident ID was created on \[date\]. \[One brief intervening development, only if useful.\]</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>OPTIONAL LATER MATERIAL DEVELOPMENT</strong><br />\[MM/DD/YYYY\]: \[Actor\] \[investigated, corrected, disclosed, sanctioned, compensated, suspended, restored, or otherwise responded to\] \[the incident\], \[brief material consequence\].</th>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+## C Controlled Vocabulary Preferences
+
+Current house terminology through October 1, 2026. Check the live entity index before creating or merging tags. Vocabulary is a living editorial system: a preferred label should be broad enough to retrieve genuinely comparable incidents without collapsing meaningful distinctions.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th>Preferred term</th>
+        <th>Use</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Automated driving systems (ADS)</strong></td>
+        <td>Preferred umbrella for systems performing the dynamic driving task.</td>
+      </tr>
+      <tr>
+        <td><strong>Driver assistance systems</strong></td>
+        <td>Use when the driver remains responsible for supervision or the source identifies assistance features rather than automated driving.</td>
+      </tr>
+      <tr>
+        <td><strong>AI agent systems</strong></td>
+        <td>Use when evidence shows consequential, multi-step execution through tools, permissions, delegated authority, or external systems. Do not infer from branding alone.</td>
+      </tr>
+      <tr>
+        <td><strong>Enterprise AI systems</strong></td>
+        <td>Reusable class for AI systems materially embedded in organizational or production workflows when that enterprise context matters to the incident.</td>
+      </tr>
+      <tr>
+        <td><strong>AI coding assistants</strong></td>
+        <td>System class for tools that generate, transform, review, or execute code in software-development workflows.</td>
+      </tr>
+      <tr>
+        <td><strong>AI coding assistant users</strong></td>
+        <td>Reusable user class; prefer this construction over “Users of AI coding assistants.”</td>
+      </tr>
+      <tr>
+        <td><strong>Synthetic media technology</strong></td>
+        <td>Umbrella when generated or manipulated media spans modalities or the modality is unclear.</td>
+      </tr>
+      <tr>
+        <td><strong>Synthetic image generation technology</strong></td>
+        <td>Use when the implicated media is generated or materially manipulated imagery.</td>
+      </tr>
+      <tr>
+        <td><strong>Synthetic video generation technology</strong></td>
+        <td>Use when the implicated media is generated or materially manipulated video.</td>
+      </tr>
+      <tr>
+        <td><strong>Synthetic voice/audio generation</strong></td>
+        <td>Umbrella for generated or materially manipulated audio.</td>
+      </tr>
+      <tr>
+        <td><strong>Voice cloning technology</strong></td>
+        <td>Use only when explicit cloning or imitation of a particular voice is established.</td>
+      </tr>
+      <tr>
+        <td><strong>Deepfake technology</strong></td>
+        <td>Use when the source or evidence supports synthetic or manipulated media that impersonates or depicts a real person in a materially deceptive way. Do not use as a synonym for all synthetic media.</td>
+      </tr>
+      <tr>
+        <td><strong>Synthetic media technology developers</strong></td>
+        <td>Broad developer class when the developer role is supported and a modality-specific developer class is not more useful.</td>
+      </tr>
+      <tr>
+        <td><strong>Synthetic image generation technology developers</strong></td>
+        <td>Developer class for image-generation systems when supported.</td>
+      </tr>
+      <tr>
+        <td><strong>Synthetic video generation technology developers</strong></td>
+        <td>Developer class for video-generation systems when supported.</td>
+      </tr>
+      <tr>
+        <td><strong>Synthetic voice/audio generation developers</strong></td>
+        <td>Developer class for generated or manipulated audio systems when supported.</td>
+      </tr>
+      <tr>
+        <td><strong>Voice cloning technology developers</strong></td>
+        <td>Developer class only when voice cloning or imitation is established.</td>
+      </tr>
+      <tr>
+        <td><strong>Deepfake technology developers</strong></td>
+        <td>Developer class when a source identifies the developer of technology materially used for a deepfake.</td>
+      </tr>
+      <tr>
+        <td><strong>Synthetic media creators</strong></td>
+        <td>Reusable deployer class for people or organizations that create synthetic media in the incident when their creator role is supported.</td>
+      </tr>
+      <tr>
+        <td><strong>Deepfake creators</strong></td>
+        <td>Narrower deployer class for actors who create deepfakes; pair with a named actor when known.</td>
+      </tr>
+      <tr>
+        <td><strong>Generative AI systems</strong></td>
+        <td>Broad system class for text, image, audio, video, or multimodal generation.</td>
+      </tr>
+      <tr>
+        <td><strong>Generative AI developers</strong></td>
+        <td>Controlled developer fallback when the specific developer is unknown but the technology class is established.</td>
+      </tr>
+      <tr>
+        <td><strong>Large language models</strong></td>
+        <td>Use when the system is identified as an LLM or the evidence supports that architecture.</td>
+      </tr>
+      <tr>
+        <td><strong>Large language model developers</strong></td>
+        <td>Broad developer class paired with a named developer when useful.</td>
+      </tr>
+      <tr>
+        <td><strong>Chatbots</strong></td>
+        <td>Use for conversational interfaces; may be paired with Large language models or AI agent systems where supported.</td>
+      </tr>
+      <tr>
+        <td><strong>Chatbot developers</strong></td>
+        <td>Broad developer class.</td>
+      </tr>
+      <tr>
+        <td><strong>Transit systems</strong></td>
+        <td>Preferred over “Public transit systems” when ownership is irrelevant or mixed.</td>
+      </tr>
+      <tr>
+        <td><strong>Road users</strong></td>
+        <td>Reusable harmed class for drivers, cyclists, pedestrians, and others affected in roadway incidents when a narrower class is not needed.</td>
+      </tr>
+      <tr>
+        <td><strong>Information manipulation actors</strong></td>
+        <td>Reusable deployer class for people or organizations conducting deceptive or covert information operations when the source supports that role.</td>
+      </tr>
+      <tr>
+        <td><strong>AI-assisted information manipulation</strong></td>
+        <td>Mechanism phrase for campaign descriptions when AI materially supports content production, adaptation, targeting, distribution, or operations.</td>
+      </tr>
+      <tr>
+        <td><strong>Social media platforms</strong></td>
+        <td>System class when a platform carries or mediates an incident; do not automatically treat the platform company as the deployer.</td>
+      </tr>
+      <tr>
+        <td><strong>AI-assisted legal drafting systems</strong></td>
+        <td>System class for tools used to generate or materially draft consequential legal documents when the specific product is unknown or additional comparison is useful.</td>
+      </tr>
+      <tr>
+        <td><strong>Parties to legal proceedings</strong></td>
+        <td>Reusable harmed-party class for litigants or participants burdened by AI-generated legal errors; pair with a bounded case-specific collective when useful.</td>
+      </tr>
+      <tr>
+        <td><strong>Privacy</strong></td>
+        <td>Harmed interest when the incident itself intrudes on, exposes, or materially degrades personal or institutional privacy. Prefer the directly affected people or class as well when identifiable.</td>
+      </tr>
+      <tr>
+        <td><strong>Environmental quality</strong></td>
+        <td>Harmed interest when an incident materially degrades environmental conditions, ecological resources, or the physical environment and that harm is supported by the record.</td>
+      </tr>
+      <tr>
+        <td><strong>Epistemic integrity</strong></td>
+        <td>Harmed interest when an incident materially impairs the ability of a bounded audience, institution, or process to know, verify, or reason from reliable information. Useful for some deceptive synthetic-media and influence incidents.</td>
+      </tr>
+      <tr>
+        <td><strong>Information integrity</strong></td>
+        <td>Use more narrowly for the reliability, accuracy, completeness, or consistency of a bounded information environment, record system, or communication channel. Do not use it automatically whenever misinformation appears.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**VOCABULARY IS NOT STATIC**
+
+Terms should be merged or revised when the live database establishes a more authoritative canonical form. Ontological consistency matters more than preserving every historical label. Where two candidate terms overlap, prefer the one that states the incident role and object most precisely without fragmenting retrieval.
+
+## D Entity Maintenance and Merge Checklist
+
+*A durable procedure for canonicalization work that affects more than one incident.*
+
+### D.1 Before Creating an Entity
+
+- Search the exact proposed name and likely aliases in the entity index.
+- Search the incident list and database export for alternate spellings or descriptive versions.
+- Decide whether the record is a named entity, role class, harmed class, product, model, platform, workflow, or institutional system.
+- Use a proper name for a person or organization and a plural noun phrase for a reusable class.
+- Avoid a routine Unknown placeholder; use an informative supported role or omit the unsupported specific identity.
+
+### D.2 Before Merging
+
+- Open both entity pages and compare every incident role in which they appear.
+- Confirm that apparent differences do not represent company/product, parent/subsidiary, person/office, agency/officeholder, class/individual, platform/feature, or translation ambiguity.
+- Check whether either record is already a retired duplicate or points through another canonical record.
+- Choose the canonical record according to public identity, scope, and future retrieval value.
+- Preserve the IDs, names, and a representative affected incident before confirming an unusually consequential merge.
+
+### D.3 After Merging
+
+- Confirm the surviving entity page loads with the intended canonical name.
+- Confirm the retired URL resolves toward the surviving record.
+- Spot-check incidents in each affected field.
+- Search for remaining aliases and avoid duplicate chains when maintenance tools allow direct mapping.
+- Document anomalous or high-impact changes and stop if the merge appears to have erased a real-world distinction.
+
+### D.4 Audit Order
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th><strong>Order</strong></th>
+        <th><strong>Audit target</strong></th>
+        <th><strong>Reason</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>Generic Unknown, None, or Unspecified placeholders; unnecessarily individualized Unnamed records</td>
+        <td>They often contribute little information and can distort role counts, while some anonymized harmed parties remain appropriate.</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Clear duplicate active entities</td>
+        <td>They fragment retrieval and incident aggregation.</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Products or systems in actor fields</td>
+        <td>They confuse who built or used a system with what the system was.</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>Deprecated high-frequency terminology</td>
+        <td>Inconsistent umbrella terms weaken comparison across many incidents.</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>Sparse implicated-system tagging in otherwise well-supported records</td>
+        <td>The system field is needed for technical comparison and discovery.</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>Low-impact punctuation and capitalization variants</td>
+        <td>These matter, but they rarely outweigh substantive role and identity errors.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+## How to Cite This Guide
+
+When citing this guide, use the version number and date so that readers can distinguish it from earlier public versions.
+
+> Atherton, Daniel, and Sean McGregor. “Editorial and Research Guide for the AI Incident Database.” Version 2. AI Incident Database, October 1, 2026. https://incidentdatabase.ai/editors-guide/
+
+Suggested short form after the first citation: Atherton and McGregor, *Editorial and Research Guide*, Version 2.
+
+## E Credits and Version History
+
+The authorship, public version history, and status of Version 2.
+
+### E.1 Authors
+
+**Daniel Atherton and Sean McGregor** are the authors of Version 2 of the *Editorial and Research Guide for the AI Incident Database*. This version revises and expands the original public guide to reflect current editorial practice.
+
+**AI assistance.** Generative AI tools were used during the development of Version 2 to assist with research, document organization, drafting, revision, and consistency review. The authors reviewed the resulting text and retained responsibility for the guide’s editorial judgments, terminology, and final content.
+
+### E.2 Version History
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th>Version</th>
+        <th>Date</th>
+        <th>Principal changes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Version 1</td>
+        <td>Original public guide</td>
+        <td>Established the public AIID editor guidance for incidents, issues, variants, report ingestion, harms, near harms, and basic editorial standards.</td>
+      </tr>
+      <tr>
+        <td>Version 2</td>
+        <td>10/01/2026</td>
+        <td>Substantially expands the public guide with the two-pass workflow, data-model and entity guidance, incident ID dating, cold-reader contextualization, campaign-plus-constituent boundaries, source-text fidelity, optional chronology notes in the Editor's note field, entity merge discipline, legacy cleanup, information-manipulation guidance, expanded system and synthetic-media vocabulary, and researcher cautions.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+### E.3 Status
+
+Version 2 is the current working editorial standard dated October 1, 2026. It should be revised when database fields, taxonomy, legal requirements, or sustained editorial practice materially change. Use Version 2 as the default for new work. Broad historical cleanup should remain a separately scoped, reviewable project rather than a side effect of unrelated edits.
