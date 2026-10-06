@@ -2522,6 +2522,13 @@ export type RisksObjectFilterType = {
   touched?: InputMaybe<BooleanFilter>;
 };
 
+/** The picture shown for an incident, taken from the earliest of its reports that has one. */
+export type SemanticSearchImage = {
+  __typename?: 'SemanticSearchImage';
+  cloudinary_id?: Maybe<Scalars['String']['output']>;
+  image_url?: Maybe<Scalars['String']['output']>;
+};
+
 export type SemanticSearchResponse = {
   __typename?: 'SemanticSearchResponse';
   results: Array<SemanticSearchResult>;
@@ -2530,6 +2537,8 @@ export type SemanticSearchResponse = {
 
 export type SemanticSearchResult = {
   __typename?: 'SemanticSearchResult';
+  /** Null when none of the incident's reports has a picture. */
+  image?: Maybe<SemanticSearchImage>;
   incident: Incident;
   /** Weighted cosine similarity across the incident overview and best passage. */
   score: Scalars['Float']['output'];
