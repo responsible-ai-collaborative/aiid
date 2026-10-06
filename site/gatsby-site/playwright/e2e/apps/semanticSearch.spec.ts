@@ -16,6 +16,8 @@ const results = Array.from({ length: 30 }, (_, index) => ({
     date: '2026-01-01',
     description: index === 0 ? 'Description, "quoted"\nline' : `Description ${index + 1}`,
   },
+  // Only the first incident has a picture.
+  image: index === 0 ? { cloudinary_id: 'reports/example.jpg', image_url: null } : null,
 }));
 
 test.describe('Semantic Search', () => {
@@ -81,12 +83,40 @@ test.describe('Semantic Search', () => {
     await expect(page.locator('[data-cy="row"]').first()).toContainText('Incident 1');
     await expect(page.locator('[data-cy="total-pages"]')).toHaveText('2');
 
+    // Each row starts with the incident's picture, or a plain box when it has none, and ends
+    // with its score.
+    const firstRow = page.locator('[data-cy="row"]').first();
+    await expect(
+      firstRow.locator('[data-cy="cell"]').first().locator('[data-cy="cloudinary-image-wrapper"]')
+    ).toHaveCount(1);
+    await expect(firstRow.locator('[data-cy="semantic-search-image"]')).toHaveAttribute(
+      'href',
+      /\/cite\/1\/?$/
+    );
+    await expect(
+      page
+        .locator('[data-cy="row"]')
+        .nth(1)
+        .locator('[data-cy="semantic-search-image"] [data-cy="cloudinary-image-wrapper"]')
+    ).toHaveCount(0);
+    await expect(firstRow.locator('[data-cy="cell"]').last()).toHaveText('0.300');
+
+    await page.locator('[data-cy="semantic-search-score-help"]').hover();
+    const scoreGuide = page.locator('[data-cy="semantic-search-score-guide"]');
+
+    await expect(scoreGuide).toBeVisible();
+    await expect(scoreGuide.locator('li')).toHaveText([
+      '0.4–0.65: strong matches',
+      '0.25–0.4: related but looser matches',
+      'Below about 0.16: unrelated topics',
+    ]);
+
     await page.locator('[data-cy="last-page"]').click();
     await expect(page.locator('[data-cy="row"]')).toHaveCount(5);
     await expect(page.locator('[data-cy="row"]').first()).toContainText('Incident 26');
 
     await page.locator('[data-cy="first-page"]').click();
-    await page.locator('[data-cy="header-score"] button').click();
+    await page.locator('[data-cy="header-score"] button').first().click();
     await expect(page.locator('[data-cy="row"]').first()).toContainText('Incident 30');
 
     const csvDownloadPromise = page.waitForEvent('download');
