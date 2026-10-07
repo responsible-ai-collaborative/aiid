@@ -54,12 +54,17 @@ export default function Doc(props) {
 export const Head = (props) => {
   const {
     location: { pathname },
-    data: { mdx },
+    data: { mdx, enMdx },
   } = props;
 
-  const metaTitle = mdx.frontmatter.metaTitle;
+  // A locale without its own file falls back to the English document, as the
+  // page body does above. Without this a doc that exists only in some locales
+  // fails to build for the others.
+  const doc = mdx || enMdx;
 
-  const metaDescription = mdx.frontmatter.metaDescription;
+  const metaTitle = doc?.frontmatter?.metaTitle;
+
+  const metaDescription = doc?.frontmatter?.metaDescription;
 
   return <HeadContent path={pathname} {...{ metaTitle, metaDescription }} />;
 };
