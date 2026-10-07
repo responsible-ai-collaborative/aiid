@@ -1,6 +1,11 @@
 name: Embed Incidents
 
 on:
+  # 08:00 UTC daily = midnight US Pacific Standard Time (1 AM during daylight time).
+  # GitHub Actions cron is UTC-only and does not adjust for DST.
+  # Scheduled runs always resume, so they only embed new or changed incidents.
+  schedule:
+    - cron: "0 8 * * *"
   workflow_dispatch:
     inputs:
       environment:
@@ -22,9 +27,15 @@ defaults:
   run:
     shell: bash
 
+# A long manual run and the nightly run would otherwise embed the same incidents twice.
+concurrency:
+  group: embed-incidents-${{ inputs.environment || 'production' }}
+  cancel-in-progress: false
+
 jobs:
   embed-incidents:
-    environment: ${{ inputs.environment }}
+    # A scheduled run has no inputs, so it targets production.
+    environment: ${{ inputs.environment || 'production' }}
     runs-on: ubuntu-latest
     # Generous because a rate-limited endpoint can stretch a full run over several hours.
     timeout-minutes: 300
@@ -68,7 +79,7 @@ jobs:
           EMBEDDING_CHUNK_OVERLAP_CHARS: ${{ vars.EMBEDDING_CHUNK_OVERLAP_CHARS || secrets.EMBEDDING_CHUNK_OVERLAP_CHARS }}
           EMBEDDING_BATCH_SIZE: ${{ vars.EMBEDDING_BATCH_SIZE || secrets.EMBEDDING_BATCH_SIZE }}
           RUN_LIMIT: ${{ inputs.limit }}
-          RUN_RESUME: ${{ inputs.resume }}
+          RUN_RESUME: ${{ github.event_name == 'schedule' || inputs.resume }}
 
       # Uploaded even on failure, because that is when the manifest is worth reading.
       - name: Upload failure manifest

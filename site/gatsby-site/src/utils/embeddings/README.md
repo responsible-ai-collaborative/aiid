@@ -125,6 +125,11 @@ The selected environment needs:
 The failure manifest is uploaded even when the job fails. Re-run with `resume` after correcting the
 cause.
 
+The workflow also runs every night at 08:00 UTC (midnight US Pacific Standard Time) against the
+`production` environment with `--resume`, so it only embeds new or changed incidents. If the
+provider's quota runs out, the run stops early and the next night continues where it left off.
+GitHub only runs schedules from the workflow file on the repository's default branch.
+
 ## Configuration
 
 | Name                            |                           Default | Purpose                                        |
