@@ -209,7 +209,7 @@
     "tailwindcss": "^3.4.19",
     "ts-jest": "^29.4.12",
     "ts-node": "^10.9.2",
-    "tsx": "^4.23.1",
+    "tsx": "^4.23.15",
     "typescript": "^5.9.3"
   },
   "browser": {
