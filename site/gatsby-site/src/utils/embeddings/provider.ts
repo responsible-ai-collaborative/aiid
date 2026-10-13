@@ -138,25 +138,14 @@ export interface ProviderOptions {
  * while retry reporting stays opt-in for command-line jobs.
  */
 export const createEmbeddingProvider = (options: ProviderOptions = {}): EmbeddingProvider => {
-  const nvidiaUrl = process.env.NVIDIA_URL?.trim();
-  const nvidiaApiKey = process.env.NVIDIA_API_KEY?.trim();
+  const baseUrl = (process.env.EMBEDDING_API_BASE_URL || 'https://openrouter.ai/api/v1').replace(
+    /\/+$/,
+    ''
+  );
+  const model = process.env.EMBEDDING_MODEL || 'nvidia/nemotron-3-embed-1b:free';
+  const apiKey = process.env.EMBEDDING_API_KEY;
 
-  if (Boolean(nvidiaUrl) !== Boolean(nvidiaApiKey)) {
-    throw new Error('NVIDIA_URL and NVIDIA_API_KEY must be configured together.');
-  }
-
-  const useNvidia = Boolean(nvidiaUrl && nvidiaApiKey);
-  const baseUrl = (
-    nvidiaUrl ||
-    process.env.EMBEDDING_API_BASE_URL ||
-    'https://openrouter.ai/api/v1'
-  ).replace(/\/+$/, '');
-  const model =
-    process.env.EMBEDDING_MODEL ||
-    (useNvidia ? 'nvidia/nemotron-3-embed-1b' : 'nvidia/nemotron-3-embed-1b:free');
-  const apiKey = nvidiaApiKey || process.env.EMBEDDING_API_KEY;
-
-  if (!apiKey) throw new Error('NVIDIA_API_KEY or EMBEDDING_API_KEY is required.');
+  if (!apiKey) throw new Error('EMBEDDING_API_KEY is required.');
 
   const timeoutMs = positiveInteger(
     options.timeoutMs === undefined ? process.env.EMBEDDING_TIMEOUT_MS : String(options.timeoutMs),

@@ -91,9 +91,9 @@ MONGODB_CONNECTION_STRING=mongodb://127.0.0.1:4110
 EMBEDDING_API_KEY=your-key-here
 ```
 
-To use NVIDIA's OpenAI-compatible endpoint directly, set `NVIDIA_URL` and `NVIDIA_API_KEY`
-instead. When both are present, they take precedence and the default model becomes
-`nvidia/nemotron-3-embed-1b`.
+To use NVIDIA's OpenAI-compatible endpoint directly, set `EMBEDDING_API_BASE_URL` to
+`https://integrate.api.nvidia.com/v1`, `EMBEDDING_MODEL` to `nvidia/nemotron-3-embed-1b` and
+`EMBEDDING_API_KEY` to the NVIDIA key.
 
 Then run from `site/gatsby-site`:
 
