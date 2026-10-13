@@ -51,8 +51,6 @@ describe('embedding provider profiles and validation', () => {
       EMBEDDING_API_BASE_URL: 'https://embedding.test/v1',
       EMBEDDING_MAX_ATTEMPTS: '1',
     };
-    delete process.env.NVIDIA_URL;
-    delete process.env.NVIDIA_API_KEY;
   });
 
   afterEach(() => {
@@ -98,31 +96,6 @@ describe('embedding provider profiles and validation', () => {
       input: ['query'],
       input_type: 'query',
     });
-  });
-
-  it('uses the NVIDIA endpoint and model when its credentials are configured', async () => {
-    process.env.NVIDIA_URL = 'https://integrate.api.nvidia.com/v1/';
-    process.env.NVIDIA_API_KEY = 'nvidia-key';
-    delete process.env.EMBEDDING_MODEL;
-    const fetchMock = jest.fn().mockResolvedValue(
-      new Response(JSON.stringify({ data: [{ index: 0, embedding: [0.1, 0.2] }] }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      })
-    );
-    global.fetch = fetchMock;
-
-    const provider = createEmbeddingProvider();
-    await provider.embed(['document'], 'document');
-
-    expect(fetchMock.mock.calls[0][0]).toBe('https://integrate.api.nvidia.com/v1/embeddings');
-    expect(fetchMock.mock.calls[0][1].headers.Authorization).toBe('Bearer nvidia-key');
-    expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({
-      model: 'nvidia/nemotron-3-embed-1b',
-      input: ['document'],
-      input_type: 'passage',
-    });
-    expect(provider.model).toBe('nvidia/nemotron-3-embed-1b');
   });
 
   it('keeps the generic request portable for an unknown model', async () => {

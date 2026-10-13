@@ -89,8 +89,6 @@ describe('semanticSearch GraphQL field', () => {
       EMBEDDING_API_BASE_URL: 'https://embedding.test/v1',
       EMBEDDING_MODEL: 'nvidia/nemotron-3-embed-1b:free',
     };
-    delete process.env.NVIDIA_URL;
-    delete process.env.NVIDIA_API_KEY;
     resetSemanticSearchCache();
 
     // The API requires a logged-in account (SEE: server/apiAccess.ts). A roleless
