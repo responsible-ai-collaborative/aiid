@@ -387,7 +387,9 @@ function CiteTemplate({
                       incidentDate: incident.date,
                       taxonomiesWithClassifications: Array.from(
                         visibleClassifications.nodes.reduce((namespaces, classification) => {
-                          namespaces.add(classification.namespace);
+                          if (classification.publish) {
+                            namespaces.add(classification.namespace);
+                          }
                           return namespaces;
                         }, new Set())
                       ),
