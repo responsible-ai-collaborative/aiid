@@ -22,7 +22,7 @@ interface CommandLineArgs {
   outputFile: string;
 }
 
-interface AiidMatchEntry {
+export interface AiidMatchEntry {
   report?: {
     aiid_incident_ids?: number[];
   };
@@ -33,7 +33,7 @@ interface AiidMatchEntry {
   is_related: boolean;
 }
 
-interface IncidentRelationship {
+export interface IncidentRelationship {
   incident_id: number;
   sameAs: string;
   source_namespace: string;
@@ -54,7 +54,7 @@ function parseArgs(): CommandLineArgs {
     .parseSync();
 }
 
-function processMatchesJson(data: AiidMatchEntry[]): IncidentRelationship[] {
+export function processMatchesJson(data: AiidMatchEntry[]): IncidentRelationship[] {
   const relationships: IncidentRelationship[] = [];
 
   for (const entry of data) {
@@ -76,9 +76,12 @@ function processMatchesJson(data: AiidMatchEntry[]): IncidentRelationship[] {
   }
 
   const uniqueRelationships: IncidentRelationship[] = [];
+
   const seen = new Set<string>();
+
   for (const rel of relationships) {
     const key = `${rel.incident_id}|${rel.sameAs}`;
+
     if (!seen.has(key)) {
       seen.add(key);
       uniqueRelationships.push(rel);
@@ -98,6 +101,7 @@ async function writeRelationshipsToFile(relationships: IncidentRelationship[], o
   try {
 
     const directory = path.dirname(outputFilePath);
+
     if (!fs.existsSync(directory)) {
       fs.mkdirSync(directory, { recursive: true });
     }
@@ -122,6 +126,7 @@ async function main(): Promise<void> {
     
     console.log(chalk.blue(`Reading input file: ${args.inputFile}`));
     const jsonData = fs.readFileSync(args.inputFile, 'utf-8');
+
     const matchesData: AiidMatchEntry[] = JSON.parse(jsonData);
 
     console.log(chalk.blue(`Processing ${matchesData.length} entries from the JSON file...`));
