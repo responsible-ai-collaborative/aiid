@@ -1,0 +1,12 @@
+{
+  "Organization Founding Sponsor": "Patrocinador Fundador da Organização",
+  "Database Founding Sponsor": "Patrocinador Fundador do Banco de Dados",
+  "Sponsors and Grants": "Patrocinadores e Subvenções",
+  "In-Kind Sponsors": "Patrocinadores em Espécie",
+  "sponsor-Waking Up Foundation": "Por indicação da Longview Philanthropy, a [Waking Up Foundation](https://www.wakingup.com/foundation) contribuiu com uma subvenção fundadora de US$ 550.000 destinada ao Banco de Dados de Incidentes de IA. US$ 33 mil do total são comprometidos com nosso patrocinador fiscal para a contabilidade e o cumprimento tributário da organização. Aproximadamente US$ 5 mil são dedicados à manutenção da entidade sem fins lucrativos RAIC, que conduz a programação do AIID patrocinada por um patrocinador fiscal. Todos os fundos restantes são dedicados a produtos programáticos, incluindo o tempo da equipe para programação e pesquisa.",
+  "sponsor-Partnership on AI": "Como [patrocinadora fundadora](https://partnershiponai.org/resource/tracking-when-ai-systems-fail/) do Banco de Dados de Incidentes de IA (AIID), a Partnership on AI apoiou a fase inicial do banco de dados, incluindo uma subvenção para apoiar o projeto antes da fundação do Responsible AI Collaborative. A Partnership on AI também investiu na promoção dos benefícios sociais do AIID entre seus parceiros e outras partes interessadas e tem interesse contínuo em apoiar seus resultados.",
+  "sponsor-Mozilla Foundation": "O Responsible AI Collaborative recebeu uma subvenção de US$ 50.000 do Mozilla Technology Fund para o desenvolvimento de listas de verificação de risco de IA. Para mais detalhes sobre o projeto, visite o [anúncio de lançamento](https://foundation.mozilla.org/en/blog/auditing-ai-announcing-the-2023-mozilla-technology-fund-cohort/) do grupo e acompanhe o blog do Collab à medida que anunciamos avanços.",
+  "sponsor-Netlify": "A [Netlify](https://www.netlify.com/) fornece ao Responsible AI Collaborative hospedagem gratuita, minutos de build e contas para o desenvolvimento de código aberto do Banco de Dados de Incidentes de IA.",
+  "sponsor-Cloudinary": "A [Cloudinary](https://www.cloudinary.com/) oferece hospedagem de imagens e vídeos com desconto em seu serviço de hospedagem em nuvem. Eles são a razão pela qual tantas imagens são carregadas rapidamente no banco de dados.",
+  "sponsor-Algolia": "A [Algolia](https://algolia.com/) fornece ao Responsible AI Collaborative um índice de busca instantânea de relatórios de incidentes. "
+}

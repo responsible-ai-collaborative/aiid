@@ -1,0 +1,102 @@
+{
+  "title": {
+    "title": "Título",
+    "text": "A maioria dos trabalhos tem um título que deve ser inserido aqui palavra por palavra. Caso o trabalho não tenha título, tente resumir o conteúdo em poucas palavras sem editorializar. Este texto ocupa lugar de destaque nos registros de incidentes."
+  },
+  "authors": {
+    "title": "Autores",
+    "text": "Insira os nomes dos criadores do conteúdo vinculado. Você deve inserir todas as pessoas que contribuíram para o trabalho escrito, separadas por vírgulas."
+  },
+  "submitters": {
+    "title": "Este é você!",
+    "text": "Insira seu nome aqui. Se mais de uma pessoa contribuiu para coletar o incidente, você pode inserir várias pessoas separadas por vírgulas. Como alternativa, você pode inserir \"Anônimo\" como remetente se não quiser ser creditado no banco de dados. As entradas neste campo serão adicionadas ao ranking público."
+  },
+  "incident_date": {
+    "title": "Quando o incidente ocorreu pela primeira vez?",
+    "text": "Muitos incidentes de IA não são eventos discretos (isto é, ocorrem ao longo de um período). Além disso, geralmente é difícil saber quando o incidente ocorreu pela primeira vez, pois o primeiro relatório público costuma vir um tempo depois da primeira ocorrência. Neste campo, você deve inserir a data do primeiro relatório do incidente ou uma estimativa fundamentada de quando o incidente provavelmente ocorreu pela primeira vez. Por exemplo, se o incidente está relacionado a um recurso do mecanismo de busca lançado em janeiro e o primeiro relatório público do incidente é em fevereiro, você deve atribuir uma data de incidente em janeiro."
+  },
+  "date_published": {
+    "title": "Quando o relatório ficou disponível?",
+    "text": "Os relatórios geralmente têm uma data de publicação na URL, mas mesmo quando não têm, você pode visitar a <linkto to=\"https://archive.org/web/\">Wayback Machine</linkto> para descobrir quando a URL do relatório foi indexada pela primeira vez."
+  },
+  "date_downloaded": {
+    "title": "Quando você copiou o conteúdo do relatório para este formulário?",
+    "text": "Organizações de notícias frequentemente atualizam relatórios ao longo do tempo. Esta data ajuda a determinar se o conteúdo pode estar desatualizado. Normalmente, você colocará a data de hoje aqui."
+  },
+  "url": {
+    "title": "Link para o relatório disponível publicamente",
+    "text": "Este endereço será vinculado dentro de muitas interfaces de usuário do banco de dados de incidentes."
+  },
+  "image_url": {
+    "title": "Uma imagem usada para pré-visualizar o relatório do incidente",
+    "text": "Esta deve ser uma URL para uma imagem que será indexada e exibida ao lado do relatório. A maioria das publicações tem imagens de manchete cuja URL você pode obter clicando com o botão direito. Você também pode vincular imagens de figuras aqui. Se a URL inserida não for válida, uma imagem alternativa será usada em seu lugar."
+  },
+  "incident_id": {
+    "title": "Este é um incidente existente?",
+    "text": "Muitas vezes, relatórios são escritos sobre incidentes que já estão no banco de dados. Antes de enviar, você deve verificar se o incidente já está no banco de dados visitando o aplicativo \"Discover\" e buscando incidentes de natureza semelhante ao que está enviando agora. Se já existe um incidente para o seu relatório, mas o relatório nunca foi enviado, insira aqui o número de identificação do incidente correspondente. Se o relatório do incidente já existir, não envie novamente."
+  },
+  "text": {
+    "title": "Texto do artigo ou transcrição da mídia",
+    "text": "Copie, cole e valide se o conteúdo textual do relatório de incidente corresponde ao conteúdo da URL vinculada acima. Remova todos os anúncios e outros elementos que não devem ser indexados."
+  },
+  "reportAddress": {
+    "title": "Link para o relatório disponível publicamente",
+    "text": "Este endereço será vinculado dentro de muitas interfaces de usuário do banco de dados de incidentes."
+  },
+  "tags": {
+    "title": "Marque o tipo de relatório de incidente",
+    "text": "O propósito das tags de relatório é dar suporte à classificação de relatórios na página de citação do incidente. Em caso de dúvida, você pode deixar este campo em branco e um editor do banco de dados selecionará as tags adequadas no momento do processamento."
+  },
+  "language": {
+    "title": "Idioma do relatório de incidente",
+    "text": "Este é o idioma escrito do texto encontrado no relatório, não o idioma das pessoas ou países envolvidos. Os relatórios serão traduzidos para os idiomas suportados quando processarmos o texto."
+  },
+  "harmed_parties": {
+    "title": "Supostas partes prejudicadas ou quase prejudicadas",
+    "text": "Se forem várias, pressione “enter” após o item para inserir um novo"
+  },
+  "deployers": {
+    "title": "Suposto implantador do sistema de IA",
+    "text": "Se forem vários, pressione “enter” após o item para inserir um novo"
+  },
+  "developers": {
+    "title": "Suposto desenvolvedor do sistema de IA",
+    "text": "Se forem vários, pressione “enter” após o item para inserir um novo"
+  },
+  "description": {
+    "title": "Descrição",
+    "text": "Uma descrição breve, factual, jornalisticamente neutra e completa do incidente que mencione o incidente/problema, a localização e o dano."
+  },
+  "inputs_outputs": {
+    "title": "Entradas / Saídas",
+    "text": "A sequência de entradas de dados no sistema inteligente e de saídas produzidas pelo sistema envolvido no incidente. Para um chatbot, isso normalmente apresentará uma troca entre as respostas de um humano e as do chatbot."
+  },
+  "submittersLoggedIn": {
+    "title": "Este é você!",
+    "text": "Você está conectado, então este relatório será automaticamente associado à sua conta. Se desejar permanecer anônimo, abra uma janela de navegação privada."
+  },
+  "quiet": {
+    "title": "É um relatório silencioso?",
+    "text": "Relatórios silenciosos não são publicados na seção 'Relatórios Mais Recentes' da página inicial. Os relatórios silenciosos são usados para relatórios úteis para dados internos, mas que não precisam ser promovidos. Em caso de dúvida, deixe este campo em branco."
+  },
+  "relatedEntities": {
+    "title": "Entidades relacionadas",
+    "text": "Outras entidades que estão relacionadas ao mesmo incidente. Por exemplo, se o desenvolvedor de um incidente é esta entidade mas o implantador é outra, elas são marcadas como entidades relacionadas."
+  },
+  "entityRelationships": {
+    "title": "Relações de entidades",
+    "text": "Com quais outras entidades esta entidade tem uma relação direta? Por exemplo, 'Amazon' e 'Trabalhadores da Amazon' poderiam ser entidades vinculadas."
+  },
+  "implicated_systems": {
+    "title": "Sistemas implicados",
+    "text": "Os sistemas de IA envolvidos no incidente. Se forem vários, pressione “enter” após o item para inserir um novo."
+  },
+  "similarIncidentSearch": {
+    "title": "Buscar incidentes semelhantes",
+    "text": "Busque um incidente semelhante ou diferente digitando um ID de incidente. Se o incidente resultante for semelhante, clique em 'Sim'; se for diferente, clique em 'Não'. Se não tiver certeza, clique em 'Não tenho certeza'. Depois de selecionado, o incidente será adicionado à seção 'Incidentes semelhantes e dissimilares selecionados manualmente' do formulário. Depois de adicionado, se desejar removê-lo, clique no botão “Não tenho certeza”."
+  },
+  "report_type": {
+    "title": "Tipo de relatório",
+    "text": "Incidente = Dano (ou quase dano) que já ocorreu.<br />Problema = Um dano potencial que ainda não ocorreu.<br />Escolha com base em se o sistema de IA já causou impacto."
+  }
+}
