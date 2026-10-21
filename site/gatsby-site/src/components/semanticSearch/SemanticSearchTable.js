@@ -79,6 +79,8 @@ const publicIdOf = (image) =>
   image && (image.cloudinary_id || (image.image_url && `legacy/${md5(image.image_url)}`));
 
 // A small thumbnail linking to the incident, or a plain box of the same size when it has no image.
+// Results render only in the browser, so the image skips the lazyload plugin: Image hides an img
+// that has no src yet, and a hidden img never scrolls into view to receive one.
 function ImageCell({ row }) {
   const { t } = useTranslation();
 
@@ -92,6 +94,7 @@ function ImageCell({ row }) {
         <Image
           publicID={publicID}
           transformation={fill().width(192).height(108)}
+          plugins={[]}
           alt={title}
           itemIdentifier={t('Incident {{id}}', { id: incident_id }).replace(' ', '.')}
           className="rounded"
