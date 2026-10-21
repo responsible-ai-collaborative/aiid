@@ -57,7 +57,7 @@ raw vector data at 2,048 dimensions, versus roughly 230–280 MB as ordinary BSO
 Writes use `replaceOne(..., {upsert: true})` with a unique `incident_id` index. Re-running replaces
 the incident atomically and also removes fields from the legacy pooled-vector schema.
 
-`--resume` skips a document only when all three of these still match:
+`--skip-unchanged` skips a document only when all three of these still match:
 
 - `embedding_schema_version`
 - `index_signature` (model, endpoint, profile, and chunk settings)
@@ -96,14 +96,14 @@ Then run from `site/gatsby-site`:
 ```bash
 npm run embed-incidents -- --limit 5
 npm run embed-incidents -- --incident-id 39
-npm run embed-incidents -- --resume
+npm run embed-incidents -- --skip-unchanged
 ```
 
-| Option            | Effect                                                            |
-| ----------------- | ----------------------------------------------------------------- |
-| `--limit N`       | Process at most the first positive integer `N` incidents.         |
-| `--incident-id N` | Process only this incident; repeatable.                           |
-| `--resume`        | Skip only documents whose source and index signature are current. |
+| Option             | Effect                                                         |
+| ------------------ | -------------------------------------------------------------- |
+| `--limit N`        | Process at most the first positive integer `N` incidents.      |
+| `--incident-id N`  | Process only these incidents, e.g. `--incident-id 39 40`.      |
+| `--skip-unchanged` | Skip incidents whose source and index signature are unchanged. |
 
 Each successful incident is stored immediately. Failures go to `embed-failures.json`, and the run
 stops after quota exhaustion or ten consecutive failures. One signal finishes in-flight work; a
@@ -122,13 +122,13 @@ The selected environment needs:
 - Network access from the runner to MongoDB. Prefer a self-hosted runner with fixed egress or a
   maintained allowlist of GitHub's published Actions ranges; do not open Atlas to `0.0.0.0/0`.
 
-The failure manifest is uploaded even when the job fails. Re-run with `resume` after correcting the
-cause.
+The failure manifest is uploaded even when the job fails. Re-run with `skip_unchanged` after
+correcting the cause.
 
-The workflow also runs every night at 08:00 UTC (midnight US Pacific Standard Time) against the
-`production` environment with `--resume`, so it only embeds new or changed incidents. If the
-provider's quota runs out, the run stops early and the next night continues where it left off.
-GitHub only runs schedules from the workflow file on the repository's default branch.
+The workflow also runs every night at 08:17 UTC (just after midnight US Pacific Standard Time)
+against the `production` environment with `--skip-unchanged`, so it only embeds new or changed
+incidents. If the provider's quota runs out, the run stops early and the next night continues where
+it left off. GitHub only runs schedules from the workflow file on the repository's default branch.
 
 ## Configuration
 
@@ -158,8 +158,8 @@ db.incident_embeddings.findOne({}, { 'overview.vector': 0, 'passages.vector': 0 
 ```
 
 Confirm schema version 2, the expected model/profile, non-empty passages where reports have text,
-and `dims: 2048` for the current Nemotron model. Run the same command with `--resume`; unchanged
-documents should be reported as skipped and retain their original `generated_at`.
+and `dims: 2048` for the current Nemotron model. Run the same command with `--skip-unchanged`;
+unchanged documents should be reported as skipped and retain their original `generated_at`.
 
 Atlas vector-search index creation and the search/ranking code belong to the retrieval change, not
 this pipeline PR.

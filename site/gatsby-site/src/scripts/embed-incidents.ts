@@ -46,12 +46,12 @@ type PassageInput = {
 const argv = yargs(hideBin(process.argv))
   .usage('Usage: npm run embed-incidents -- [options]')
   .option('incident-id', {
-    describe: 'Only embed these incident ids (repeatable)',
+    describe: 'Only embed these incident ids, e.g. --incident-id 39 40',
     type: 'number',
     array: true,
   })
   .option('limit', { describe: 'Process at most this many incidents', type: 'number' })
-  .option('resume', {
+  .option('skip-unchanged', {
     describe: 'Skip incidents whose source and embedding configuration have not changed',
     type: 'boolean',
     default: false,
@@ -294,7 +294,7 @@ const main = async (): Promise<number> => {
       }
 
       const sourceHash = sourceFingerprint(incident, reports);
-      if (argv.resume) {
+      if (argv['skip-unchanged']) {
         const existing = await embeddingsCollection.findOne(
           {
             incident_id: incident.incident_id,
@@ -459,7 +459,7 @@ const main = async (): Promise<number> => {
       console.error(`failure manifest written to ${FAILURES_FILE}`);
     }
     if (stopReason || failures.length > 0) {
-      console.error('resume with: npm run embed-incidents -- --resume');
+      console.error('re-run with: npm run embed-incidents -- --skip-unchanged');
     }
     console.log(rule);
 

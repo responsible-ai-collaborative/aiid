@@ -1,11 +1,12 @@
 name: Embed Incidents
 
 on:
-  # 08:00 UTC daily = midnight US Pacific Standard Time (1 AM during daylight time).
+  # 08:17 UTC daily, just after midnight US Pacific Standard Time (1 AM during daylight time).
+  # Off the hour: GitHub can delay or drop scheduled runs at the busy start of each hour.
   # GitHub Actions cron is UTC-only and does not adjust for DST.
-  # Scheduled runs always resume, so they only embed new or changed incidents.
+  # Scheduled runs always skip unchanged incidents, so they only embed new or changed ones.
   schedule:
-    - cron: "0 8 * * *"
+    - cron: "17 8 * * *"
   workflow_dispatch:
     inputs:
       environment:
@@ -17,7 +18,7 @@ on:
         type: number
         default: 0
         required: false
-      resume:
+      skip_unchanged:
         description: Skip incidents whose source and embedding configuration are unchanged
         type: boolean
         default: false
@@ -59,8 +60,8 @@ jobs:
           if (( RUN_LIMIT > 0 )); then
             args+=(--limit "$RUN_LIMIT")
           fi
-          if [[ "$RUN_RESUME" == "true" ]]; then
-            args+=(--resume)
+          if [[ "$RUN_SKIP_UNCHANGED" == "true" ]]; then
+            args+=(--skip-unchanged)
           fi
           npm run embed-incidents:ci -- "${args[@]}"
         working-directory: site/gatsby-site
@@ -79,7 +80,7 @@ jobs:
           EMBEDDING_CHUNK_OVERLAP_CHARS: ${{ vars.EMBEDDING_CHUNK_OVERLAP_CHARS || secrets.EMBEDDING_CHUNK_OVERLAP_CHARS }}
           EMBEDDING_BATCH_SIZE: ${{ vars.EMBEDDING_BATCH_SIZE || secrets.EMBEDDING_BATCH_SIZE }}
           RUN_LIMIT: ${{ inputs.limit }}
-          RUN_RESUME: ${{ github.event_name == 'schedule' || inputs.resume }}
+          RUN_SKIP_UNCHANGED: ${{ github.event_name == 'schedule' || inputs.skip_unchanged }}
 
       # Uploaded even on failure, because that is when the manifest is worth reading.
       - name: Upload failure manifest
