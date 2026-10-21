@@ -1,12 +1,12 @@
 name: Embed Incidents
 
 on:
-  # 08:17 UTC daily, just after midnight US Pacific Standard Time (1 AM during daylight time).
+  # 08:37 UTC daily = 12:37 AM US Pacific Standard Time (1:37 AM during daylight time).
   # Off the hour: GitHub can delay or drop scheduled runs at the busy start of each hour.
   # GitHub Actions cron is UTC-only and does not adjust for DST.
   # Scheduled runs always skip unchanged incidents, so they only embed new or changed ones.
   schedule:
-    - cron: "17 8 * * *"
+    - cron: "37 8 * * *"
   workflow_dispatch:
     inputs:
       environment:
