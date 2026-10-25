@@ -2,8 +2,12 @@ import { Translate } from '@google-cloud/translate/build/src/v2';
 import { queue } from 'async';
 import { cloneDeep } from 'lodash';
 import { Document, MongoClient } from 'mongodb';
+import { describeChars, parseMaxCharsPerRun } from './translationBudget';
 
 const keys: string[] = ['title', 'description'];
+
+const countChars = (entry: Document): number =>
+  keys.reduce((total, key) => total + (entry[key] || '').length, 0);
 
 interface Reporter {
   log: (...args: any[]) => void;
@@ -18,11 +22,36 @@ interface IncidentTranslatorOptions {
   reporter: Reporter;
   creationDateStart?: string;
   dryRun?: boolean;
+  /** Characters above which a run refuses to start; see `translationBudget.ts` */
+  maxCharsPerRun?: string | number;
+}
+
+interface PlannedTranslation {
+  entry: Document;
+  dirty: boolean;
+}
+
+interface LanguagePlan {
+  to: string;
+  toTranslate: PlannedTranslation[];
+  chars: number;
+}
+
+interface TranslationFailure {
+  incident_id: number;
+  language: string;
+  message: string;
 }
 
 /**
- * IncidentTranslator is responsible for translating incidents in MongoDB
- * into different languages using a translation service such as Google Translate.
+ * Translates the incidents in `aiidprod.incidents` into every configured language and stores
+ * the results in `translations.incidents`, one document per (incident_id, language).
+ *
+ * An incident is sent to Google Translate when it has no stored translation for a language, or
+ * when its stored translation is flagged `dirty` because the incident's title or description
+ * changed. Every stored translation is written with an upsert keyed on (incident_id, language),
+ * so a re-translation always replaces the right document and clears its `dirty` flag, and a
+ * run saves each translation as soon as it arrives rather than after a whole language finishes.
  */
 export default class IncidentTranslator {
   translateClient: Translate;
@@ -37,6 +66,12 @@ export default class IncidentTranslator {
 
   dryRun: boolean;
 
+  maxCharsPerRun: number;
+
+  charsSent: number;
+
+  failures: TranslationFailure[];
+
   constructor({
     mongoClient,
     translateClient,
@@ -44,6 +79,7 @@ export default class IncidentTranslator {
     reporter,
     creationDateStart = process.env.TRANSLATE_INCIDENT_CREATION_DATE_START,
     dryRun = process.env.TRANSLATE_DRY_RUN !== 'false',
+    maxCharsPerRun = process.env.TRANSLATE_MAX_CHARS_PER_RUN,
   }: IncidentTranslatorOptions) {
     this.translateClient = translateClient;
     this.mongoClient = mongoClient;
@@ -51,6 +87,9 @@ export default class IncidentTranslator {
     this.languages = languages;
     this.creationDateStart = creationDateStart;
     this.dryRun = dryRun;
+    this.maxCharsPerRun = parseMaxCharsPerRun(maxCharsPerRun);
+    this.charsSent = 0;
+    this.failures = [];
   }
 
   /**
@@ -59,6 +98,8 @@ export default class IncidentTranslator {
    */
   async translate({ payload, to }: { payload: string[]; to: string }): Promise<[string[], any]> {
     if (!this.dryRun) {
+      this.charsSent += payload.reduce((total, text) => total + text.length, 0);
+
       return this.translateClient.translate(payload, { to });
     } else {
       return [payload.map((p) => `translated-${to}-${p}`), {}];
@@ -66,135 +107,93 @@ export default class IncidentTranslator {
   }
 
   /**
-   * Translates an entire collection of incidents for a given language.
-   * It uses a concurrency queue to process them in batches.
+   * Works out which of `items` have to be sent to Google Translate for language `to`:
+   * incidents with no stored translation, and incidents whose stored translation is dirty.
+   * Nothing is sent from here, so a run can add up its cost before it starts.
    */
-  async translateIncidentsCollection({
+  async getIncidentsToTranslate({
     items,
     to,
   }: {
     items: Document[];
     to: string;
-  }): Promise<Document[]> {
-    const concurrency = 100;
-
-    const translated: Document[] = [];
-
-    // Create a queue for processing incident translations
-    const q = queue(async (task: { entry: Document; to: string }) => {
-      const translatedEntry = await this.translateIncident({
-        entry: task.entry,
-        to: task.to,
-      });
-
-      translated.push(translatedEntry);
-    }, concurrency);
-
-    q.error((err, task) => {
-      this.reporter.error(`Error translating incident ${task.entry.incident_id}, ${err.message}`);
-      throw new Error(
-        `Translation process failed for incident ${task.entry.incident_id}. Error: ${err.message}`
-      );
-    });
-
-    // Fetch incidents that are already translated for this language
-    const alreadyTranslated = await this.getTranslatedIncidents({
-      items,
-      language: to,
-    });
-
-    // Only queue incidents that have not been translated yet
-    for (const entry of items) {
-      const alreadyTranslatedEntry = alreadyTranslated.find(
-        (item) => item.incident_id == entry.incident_id
-      );
-
-      // If the incident is not already translated, translate it
-      if (!alreadyTranslatedEntry) {
-        q.push({ entry, to });
-      }
-      // If the incident is already translated but is dirty, translate it again
-      else if (alreadyTranslatedEntry.dirty) {
-        q.push({ entry: { ...entry, dirty: alreadyTranslatedEntry.dirty }, to });
-      }
-    }
-
-    if (q.length() > 0) {
-      await q.drain();
-    }
-
-    return translated;
-  }
-
-  /**
-   * Gets a list of incidents that have already been translated into the specified language.
-   */
-  async getTranslatedIncidents({
-    items,
-    language,
-  }: {
-    items: Document[];
-    language: string;
-  }): Promise<Document[]> {
-    const originalIds = items.map((item) => item.incident_id);
-
+  }): Promise<{ toTranslate: PlannedTranslation[]; chars: number }> {
     const incidentsTranslatedCollection = this.mongoClient
       .db('translations')
       .collection('incidents');
 
     const query = {
-      incident_id: { $in: originalIds },
-      $and: [{ language }, ...keys.map((key) => ({ [key]: { $exists: true } }))],
+      incident_id: { $in: items.map((item) => item.incident_id) },
+      $and: [{ language: to }, ...keys.map((key) => ({ [key]: { $exists: true } }))],
     };
 
     const translated = await incidentsTranslatedCollection
       .find(query, { projection: { incident_id: 1, dirty: 1 } })
       .toArray();
 
-    return translated;
+    const stored = new Map<number, { dirty: boolean }>();
+
+    for (const translation of translated) {
+      const previous = stored.get(translation.incident_id);
+
+      stored.set(translation.incident_id, {
+        dirty: Boolean(translation.dirty) || Boolean(previous && previous.dirty),
+      });
+    }
+
+    const toTranslate: PlannedTranslation[] = [];
+
+    for (const entry of items) {
+      if (keys.some((key) => !entry[key])) {
+        // A translation is only stored when every field is present, so an incident with an
+        // empty field would be paid for on every run and never saved.
+        this.reporter.warn(
+          `Skipping incident ${entry.incident_id} for [${to}]: its ${keys
+            .filter((key) => !entry[key])
+            .join(' and ')} field is empty`
+        );
+        continue;
+      }
+
+      const current = stored.get(entry.incident_id);
+
+      if (!current) {
+        toTranslate.push({ entry, dirty: false });
+      } else if (current.dirty) {
+        toTranslate.push({ entry, dirty: true });
+      }
+    }
+
+    const chars = toTranslate.reduce((total, { entry }) => total + countChars(entry), 0);
+
+    return { toTranslate, chars };
   }
 
   /**
-   * Saves the translated incidents to MongoDB in the 'translations.incidents' collection.
+   * Stores one translation, replacing any stored translation of the same incident in the same
+   * language and clearing its dirty flag.
    */
-  async saveTranslatedIncidents({ items, language }: { items: Document[]; language: string }) {
+  async saveTranslatedIncident({ item, language }: { item: Document; language: string }) {
     const incidentsTranslationsCollection = this.mongoClient
       .db('translations')
       .collection('incidents');
 
-    // Build the translated documents to be inserted
-    const incidentsTranslated = items.map((t) => {
-      const translated: Document = {
-        incident_id: t.incident_id,
-        language,
-        created_at: new Date(),
-        dirty: t.dirty,
-      };
+    const translation: Document = {
+      incident_id: item.incident_id,
+      language,
+      created_at: new Date(),
+      dirty: false,
+    };
 
-      for (const key of keys) {
-        translated[key] = t[key];
-      }
-
-      return translated;
-    });
-
-
-    const incidentsTranslatedToUpdate = incidentsTranslated.filter((t) => t.dirty && t.title !== '' && t.description !== '');
-
-    for (const incidentTranslatedToUpdate of incidentsTranslatedToUpdate) {
-      await incidentsTranslationsCollection.updateOne(
-        { incident_id: incidentTranslatedToUpdate.incident_id, language },
-        { $set: { ...incidentTranslatedToUpdate, dirty: false } }
-      );
+    for (const key of keys) {
+      translation[key] = item[key];
     }
 
-    const incidentsTranslatedToInsert = incidentsTranslated.filter((t) => !t.dirty && t.title !== '' && t.description !== '');
-
-    if (incidentsTranslatedToInsert.length > 0) {
-      await incidentsTranslationsCollection.insertMany(incidentsTranslatedToInsert);
-    }
-
-    return { insertedCount: incidentsTranslatedToInsert.length + incidentsTranslatedToUpdate.length };
+    await incidentsTranslationsCollection.updateOne(
+      { incident_id: item.incident_id, language },
+      { $set: translation },
+      { upsert: true }
+    );
   }
 
   /**
@@ -203,14 +202,7 @@ export default class IncidentTranslator {
   async translateIncident({ entry, to }: { entry: Document; to: string }): Promise<Document> {
     const translatedEntry = cloneDeep(entry);
 
-    const payload: string[] = [];
-
-    // Prepare the payload by extracting the relevant fields from the entry
-    for (const key of keys) {
-      const text = entry[key];
-
-      payload.push(text);
-    }
+    const payload: string[] = keys.map((key) => entry[key]);
 
     // Call the translation API (or mocked call if dryRun is true)
     const [results] = await this.translate({ payload, to });
@@ -235,6 +227,55 @@ export default class IncidentTranslator {
   }
 
   /**
+   * Translates and stores every incident in `toTranslate` for language `to`. A failure on one
+   * incident is recorded and the rest carry on, so one bad incident cannot discard a whole run
+   * that has already been paid for.
+   */
+  async translateLanguage({ to, toTranslate }: LanguagePlan): Promise<number> {
+    if (toTranslate.length === 0) {
+      this.reporter.log(`No new incidents needed translation to [${to}]`);
+
+      return 0;
+    }
+
+    this.reporter.log(`Translating ${toTranslate.length} incidents to [${to}]`);
+
+    const concurrency = 100;
+
+    let stored = 0;
+
+    const q = queue(async ({ entry }: PlannedTranslation) => {
+      try {
+        const translatedEntry = await this.translateIncident({ entry, to });
+
+        if (keys.some((key) => translatedEntry[key] === '')) {
+          return;
+        }
+
+        await this.saveTranslatedIncident({ item: translatedEntry, language: to });
+
+        stored++;
+      } catch (error: any) {
+        const message = `${error.code ? `${error.code} ` : ''}${error.message}`;
+
+        this.reporter.error(
+          `Error translating incident ${entry.incident_id} to [${to}], ${message}`
+        );
+
+        this.failures.push({ incident_id: entry.incident_id, language: to, message });
+      }
+    }, concurrency);
+
+    q.push(toTranslate);
+
+    await q.drain();
+
+    this.reporter.log(`Stored [${stored}] translations to [${to}]`);
+
+    return stored;
+  }
+
+  /**
    * Runs the entire translation process. It connects to MongoDB, retrieves
    * incidents from 'aiidprod.incidents', and then translates them into the
    * configured languages, saving the results in 'translations.incidents' collection.
@@ -248,73 +289,84 @@ export default class IncidentTranslator {
 
     await this.mongoClient.connect();
 
-    let incidentsQuery = {};
+    try {
+      let incidentsQuery = {};
 
-    // If creationDateStart is provided, only translate incidents after that date
-    if (this.creationDateStart) {
-      if (isNaN(Date.parse(this.creationDateStart))) {
-        const errorMessage = `Translation process error: Invalid date format for TRANSLATE_INCIDENT_CREATION_DATE_START env variable: [${this.creationDateStart}]`;
+      // If creationDateStart is provided, only translate incidents after that date
+      if (this.creationDateStart) {
+        if (isNaN(Date.parse(this.creationDateStart))) {
+          const errorMessage = `Translation process error: Invalid date format for TRANSLATE_INCIDENT_CREATION_DATE_START env variable: [${this.creationDateStart}]`;
+
+          this.reporter.error(errorMessage);
+          throw new Error(errorMessage);
+        }
+
+        this.reporter.log(`Translating incidents created after [${this.creationDateStart}]`);
+        incidentsQuery = { created_at: { $gte: new Date(this.creationDateStart) } };
+      } else {
+        this.reporter.log(
+          'Translating all incidents. (TRANSLATE_INCIDENT_CREATION_DATE_START env variable is not defined)'
+        );
+      }
+
+      // Fetch incidents from the source database 'aiidprod.incidents'
+      const incidents = await this.mongoClient
+        .db('aiidprod')
+        .collection('incidents')
+        .find(incidentsQuery)
+        .toArray();
+
+      this.reporter.log(`Processing translation of ${incidents.length} incidents`);
+
+      // Work out everything this run would send before sending any of it
+      const plan: LanguagePlan[] = [];
+
+      for (const to of this.languages) {
+        const { toTranslate, chars } = await this.getIncidentsToTranslate({ items: incidents, to });
+
+        const dirty = toTranslate.filter((item) => item.dirty).length;
+
+        this.reporter.log(
+          `[${to}] ${toTranslate.length} incidents to translate (${
+            toTranslate.length - dirty
+          } new, ${dirty} dirty), ${chars} characters`
+        );
+
+        plan.push({ to, toTranslate, chars });
+      }
+
+      const totalChars = plan.reduce((total, language) => total + language.chars, 0);
+
+      this.reporter.log(
+        `This run would send ${describeChars(totalChars)}; the limit is ${this.maxCharsPerRun}`
+      );
+
+      if (!this.dryRun && totalChars > this.maxCharsPerRun) {
+        const errorMessage = `Translation process aborted before calling Google Translate: this run would send ${describeChars(
+          totalChars
+        )}, above the TRANSLATE_MAX_CHARS_PER_RUN limit of ${
+          this.maxCharsPerRun
+        }. Check why so much needs translating, or raise the limit to run it on purpose.`;
 
         this.reporter.error(errorMessage);
         throw new Error(errorMessage);
       }
 
-      this.reporter.log(`Translating incidents created after [${this.creationDateStart}]`);
-      incidentsQuery = { created_at: { $gte: new Date(this.creationDateStart) } };
-    } else {
-      this.reporter.log(
-        'Translating all incidents. (TRANSLATE_INCIDENT_CREATION_DATE_START env variable is not defined)'
+      await Promise.all(plan.map((language) => this.translateLanguage(language)));
+
+      this.reporter.log(`Sent ${describeChars(this.charsSent)} to Google Translate`);
+    } finally {
+      await this.mongoClient.close();
+    }
+
+    if (this.failures.length > 0) {
+      throw new Error(
+        `Translation process finished with ${
+          this.failures.length
+        } failed translations: ${this.failures
+          .map((failure) => `incident ${failure.incident_id} [${failure.language}]`)
+          .join(', ')}`
       );
     }
-
-    // Fetch incidents from the source database 'aiidprod.incidents'
-    const incidents = await this.mongoClient
-      .db('aiidprod')
-      .collection('incidents')
-      .find(incidentsQuery)
-      .toArray();
-
-    this.reporter.log(`Processing translation of ${incidents.length} incidents`);
-
-    const concurrency = 10;
-
-    // Create a queue to translate incidents for each language
-    const q = queue(async (task: { to: string }, done: () => void) => {
-      this.reporter.log(`Translating incidents for [${task.to}]`);
-
-      let translated = await this.translateIncidentsCollection({
-        items: incidents,
-        to: task.to,
-      });
-
-      // filter translated reports that are empty
-      translated = translated.filter((t) => t.title !== '' && t.description !== '');
-
-      if (translated.length > 0) {
-        this.reporter.log(`Translated [${translated.length}] new incidents to [${task.to}]`);
-        const result = await this.saveTranslatedIncidents({
-          items: translated,
-          language: task.to,
-        });
-
-        this.reporter.log(`Stored [${result.insertedCount}] new incidents to [${task.to}]`);
-      } else {
-        this.reporter.log(`No new incidents needed translation to [${task.to}]`);
-      }
-
-      done();
-    }, concurrency);
-
-    // Enqueue all target languages for translation
-    for (const to of this.languages) {
-      q.push({ to });
-    }
-
-    // Wait until all languages have been processed
-    if (q.length() > 0) {
-      await q.drain();
-    }
-
-    await this.mongoClient.close();
   }
 }

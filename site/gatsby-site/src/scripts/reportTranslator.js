@@ -6,7 +6,11 @@ const remark = require('remark');
 
 const remarkStrip = require('strip-markdown');
 
+const { parseMaxCharsPerRun, describeChars } = require('./translationBudget');
+
 const keys = ['text', 'title'];
+
+const countChars = (entry) => keys.reduce((total, key) => total + (entry[key] || '').length, 0);
 
 /**
  * @typedef {Object} Reporter
@@ -15,15 +19,26 @@ const keys = ['text', 'title'];
  * @property {function(string):void} warn
  */
 
+/**
+ * Translates the reports in `aiidprod.reports` into every configured language and stores the
+ * results in `translations.reports`, one document per (report_number, language).
+ *
+ * A report is sent to Google Translate when it has no stored translation for a language, or
+ * when its stored translation is flagged `dirty` because the report's text or title changed.
+ * Every stored translation is written with an upsert keyed on (report_number, language), so a
+ * re-translation always replaces the right document and clears its `dirty` flag, and a run
+ * saves each translation as soon as it arrives rather than after a whole language finishes.
+ */
 class ReportTranslator {
   /**
    * @param {Object} options
    * @param {import('mongodb').MongoClient} options.mongoClient
    * @param {Object} options.translateClient
-   * @param {string[]} options.languages
+   * @param {{code: string}[]} options.languages
    * @param {Reporter} options.reporter
    * @param {string} [options.submissionDateStart]
    * @param {boolean} [options.dryRun]
+   * @param {string|number} [options.maxCharsPerRun] Characters above which a run refuses to start
    */
   constructor({
     mongoClient,
@@ -32,6 +47,7 @@ class ReportTranslator {
     reporter,
     submissionDateStart = process.env.TRANSLATE_SUBMISSION_DATE_START,
     dryRun = process.env.TRANSLATE_DRY_RUN !== 'false',
+    maxCharsPerRun = process.env.TRANSLATE_MAX_CHARS_PER_RUN,
   }) {
     this.translateClient = translateClient;
     this.mongoClient = mongoClient;
@@ -39,68 +55,32 @@ class ReportTranslator {
     this.languages = languages;
     this.submissionDateStart = submissionDateStart;
     this.dryRun = dryRun;
+    this.maxCharsPerRun = parseMaxCharsPerRun(maxCharsPerRun);
+    this.charsSent = 0;
+    this.failures = [];
   }
 
   async translate({ payload, to }) {
     if (!this.dryRun) {
+      this.charsSent += payload.reduce((total, text) => total + text.length, 0);
+
       return this.translateClient.translate(payload, { to });
     } else {
       return [payload.map((p) => `translated-${to}-${p}`)];
     }
   }
 
-  async translateReportsCollection({ items, to }) {
-    const concurrency = 100;
-
-    const translated = [];
-
-    const q = queue(async ({ entry, to }) => {
-      const translatedEntry = await this.translateReport({ entry, to });
-
-      translated.push(translatedEntry);
-    }, concurrency);
-
-    q.error((err, task) => {
-      this.reporter.error(
-        `Error translating report ${task.entry.report_number}, ${err.code} ${err.message}`
-      );
-      throw new Error(
-        `Translation process failed for report ${task.entry.report_number}. Error: ${err.code} - ${err.message}`
-      );
-    });
-
-    const alreadyTranslated = await this.getTranslatedReports({ items, language: to });
-
-    for (const entry of items) {
-      const alreadyTranslatedEntry = alreadyTranslated.find(
-        (item) => item.report_number == entry.report_number
-      );
-
-      // If the report is not already translated, translate it
-      if (!alreadyTranslatedEntry) {
-        q.push({ entry, to });
-      }
-      // If the report is already translated but is dirty, translate it again
-      else if (alreadyTranslatedEntry.dirty) {
-        q.push({ entry: { ...entry, dirty: alreadyTranslatedEntry.dirty }, to });
-      }
-    }
-
-    if (q.length() > 0) {
-      await q.drain();
-    }
-
-    return translated;
-  }
-
-  async getTranslatedReports({ items, language }) {
-    const originalIds = items.map((item) => item.report_number);
-
+  /**
+   * Works out which of `items` have to be sent to Google Translate for language `to`: reports
+   * with no complete stored translation, and reports whose stored translation is dirty.
+   * Nothing is sent from here, so a run can add up its cost before it starts.
+   */
+  async getReportsToTranslate({ items, to }) {
     const reportsTranslatedCollection = this.mongoClient.db('translations').collection('reports');
 
     const query = {
-      report_number: { $in: originalIds },
-      $and: [{ language: language }].concat(
+      report_number: { $in: items.map((item) => item.report_number) },
+      $and: [{ language: to }].concat(
         [...keys, 'plain_text'].map((key) => ({ [key]: { $exists: true } }))
       ),
     };
@@ -109,57 +89,76 @@ class ReportTranslator {
       .find(query, { projection: { report_number: 1, dirty: 1 } })
       .toArray();
 
-    return translated;
+    const stored = new Map();
+
+    for (const translation of translated) {
+      const previous = stored.get(translation.report_number);
+
+      stored.set(translation.report_number, {
+        dirty: Boolean(translation.dirty) || Boolean(previous && previous.dirty),
+      });
+    }
+
+    const toTranslate = [];
+
+    for (const entry of items) {
+      if (keys.some((key) => !entry[key])) {
+        // A translation is only stored when every field is present, so a report with an empty
+        // field would be paid for on every run and never saved.
+        this.reporter.warn(
+          `Skipping report ${entry.report_number} for [${to}]: its ${keys
+            .filter((key) => !entry[key])
+            .join(' and ')} field is empty`
+        );
+        continue;
+      }
+
+      const current = stored.get(entry.report_number);
+
+      if (!current) {
+        toTranslate.push({ entry, dirty: false });
+      } else if (current.dirty) {
+        toTranslate.push({ entry, dirty: true });
+      }
+    }
+
+    const chars = toTranslate.reduce((total, { entry }) => total + countChars(entry), 0);
+
+    return { toTranslate, chars };
   }
 
-  async saveTranslatedReports({ items, language }) {
+  /**
+   * Stores one translation, replacing any stored translation of the same report in the same
+   * language and clearing its dirty flag.
+   */
+  async saveTranslatedReport({ item, language }) {
     const reportsTranslationsCollection = this.mongoClient.db('translations').collection('reports');
 
-    const translated = [];
+    const { report_number, text, title } = item;
 
-    for (const item of items) {
-      const { report_number, text, title, dirty } = item;
+    const plain_text = (await remark().use(remarkStrip).process(text)).contents.toString();
 
-      const plain_text = (await remark().use(remarkStrip).process(text)).contents.toString();
+    const translation = {
+      report_number,
+      text,
+      title,
+      plain_text,
+      language,
+      dirty: false,
+      created_at: new Date(),
+    };
 
-      translated.push({ report_number, text, title, plain_text, dirty });
-    }
-
-    // Insert the translated reports into the reports collection with the language field
-    const reportsTranslated = translated.map((t) => ({ ...t, language, created_at: new Date() }));
-
-    const reportsTranslatedToUpdate = reportsTranslated.filter(
-      (t) => t.dirty && t.text !== '' && t.title !== ''
+    await reportsTranslationsCollection.updateOne(
+      { report_number, language },
+      { $set: translation },
+      { upsert: true }
     );
-
-    for (const report of reportsTranslatedToUpdate) {
-      await reportsTranslationsCollection.updateOne(
-        { report_number: report.report_number },
-        { $set: { ...report, dirty: false } }
-      );
-    }
-
-    const reportsTranslatedToInsert = reportsTranslated.filter(
-      (t) => !t.dirty && t.text !== '' && t.title !== ''
-    );
-
-    if (reportsTranslatedToInsert.length > 0) {
-      await reportsTranslationsCollection.insertMany(reportsTranslatedToInsert);
-    }
-
-    return { insertedCount: reportsTranslatedToInsert.length + reportsTranslatedToUpdate.length };
   }
 
   async translateReport({ entry, to }) {
     const translatedEntry = cloneDeep(entry);
 
-    const payload = [];
-
-    for (const key of keys) {
-      const text = entry[key];
-
-      payload.push(text);
-    }
+    const payload = keys.map((key) => entry[key]);
 
     const [results] = await this.translate({ payload, to });
 
@@ -181,6 +180,55 @@ class ReportTranslator {
     return translatedEntry;
   }
 
+  /**
+   * Translates and stores every report in `toTranslate` for language `to`. A failure on one
+   * report is recorded and the rest carry on, so one bad report cannot discard a whole run
+   * that has already been paid for.
+   */
+  async translateLanguage({ to, toTranslate }) {
+    if (toTranslate.length === 0) {
+      this.reporter.log(`No new incident reports needed translation to [${to}]`);
+
+      return 0;
+    }
+
+    this.reporter.log(`Translating ${toTranslate.length} incident reports to [${to}]`);
+
+    const concurrency = 100;
+
+    let stored = 0;
+
+    const q = queue(async ({ entry }) => {
+      try {
+        const translatedEntry = await this.translateReport({ entry, to });
+
+        if (keys.some((key) => translatedEntry[key] === '')) {
+          return;
+        }
+
+        await this.saveTranslatedReport({ item: translatedEntry, language: to });
+
+        stored++;
+      } catch (error) {
+        const message = `${error.code ? `${error.code} ` : ''}${error.message}`;
+
+        this.reporter.error(
+          `Error translating report ${entry.report_number} to [${to}], ${message}`
+        );
+
+        this.failures.push({ report_number: entry.report_number, language: to, message });
+      }
+    }, concurrency);
+
+    q.push(toTranslate);
+
+    await q.drain();
+
+    this.reporter.log(`Stored [${stored}] translations to [${to}]`);
+
+    return stored;
+  }
+
   async run() {
     if (this.dryRun) {
       this.reporter.warn(
@@ -190,71 +238,91 @@ class ReportTranslator {
 
     await this.mongoClient.connect();
 
-    let reportsQuery = {};
+    try {
+      let reportsQuery = {};
 
-    if (this.submissionDateStart) {
-      // Check if the date is valid
-      if (isNaN(Date.parse(this.submissionDateStart))) {
-        const errorMessage = `Translation process error: Invalid date format for TRANSLATE_SUBMISSION_DATE_START env variable: [${this.submissionDateStart}]`;
+      if (this.submissionDateStart) {
+        // Check if the date is valid
+        if (isNaN(Date.parse(this.submissionDateStart))) {
+          const errorMessage = `Translation process error: Invalid date format for TRANSLATE_SUBMISSION_DATE_START env variable: [${this.submissionDateStart}]`;
+
+          this.reporter.error(errorMessage);
+          throw new Error(errorMessage);
+        }
+
+        this.reporter.log(
+          `Translating incident reports submitted after [${this.submissionDateStart}]`
+        );
+        reportsQuery = { date_submitted: { $gte: new Date(this.submissionDateStart) } };
+      } else {
+        this.reporter.log(
+          `Translating all incident reports. (TRANSLATE_SUBMISSION_DATE_START env variable is not defined)`
+        );
+      }
+
+      // Exclude non-approved variant reports tag
+      reportsQuery.tags = { $nin: ['variant:unreviewed', 'variant:rejected'] };
+
+      const reports = await this.mongoClient
+        .db('aiidprod')
+        .collection(`reports`)
+        .find(reportsQuery)
+        .toArray();
+
+      this.reporter.log(`Processing translation of ${reports.length} incident reports`);
+
+      // Work out everything this run would send before sending any of it
+      const plan = [];
+
+      for (const { code: to } of this.languages) {
+        const items = reports.filter((r) => r.language !== to);
+
+        const { toTranslate, chars } = await this.getReportsToTranslate({ items, to });
+
+        const dirty = toTranslate.filter((item) => item.dirty).length;
+
+        this.reporter.log(
+          `[${to}] ${toTranslate.length} reports to translate (${
+            toTranslate.length - dirty
+          } new, ${dirty} dirty), ${chars} characters`
+        );
+
+        plan.push({ to, toTranslate, chars });
+      }
+
+      const totalChars = plan.reduce((total, language) => total + language.chars, 0);
+
+      this.reporter.log(
+        `This run would send ${describeChars(totalChars)}; the limit is ${this.maxCharsPerRun}`
+      );
+
+      if (!this.dryRun && totalChars > this.maxCharsPerRun) {
+        const errorMessage = `Translation process aborted before calling Google Translate: this run would send ${describeChars(
+          totalChars
+        )}, above the TRANSLATE_MAX_CHARS_PER_RUN limit of ${
+          this.maxCharsPerRun
+        }. Check why so much needs translating, or raise the limit to run it on purpose.`;
 
         this.reporter.error(errorMessage);
         throw new Error(errorMessage);
       }
 
-      this.reporter.log(
-        `Translating incident reports submitted after [${this.submissionDateStart}]`
+      await Promise.all(plan.map((language) => this.translateLanguage(language)));
+
+      this.reporter.log(`Sent ${describeChars(this.charsSent)} to Google Translate`);
+    } finally {
+      await this.mongoClient.close();
+    }
+
+    if (this.failures.length > 0) {
+      throw new Error(
+        `Translation process finished with ${
+          this.failures.length
+        } failed translations: ${this.failures
+          .map((failure) => `report ${failure.report_number} [${failure.language}]`)
+          .join(', ')}`
       );
-      reportsQuery = { date_submitted: { $gte: new Date(this.submissionDateStart) } };
-    } else {
-      this.reporter.log(
-        `Translating all incident reports. (TRANSLATE_SUBMISSION_DATE_START env variable is not defined)`
-      );
     }
-
-    // Exclude non-approved variant reports tag
-    reportsQuery.tags = { $nin: ['variant:unreviewed', 'variant:rejected'] };
-
-    const reports = await this.mongoClient
-      .db('aiidprod')
-      .collection(`reports`)
-      .find(reportsQuery)
-      .toArray();
-
-    this.reporter.log(`Processing translation of ${reports.length} incident reports`);
-
-    const concurrency = 10;
-
-    const q = queue(async ({ to }, done) => {
-      this.reporter.log(`Translating incident reports for [${to}]`);
-
-      const items = reports.filter((r) => r.language !== to);
-
-      let translated = await this.translateReportsCollection({ items, to });
-
-      // filter translated reports that are empty
-      translated = translated.filter((t) => t.text !== '' && t.title !== '');
-
-      if (translated.length > 0) {
-        this.reporter.log(`Translated [${translated.length}] new reports to [${to}]`);
-
-        const result = await this.saveTranslatedReports({ items: translated, language: to });
-
-        this.reporter.log(`Stored [${result.insertedCount}] new reports to [${to}]`);
-      } else {
-        this.reporter.log(`No new incident reports needed translation to [${to}]`);
-      }
-
-      done();
-    }, concurrency);
-
-    for (const { code: to } of this.languages) {
-      q.push({ to });
-    }
-
-    if (q.length() > 0) {
-      await q.drain();
-    }
-    await this.mongoClient.close();
   }
 }
 

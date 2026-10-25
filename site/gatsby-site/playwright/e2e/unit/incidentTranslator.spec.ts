@@ -1,4 +1,5 @@
 import { ObjectId } from 'bson';
+import { expect } from '@playwright/test';
 import { test } from '../../utils';
 import IncidentTranslator from '../../../src/scripts/incidentTranslator';
 import sinon from 'sinon';
@@ -27,29 +28,50 @@ const incidents = [
   },
 ];
 
-test('Incident Translations - Should translate all incidents', async ({ page }) => {
-  // mock new Date()
-  const mockDate = new Date('2025-01-01');
-  const dateStub = sinon.stub(global, 'Date') as any;
+// mock new Date() for the duration of each test, so stored `created_at` values are predictable
+const mockDate = new Date('2025-01-01');
+
+let dateStub: any;
+
+test.beforeEach(() => {
+  dateStub = sinon.stub(global, 'Date') as any;
   dateStub.returns(mockDate);
   dateStub.now = () => mockDate.getTime();
   dateStub.parse = () => mockDate.getTime();
+});
 
-  const translatedIncidents = [];
+test.afterEach(() => {
+  dateStub.restore();
+});
 
+type Translate = (payload: string[], options: { to: string }) => any;
+
+const fakeTranslate: Translate = (payload, { to }) => [payload.map((p) => `test-${to}-${p}`)];
+
+/**
+ * Stubs the two collections the translator touches. The translations collection answers
+ * `find` with the stored translations of the language being queried, as MongoDB would.
+ */
+const createMocks = ({
+  incidentDocs = incidents,
+  translatedIncidents = [] as any[],
+  translate = fakeTranslate,
+} = {}) => {
   const reporter = { log: sinon.stub(), error: sinon.stub(), warn: sinon.stub() };
 
   const incidentsCollection = {
     find: sinon.stub().returns({
-      toArray: sinon.stub().resolves(incidents),
+      toArray: sinon.stub().resolves(incidentDocs),
     }),
   };
 
   const incidentsTranslationsCollection = {
-    find: sinon.stub().returns({
-      toArray: sinon.stub().resolves(translatedIncidents),
-    }),
-    insertMany: sinon.stub().resolves({ insertedCount: 1 }),
+    find: sinon.stub().callsFake((query: any) => ({
+      toArray: sinon
+        .stub()
+        .resolves(translatedIncidents.filter((t) => t.language === query.$and[0].language)),
+    })),
+    updateOne: sinon.stub().resolves({ upsertedCount: 1 }),
   };
 
   const mongoClient = {
@@ -77,260 +99,131 @@ test('Incident Translations - Should translate all incidents', async ({ page }) 
   };
 
   const translateClient = {
-    translate: sinon.stub().callsFake((payload, { to }) => [payload.map((p: string) => `test-${to}-${p}`)]),
+    translate: sinon.stub().callsFake(translate),
   };
 
-  const translator = new IncidentTranslator({
+  return {
+    reporter,
+    incidentsCollection,
+    incidentsTranslationsCollection,
     mongoClient,
     translateClient,
+  };
+};
+
+/** The document the translator is expected to upsert for `incident` translated with `prefix` */
+const storedTranslation = (
+  incident: (typeof incidents)[number],
+  language: string,
+  prefix = 'test'
+) => ({
+  incident_id: incident.incident_id,
+  language,
+  created_at: new Date(),
+  dirty: false,
+  title: `${prefix}-${language}-${incident.title}`,
+  description: `${prefix}-${language}-${incident.description}`,
+});
+
+const upsert = (translation: ReturnType<typeof storedTranslation>) => [
+  { incident_id: translation.incident_id, language: translation.language },
+  { $set: translation },
+  { upsert: true },
+];
+
+test('Incident Translations - Should translate all incidents', async () => {
+  const {
+    reporter,
+    incidentsCollection,
+    incidentsTranslationsCollection,
+    mongoClient,
+    translateClient,
+  } = createMocks();
+
+  const translator = new IncidentTranslator({
+    mongoClient: mongoClient as any,
+    translateClient: translateClient as any,
     languages: ['es', 'fr'],
     reporter,
     dryRun: false,
   });
 
   await translator.run();
-  
+
   sinon.assert.calledOnce(mongoClient.connect);
   sinon.assert.calledOnce(incidentsCollection.find);
   sinon.assert.callCount(translateClient.translate, 6);
-  sinon.assert.calledTwice(incidentsTranslationsCollection.insertMany);
-  sinon.assert.calledWith(incidentsTranslationsCollection.insertMany, [
-    {
-      incident_id: 1,
-      title: 'test-es-Incident 1 title',
-      description: 'test-es-Description of incident 1',
-      language: 'es',
-      created_at: new Date(),
-      dirty: undefined,
-    },
-    {
-      incident_id: 2,
-      title: 'test-es-Incident 2 title',
-      description: 'test-es-Description of incident 2',
-      language: 'es',
-      created_at: new Date(),
-      dirty: undefined,
-    },
-    {
-      incident_id: 3,
-      title: 'test-es-Incident 3 title',
-      description: 'test-es-Description of incident 3',
-      language: 'es',
-      created_at: new Date(),
-      dirty: undefined,
-    },
-  ]);
-  sinon.assert.calledWith(incidentsTranslationsCollection.insertMany, [
-    {
-      incident_id: 1,
-      title: 'test-fr-Incident 1 title',
-      description: 'test-fr-Description of incident 1',
-      language: 'fr',
-      created_at: new Date(),
-      dirty: undefined,
-    }, {
-      incident_id: 2,
-      title: 'test-fr-Incident 2 title',
-      description: 'test-fr-Description of incident 2',
-      language: 'fr',
-      created_at: new Date(),
-      dirty: undefined,
-    },
-    {
-      incident_id: 3,
-      title: 'test-fr-Incident 3 title',
-      description: 'test-fr-Description of incident 3',
-      language: 'fr',
-      created_at: new Date(),
-      dirty: undefined,
-    },
-  ]);
-  sinon.assert.calledOnce(mongoClient.close);
+  sinon.assert.callCount(incidentsTranslationsCollection.updateOne, 6);
 
-  dateStub.restore();
+  for (const incident of incidents) {
+    sinon.assert.calledWith(
+      incidentsTranslationsCollection.updateOne,
+      ...upsert(storedTranslation(incident, 'es'))
+    );
+    sinon.assert.calledWith(
+      incidentsTranslationsCollection.updateOne,
+      ...upsert(storedTranslation(incident, 'fr'))
+    );
+  }
+
+  sinon.assert.calledOnce(mongoClient.close);
 });
 
-test("Incident Translations - Shouldn't call Google's translate api and use translation placeholders if dryRun is true", async ({ page }) => {
-  // mock new Date()
-  const mockDate = new Date('2025-01-01');
-  const dateStub = sinon.stub(global, 'Date') as any;
-  dateStub.returns(mockDate);
-  dateStub.now = () => mockDate.getTime();
-  dateStub.parse = () => mockDate.getTime();
-
-  const translatedIncidents = [];
-
-  const reporter = { log: sinon.stub(), error: sinon.stub(), warn: sinon.stub() };
-
-  const incidentsCollection = {
-    find: sinon.stub().returns({
-      toArray: sinon.stub().resolves(incidents),
-    }),
-  };
-
-  const incidentsTranslationsCollection = {
-    find: sinon.stub().returns({
-      toArray: sinon.stub().resolves(translatedIncidents),
-    }),
-    insertMany: sinon.stub().resolves({ insertedCount: 1 }),
-  };
-
-  const mongoClient = {
-    connect: sinon.stub().resolves(),
-    close: sinon.stub().resolves(),
-    db: sinon.stub().callsFake((dbName: string) => {
-      if (dbName === 'aiidprod') {
-        return {
-          collection: (name: string) => {
-            if (name === 'incidents') return incidentsCollection;
-            return null;
-          },
-        };
-      } else if (dbName === 'translations') {
-        return {
-          collection: (name: string) => {
-            if (name === 'incidents') return incidentsTranslationsCollection;
-            return null;
-          },
-        };
-      } else {
-        throw new Error(`Unexpected database name: ${dbName}`);
-      }
-    }),
-  };
-
-  const translateClient = {
-    translate: sinon.stub().callsFake((payload, { to }) => [payload.map((p: string) => `test-${to}-${p}`)]),
-  };
-
-  const translator = new IncidentTranslator({
+test("Incident Translations - Shouldn't call Google's translate api and use translation placeholders if dryRun is true", async () => {
+  const {
+    reporter,
+    incidentsCollection,
+    incidentsTranslationsCollection,
     mongoClient,
     translateClient,
+  } = createMocks();
+
+  const translator = new IncidentTranslator({
+    mongoClient: mongoClient as any,
+    translateClient: translateClient as any,
     languages: ['es', 'fr'],
     reporter,
     dryRun: true,
   });
 
   await translator.run();
-  
+
   sinon.assert.calledOnce(mongoClient.connect);
   sinon.assert.calledOnce(incidentsCollection.find);
   sinon.assert.notCalled(translateClient.translate);
-  sinon.assert.calledTwice(incidentsTranslationsCollection.insertMany);
-  sinon.assert.calledWith(incidentsTranslationsCollection.insertMany, [
-    {
-      incident_id: 1,
-      title: 'translated-es-Incident 1 title',
-      description: 'translated-es-Description of incident 1',
-      language: 'es',
-      created_at: new Date(),
-      dirty: undefined,
-    },
-    {
-      incident_id: 2,
-      title: 'translated-es-Incident 2 title',
-      description: 'translated-es-Description of incident 2',
-      language: 'es',
-      created_at: new Date(),
-      dirty: undefined,
-    },
-    {
-      incident_id: 3,
-      title: 'translated-es-Incident 3 title',
-      description: 'translated-es-Description of incident 3',
-      language: 'es',
-      created_at: new Date(),
-      dirty: undefined,
-    }
-  ]);
-  sinon.assert.calledWith(incidentsTranslationsCollection.insertMany, [
-    {
-      incident_id: 1,
-      title: 'translated-fr-Incident 1 title',
-      description: 'translated-fr-Description of incident 1',
-      language: 'fr',
-      created_at: new Date(),
-      dirty: undefined,
-    }, {
-      incident_id: 2,
-      title: 'translated-fr-Incident 2 title',
-      description: 'translated-fr-Description of incident 2',
-      language: 'fr',
-      created_at: new Date(),
-      dirty: undefined,
-    },
-    {
-      incident_id: 3,
-      title: 'translated-fr-Incident 3 title',
-      description: 'translated-fr-Description of incident 3',
-      language: 'fr',
-      created_at: new Date(),
-      dirty: undefined,
-    },
-  ]);
-  sinon.assert.calledOnce(mongoClient.close);
+  sinon.assert.callCount(incidentsTranslationsCollection.updateOne, 6);
 
-  dateStub.restore();
+  for (const incident of incidents) {
+    sinon.assert.calledWith(
+      incidentsTranslationsCollection.updateOne,
+      ...upsert(storedTranslation(incident, 'es', 'translated'))
+    );
+    sinon.assert.calledWith(
+      incidentsTranslationsCollection.updateOne,
+      ...upsert(storedTranslation(incident, 'fr', 'translated'))
+    );
+  }
+
+  sinon.assert.calledOnce(mongoClient.close);
 });
 
-test('Incident Translations - Should only translate incidents with creation date greater than specified date', async ({ page }) => {
+test('Incident Translations - Should only translate incidents with creation date greater than specified date', async () => {
   const creationDateStart = '2021-01-01';
 
-  // mock new Date()
-  const mockDate = new Date(creationDateStart);
-  const dateStub = sinon.stub(global, 'Date') as any;
-  dateStub.returns(mockDate);
-  dateStub.now = () => mockDate.getTime();
-  dateStub.parse = () => mockDate.getTime();
-
-  const translatedIncidents = [];
-
-  const reporter = { log: sinon.stub(), error: sinon.stub(), warn: sinon.stub() };
-
-  const incidentsCollection = {
-    find: sinon.stub().returns({
-      toArray: sinon.stub().resolves(incidents.filter(r => r.created_at > new Date(creationDateStart))),
-    }),
-  };
-
-  const incidentsTranslationsCollection = {
-    find: sinon.stub().returns({
-      toArray: sinon.stub().resolves(translatedIncidents),
-    }),
-    insertMany: sinon.stub().resolves({ insertedCount: 1 }),
-  };
-
-  const mongoClient = {
-    connect: sinon.stub().resolves(),
-    close: sinon.stub().resolves(),
-    db: sinon.stub().callsFake((dbName: string) => {
-      if (dbName === 'aiidprod') {
-        return {
-          collection: (name: string) => {
-            if (name === 'incidents') return incidentsCollection;
-            return null;
-          },
-        };
-      } else if (dbName === 'translations') {
-        return {
-          collection: (name: string) => {
-            if (name === 'incidents') return incidentsTranslationsCollection;
-            return null;
-          },
-        };
-      } else {
-        throw new Error(`Unexpected database name: ${dbName}`);
-      }
-    }),
-  };
-
-  const translateClient = {
-    translate: sinon.stub().callsFake((payload, { to }) => [payload.map((p: string) => `test-${to}-${p}`)]),
-  };
-
-  const translator = new IncidentTranslator({
+  const {
+    reporter,
+    incidentsCollection,
+    incidentsTranslationsCollection,
     mongoClient,
     translateClient,
+  } = createMocks({
+    // `Date` is stubbed while the test runs, so compare against the real timestamp
+    incidentDocs: incidents.filter((r) => r.created_at.getTime() > 1609459200000),
+  });
+
+  const translator = new IncidentTranslator({
+    mongoClient: mongoClient as any,
+    translateClient: translateClient as any,
     languages: ['es', 'fr'],
     reporter,
     dryRun: false,
@@ -338,45 +231,26 @@ test('Incident Translations - Should only translate incidents with creation date
   });
 
   await translator.run();
-  
+
   sinon.assert.calledOnce(mongoClient.connect);
   sinon.assert.calledOnce(incidentsCollection.find);
-  sinon.assert.calledWith(incidentsCollection.find, { created_at: { $gte: new Date(creationDateStart) } });
+  sinon.assert.calledWith(incidentsCollection.find, {
+    created_at: { $gte: new Date(creationDateStart) },
+  });
   sinon.assert.calledTwice(translateClient.translate);
-  sinon.assert.calledTwice(incidentsTranslationsCollection.insertMany);
-  sinon.assert.calledWith(incidentsTranslationsCollection.insertMany, [
-    {
-      incident_id: 3,
-      title: 'test-es-Incident 3 title',
-      description: 'test-es-Description of incident 3',
-      language: 'es',
-      created_at: new Date(),
-      dirty: undefined,
-    }
-  ]);
-  sinon.assert.calledWith(incidentsTranslationsCollection.insertMany, [
-    {
-      incident_id: 3,
-      title: 'test-fr-Incident 3 title',
-      description: 'test-fr-Description of incident 3',
-      language: 'fr',
-      created_at: new Date(),
-      dirty: undefined,
-    }
-  ]);
+  sinon.assert.calledTwice(incidentsTranslationsCollection.updateOne);
+  sinon.assert.calledWith(
+    incidentsTranslationsCollection.updateOne,
+    ...upsert(storedTranslation(incidents[2], 'es'))
+  );
+  sinon.assert.calledWith(
+    incidentsTranslationsCollection.updateOne,
+    ...upsert(storedTranslation(incidents[2], 'fr'))
+  );
   sinon.assert.calledOnce(mongoClient.close);
-
-  dateStub.restore();
 });
 
-test('Incident Translations - Should not translate if the incident was already translated', async ({ page }) => {
-  // mock new Date()
-  const mockDate = new Date('2025-01-01');
-  const dateStub = sinon.stub(global, 'Date') as any;
-  dateStub.returns(mockDate);
-  dateStub.now = () => mockDate.getTime();
-  dateStub.parse = () => mockDate.getTime();
-
+test('Incident Translations - Should not translate if the incident was already translated', async () => {
   const translatedIncidents = [
     {
       incident_id: 1,
@@ -387,331 +261,219 @@ test('Incident Translations - Should not translate if the incident was already t
     },
     {
       incident_id: 2,
-      title: 'Report 2 title',
-      description: 'Description of incident 2',
-      language: 'en',
+      title: 'Título del incidente 2',
+      description: 'Descripción del incidente 2',
+      language: 'es',
       created_at: new Date(),
     },
     {
       incident_id: 3,
-      title: 'Report 3 title',
-      description: 'Description of incident 3',
-      language: 'en',
+      title: 'Título del incidente 3',
+      description: 'Descripción del incidente 3',
+      language: 'es',
       created_at: new Date(),
     },
   ];
 
-  const reporter = { log: sinon.stub(), error: sinon.stub(), warn: sinon.stub() };
-
-  const incidentsCollection = {
-    find: sinon.stub().returns({
-      toArray: sinon.stub().resolves(incidents),
-    }),
-  };
-
-  const incidentsTranslationsCollection = {
-    find: sinon.stub().returns({
-      toArray: sinon.stub().resolves(translatedIncidents),
-    }),
-    insertMany: sinon.stub().resolves({ insertedCount: 1 }),
-  };
-
-  const mongoClient = {
-    connect: sinon.stub().resolves(),
-    close: sinon.stub().resolves(),
-    db: sinon.stub().callsFake((dbName: string) => {
-      if (dbName === 'aiidprod') {
-        return {
-          collection: (name: string) => {
-            if (name === 'incidents') return incidentsCollection;
-            return null;
-          },
-        };
-      } else if (dbName === 'translations') {
-        return {
-          collection: (name: string) => {
-            if (name === 'incidents') return incidentsTranslationsCollection;
-            return null;
-          },
-        };
-      } else {
-        throw new Error(`Unexpected database name: ${dbName}`);
-      }
-    }),
-  };
-
-  const translateClient = {
-    translate: sinon.stub().callsFake((payload, { to }) => [payload.map((p: string) => `test-${to}-${p}`)]),
-  };
-
-  const translator = new IncidentTranslator({
+  const {
+    reporter,
+    incidentsCollection,
+    incidentsTranslationsCollection,
     mongoClient,
     translateClient,
-    languages: ['es', 'en'],
+  } = createMocks({ translatedIncidents });
+
+  const translator = new IncidentTranslator({
+    mongoClient: mongoClient as any,
+    translateClient: translateClient as any,
+    languages: ['es'],
     reporter,
     dryRun: false,
   });
 
   await translator.run();
-  
+
   sinon.assert.calledOnce(mongoClient.connect);
   sinon.assert.calledOnce(incidentsCollection.find);
   sinon.assert.notCalled(translateClient.translate);
-  sinon.assert.notCalled(incidentsTranslationsCollection.insertMany);
+  sinon.assert.notCalled(incidentsTranslationsCollection.updateOne);
   sinon.assert.calledOnce(mongoClient.close);
-
-  dateStub.restore();
 });
 
-test("Incident Translations - Should not insert incident translation if the Google's translate API returns empty translations", async ({ page }) => {
-  // mock new Date()
-  const mockDate = new Date('2025-01-01');
-  const dateStub = sinon.stub(global, 'Date') as any;
-  dateStub.returns(mockDate);
-  dateStub.now = () => mockDate.getTime();
-  dateStub.parse = () => mockDate.getTime();
-
-  const translatedIncidents = [];
-
-  const reporter = { log: sinon.stub(), error: sinon.stub(), warn: sinon.stub() };
-
-  const incidentsCollection = {
-    find: sinon.stub().returns({
-      toArray: sinon.stub().resolves(incidents),
-    }),
-  };
-
-  const incidentsTranslationsCollection = {
-    find: sinon.stub().returns({
-      toArray: sinon.stub().resolves(translatedIncidents),
-    }),
-    insertMany: sinon.stub().resolves({ insertedCount: 1 }),
-  };
-
-  const mongoClient = {
-    connect: sinon.stub().resolves(),
-    close: sinon.stub().resolves(),
-    db: sinon.stub().callsFake((dbName: string) => {
-      if (dbName === 'aiidprod') {
-        return {
-          collection: (name: string) => {
-            if (name === 'incidents') return incidentsCollection;
-            return null;
-          },
-        };
-      } else if (dbName === 'translations') {
-        return {
-          collection: (name: string) => {
-            if (name === 'incidents') return incidentsTranslationsCollection;
-            return null;
-          },
-        };
-      } else {
-        throw new Error(`Unexpected database name: ${dbName}`);
-      }
-    }),
-  };
-
-  const translateClient = {
-    translate: sinon.stub().callsFake((payload, { to }) => {
-      if(to === 'es') return [['', '']];
-      return [payload.map((p: string) => `test-${to}-${p}`)];
-    }),
-  };
-
-  const translator = new IncidentTranslator({
+test("Incident Translations - Should not insert incident translation if the Google's translate API returns empty translations", async () => {
+  const {
+    reporter,
+    incidentsCollection,
+    incidentsTranslationsCollection,
     mongoClient,
     translateClient,
+  } = createMocks({
+    translate: (payload, { to }) => {
+      if (to === 'es') return [['', '']];
+      return [payload.map((p) => `test-${to}-${p}`)];
+    },
+  });
+
+  const translator = new IncidentTranslator({
+    mongoClient: mongoClient as any,
+    translateClient: translateClient as any,
     languages: ['es', 'fr'],
     reporter,
     dryRun: false,
   });
 
   await translator.run();
-  
+
   sinon.assert.calledOnce(mongoClient.connect);
   sinon.assert.calledOnce(incidentsCollection.find);
   sinon.assert.callCount(translateClient.translate, 6);
-  sinon.assert.calledOnce(incidentsTranslationsCollection.insertMany);
-  sinon.assert.calledWith(incidentsTranslationsCollection.insertMany, [
-    {
-      incident_id: 1,
-      title: 'test-fr-Incident 1 title',
-      description: 'test-fr-Description of incident 1',
-      language: 'fr',
-      created_at: new Date(),
-      dirty: undefined,
-    },
-    {
-      incident_id: 2,
-      title: 'test-fr-Incident 2 title',
-      description: 'test-fr-Description of incident 2',
-      language: 'fr',
-      created_at: new Date(),
-      dirty: undefined,
-    },
-    {
-      incident_id: 3,
-      title: 'test-fr-Incident 3 title',
-      description: 'test-fr-Description of incident 3',
-      language: 'fr',
-      created_at: new Date(),
-      dirty: undefined,
-    },
-  ]);
+  sinon.assert.calledThrice(incidentsTranslationsCollection.updateOne);
+
+  for (const incident of incidents) {
+    sinon.assert.calledWith(
+      incidentsTranslationsCollection.updateOne,
+      ...upsert(storedTranslation(incident, 'fr'))
+    );
+  }
+
   sinon.assert.callCount(reporter.error, 6);
   sinon.assert.calledOnce(mongoClient.close);
-
-  dateStub.restore();
 });
 
-test('Incident Translations - Should translate dirty incidents translations', async ({ page }) => {
-  // mock new Date()
-  const mockDate = new Date('2025-01-01');
-  const dateStub = sinon.stub(global, 'Date') as any;
-  dateStub.returns(mockDate);
-  dateStub.now = () => mockDate.getTime();
-  dateStub.parse = () => mockDate.getTime();
-
+test('Incident Translations - Should translate dirty incidents translations', async () => {
   const translatedIncidents = [
     {
       incident_id: 2,
-      language: "es",
-      title: "Título del incidente 2 actualizado. Listo para volver a traducir.",
-      description: "Descripción del incidente 2 actualizado. Listo para volver a traducir.",
+      language: 'es',
+      title: 'Título del incidente 2 actualizado. Listo para volver a traducir.',
+      description: 'Descripción del incidente 2 actualizado. Listo para volver a traducir.',
       created_at: new Date(2024, 0, 3),
       dirty: true,
-    }
+    },
+    {
+      incident_id: 2,
+      language: 'fr',
+      title: "Titre de l'incident 2 mis à jour.",
+      description: "Description de l'incident 2 mise à jour.",
+      created_at: new Date(2024, 0, 3),
+      dirty: true,
+    },
   ];
 
-  const reporter = { log: sinon.stub(), error: sinon.stub(), warn: sinon.stub() };
-
-  const incidentsCollection = {
-    find: sinon.stub().returns({
-      toArray: sinon.stub().resolves(incidents),
-    }),
-  };
-
-  const incidentsTranslationsCollection = {
-    find: sinon.stub().returns({
-      toArray: sinon.stub().resolves(translatedIncidents),
-    }),
-    insertMany: sinon.stub().resolves({ insertedCount: 1 }),
-    updateOne: sinon.stub().resolves(),
-  };
-
-  const mongoClient = {
-    connect: sinon.stub().resolves(),
-    close: sinon.stub().resolves(),
-    db: sinon.stub().callsFake((dbName: string) => {
-      if (dbName === 'aiidprod') {
-        return {
-          collection: (name: string) => {
-            if (name === 'incidents') return incidentsCollection;
-            return null;
-          },
-        };
-      } else if (dbName === 'translations') {
-        return {
-          collection: (name: string) => {
-            if (name === 'incidents') return incidentsTranslationsCollection;
-            return null;
-          },
-        };
-      } else {
-        throw new Error(`Unexpected database name: ${dbName}`);
-      }
-    }),
-  };
-
-  const translateClient = {
-    translate: sinon.stub().callsFake((payload, { to }) => [payload.map((p: string) => `test-${to}-${p}`)]),
-  };
-
-  const translator = new IncidentTranslator({
+  const {
+    reporter,
+    incidentsCollection,
+    incidentsTranslationsCollection,
     mongoClient,
     translateClient,
+  } = createMocks({ translatedIncidents });
+
+  const translator = new IncidentTranslator({
+    mongoClient: mongoClient as any,
+    translateClient: translateClient as any,
     languages: ['es', 'fr'],
     reporter,
     dryRun: false,
   });
 
   await translator.run();
-  
+
   sinon.assert.calledOnce(mongoClient.connect);
   sinon.assert.calledOnce(incidentsCollection.find);
   sinon.assert.callCount(translateClient.translate, 6);
-  sinon.assert.calledTwice(incidentsTranslationsCollection.updateOne);
-  sinon.assert.calledWith(incidentsTranslationsCollection.updateOne,
-    { 
-      incident_id: 2,
-      language: 'es'
-    },
-    { 
-      $set: {
-        incident_id: 2,
-        title: 'test-es-Incident 2 title',
-        description: 'test-es-Description of incident 2',
-        language: 'es',
-        created_at: new Date(),
-        dirty: false,
-    },
-    }
-  );
-  sinon.assert.calledWith(incidentsTranslationsCollection.updateOne,
-    { 
-      incident_id: 2,
-      language: 'fr'
-    },
-    { 
-      $set: {
-        incident_id: 2,
-        title: 'test-fr-Incident 2 title',
-        description: 'test-fr-Description of incident 2',
-        language: 'fr',
-        created_at: new Date(),
-        dirty: false,
-    },
-    }
-  );
-  sinon.assert.calledTwice(incidentsTranslationsCollection.insertMany);
-  sinon.assert.calledWith(incidentsTranslationsCollection.insertMany, [
-    {
-      incident_id: 1,
-      title: 'test-es-Incident 1 title',
-      description: 'test-es-Description of incident 1',
-      language: 'es',
-      created_at: new Date(),
-      dirty: undefined,
-    },
-    {
-      incident_id: 3,
-      title: 'test-es-Incident 3 title',
-      description: 'test-es-Description of incident 3',
-      language: 'es',
-      created_at: new Date(),
-      dirty: undefined,
-    },
-  ]);
-  sinon.assert.calledWith(incidentsTranslationsCollection.insertMany, [
-    {
-      incident_id: 1,
-      title: 'test-fr-Incident 1 title',
-      description: 'test-fr-Description of incident 1',
-      language: 'fr',
-      created_at: new Date(),
-      dirty: undefined,
-    },
-    {
-      incident_id: 3,
-      title: 'test-fr-Incident 3 title',
-      description: 'test-fr-Description of incident 3',
-      language: 'fr',
-      created_at: new Date(),
-      dirty: undefined,
-    },
-  ]);
-  sinon.assert.calledOnce(mongoClient.close);
+  sinon.assert.callCount(incidentsTranslationsCollection.updateOne, 6);
 
-  dateStub.restore();
+  for (const incident of incidents) {
+    sinon.assert.calledWith(
+      incidentsTranslationsCollection.updateOne,
+      ...upsert(storedTranslation(incident, 'es'))
+    );
+    sinon.assert.calledWith(
+      incidentsTranslationsCollection.updateOne,
+      ...upsert(storedTranslation(incident, 'fr'))
+    );
+  }
+
+  sinon.assert.calledOnce(mongoClient.close);
+});
+
+test('Incident Translations - Should store the translations that succeed when one fails, then fail the run', async () => {
+  const { reporter, incidentsTranslationsCollection, mongoClient, translateClient } = createMocks({
+    translate: (payload, { to }) => {
+      if (to === 'fr' && payload[0] === incidents[1].title) {
+        throw new Error('Backend Error');
+      }
+      return [payload.map((p) => `test-${to}-${p}`)];
+    },
+  });
+
+  const translator = new IncidentTranslator({
+    mongoClient: mongoClient as any,
+    translateClient: translateClient as any,
+    languages: ['es', 'fr'],
+    reporter,
+    dryRun: false,
+  });
+
+  await expect(translator.run()).rejects.toThrow(/1 failed translations: incident 2 \[fr\]/);
+
+  sinon.assert.callCount(translateClient.translate, 6);
+  sinon.assert.callCount(incidentsTranslationsCollection.updateOne, 5);
+  sinon.assert.neverCalledWith(incidentsTranslationsCollection.updateOne, {
+    incident_id: 2,
+    language: 'fr',
+  });
+  sinon.assert.calledWith(
+    reporter.error,
+    sinon.match(/Error translating incident 2 to \[fr\], Backend Error/)
+  );
+  sinon.assert.calledOnce(mongoClient.close);
+});
+
+test('Incident Translations - Should refuse to run above the character budget before calling the translate API', async () => {
+  const { reporter, incidentsTranslationsCollection, mongoClient, translateClient } = createMocks();
+
+  const translator = new IncidentTranslator({
+    mongoClient: mongoClient as any,
+    translateClient: translateClient as any,
+    languages: ['es', 'fr'],
+    reporter,
+    dryRun: false,
+    maxCharsPerRun: 10,
+  });
+
+  await expect(translator.run()).rejects.toThrow(
+    /above the TRANSLATE_MAX_CHARS_PER_RUN limit of 10/
+  );
+
+  sinon.assert.notCalled(translateClient.translate);
+  sinon.assert.notCalled(incidentsTranslationsCollection.updateOne);
+  sinon.assert.calledOnce(mongoClient.close);
+});
+
+test('Incident Translations - Should skip incidents with an empty title or description instead of sending them every run', async () => {
+  const { reporter, incidentsTranslationsCollection, mongoClient, translateClient } = createMocks({
+    incidentDocs: [{ ...incidents[0], description: '' }, incidents[1], incidents[2]],
+  });
+
+  const translator = new IncidentTranslator({
+    mongoClient: mongoClient as any,
+    translateClient: translateClient as any,
+    languages: ['es'],
+    reporter,
+    dryRun: false,
+  });
+
+  await translator.run();
+
+  sinon.assert.calledTwice(translateClient.translate);
+  sinon.assert.calledTwice(incidentsTranslationsCollection.updateOne);
+  sinon.assert.neverCalledWith(incidentsTranslationsCollection.updateOne, {
+    incident_id: 1,
+    language: 'es',
+  });
+  sinon.assert.calledWith(
+    reporter.warn,
+    sinon.match(/Skipping incident 1 for \[es\]: its description field is empty/)
+  );
 });
