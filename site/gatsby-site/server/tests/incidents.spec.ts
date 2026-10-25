@@ -182,6 +182,9 @@ describe(`Incidents`, () => {
 
 
         await seedFixture({
+            translations: {
+                incidents: [],
+            },
             customData: {
                 users: [
                     {

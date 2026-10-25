@@ -10,6 +10,14 @@ describe('Migration: 2026.10.25T12.00.00.dedupe-translations-unique-indexes', ()
         client = getClient();
     });
 
+    afterAll(async () => {
+        // Other specs read these collections without seeding them, so leave no documents
+        // or unique indexes behind (Jest runs every spec against the same database)
+        await seedFixture({ translations: { reports: [], incidents: [] } });
+
+        await client.close();
+    });
+
     beforeEach(async () => {
         await seedFixture({
             translations: {
