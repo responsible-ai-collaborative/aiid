@@ -100,6 +100,9 @@ describe(`Reports`, () => {
 
 
         await seedFixture({
+            translations: {
+                reports: [],
+            },
             customData: {
                 users: [
                     {

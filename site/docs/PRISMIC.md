@@ -31,6 +31,24 @@ You can find the list of all custom types in the folder `custom_types`
 5. Keep in mind that the new content won't be available on your page until you Publish it.
 6. In order to publish it, click `Publish`
 
+#### Letting an MDX file override a Prismic document
+
+Doc pages can come from two sources: Prismic `doc` documents and MDX files under `site/gatsby-site/content/`. By default, Prismic wins: `page-creators/createDocPages.js` creates the Prismic page first and skips any MDX file whose `slug` is already used by a Prismic document.
+
+To have the version kept in the repository served instead, add `preferMdx: true` to the MDX file's frontmatter:
+
+```mdx
+---
+title: "Editorial and Research Guide for the AI Incident Database"
+slug: '/editors-guide'
+preferMdx: true
+---
+```
+
+When a Prismic document has the same slug, its page is not created (the build logs `MDX file with preferMdx overrides the Prismic document for slug ...`) and the MDX page is created instead. Set the flag in every locale file of that page (`index.mdx`, `index.es.mdx`, ...). Slugs without the flag behave as before.
+
+The alternative is to delete or unpublish the Prismic document with that slug and trigger a new build; the MDX file is then used without needing the flag.
+
 #### Prismic & Netlify Hook integration
 
 In order for your recently published Prismic content to be available on your page, a Netlify build needs to be triggered.

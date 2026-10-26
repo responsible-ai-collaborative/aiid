@@ -34,6 +34,7 @@ const createPrismicDocPages = async (graphql, createPage, { reporter }) => {
             childMdx {
               frontmatter {
                 slug
+                preferMdx
               }
               internal {
                 contentFilePath
@@ -47,9 +48,23 @@ const createPrismicDocPages = async (graphql, createPage, { reporter }) => {
 
   const usedSlugs = [];
 
+  // MDX files with `preferMdx: true` in their frontmatter take precedence over
+  // Prismic documents that use the same slug.
+  const mdxPreferredSlugs = result.data.allFile.nodes
+    .filter((node) => node.childMdx?.frontmatter?.preferMdx === true)
+    .map((node) => node.childMdx.frontmatter.slug)
+    .filter(Boolean);
+
   if (result.data.allPrismicDoc.edges.length > 0) {
     result.data.allPrismicDoc.edges.forEach((node) => {
       if (node?.node?.data?.slug) {
+        if (mdxPreferredSlugs.includes(node.node.data.slug)) {
+          reporter.info(
+            `MDX file with preferMdx overrides the Prismic document for slug ${node.node.data.slug}`
+          );
+          return;
+        }
+
         usedSlugs.push(node?.node?.data?.slug);
         createPage({
           path: node?.node?.data.slug,

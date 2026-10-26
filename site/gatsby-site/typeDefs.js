@@ -217,6 +217,10 @@ const typeDefs = `
         duplicate_entity_id: String
         true_entity_id: String
     }
+
+    type MdxFrontmatter {
+        preferMdx: Boolean
+    }
 `;
 
 module.exports = typeDefs;

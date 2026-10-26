@@ -98,5 +98,9 @@
     "report_type": {
         "title": "Tipo de informe",
         "text": "Incidente = Daño (o daño cercano) que ya ocurrió.<br />Problema = Un daño potencial que aún no ha ocurrido.<br />Elige basado en si el sistema de IA ha causado impacto."
+    },
+    "existingReports": {
+        "title": "Informes existentes a incluir",
+        "text": "Números de informes que ya están en la base de datos y que también deben ser los informes subyacentes de este nuevo incidente, por ejemplo cuando un artículo cubre varios incidentes distintos. Los informes siguen vinculados a los incidentes a los que ya pertenecen."
     }
 }

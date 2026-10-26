@@ -98,5 +98,9 @@
     "report_type": {
         "title": "Report Type",
         "text": "Incident = Harm (or near harm) that already happened.<br />Issue = A potential harm that has not happened yet.<br />Pick based on whether the AI system has already caused impact."
+    },
+    "existingReports": {
+        "title": "Existing reports to include",
+        "text": "Report numbers of reports that are already in the database and should also be the underlying reports of this new incident, for example when one article covers several distinct incidents. The reports stay linked to the incidents they already belong to."
     }
 }

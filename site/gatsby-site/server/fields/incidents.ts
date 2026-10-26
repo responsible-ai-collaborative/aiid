@@ -3,7 +3,7 @@ import { allow } from "graphql-shield";
 import { generateMutationFields, generateQueryFields, getQueryResolver } from "../utils";
 import { Context, DBIncident } from "../interfaces";
 import { isRole } from "../rules";
-import { createNotificationsOnNewIncident, createNotificationsOnUpdatedIncident, hasRelevantUpdates, linkReportsToIncidents, logIncidentHistory } from "./common";
+import { createNotificationsOnNewIncident, createNotificationsOnUpdatedIncident, hasRelevantUpdates, linkReportsToIncidents, logIncidentHistory, incidentEmbedding } from './common';
 import { IncidentType } from "../types/incidents";
 import { GraphQLDateTime } from "graphql-scalars";
 
@@ -32,6 +32,32 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
             const { result, initial } = params!;
 
             if (operation === 'insertOne') {
+
+                // An incident created with existing reports linked (SEE: #4052) gets
+                // its embedding from them, as `linkReportsToIncidents` does for the
+                // other linking paths. Unlike that helper, inserting does not unlink
+                // the reports from the incidents they already belong to: one report
+                // may be the underlying report of several incidents.
+                if (result.reports?.length > 0) {
+
+                    const reports = await context.client
+                        .db('aiidprod')
+                        .collection('reports')
+                        .find({ report_number: { $in: result.reports } })
+                        .toArray();
+
+                    const embedding = incidentEmbedding(reports);
+
+                    if (embedding) {
+
+                        await context.client
+                            .db('aiidprod')
+                            .collection('incidents')
+                            .updateOne({ _id: result._id }, { $set: { embedding } });
+
+                        result.embedding = embedding;
+                    }
+                }
 
                 await logIncidentHistory(result, context);
 

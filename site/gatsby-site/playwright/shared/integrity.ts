@@ -20,6 +20,16 @@ export function testIntegrity() {
 
   test.describe('Integrity', () => {
 
+    test.beforeAll(() => {
+      // The API refuses anonymous queries (SEE: server/apiAccess.ts) and there is no
+      // test database here to write a session into, so `query()` needs an account's
+      // API token. SEE: site/docs/DEPLOYMENT.md
+      expect(
+        process.env.AIID_API_TOKEN,
+        'AIID_API_TOKEN must hold the API token of an account on the site under test'
+      ).toBeTruthy();
+    });
+
     test(`Shouldn't have repeated report numbers`, async () => {
       const { data: { reports } } = await query({
         query: gql`

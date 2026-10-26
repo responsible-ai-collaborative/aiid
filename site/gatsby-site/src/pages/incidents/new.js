@@ -49,15 +49,25 @@ function NewIncidentPage() {
 
   const { locale } = useLocalization();
 
-  const insertSuccessToast = ({ newIncidentId }) => ({
+  const insertSuccessToast = ({ newIncidentId, reportCount = 0 }) => ({
     message: (
-      <Trans i18n={i18n} newIncidentId={newIncidentId}>
-        You have successfully create Incident {{ newIncidentId }}.{' '}
-        <LocalizedLink language={locale} to={'/cite/' + newIncidentId}>
-          View incident
-        </LocalizedLink>
-        .
-      </Trans>
+      <>
+        <Trans i18n={i18n} newIncidentId={newIncidentId}>
+          You have successfully create Incident {{ newIncidentId }}.{' '}
+          <LocalizedLink language={locale} to={'/cite/' + newIncidentId}>
+            View incident
+          </LocalizedLink>
+          .
+        </Trans>
+        {reportCount > 0 && (
+          <>
+            {' '}
+            <Trans i18n={i18n} count={reportCount}>
+              {{ count: reportCount }} existing report(s) linked.
+            </Trans>
+          </>
+        )}
+      </>
     ),
     severity: SEVERITY.success,
   });
@@ -75,7 +85,9 @@ function NewIncidentPage() {
       const newIncident = {
         ...values,
         incident_id: newIncidentId,
-        reports: { link: [] },
+        // Existing reports chosen in the form become this incident's reports too;
+        // they stay linked to the incidents they already belong to. SEE: #4052
+        reports: { link: values.reports || [] },
         editors: { link: values.editors },
         embedding: {
           ...values.embedding,
@@ -115,7 +127,7 @@ function NewIncidentPage() {
 
       await insertIncident({ variables: { data: newIncident } });
 
-      addToast(insertSuccessToast({ newIncidentId }));
+      addToast(insertSuccessToast({ newIncidentId, reportCount: (values.reports || []).length }));
     } catch (error) {
       addToast(updateErrorToast({ newIncidentId, error }));
     }
@@ -148,9 +160,10 @@ function NewIncidentPage() {
           implicated_systems: implicated_systems.map((entity) => entity.entity_id),
           editor_notes: editor_notes ?? '',
           editors: editors.map((editor) => editor.userId),
+          reports: [],
         });
       } else {
-        setInitialValues({ editors: [], editor_notes: '' });
+        setInitialValues({ editors: [], editor_notes: '', reports: [] });
       }
     }
   }, [incidentToCloneData]);
