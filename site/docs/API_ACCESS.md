@@ -358,6 +358,12 @@ Anyone querying `/api/graphql` anonymously needs an account, and sends either it
 cookie or, for scripts and agents, the account's API token (above). The public GraphQL
 endpoint section of the root `README.md` documents the requirement.
 
+The repository's own scheduled Database Integrity Tests (`.github/workflows/test-playwright-integrity.yml`)
+are one such consumer: they query the deployed site through `query()` in `playwright/utils.ts`,
+which sends the token in the `AIID_API_TOKEN` environment secret as `Authorization: Bearer`.
+Without it the helper falls back to writing a session into the e2e run's in-memory database,
+which does not exist in that workflow.
+
 ## Tests
 
 | File | Covers |
