@@ -427,27 +427,48 @@ export const getSessionCookie = async (userId: string = testUser.userId) => {
     return `next-auth.session-token=${encodeURIComponent(sessionToken)};`;
 };
 
-const hasCookieHeader = (headers: Record<string, string>) =>
-    Object.keys(headers).some((name) => name.toLowerCase() === 'cookie');
+const hasHeader = (headers: Record<string, string>, header: string) =>
+    Object.keys(headers).some((name) => name.toLowerCase() === header);
+
+/**
+ * Headers that authenticate a request from the test runner.
+ *
+ * Headers the caller supplies that already carry credentials (`Cookie` or
+ * `Authorization`) are left alone. Otherwise, when `AIID_API_TOKEN` is set, the
+ * request presents that account's API token (SEE: server/apiTokens.ts); this is
+ * how the integrity tests reach a deployed site, where there is no test database
+ * to write a session into. Without a token the request carries a session for the
+ * seeded admin test user, which only works against the in-memory database of an
+ * e2e run.
+ */
+const authenticatedHeaders = async (headers: Record<string, string>) => {
+
+    if (hasHeader(headers, 'cookie') || hasHeader(headers, 'authorization')) {
+        return headers;
+    }
+
+    if (process.env.AIID_API_TOKEN) {
+        return { ...headers, Authorization: `Bearer ${process.env.AIID_API_TOKEN}` };
+    }
+
+    return { ...headers, Cookie: await getSessionCookie() };
+};
 
 /**
  * Runs a GraphQL query against the site under test.
  *
- * Authenticates as the seeded admin test user unless the caller supplies its own
- * `Cookie` header: specs use this helper as scaffolding — to read back what the
- * UI wrote — and not to exercise anonymous access, which the API refuses
- * (SEE: server/apiAccess.ts). To make a deliberately anonymous request use
- * `page.request.post('/api/graphql', ...)`, as `e2e/apiAccess.spec.ts` does.
+ * Authenticates as the seeded admin test user, or as the account whose API token
+ * is in `AIID_API_TOKEN`, unless the caller supplies its own `Cookie` or
+ * `Authorization` header: specs use this helper as scaffolding — to read back
+ * what the UI wrote — and not to exercise anonymous access, which the API
+ * refuses (SEE: server/apiAccess.ts). To make a deliberately anonymous request
+ * use `page.request.post('/api/graphql', ...)`, as `e2e/apiAccess.spec.ts` does.
  */
 export async function query(data: QueryOptions<OperationVariables, any>, headers: Record<string, string> = {}) {
 
     const { query, variables } = data
 
-    const authenticatedHeaders = hasCookieHeader(headers)
-        ? headers
-        : { ...headers, Cookie: await getSessionCookie() };
-
-    return client.query({ query, variables, fetchPolicy: 'no-cache', context: { headers: authenticatedHeaders } });
+    return client.query({ query, variables, fetchPolicy: 'no-cache', context: { headers: await authenticatedHeaders(headers) } });
 }
 
 const loginSteps = async (page: Page, email: string, password: string) => {

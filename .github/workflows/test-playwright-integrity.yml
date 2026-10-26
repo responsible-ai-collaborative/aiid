@@ -63,6 +63,8 @@ jobs:
           SITE_URL: ${{ vars.SITE_URL }}
           GATSBY_SITE_URL: ${{ vars.SITE_URL }}
           MONGODB_TRANSLATIONS_CONNECTION_STRING: ${{ secrets.MONGODB_TRANSLATIONS_CONNECTION_STRING }}
+          # API token of an account on the site under test; the GraphQL API refuses anonymous queries
+          AIID_API_TOKEN: ${{ secrets.AIID_API_TOKEN }}
           GATSBY_COMMIT_SHA: ${{ github.sha }}
           NEXTAUTH_URL: dummy
           NEXTAUTH_SECRET: dummy

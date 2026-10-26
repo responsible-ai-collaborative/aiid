@@ -259,6 +259,7 @@ TRANSLATE_MAX_CHARS_PER_RUN
 Secrets:
 
 ```
+AIID_API_TOKEN
 ALGOLIA_ADMIN_KEY
 API_MONGODB_CONNECTION_STRING
 CLOUDFLARE_R2_ACCESS_KEY_ID
@@ -278,5 +279,12 @@ MONGODB_TRANSLATIONS_CONNECTION_STRING
 NETLIFY_AUTH_TOKEN
 PRISMIC_ACCESS_TOKEN
 ```
+
+`AIID_API_TOKEN` is only read by the scheduled Database Integrity Tests workflow
+(`test-playwright-integrity.yml`), which queries the deployed site's GraphQL API. The API refuses
+anonymous requests, so the workflow authenticates with the API token of an account on that site:
+create an account for the tests (no role is needed for reads), copy the token shown on its
+account page, and store it as this secret in the matching environment. See
+[API_ACCESS.md](API_ACCESS.md#api-tokens-4070).
 
 GitHub should detect the workflows in the `.github/workflows` directory. Once you have set up the environment variables and secrets, you can push your changes to the repository. The workflows should then be triggered, and the site will be deployed to Netlify.
