@@ -111,12 +111,6 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                         created_at: new Date(),
                         date_modified: submission.date_modified ? new Date(submission.date_modified) : new Date(), // Default to today in YYYY-MM-DD format
                     }
-                    if (submission.embedding) {
-                        newIncident.embedding = {
-                            vector: submission.embedding.vector,
-                            from_reports: [report_number]
-                        }
-                    }
 
                     await incidents.insertOne({ ...newIncident, incident_id: newIncident.incident_id, created_at: new Date() });
 
@@ -135,84 +129,8 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                         });
                     }
 
-                    const incidentHistory: Record<string, unknown> = {
-                        ...newIncident,
-                        reports: [report_number],
-                        incident_id: newIncident.incident_id,
-                        created_at: new Date(),
-                    };
-
-                    if (submission.user) {
-                        incidentHistory.modifiedBy = submission.user;
-                    }
-
-                    await incidentsHistory.insertOne(incidentHistory);
-
                     parentIncidents.push(newIncident);
 
-                }
-                else if (submission.embedding) {
-
-                    for (const parentIncident of parentIncidents) {
-
-                        const matchingReports = [];
-
-                        if (parentIncident.reports) {
-
-                            for (const report_number of parentIncident.reports) {
-
-                                const report = await reports.findOne({ report_number });
-
-                                if (report) {
-
-                                    matchingReports.push(report);
-                                }
-                            }
-                        }
-
-                        const embeddings = matchingReports
-                            .map(report => report.embedding)
-                            .filter(e => e != null)
-                            .concat([submission.embedding]);
-
-                        const embedding = {
-                            vector:
-                                embeddings.map(e => e.vector).reduce(
-                                    (sum, vector: number[]) => (
-                                        vector.map(
-                                            (component, i) => component + sum[i]
-                                        )
-                                    ),
-                                    Array(embeddings[0].vector.length).fill(0)
-                                ).map((component: number) => component / embeddings.length),
-
-                            from_reports:
-                                matchingReports
-                                    .map(report => report.report_number)
-                                    .concat([report_number])
-                        };
-
-                        await incidents.updateOne(
-                            { incident_id: parentIncident.incident_id },
-                            { $set: { ...parentIncident, embedding } }
-                        );
-
-                        let incidentValues = parentIncident;
-
-                        delete incidentValues._id; // Otherwise Mongo complains about duplicate _id in incidentsHistory
-
-                        const incidentHistory: Record<string, unknown> = {
-                            ...incidentValues,
-                            reports: [...incidentValues.reports!, report_number],
-                            embedding,
-                            created_at: new Date(),
-                        }
-
-                        if (submission.user) {
-                            incidentHistory.modifiedBy = submission.user;
-                        }
-                        await incidentsHistory.insertOne(incidentHistory);
-                    }
                 }
             }
 
@@ -239,9 +157,6 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
                 quiet: submission.quiet || false,
                 snippet_max_characters: submission.snippet_max_characters || 1000000,
             };
-            if (submission.embedding) {
-                newReport.embedding = submission.embedding;
-            }
 
             if (submission.user) {
                 newReport.user = submission.user;
@@ -253,6 +168,18 @@ export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
             const report_numbers: number[] = [newReport.report_number];
 
             await linkReportsToIncidents(context.client, report_numbers, incident_ids);
+
+            // Snapshot the actual linked incident, without creating/recomputing legacy vectors.
+            if (input.is_incident_report) {
+                for (const incident_id of incident_ids) {
+                    const linked = await incidents.findOne({ incident_id });
+                    if (!linked) continue;
+                    const { _id, ...values } = linked;
+                    const incidentHistory: Record<string, unknown> = { ...values, created_at: new Date() };
+                    if (submission.user) incidentHistory.modifiedBy = submission.user;
+                    await incidentsHistory.insertOne(incidentHistory);
+                }
+            }
 
             const reportHistory: Record<string, unknown> = {
                 ...newReport,

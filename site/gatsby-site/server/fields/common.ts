@@ -2,68 +2,19 @@ import { MongoClient } from "mongodb";
 import { Context, DBIncident, DBIncidentHistory, DBNotification, DBReport, DBReportHistory } from "../interfaces";
 import _ from "lodash";
 
-export const incidentEmbedding = (reports: Record<string, any>[]) => {
-    reports = reports.filter((report) => report.embedding);
-    return reports.length == 0
-        ? null
-        : {
-            vector: reports
-                .map((report) => report.embedding!.vector)
-                .reduce(
-                    (sum, vector) => vector!.map((component: number, i: number) => component + sum[i]),
-                    Array(reports[0].embedding!.vector!.length).fill(0)
-                )
-                .map((component: number) => component / reports.length),
-
-            from_reports: reports.map((report) => report.report_number),
-        };
-};
-
 export const linkReportsToIncidents = async (client: MongoClient, report_numbers: number[], incident_ids: number[]) => {
 
     const incidentsCollection = client.db('aiidprod').collection("incidents");
     const reportsCollection = client.db('aiidprod').collection("reports");
 
-    // unlink
-
-    const exParentIncidents = await incidentsCollection.find({ reports: { $in: report_numbers } }).toArray();
-
-    for (const incident of exParentIncidents) {
-
-        const reports = await reportsCollection.find({ report_number: { $in: incident.reports.filter((number: number) => !report_numbers.includes(number)) } }).toArray();
-
-        const embedding = incidentEmbedding(reports);
-
-        const operation = embedding == null ? { $unset: { embedding: "" } } : { $set: { embedding } }
-
-        await incidentsCollection.updateOne({ incident_id: incident.incident_id }, operation);
-    }
-
+    // Legacy vectors remain frozen. Source changes are embedded by the schema-v2 pipeline.
     // @ts-ignore
     await incidentsCollection.updateMany({ reports: { $in: report_numbers } }, { $pull: { reports: { $in: report_numbers } } });
-
-
-    // link
 
     if (incident_ids.length > 0) {
 
         await incidentsCollection.updateMany({ incident_id: { $in: incident_ids } }, { $addToSet: { reports: { $each: report_numbers } } });
-
-        const parentIncidents = await incidentsCollection.find({ reports: { $in: report_numbers } }).toArray();
-
-        for (const incident of parentIncidents) {
-
-            const reports = await reportsCollection.find({ report_number: { $in: incident.reports } }).toArray();
-
-            const embedding = incidentEmbedding(reports);
-
-            const operation = embedding == null ? { $unset: { embedding: "" } } : { $set: { embedding } }
-
-            await incidentsCollection.updateOne({ incident_id: incident.incident_id }, operation);
-        }
     }
-
-    //
 
     await reportsCollection.updateMany(
         {
@@ -150,7 +101,7 @@ function compareWithLodash(value: any, other: any): boolean | undefined {
 
 export function hasRelevantUpdates(before: DBIncident, after: DBIncident): boolean {
 
-    const monitoredFields: (keyof DBIncident | "embedding.vector" | "embedding.from_reports" | "tsne.x" | "tsne.y")[] = [
+    const monitoredFields: (keyof DBIncident | "tsne.x" | "tsne.y")[] = [
         "_id",
         "date",
         "description",
@@ -161,8 +112,6 @@ export function hasRelevantUpdates(before: DBIncident, after: DBIncident): boole
         "Alleged harmed or nearly harmed parties",
         "reports",
         "editors",
-        "embedding.vector",
-        "embedding.from_reports",
         "tsne.x",
         "tsne.y",
         "editor_dissimilar_incidents",

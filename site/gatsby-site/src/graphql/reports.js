@@ -28,10 +28,6 @@ export const FIND_REPORT = gql(`
       user {
         userId
       }
-      embedding {
-        from_text_hash
-        vector
-      }
       quiet
       snippet_max_characters
     }

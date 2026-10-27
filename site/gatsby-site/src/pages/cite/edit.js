@@ -52,7 +52,6 @@ const reportFields = [
   'text',
   'title',
   'url',
-  'embedding',
   'inputs_outputs',
   'quiet',
   'snippet_max_characters',

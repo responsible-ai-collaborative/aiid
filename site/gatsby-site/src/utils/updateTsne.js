@@ -2,55 +2,86 @@ const TSNE = require('tsne-js');
 
 const config = require('../../config');
 
-const { MongoClient } = require('mongodb');
+const { MongoClient, Double } = require('mongodb');
 
-const BSON = require('bson');
+// Scaling every vector to length 1 makes euclidean distance depend only on cosine similarity,
+// the measure the similar-incident suggestions use.
+const normalise = (binary) => {
+  const vector = Array.from(binary.toFloat32Array());
+
+  const magnitude = Math.sqrt(vector.reduce((sum, component) => sum + component * component, 0));
+
+  return magnitude > 0 && Number.isFinite(magnitude)
+    ? vector.map((component) => component / magnitude)
+    : null;
+};
 
 const updateTsneInDatabase = async () => {
   const mongo = new MongoClient(config.mongodb.translationsConnectionString);
 
-  await mongo.connect();
+  try {
+    await mongo.connect();
 
-  const incidentsCollection = mongo.db(config.realm.production_db.db_name).collection('incidents');
+    const db = mongo.db(config.realm.production_db.db_name);
 
-  const incidentsWithEmbeddings = await incidentsCollection
-    .find({ embedding: { $exists: true } })
-    .toArray();
+    const incidentsCollection = db.collection('incidents');
 
-  const embeddings = incidentsWithEmbeddings.map((incident) => incident?.embedding?.vector);
+    const incidentIds = new Set(await incidentsCollection.distinct('incident_id'));
 
-  const ids = incidentsWithEmbeddings.map((incident) => incident.incident_id);
+    const rows = await db
+      .collection('incident_embeddings')
+      .find(
+        { embedding_schema_version: 2 },
+        { projection: { _id: 0, incident_id: 1, dims: 1, 'overview.vector': 1 } }
+      )
+      .toArray();
 
-  const model = new TSNE({
-    dim: 2,
-    perplexity: 30.0,
-    earlyExaggeration: 3.0,
-    learningRate: 100.0,
-    nIter: process.env.TSNE_NITER || 1000,
-    metric: 'euclidean',
-  });
+    // While a new model is being rolled out, two vector sizes can coexist; plot the larger group.
+    const counts = {};
 
-  // inputData is a nested array which can be converted into an ndarray
-  // alternatively, it can be an array of coordinates (second argument should be specified as 'sparse')
-  model.init({ data: embeddings, type: 'dense' });
+    for (const row of rows) counts[row.dims] = (counts[row.dims] || 0) + 1;
 
-  model.run();
+    const dims = Number(Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0]);
 
-  // `outputScaled` is `output` scaled to a range of [-1, 1]
-  const outputScaled = model.getOutputScaled();
+    const incidents = rows
+      .filter(
+        (row) => row.dims === dims && incidentIds.has(row.incident_id) && row.overview?.vector
+      )
+      .map((row) => ({ incident_id: row.incident_id, vector: normalise(row.overview.vector) }))
+      .filter((incident) => incident.vector);
 
-  for (let i = 0; i < outputScaled.length; i++) {
-    incidentsCollection.updateOne(
-      { incident_id: ids[i] },
-      {
-        $set: {
-          tsne: {
-            x: new BSON.Double(outputScaled[i][0]),
-            y: new BSON.Double(outputScaled[i][1]),
+    if (incidents.length < 2) return;
+
+    const model = new TSNE({
+      dim: 2,
+      perplexity: 30.0,
+      earlyExaggeration: 3.0,
+      learningRate: 100.0,
+      nIter: process.env.TSNE_NITER || 1000,
+      metric: 'euclidean',
+    });
+
+    model.init({ data: incidents.map((incident) => incident.vector), type: 'dense' });
+
+    model.run();
+
+    // `outputScaled` is `output` scaled to a range of [-1, 1]
+    const outputScaled = model.getOutputScaled();
+
+    await incidentsCollection.bulkWrite(
+      incidents.map((incident, i) => ({
+        updateOne: {
+          filter: { incident_id: incident.incident_id },
+          update: {
+            $set: {
+              tsne: { x: new Double(outputScaled[i][0]), y: new Double(outputScaled[i][1]) },
+            },
           },
         },
-      }
+      }))
     );
+  } finally {
+    await mongo.close();
   }
 };
 
