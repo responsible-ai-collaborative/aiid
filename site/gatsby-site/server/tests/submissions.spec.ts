@@ -1,6 +1,6 @@
 import { expect, jest, it } from '@jest/globals';
 import { ApolloServer } from "@apollo/server";
-import { makeRequest, mockSession, seedFixture, startTestServer } from "./utils";
+import { getCollection, makeRequest, mockSession, seedFixture, startTestServer } from "./utils";
 import * as context from '../context';
 import { ObjectId } from 'bson';
 import { PromoteSubmissionToReportInput } from '../generated/graphql';
@@ -109,6 +109,9 @@ describe(`Submissions`, () => {
                         title: "Submission 1",
                     },
                 ]
+            },
+            history: {
+                incidents: [],
             }
         });
 
@@ -141,6 +144,11 @@ describe(`Submissions`, () => {
                 report_number: 2,
             }
         })
+
+        const history = await getCollection('history', 'incidents').find({ incident_id: 1 }).toArray();
+
+        expect(history).toHaveLength(1);
+        expect(history[0]).toMatchObject({ reports: [1, 2] });
     });
 
     it(`Promote submission to new issue`, async () => {
