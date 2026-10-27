@@ -90,7 +90,7 @@ describe('Creating an incident from existing reports', () => {
         expect(incidents[0]).toMatchObject({ reports: [1, 2], embedding: { vector: [1, 0], from_reports: [1, 2] } });
     });
 
-    it('computes the new incident\'s embedding from the linked reports', async () => {
+    it('does not compute a legacy embedding from the linked reports', async () => {
         await seed();
 
         mockSession('editor1');
@@ -99,9 +99,9 @@ describe('Creating an incident from existing reports', () => {
 
         expect(response.body.errors).toBeUndefined();
 
-        expect(response.body.data.insertOneIncident.embedding).toMatchObject({ from_reports: [1, 2] });
+        expect(response.body.data.insertOneIncident.embedding).toBeNull();
 
-        expect(response.body.data.insertOneIncident.embedding.vector).toHaveLength(2);
+        expect(await getCollection('aiidprod', 'incidents').findOne({ incident_id: 2 })).not.toHaveProperty('embedding');
     });
 
     it('refuses a report number that does not exist', async () => {
