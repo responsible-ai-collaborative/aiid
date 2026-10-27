@@ -163,3 +163,15 @@ unchanged documents should be reported as skipped and retain their original `gen
 
 Atlas vector-search index creation and the search/ranking code belong to the retrieval change, not
 this pipeline PR.
+
+## Similar-incident suggestions
+
+The submit form's "most semantically similar incidents" call `POST /api/semanticallyRelated` with
+`{text, num}` (`num` defaults to 3). The function embeds the first 8,000 characters as a query, ranks
+incidents with `rankIncidentVectors` in `vectors.ts` (0.65 × overview + 0.35 × best passage, minimum
+0.15) and returns `{incidents: [{incident_id, similarity}]}`. It only compares against rows written
+by the same `EMBEDDING_MODEL`, makes one attempt with an 8-second timeout, and returns 429 when the
+provider quota is exhausted and 503 for any other failure.
+
+The function reads `EMBEDDING_API_KEY`, `EMBEDDING_API_BASE_URL` and `EMBEDDING_MODEL` from the
+Netlify site environment. Set them to the same values as the nightly embedding run.
