@@ -175,3 +175,10 @@ provider quota is exhausted and 503 for any other failure.
 
 The function reads `EMBEDDING_API_KEY`, `EMBEDDING_API_BASE_URL` and `EMBEDDING_MODEL` from the
 Netlify site environment. Set them to the same values as the nightly embedding run.
+
+## Spatial view
+
+During the site build, `src/utils/updateTsne.js` reads every overview vector, scales each to unit
+length so distance on the map tracks cosine similarity, runs t-SNE and writes `incidents.tsne`. It
+needs no `EMBEDDING_*` settings: it plots whichever vector size most rows have, so a half-finished
+switch to a new model never mixes sizes.
