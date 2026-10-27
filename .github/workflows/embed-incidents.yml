@@ -82,6 +82,17 @@ jobs:
           RUN_LIMIT: ${{ inputs.limit }}
           RUN_SKIP_UNCHANGED: ${{ github.event_name == 'schedule' || inputs.skip_unchanged }}
 
+      # Skipped for limited test runs, which would rank against only part of the incidents.
+      - name: Refresh similar incidents
+        if: ${{ !inputs.limit }}
+        run: npm run refresh-incident-neighbors:ci
+        working-directory: site/gatsby-site
+        env:
+          MONGODB_CONNECTION_STRING: ${{ secrets.MONGODB_CONNECTION_STRING }}
+          EMBEDDING_API_KEY: ${{ secrets.EMBEDDING_API_KEY }}
+          EMBEDDING_API_BASE_URL: ${{ vars.EMBEDDING_API_BASE_URL || secrets.EMBEDDING_API_BASE_URL }}
+          EMBEDDING_MODEL: ${{ vars.EMBEDDING_MODEL || secrets.EMBEDDING_MODEL }}
+
       # Uploaded even on failure, because that is when the manifest is worth reading.
       - name: Upload failure manifest
         if: always()

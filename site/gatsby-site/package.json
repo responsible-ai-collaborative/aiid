@@ -163,6 +163,8 @@
     "generate-oecd-relationships": "npx tsx --env-file=.env src/scripts/generate-oecd-relationships.ts",
     "embed-incidents": "npx tsx --env-file=.env src/scripts/embed-incidents.ts",
     "embed-incidents:ci": "npx tsx src/scripts/embed-incidents.ts",
+    "refresh-incident-neighbors": "npx tsx --env-file=.env src/scripts/refresh-incident-neighbors.ts",
+    "refresh-incident-neighbors:ci": "npx tsx src/scripts/refresh-incident-neighbors.ts",
     "algolia-update": "npx tsx --env-file=.env src/scripts/algolia-update.ts",
     "algolia-update:ci": "npx tsx src/scripts/algolia-update.ts",
     "db:migrator": "npx tsx migrator"

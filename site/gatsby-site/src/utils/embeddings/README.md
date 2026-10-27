@@ -176,6 +176,14 @@ provider quota is exhausted and 503 for any other failure.
 The function reads `EMBEDDING_API_KEY`, `EMBEDDING_API_BASE_URL` and `EMBEDDING_MODEL` from the
 Netlify site environment. Set them to the same values as the nightly embedding run.
 
+## Stored similar incidents
+
+Each incident's `nlp_similar_incidents` (shown on its citation page) is recomputed by
+`npm run refresh-incident-neighbors`, which ranks every incident's overview against the others with
+the same scoring and keeps the top 3. It makes no provider calls and only writes lists that changed.
+Incidents not embedded yet keep their stored list. The Embed Incidents workflow runs it after every
+run without a `limit`; add `-- --dry-run` locally to see the counts without writing.
+
 ## Spatial view
 
 During the site build, `src/utils/updateTsne.js` reads every overview vector, scales each to unit
