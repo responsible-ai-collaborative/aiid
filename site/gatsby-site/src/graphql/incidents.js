@@ -38,10 +38,6 @@ export const FIND_INCIDENT = gql(`
       reports {
         report_number
       }
-      embedding {
-        from_reports
-        vector
-      }
       editor_notes
     }
   }
@@ -144,10 +140,6 @@ export const FIND_INCIDENTS = gql(`
       reports {
         report_number
       }
-      embedding {
-        from_reports
-        vector
-      }
     }
   }
 `);
@@ -210,10 +202,6 @@ export const UPDATE_INCIDENT = gql(`
       flagged_dissimilar_incidents
       reports {
         report_number
-      }
-      embedding {
-        from_reports
-        vector
       }
       editor_notes
     }
@@ -296,10 +284,6 @@ export const FIND_FULL_INCIDENT = gql(`
         language
         tags
         inputs_outputs
-      }
-      embedding {
-        from_reports
-        vector
       }
       editor_notes
       date_modified
