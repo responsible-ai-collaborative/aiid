@@ -206,7 +206,6 @@ const SubmitForm = () => {
         authors: isString(values.authors) ? values.authors.split(',') : values.authors,
         submitters: values.submitters.length ? values.submitters : ['Anonymous'],
         plain_text: await stripMarkdown(values.text),
-        embedding: values.embedding || undefined,
         incident_editors: { link: values.incident_editors },
         snippet_max_characters:
           config.snippetMaxCharactersDefaultByDomain?.[source_domain] || 1000000,

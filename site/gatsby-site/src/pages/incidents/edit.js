@@ -115,10 +115,6 @@ function EditCitePage(props) {
         ...values,
         editors: { link: values.editors },
         reports: undefined,
-        embedding: {
-          ...values.embedding,
-          __typename: undefined,
-        },
         tsne: {
           ...values.tsne,
           __typename: undefined,
