@@ -3,7 +3,7 @@ import { Trans } from 'react-i18next';
 import { Dropdown } from 'flowbite-react';
 
 async function getSnapshotURL(url) {
-  const waUrl = `https://archive.org/wayback/available?url=${url}`;
+  const waUrl = `https://archive.org/wayback/available?url=${encodeURIComponent(url)}`;
 
   const response = await (await fetch(waUrl)).json();
 
