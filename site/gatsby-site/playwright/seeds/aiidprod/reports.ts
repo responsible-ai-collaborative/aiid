@@ -309,8 +309,35 @@ const items: DBReport[] = [
 
         // TODO: ditto
         // created_at: 1559347200000
-        
+
         snippet_max_characters: 3000,
+    },
+    {
+        report_number: 100,
+        title: "Imageless Report 100",
+        authors: ["author1"],
+        cloudinary_id: "",
+        date_downloaded: new Date("2024-01-01T00:00:00.000Z"),
+        date_modified: new Date("2024-01-01T00:00:00.000Z"),
+        date_published: new Date("2024-01-01T00:00:00.000Z"),
+        date_submitted: new Date("2024-01-01T00:00:00.000Z"),
+        epoch_date_published: 1704067200,
+        epoch_date_submitted: 1704067200,
+        image_url: "",
+        language: "en",
+        plain_text: "A report with no image, used to verify the similar-incidents card placeholder behavior.\n",
+        text: "A report with no image, used to verify the similar-incidents card placeholder behavior.",
+        source_domain: "report100.com",
+        submitters: ["submitter1"],
+        tags: [],
+        url: "https://report100.com",
+        user: "6737a6e881955aa4905ccb04",
+        is_incident_report: true,
+        editor_notes: null,
+        flag: null,
+        inputs_outputs: null,
+        quiet: null,
+        snippet_max_characters: 1000000,
     },
 ]
 
