@@ -73,5 +73,6 @@
   "Please confirm you are ready to submit this report. Report details cannot be changed after submission.": "このレポートを送信する準備ができていることを確認してください。送信後にレポートの詳細を変更することはできません",
   "Alleged implicated AI systems": "推定される関連AIシステム",
   "Which AI systems were involved?": "どのAIシステムが関わっていましたか？",
-  "Report Type": "レポートの種類"
+  "Report Type": "レポートの種類",
+  "{{current}} / {{max}} characters": "{{current}} / {{max}} 文字"
 }

@@ -1,4 +1,5 @@
 import * as yup from 'yup';
+import { TEXT_MAX_CHARACTERS } from 'components/forms/TextCharacterCount';
 import { dateRegExp, isPastDate } from '../../utils/date';
 
 const incident_title = yup
@@ -100,7 +101,7 @@ export const schema = yup.object().shape({
   text: yup
     .string()
     .min(80, `*Text must have at least 80 characters`)
-    .max(50000, `*Text can’t be longer than 50000 characters`)
+    .max(TEXT_MAX_CHARACTERS, `*Text can’t be longer than 50000 characters`)
     .required('*Text is required'),
   date_published: yup
     .string()
@@ -173,7 +174,7 @@ export const issueSchema = yup.object().shape({
   text: yup
     .string()
     .min(80, `*Text must have at least 80 characters`)
-    .max(50000, `*Text can’t be longer than 50000 characters`)
+    .max(TEXT_MAX_CHARACTERS, `*Text can’t be longer than 50000 characters`)
     .required('*Text is required'),
   date_published: yup
     .string()

@@ -252,6 +252,9 @@ test.describe('The Discover app', () => {
 
         const reportUrl = 'https://www.cbsnews.com/news/is-starbucks-shortchanging-its-baristas/';
 
+        // The component percent-encodes the source URL when it asks the Wayback Machine for a snapshot
+        const availabilityUrl = `https://archive.org/wayback/available?url=${encodeURIComponent(reportUrl)}`;
+
         // Define the mock response from the Wayback Machine API
         const mockedTimestamp = '20250117132643X';
 
@@ -267,8 +270,12 @@ test.describe('The Discover app', () => {
             }
         };
 
+        const availabilityRequests: string[] = [];
+
         // Intercept the request to the Wayback Machine API
-        await page.route(`https://archive.org/wayback/available?url=${reportUrl}`, async (route) => {
+        await page.route((requestUrl) => requestUrl.origin === 'https://archive.org' && requestUrl.pathname === '/wayback/available', async (route) => {
+            availabilityRequests.push(route.request().url());
+
             await route.fulfill({
                 status: 200,
                 contentType: 'application/json',
@@ -307,6 +314,9 @@ test.describe('The Discover app', () => {
             await expect(popup).toBeTruthy();
             await expect(popup).toHaveURL(mockResponse.archived_snapshots.closest.url.replace('http:', 'https:'));
         }).toPass({ timeout: 10000 });
+
+        // The source URL must reach the API percent-encoded
+        expect(availabilityRequests).toEqual([availabilityUrl]);
     });
 
     test('Lets you filter by type', async ({ page }) => {

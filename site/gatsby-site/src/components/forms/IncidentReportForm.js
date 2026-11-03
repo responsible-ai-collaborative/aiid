@@ -10,6 +10,7 @@ import PreviewImageInputGroup from 'components/forms/PreviewImageInputGroup';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { graphql, useStaticQuery } from 'gatsby';
 import Label from './Label';
+import TextCharacterCount, { TEXT_MAX_CHARACTERS } from './TextCharacterCount';
 import { Editor } from '@bytemd/react';
 import 'bytemd/dist/index.css';
 import getSourceDomain from '../../utils/getSourceDomain';
@@ -86,7 +87,7 @@ export const schema = yup.object().shape({
   text: yup
     .string()
     .min(80, `*Text must have at least 80 characters`)
-    .max(50000, `*Text can’t be longer than 50000 characters`)
+    .max(TEXT_MAX_CHARACTERS, `*Text can’t be longer than 50000 characters`)
     .required('*Text is required'),
   date_published: yup
     .string()
@@ -370,6 +371,7 @@ const IncidentReportForm = () => {
               }}
             />
           </div>
+          <TextCharacterCount text={values.text} />
         </div>
 
         <TextInputGroup

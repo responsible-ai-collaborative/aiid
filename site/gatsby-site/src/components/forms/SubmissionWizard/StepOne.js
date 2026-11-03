@@ -30,6 +30,7 @@ import IncidentsField from 'components/incidents/IncidentsField';
 import { arrayToList } from 'utils/typography';
 import { debounce } from 'debounce';
 import SubmissionButton from './SubmissionButton';
+import TextCharacterCount, { TEXT_MAX_CHARACTERS } from '../TextCharacterCount';
 
 /**
  * Date Downloaded defaults to today. The default is part of the form's initial
@@ -91,7 +92,7 @@ const StepOne = (props) => {
     text: yup
       .string()
       .min(80, `*Text must have at least 80 characters`)
-      .max(50000, `*Text can’t be longer than 50000 characters`)
+      .max(TEXT_MAX_CHARACTERS, `*Text can’t be longer than 50000 characters`)
       .required('*Text is required'),
     incident_id: yup.number().positive().integer('*Must be an incident number or empty'),
     incident_date: yup.date(),
@@ -395,6 +396,7 @@ const FormDetails = ({
               }}
             />
           </div>
+          <TextCharacterCount text={values.text} />
           <span className="text-red-700 text-sm">
             <Trans ns="validation">
               {errors['text'] && touched['text'] ? errors['text'] : null}

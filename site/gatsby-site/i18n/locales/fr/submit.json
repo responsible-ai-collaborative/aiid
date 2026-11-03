@@ -73,5 +73,6 @@
   "Please confirm you are ready to submit this report. Report details cannot be changed after submission.": "Veuillez confirmer que vous êtes prêt à soumettre ce rapport. Les détails du rapport ne peuvent pas être modifiés après la soumission.",
   "Alleged implicated AI systems": "Systèmes IA impliqués présumés",
   "Which AI systems were involved?": "Quels systèmes IA étaient impliqués ?",
-  "Report Type": "Type de rapport"
+  "Report Type": "Type de rapport",
+  "{{current}} / {{max}} characters": "{{current}} / {{max}} caractères"
 }

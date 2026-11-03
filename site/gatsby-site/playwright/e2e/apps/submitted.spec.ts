@@ -358,6 +358,25 @@ test.describe('Submitted reports', () => {
         expect(updated.find((s) => s._id === submissions[0]._id).text).toContain(text);
     });
 
+    test('Shows a live character count and the limit while editing the text', async ({ page, login }) => {
+
+        await init();
+
+        const submissions = await getSubmissions();
+
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+        await page.goto(url + `?editSubmission=${submissions[0]._id}`);
+
+        const counter = page.locator('[data-cy="text-character-count"]');
+
+        await expect(counter).toHaveText(`${submissions[0].text.length.toLocaleString('en-US')} / 50,000 characters`);
+
+        await setEditorText(page, 'y'.repeat(2345));
+
+        await expect(counter).toHaveText('2,345 / 50,000 characters');
+    });
+
     test('Edits a submission - update max characters', async ({ page, login }) => {
 
         await init();

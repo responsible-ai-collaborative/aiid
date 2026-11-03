@@ -45,6 +45,60 @@ test.describe('Incidents', () => {
     await page.locator('.tw-toast:has-text("Incident 3 updated successfully.")').isVisible();
   });
 
+  test('Should save a legacy incident without requiring Implicated Systems', async ({ page, login }) => {
+
+    // Seeded incident 4 predates the Implicated Systems field: it is blank, as
+    // are its developer and harmed parties. SEE: #4094
+    await init();
+
+    await login();
+
+    await page.goto('/incidents/edit?incident_id=4');
+
+    await expect(page.locator('[data-cy="implicated-systems-legacy-note"]')).toBeVisible();
+
+    // The field is not marked required for this record.
+    await expect(page.locator('[data-cy="label-implicated_systems"]')).not.toContainText('*');
+
+    await page.locator('[name="title"]').fill('Test title 4 (corrected)');
+
+    await expect(page.getByText('Could not validate form')).not.toBeVisible();
+
+    const saveButton = page.getByText('Save', { exact: true });
+
+    await expect(saveButton).toBeEnabled();
+
+    await saveButton.click();
+
+    await expect(page.locator('.tw-toast:has-text("Incident 4 updated successfully.")')).toBeVisible();
+
+    const { data: { incident } } = await query({
+      query: gql`{
+        incident(filter: { incident_id: { EQ: 4 } }) {
+          title
+          implicated_systems { entity_id }
+        }
+      }`,
+    });
+
+    expect(incident.title).toBe('Test title 4 (corrected)');
+    expect(incident.implicated_systems).toEqual([]);
+  });
+
+  test('Should keep requiring Implicated Systems on an incident that has them', async ({ page, login }) => {
+
+    await init();
+
+    await login();
+
+    await page.goto('/incidents/edit?incident_id=3');
+
+    await expect(page.locator('[data-cy="implicated-systems-legacy-note"]')).not.toBeVisible();
+
+    // The label keeps its required marker.
+    await expect(page.locator('[data-cy="label-implicated_systems"]')).toContainText('*');
+  });
+
   test('Should successfully edit tags for linked reports', async ({ page, login }) => {
 
     await init();

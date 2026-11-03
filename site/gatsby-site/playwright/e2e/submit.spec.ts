@@ -34,6 +34,25 @@ test.describe('The Submit form', () => {
         await page.goto(url);
     });
 
+    test('Shows a live character count and the limit next to the report text', async ({ page }) => {
+        await page.goto(url);
+
+        // The limit is a character limit (SEE: #4102), so the count is shown with it.
+        const counter = page.locator('[data-cy="text-character-count"]');
+
+        await expect(counter).toHaveText('0 / 50,000 characters');
+
+        await setEditorText(page, 'x'.repeat(1234));
+
+        await expect(counter).toHaveText('1,234 / 50,000 characters');
+        await expect(counter).toHaveAttribute('data-over-limit', 'false');
+
+        await setEditorText(page, 'x'.repeat(50001));
+
+        await expect(counter).toHaveText('50,001 / 50,000 characters');
+        await expect(counter).toHaveAttribute('data-over-limit', 'true');
+    });
+
     test('Should submit a new report not linked to any incident once all fields are filled properly', async ({ page }) => {
 
         await conditionalIntercept(

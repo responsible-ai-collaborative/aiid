@@ -1,5 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import IncidentForm, { schema } from '../../components/incidents/IncidentForm';
+import React, { useEffect, useMemo, useState } from 'react';
+import IncidentForm, {
+  createIncidentSchema,
+  legacyEmptyEntityFields,
+} from '../../components/incidents/IncidentForm';
 import { NumberParam, useQueryParam, withDefault } from 'use-query-params';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Button, Spinner } from 'flowbite-react';
@@ -249,6 +252,21 @@ function EditCitePage(props) {
     ? entitiesData.entities.map((node) => node.name).sort()
     : [];
 
+  // Entity fields that were blank when the record was opened (typically
+  // Implicated Systems on incidents that predate the field) stay optional for
+  // this edit, so a narrow correction does not require the retrospective
+  // research of filling them in. A new incident requires every field, and a
+  // field that was filled in stays required. SEE: #4094
+  const legacyFields = useMemo(
+    () => (incident ? legacyEmptyEntityFields(incident) : []),
+    [incident]
+  );
+
+  const validationSchema = useMemo(
+    () => createIncidentSchema({ optionalEntityFields: legacyFields }),
+    [legacyFields]
+  );
+
   // Editing reads the incident through the API, so a logged-out visitor gets the
   // reason rather than a form with nothing in it. SEE: server/apiAccess.ts
   if (!apiAccessLoading && !hasApiAccess) {
@@ -279,7 +297,7 @@ function EditCitePage(props) {
 
       {!loading && incident && (
         <Formik
-          validationSchema={schema}
+          validationSchema={validationSchema}
           onSubmit={handleSubmit}
           initialValues={{
             ...incident,
@@ -305,7 +323,11 @@ function EditCitePage(props) {
         >
           {({ isValid, isSubmitting, submitForm, errors }) => (
             <>
-              <IncidentForm entityNames={entityNames} />
+              <IncidentForm
+                entityNames={entityNames}
+                schema={validationSchema}
+                legacyEmptyEntityFields={legacyFields}
+              />
               {!isValid && (
                 <div className="text-red-500">
                   Could not validate form:{' '}

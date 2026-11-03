@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Form as FormikForm, useFormikContext } from 'formik';
-import * as Yup from 'yup';
 import SemanticallyRelatedIncidents from '../SemanticallyRelatedIncidents';
 import RelatedIncidentsArea from '../RelatedIncidentsArea';
 import { gql, useQuery } from '@apollo/client';
@@ -15,6 +14,9 @@ import IncidentsField from './IncidentsField';
 import LinkedReportsForm from './LinkedReportsForm';
 import ReportsField from './ReportsField';
 import { Spinner } from 'flowbite-react';
+import { schema as defaultSchema } from './incidentSchema';
+
+export { schema, createIncidentSchema, legacyEmptyEntityFields } from './incidentSchema';
 
 const relatedIncidentIdsQuery = gql`
   query IncidentWithReports($filter: IncidentFilterType) {
@@ -31,31 +33,19 @@ const relatedIncidentIdsQuery = gql`
   }
 `;
 
-export const schema = Yup.object().shape({
-  title: Yup.string().required(),
-  description: Yup.string().required(),
-  date: Yup.date().required(),
-  AllegedDeployerOfAISystem: Yup.array().required(),
-  AllegedDeveloperOfAISystem: Yup.array().required(),
-  AllegedHarmedOrNearlyHarmedParties: Yup.array().required(),
-  implicated_systems: Yup.array().required(),
-  editors: Yup.array().of(Yup.string()).required(),
-  editor_notes: Yup.string().nullable(),
-  // Existing reports to link when creating an incident, as report numbers. SEE: #4052
-  // The edit pages carry the incident's own report objects in this field (they are
-  // dropped on save), so only plain values are checked as numbers.
-  reports: Yup.array()
-    .of(
-      Yup.lazy((value) =>
-        value !== null && typeof value === 'object'
-          ? Yup.object()
-          : Yup.number().integer().positive()
-      )
-    )
-    .nullable(),
-});
-
-function IncidentForm({ entityNames = [], isNewIncident = false }) {
+/**
+ * `schema` is the validation schema the fields describe themselves with (the
+ * asterisk on required labels); the edit page passes the schema it validates
+ * with so a legacy record's blank entity fields are not marked required.
+ * `legacyEmptyEntityFields` lists those fields so each can say why it may stay
+ * blank. SEE: #4094
+ */
+function IncidentForm({
+  entityNames = [],
+  isNewIncident = false,
+  schema = defaultSchema,
+  legacyEmptyEntityFields = [],
+}) {
   const { values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue } =
     useFormikContext();
 
@@ -250,6 +240,13 @@ function IncidentForm({ entityNames = [], isNewIncident = false }) {
             data-cy="implicated-systems-input"
             options={entityNames}
           />
+          {legacyEmptyEntityFields.includes('implicated_systems') && (
+            <div className="text-sm text-gray-500 mt-1" data-cy="implicated-systems-legacy-note">
+              {t(
+                'This incident predates the Implicated Systems field, so it can be saved while the field is blank. Add the systems when you review the record substantively.'
+              )}
+            </div>
+          )}
         </FieldContainer>
 
         <FieldContainer>
