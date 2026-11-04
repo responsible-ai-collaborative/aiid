@@ -175,12 +175,13 @@ const VariantList = ({ liveVersion, incidentId, variants, readOnly = false }) =>
 
   const [displaySuccessMessage, setDisplaySuccessMessage] = useState(false);
 
-  const [findIncidentVariants, { data: incidentData, refetch: refetchVariants }] = useLazyQuery(
-    FIND_INCIDENT_VARIANTS,
-    {
-      variables: { incident_id: { EQ: incidentId } },
-    }
-  );
+  // Apollo Client 3.14 deprecates passing `variables` to the `useLazyQuery`
+  // options (it warns once per render, i.e. once per incident page during the
+  // static build). The variables go to the execute and refetch calls instead.
+  const variantsQueryVariables = { incident_id: { EQ: incidentId } };
+
+  const [findIncidentVariants, { data: incidentData, refetch: refetchVariants }] =
+    useLazyQuery(FIND_INCIDENT_VARIANTS);
 
   const { hasApiAccess } = useApiAccess();
 
@@ -189,7 +190,7 @@ const VariantList = ({ liveVersion, incidentId, variants, readOnly = false }) =>
     // the guard covers the ordering case where the flag is set from a URL
     // parameter before the session has resolved.
     if (liveVersion && hasApiAccess) {
-      findIncidentVariants();
+      findIncidentVariants({ variables: variantsQueryVariables });
     }
   }, [liveVersion, hasApiAccess]);
 
@@ -234,7 +235,9 @@ const VariantList = ({ liveVersion, incidentId, variants, readOnly = false }) =>
 
     setDisplayForm(false);
     if (liveVersion) {
-      refetchVariants();
+      // refetch is eager in Apollo 3.14: it runs even if the query was never
+      // executed, so it needs the variables as well.
+      refetchVariants(variantsQueryVariables);
     } else {
       setDisplaySuccessMessage(true);
     }
