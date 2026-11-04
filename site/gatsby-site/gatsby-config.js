@@ -20,6 +20,7 @@ if (process.env.SITE_URL === 'https://incidentdatabase.ai') {
 
 const plugins = [
   'layout',
+  'build-version',
   {
     resolve: `gatsby-plugin-catch-links`,
     options: {

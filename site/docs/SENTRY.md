@@ -30,6 +30,12 @@ GATSBY_SENTRY_RELEASE=commit-sha-or-version
 GATSBY_COMMIT_SHA=git-commit-hash
 ```
 
+The frontend does not read the release and commit from the bundle. At the end of the build the
+`build-version` plugin (`plugins/build-version`) writes them to `public/version.json` and
+`public/version.js`, and the browser loads the latter from `<head>`; `src/utils/sentry.js` and the
+footer take their values from there. Keeping them out of the bundles and the markup means two
+builds of the same code produce identical files, so a deploy only uploads what changed.
+
 ### Backend (Netlify Functions)
 ```bash
 SENTRY_DSN=https://your-dsn@sentry.io/project-id

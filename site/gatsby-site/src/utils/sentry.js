@@ -1,8 +1,11 @@
 import * as Sentry from '@sentry/react';
+import { getBuildVersion } from './buildVersion';
 
 const environment = process.env.GATSBY_SENTRY_ENVIRONMENT || 'development';
 
-const release = process.env.GATSBY_SENTRY_RELEASE || process.env.GATSBY_COMMIT_SHA;
+// Read from /version.js at runtime rather than inlined by webpack, so the
+// bundles (and the chunk names in every page) do not change with each commit.
+const { release } = getBuildVersion();
 
 if (typeof window !== 'undefined' && process.env.GATSBY_SENTRY_DSN) {
   Sentry.init({
