@@ -2,18 +2,25 @@ import React, { useEffect, useState } from 'react';
 import { Spinner } from 'flowbite-react';
 import { Trans } from 'react-i18next';
 import { useQuery } from '@apollo/client';
-import { graphql } from 'gatsby';
 import { FIND_FULL_INCIDENT } from '../../graphql/incidents';
 import CiteDynamicTemplate from 'templates/citeDynamicTemplate';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import ApiLoginRequired from 'components/ui/ApiLoginRequired';
 import useApiAccess from 'hooks/useApiAccess';
+import useAllEntities from 'hooks/useAllEntities';
+import useResponseReports from 'hooks/useResponseReports';
+import useTaxa from 'hooks/useTaxa';
 
 function CiteDynamicPage(props) {
   const {
-    data: { allMongodbAiidprodTaxa, entities: entitiesData, responses },
     params: { id: incident_id },
   } = props;
+
+  const allMongodbAiidprodTaxa = useTaxa();
+
+  const entitiesData = useAllEntities();
+
+  const responses = useResponseReports();
 
   const { config: availableLanguages } = useLocalization();
 
@@ -71,66 +78,5 @@ function CiteDynamicPage(props) {
     </div>
   );
 }
-
-export const query = graphql`
-  query CitationPageQuery {
-    allMongodbAiidprodTaxa {
-      nodes {
-        id
-        namespace
-        weight
-        description
-        complete_entities
-        dummy_fields {
-          field_number
-          short_name
-        }
-        field_list {
-          field_number
-          short_name
-          short_description
-          long_description
-          display_type
-          permitted_values
-          weight
-          public
-          complete_from {
-            all
-            current
-            entities
-          }
-          subfields {
-            field_number
-            short_name
-            short_description
-            long_description
-            display_type
-            permitted_values
-            weight
-            public
-            complete_from {
-              all
-              current
-              entities
-            }
-          }
-        }
-      }
-    }
-
-    entities: allMongodbAiidprodEntities {
-      nodes {
-        entity_id
-        name
-      }
-    }
-
-    responses: allMongodbAiidprodReports(filter: { tags: { in: ["response"] } }) {
-      nodes {
-        report_number
-      }
-    }
-  }
-`;
 
 export default CiteDynamicPage;

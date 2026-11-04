@@ -14,6 +14,9 @@ import { isCompleteReport } from 'utils/variants';
 import CiteTemplate from './citeTemplate';
 import CiteDynamicTemplate from './citeDynamicTemplate';
 import { useTranslation } from 'react-i18next';
+import useAllEntities from 'hooks/useAllEntities';
+import useResponseReports from 'hooks/useResponseReports';
+import useTaxa from 'hooks/useTaxa';
 
 function CitePage(props) {
   const {
@@ -26,16 +29,21 @@ function CitePage(props) {
       linkRecords,
     },
     data: {
-      allMongodbAiidprodTaxa,
       allMongodbAiidprodClassifications,
       allMongodbAiidprodReports,
       allMongodbTranslationsReports,
       incident,
       incidentTranslation,
-      entities: entitiesData,
-      responses,
     },
   } = props;
+
+  // Shared by every incident page, so these come from static queries that
+  // Gatsby stores once instead of inside each page's page-data.json.
+  const allMongodbAiidprodTaxa = useTaxa();
+
+  const entitiesData = useAllEntities();
+
+  const responses = useResponseReports();
 
   const translation = incidentTranslation?.nodes.length > 0 ? incidentTranslation.nodes[0] : null;
 
@@ -186,50 +194,6 @@ export const query = graphql`
         publish
       }
     }
-    allMongodbAiidprodTaxa {
-      nodes {
-        id
-        namespace
-        weight
-        description
-        complete_entities
-        automatedClassifications
-        dummy_fields {
-          field_number
-          short_name
-        }
-        field_list {
-          field_number
-          short_name
-          short_description
-          long_description
-          display_type
-          permitted_values
-          weight
-          public
-          complete_from {
-            all
-            current
-            entities
-          }
-          subfields {
-            field_number
-            short_name
-            short_description
-            long_description
-            display_type
-            permitted_values
-            weight
-            public
-            complete_from {
-              all
-              current
-              entities
-            }
-          }
-        }
-      }
-    }
     allMongodbAiidprodReports(filter: { report_number: { in: $report_numbers } }) {
       nodes {
         submitters
@@ -288,19 +252,6 @@ export const query = graphql`
         description
         incident_id
         language
-      }
-    }
-
-    entities: allMongodbAiidprodEntities {
-      nodes {
-        entity_id
-        name
-      }
-    }
-
-    responses: allMongodbAiidprodReports(filter: { tags: { in: ["response"] } }) {
-      nodes {
-        report_number
       }
     }
   }
