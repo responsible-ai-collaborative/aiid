@@ -125,6 +125,10 @@ exports.onCreateWebpackConfig = ({ actions, stage }) => {
         },
         release: {
           name: process.env.SENTRY_RELEASE || process.env.GATSBY_COMMIT_SHA,
+          // The SDK reads the release from /version.js at runtime (see
+          // plugins/build-version); injecting it here would put the commit into
+          // every bundle and change their hashes on each build.
+          inject: false,
         },
       }),
     ];
