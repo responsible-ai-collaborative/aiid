@@ -213,7 +213,7 @@ export default function Classifications({ taxa }) {
 
   const { items: namespaces } = useRefinementList({ attribute: 'namespaces' });
 
-  const selectedAttributes = Object.keys(indexUiState.refinementList).filter((key) => {
+  const selectedAttributes = Object.keys(indexUiState.refinementList ?? {}).filter((key) => {
     return taxa.map((t) => t.namespace).some((n) => key.startsWith(`${n}.`));
   });
 
@@ -256,5 +256,6 @@ export default function Classifications({ taxa }) {
 }
 
 export const touchedCount = ({ searchState }) => {
-  return Object.keys(searchState.refinementList).filter((key) => key.split('.').length > 1).length;
+  return Object.keys(searchState?.refinementList ?? {}).filter((key) => key.split('.').length > 1)
+    .length;
 };
