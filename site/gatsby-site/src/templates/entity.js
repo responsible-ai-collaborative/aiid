@@ -21,6 +21,8 @@ import {
 import { SUBSCRIPTION_TYPE } from 'utils/subscriptions';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import Label from '../components/forms/Label';
+import useAllEntities from 'hooks/useAllEntities';
+import useResponseReports from 'hooks/useResponseReports';
 
 const sortByReports = (a, b) => b.reports.length - a.reports.length;
 
@@ -49,9 +51,13 @@ const EntityPage = ({ pageContext, data, ...props }) => {
     incidentsAsBoth,
     incidentsHarmedBy,
     incidentsImplicatedSystems,
-    entities: entitiesData,
-    responses,
   } = data;
+
+  // Shared by every entity page, so these come from static queries that Gatsby
+  // stores once instead of inside each page's page-data.json.
+  const entitiesData = useAllEntities();
+
+  const responses = useResponseReports();
 
   const entityIncidents = {
     incidentsAsBoth: incidentsAsBoth.nodes.sort(sortByReports),
@@ -512,19 +518,6 @@ export const query = graphql`
         Alleged_developer_of_AI_system
         Alleged_harmed_or_nearly_harmed_parties
         implicated_systems
-      }
-    }
-
-    entities: allMongodbAiidprodEntities {
-      nodes {
-        entity_id
-        name
-      }
-    }
-
-    responses: allMongodbAiidprodReports(filter: { tags: { in: ["response"] } }) {
-      nodes {
-        report_number
       }
     }
   }

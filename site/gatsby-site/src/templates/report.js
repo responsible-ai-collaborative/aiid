@@ -11,17 +11,16 @@ import { useUserContext } from 'contexts/UserContext';
 import ClassificationsEditor from 'components/taxa/ClassificationsEditor';
 import ClassificationsDisplay from 'components/taxa/ClassificationsDisplay';
 import Card from 'elements/Card';
+import useTaxa from 'hooks/useTaxa';
 
 function ReportPage(props) {
   const {
-    data: {
-      report,
-      allMongodbAiidprodTaxa,
-      allMongodbAiidprodClassifications,
-      incidents,
-      allMongodbTranslationsReports,
-    },
+    data: { report, allMongodbAiidprodClassifications, incidents, allMongodbTranslationsReports },
   } = props;
+
+  // The same on every report page, so it comes from a static query that Gatsby
+  // stores once instead of inside each page's page-data.json.
+  const allMongodbAiidprodTaxa = useTaxa();
 
   const { t } = useTranslation();
 
@@ -175,49 +174,6 @@ export const query = graphql`
         title
         text
         report_number
-      }
-    }
-    allMongodbAiidprodTaxa {
-      nodes {
-        id
-        namespace
-        weight
-        description
-        complete_entities
-        dummy_fields {
-          field_number
-          short_name
-        }
-        field_list {
-          field_number
-          short_name
-          short_description
-          long_description
-          display_type
-          permitted_values
-          weight
-          public
-          complete_from {
-            all
-            current
-            entities
-          }
-          subfields {
-            field_number
-            short_name
-            short_description
-            long_description
-            display_type
-            permitted_values
-            weight
-            public
-            complete_from {
-              all
-              current
-              entities
-            }
-          }
-        }
       }
     }
     allMongodbAiidprodClassifications(

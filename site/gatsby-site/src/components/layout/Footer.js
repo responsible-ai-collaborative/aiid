@@ -7,16 +7,32 @@ import {
 import { faExternalLinkAlt, faRssSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { graphql, useStaticQuery } from 'gatsby';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import config from '../../../config';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import { Trans, useTranslation } from 'react-i18next';
+import { getBuildVersion } from 'utils/buildVersion';
 
+// The commit is read in the browser from /version.js (see plugins/build-version)
+// rather than baked into the markup, so every page's HTML stays identical
+// between builds of the same code and a deploy only uploads changed pages.
 function CommitSHA() {
+  const [commit, setCommit] = useState(null);
+
+  useEffect(() => {
+    setCommit(getBuildVersion().commit || null);
+  }, []);
+
+  if (!commit) {
+    return null;
+  }
+
   return (
-    <div className="text-muted-gray text-xs" data-cy="commit-sha">
-      {process.env.GATSBY_COMMIT_SHA.toString().substring(0, 7)}
-    </div>
+    <li>
+      <div className="text-muted-gray text-xs" data-cy="commit-sha">
+        {commit.substring(0, 7)}
+      </div>
+    </li>
   );
 }
 
@@ -203,13 +219,7 @@ export default function Footer() {
                 </div>
               )}
 
-              {i == footerContent.length - 1 &&
-                allPrismicFooter.edges.length > 0 &&
-                process.env.GATSBY_COMMIT_SHA && (
-                  <li>
-                    <CommitSHA />
-                  </li>
-                )}
+              {i == footerContent.length - 1 && allPrismicFooter.edges.length > 0 && <CommitSHA />}
             </ul>
           </div>
         );
