@@ -28,13 +28,18 @@ jobs:
         working-directory: site/gatsby-site
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           ref: ${{ inputs.sha }}
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
       - name: Read node modules from cache
         id: cache-nodemodules
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         env:
           cache-name: cache-install-folder
         with:
@@ -71,6 +76,6 @@ jobs:
           PRISMIC_SECRET: dummy
 
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v7
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
