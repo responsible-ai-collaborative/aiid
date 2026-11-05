@@ -144,6 +144,7 @@
     "serve": "netlify dev --target-port 9000 --port 8000 -d public --offline",
     "test:e2e": "npx playwright test playwright/e2e-full --ui",
     "test:e2e:ci": "DEBUG=pw:webserver npx playwright test $TEST_FOLDER --shard=$SHARD_INDEX/$SHARD_TOTAL",
+    "test:utils": "jest --config jest.utils.config.js",
     "test:api": "jest --setupFiles dotenv/config --runInBand --forceExit",
     "test:api:ci": "jest --runInBand --forceExit",
     "codegen": "graphql-codegen --config codegen.ts",
