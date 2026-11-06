@@ -182,12 +182,16 @@ jobs:
         working-directory: site/gatsby-site
         run: |
           set -e
+          # The site was built by the "Build using Netlify" step above. Since
+          # netlify-cli 21, `netlify deploy` runs the build itself unless told
+          # not to; without --no-build it rebuilds here, outside the build
+          # step's environment, fails, and prints no JSON for the steps below.
           # If no alias is specified, deploy to production
           if [[ -z "${{ inputs.netlify-alias }}" ]]; then
-            OUTPUT=$(bash -c "netlify deploy --json --prod" | tr '\n' ' ')
+            OUTPUT=$(bash -c "netlify deploy --no-build --json --prod" | tr '\n' ' ')
           # Otherwise, deploy to the specified alias
           else
-            OUTPUT=$(bash -c "netlify deploy --json --alias=${{ inputs.netlify-alias }}" | tr '\n' ' ')
+            OUTPUT=$(bash -c "netlify deploy --no-build --json --alias=${{ inputs.netlify-alias }}" | tr '\n' ' ')
           fi
           set +e
           NETLIFY_OUTPUT=$(echo "$OUTPUT")
