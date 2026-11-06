@@ -4985,9 +4985,11 @@ const items: DBTaxa[] = [
         weight: 70,
         automatedClassifications: true,
         description: handleWhitespace(`
-           [The MIT AI Risk Repository](https://airisk.mit.edu/) contains detailed records of AI-related risks extracted from a variety of sources, categorized into high-level and mid-level taxonomies. Its high-level Causal Taxonomy includes attributes such as the entity responsible for the risk (human, AI, or other), the intent (intentional, unintentional, or other), and the timing (pre-deployment, post-deployment, or other). Its mid-level Domain Taxonomy categorizes risks into 23 specific domains like discrimination, misinformation, malicious use, and human-computer interaction issues.
+           [The MIT AI Risk Repository](https://airisk.mit.edu/) contains detailed records of AI-related risks extracted from a variety of sources, categorized into high-level and mid-level taxonomies. Its high-level Causal Taxonomy includes attributes such as the entity responsible for the risk (human, AI, or other), the intent (intentional, unintentional, or other), and the timing (pre-deployment, post-deployment, or other). Its mid-level Domain Taxonomy categorizes risks into 24 specific subdomains like discrimination, misinformation, malicious use, and human-computer interaction issues.
       
-           Classifications using this taxonomy were generated automatically through the work of [Simon Mylius](https://simonmylius.com/incident-classification/introduction). This taxonomy description is provisional and adapted from "[The AI Risk Repository: A Comprehensive Meta-Review, Database, and Taxonomy of Risks From Artificial Intelligence](https://arxiv.org/pdf/2408.12622)." 
+           Classifications using this taxonomy were generated automatically through the work of [Simon Mylius](https://simonmylius.com/incident-classification/introduction). This taxonomy description is provisional and adapted from "[The AI Risk Repository: A Comprehensive Meta-Review, Database, and Taxonomy of Risks From Artificial Intelligence](https://arxiv.org/pdf/2408.12622)."
+
+           Since November 2026 these classifications are refreshed automatically from the [Arcola AI](https://platform.arcolaai.com/) platform's classifier. The Prompt Version field records which generation of the classifier produced an incident's classification, and Additional Subdomains lists the further subdomains the classifier found to apply.
         `),
         dummy_fields: [],
         field_list: [
@@ -5020,7 +5022,7 @@ const items: DBTaxa[] = [
                 short_name: 'Risk Subdomain',
                 long_name: 'Risk Subdomain',
                 short_description:
-                    'A further 23 subdomains create an accessible and understandable classification of hazards and harms associated with AI',
+                    'A further 24 subdomains create an accessible and understandable classification of hazards and harms associated with AI',
                 long_description: handleWhitespace(`
               # 1 Discrimination & toxicity
       
@@ -5130,6 +5132,10 @@ const items: DBTaxa[] = [
               ## 7.5 AI welfare and rights 
       
               Ethical considerations regarding the treatment of potentially sentient AI entities, including discussions around their potential rights and welfare, particularly as AI systems become more advanced and autonomous.
+
+              ## 7.6 Multi-agent risks
+
+              Risks from multi-agent interactions, due to incentives (which can lead to conflict or collusion) and/or the structure of the system, such as a loss of control or emergent behaviours arising from the interactions of multiple AI agents.
             `),
                 display_type: 'enum',
                 mongo_type: 'string',
@@ -5162,6 +5168,7 @@ const items: DBTaxa[] = [
                     '7.3. Lack of capability or robustness',
                     '7.4. Lack of transparency or interpretability',
                     '7.5. AI welfare and rights',
+                    '7.6. Multi-agent risks',
                 ],
             },
             {
@@ -5207,6 +5214,63 @@ const items: DBTaxa[] = [
                 required: false,
                 public: true,
                 permitted_values: ['Intentional', 'Unintentional', 'Other'],
+            },
+            {
+                short_name: 'Additional Subdomains',
+                long_name: 'Additional Subdomains',
+                short_description:
+                    'Further subdomains of the Domain Taxonomy that the automated classifier found to apply to the incident, beyond the primary Risk Subdomain.',
+                long_description:
+                    'Further subdomains of the MIT AI Risk Repository Domain Taxonomy that the automated classifier found to apply to the incident, in addition to the primary Risk Subdomain. The classifier records a justification for each; only the subdomain labels are stored here. The permitted values are those of the Risk Subdomain field.',
+                display_type: 'multi',
+                mongo_type: 'array',
+                default: '',
+                weight: 4,
+                instant_facet: true,
+                required: false,
+                public: true,
+                permitted_values: [
+                    '1.1. Unfair discrimination and misrepresentation',
+                    '1.2. Exposure to toxic content',
+                    '1.3. Unequal performance across groups',
+                    '2.1. Compromise of privacy by obtaining, leaking or correctly inferring sensitive information',
+                    '2.2. AI system security vulnerabilities and attacks',
+                    '3.1. False or misleading information',
+                    '3.2. Pollution of information ecosystem and loss of consensus reality',
+                    '4.1. Disinformation, surveillance, and influence at scale',
+                    '4.2. Cyberattacks, weapon development or use, and mass harm',
+                    '4.3. Fraud, scams, and targeted manipulation',
+                    '5.1. Overreliance and unsafe use',
+                    '5.2. Loss of human agency and autonomy',
+                    '6.1. Power centralization and unfair distribution of benefits',
+                    '6.2. Increased inequality and decline in employment quality',
+                    '6.3. Economic and cultural devaluation of human effort',
+                    '6.4. Competitive dynamics',
+                    '6.5. Governance failure',
+                    '6.6. Environmental harm',
+                    '7.1. AI pursuing its own goals in conflict with human goals or values',
+                    '7.2. AI possessing dangerous capabilities',
+                    '7.3. Lack of capability or robustness',
+                    '7.4. Lack of transparency or interpretability',
+                    '7.5. AI welfare and rights',
+                    '7.6. Multi-agent risks',
+                ],
+            },
+            {
+                short_name: 'Prompt Version',
+                long_name: 'Prompt Version',
+                short_description:
+                    'The version of the automated classifier prompt that produced this classification.',
+                long_description:
+                    "The version of the classifier prompt that produced the incident's MIT classification, for example `aiid.v2`. The classifications are refreshed automatically from the Arcola AI platform, and a stored classification is only replaced when the platform has re-classified the incident under a new prompt version, so this field records which generation of the classifier the other fields come from.",
+                display_type: 'string',
+                mongo_type: 'string',
+                default: '',
+                weight: 1,
+                instant_facet: false,
+                required: false,
+                public: true,
+                permitted_values: [],
             },
         ],
     }

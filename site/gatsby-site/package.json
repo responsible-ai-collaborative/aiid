@@ -165,6 +165,8 @@
     "generate-oecd-relationships": "npx tsx --env-file=.env src/scripts/generate-oecd-relationships.ts",
     "embed-incidents": "npx tsx --env-file=.env src/scripts/embed-incidents.ts",
     "embed-incidents:ci": "npx tsx src/scripts/embed-incidents.ts",
+    "sync-mit-classifications": "npx tsx --env-file=.env src/scripts/syncMitClassifications.ts",
+    "sync-mit-classifications:ci": "npx tsx src/scripts/syncMitClassifications.ts",
     "algolia-update": "npx tsx --env-file=.env src/scripts/algolia-update.ts",
     "algolia-update:ci": "npx tsx src/scripts/algolia-update.ts",
     "db:migrator": "npx tsx migrator"

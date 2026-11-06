@@ -1,5 +1,7 @@
 # MIT Classification Import
 
+> The MIT classifications are refreshed automatically from the Arcola AI platform; see [MIT-CLASSIFICATION-SYNC.md](MIT-CLASSIFICATION-SYNC.md). The importer below remains for one-off CSV imports.
+
 ## Overview
 
 The script imports incident classifications from CSV files into the AIID database using the MIT taxonomy framework. The tool validates data against taxonomy definitions and applies field/value mappings to transform CSV data into the proper format.

@@ -70,3 +70,13 @@ jobs:
           CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_WRITE_SECRET_ACCESS_KEY }}
           CLOUDFLARE_R2_BUCKET_NAME: ${{ vars.CLOUDFLARE_R2_DAILY_BUCKET_NAME }}
           MONGODB_URI: ${{ secrets.MONGODB_CONNECTION_STRING }}
+
+  update-mit-classifications:
+    # Runs only when the backup above succeeded, so a snapshot taken before the sync touched the
+    # classifications always exists. Dry run unless the environment's MIT_SYNC_DRY_RUN is `false`.
+    name: Update MIT classifications
+    needs: build-and-run-backups
+    uses: ./.github/workflows/sync-mit-classifications.yml
+    secrets: inherit
+    with:
+      environment: ${{ inputs.environment || 'production' }}
