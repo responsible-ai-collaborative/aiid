@@ -23,15 +23,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
 
       - name: Cache NPM dependencies
         id: cache-npm-dependencies
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: |
             site/gatsby-site/node_modules
@@ -44,7 +44,7 @@ jobs:
 
       - name: Cache Playwright Browsers
         id: cache-playwright-browsers
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-browsers-${{ hashFiles('**/gatsby-site/package-lock.json') }}
@@ -73,7 +73,7 @@ jobs:
 
       - name: Upload test results
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: integrity-test-results-${{ inputs.environment || 'production' }}
           path: site/gatsby-site/playwright-report/
