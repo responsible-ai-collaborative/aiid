@@ -11,7 +11,7 @@ const findIndex = (displayOptions, currentState) => {
       currentState.configure &&
       currentState.configure.distinct == state.configure.distinct &&
       isEqual(
-        currentState.refinementList.is_incident_report,
+        currentState.refinementList?.is_incident_report,
         state.refinementList.is_incident_report
       )
     );
