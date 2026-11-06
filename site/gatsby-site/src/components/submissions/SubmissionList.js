@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Badge, Button, Checkbox, Select, Spinner } from 'flowbite-react';
+import { Badge, Button, Checkbox, Label, Select, Spinner } from 'flowbite-react';
 import { useUserContext } from 'contexts/UserContext';
 import {
   useBlockLayout,
@@ -18,7 +18,11 @@ import Table, {
 } from 'components/ui/Table';
 import { STATUS } from 'utils/submissions';
 import { useMutation } from '@apollo/client';
-import { DELETE_SUBMISSION, UPDATE_SUBMISSION } from '../../graphql/submissions';
+import {
+  REJECT_SUBMISSION,
+  RESTORE_SUBMISSION,
+  UPDATE_SUBMISSION,
+} from '../../graphql/submissions';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 
 /**
@@ -32,6 +36,7 @@ import useToastContext, { SEVERITY } from 'hooks/useToast';
 const STORAGE_KEYS = {
   sortBy: 'submissionsTable.sortBy',
   dateFilter: 'submissionsTable.dateFilter',
+  showRejected: 'submissionsTable.showRejected',
 };
 
 const readStoredSetting = (key, fallback) => {
@@ -67,17 +72,20 @@ const SubmissionList = ({ data }) => {
 
   const [updateSubmission] = useMutation(UPDATE_SUBMISSION);
 
-  const [deleteSubmission] = useMutation(DELETE_SUBMISSION, {
-    update: (cache, { data }) => {
-      // Apollo expects a `deleted` boolean field otherwise manual cache manipulation is needed
-      cache.evict({
-        id: cache.identify({
-          __typename: data.deleteOneSubmission.__typename,
-          id: data.deleteOneSubmission._id,
-        }),
-      });
-    },
-  });
+  // Rejecting marks the submission instead of deleting it; the returned row
+  // updates the cached list, and the queue hides rejected rows unless asked
+  // to show them. SEE: #4085
+  const [rejectSubmission] = useMutation(REJECT_SUBMISSION);
+
+  const [restoreSubmission] = useMutation(RESTORE_SUBMISSION);
+
+  const [showRejected, setShowRejected] = useState(() =>
+    readStoredSetting(STORAGE_KEYS.showRejected, false)
+  );
+
+  useEffect(() => {
+    writeStoredSetting(STORAGE_KEYS.showRejected, showRejected);
+  }, [showRejected]);
 
   const addToast = useToastContext();
 
@@ -110,9 +118,13 @@ const SubmissionList = ({ data }) => {
 
   useEffect(() => {
     if (data) {
-      setTableData(data.submissions);
+      setTableData(
+        data.submissions.filter(
+          (submission) => showRejected || submission.status !== STATUS.rejected.name
+        )
+      );
     }
-  }, [data]);
+  }, [data, showRejected]);
 
   const defaultColumn = React.useMemo(
     () => ({
@@ -189,6 +201,9 @@ const SubmissionList = ({ data }) => {
         className="mt-2"
         value={filterValue || 'All'}
         onChange={(e) => {
+          if (e.target.value === STATUS.rejected.name) {
+            setShowRejected(true);
+          }
           setFilter(e.target.value || undefined);
         }}
       >
@@ -297,11 +312,25 @@ const SubmissionList = ({ data }) => {
       },
       reject: {
         confirmMessage: t(
-          'Are you sure you want to reject these submissions? This will permanently delete the submissions.'
+          'Are you sure you want to reject these submissions? They will be hidden from the review queue and can be restored later.'
         ),
-        execute: (submissionId) => deleteSubmission({ variables: { _id: submissionId } }),
+        // One rationale for the batch; cancelling the prompt aborts.
+        collectInput: () => prompt(t('Reason for rejecting (optional)'), ''),
+        execute: (submissionId, reason) =>
+          rejectSubmission({ variables: { input: { submission_id: submissionId, reason } } }),
         successMessage: t(
           `Successfully rejected {{count}} submission${selectedRows.length === 1 ? '' : 's'}`,
+          { count: selectedRows.length }
+        ),
+      },
+      restore: {
+        confirmMessage: t(
+          'Are you sure you want to restore these submissions to the review queue?'
+        ),
+        execute: (submissionId) =>
+          restoreSubmission({ variables: { input: { submission_id: submissionId } } }),
+        successMessage: t(
+          `Successfully restored {{count}} submission${selectedRows.length === 1 ? '' : 's'}`,
           { count: selectedRows.length }
         ),
       },
@@ -314,14 +343,24 @@ const SubmissionList = ({ data }) => {
     }
   };
 
-  const executeBulkAction = async ({ confirmMessage, execute, successMessage }) => {
+  const executeBulkAction = async ({ confirmMessage, collectInput, execute, successMessage }) => {
     if (!confirm(confirmMessage)) {
       return;
     }
 
+    let input;
+
+    if (collectInput) {
+      input = collectInput();
+
+      if (input === null) {
+        return;
+      }
+    }
+
     setPerformingAction(true);
     try {
-      const promises = selectedRows.map((submissionId) => execute(submissionId));
+      const promises = selectedRows.map((submissionId) => execute(submissionId, input));
 
       await Promise.all(promises);
 
@@ -524,14 +563,23 @@ const SubmissionList = ({ data }) => {
             }
             return rowValue === value;
           }),
-        Cell: ({ row: { values } }) => {
+        Cell: ({ row }) => {
+          const { values, original } = row;
+
           let color =
             STATUS[values.status]?.color ||
             'bg-orange-100 text-orange-800 dark:bg-orange-200 dark:text-orange-900';
 
           return (
             <div className="flex justify-center">
-              <Badge className={`mr-2 ${color}`}>
+              <Badge
+                className={`mr-2 ${color}`}
+                title={
+                  values.status === STATUS.rejected.name
+                    ? original.rejection_reason || ''
+                    : undefined
+                }
+              >
                 <Trans ns="submitted">
                   {STATUS[values.status]?.text || STATUS.pendingReview.text}
                 </Trans>
@@ -556,6 +604,8 @@ const SubmissionList = ({ data }) => {
             (editor) => editor.userId === user.id
           );
 
+          const isRejected = values.status === STATUS.rejected.name;
+
           return (
             <div className="flex gap-2">
               <Button
@@ -574,7 +624,17 @@ const SubmissionList = ({ data }) => {
                   <Trans ns="submitted">Review</Trans>
                 )}
               </Button>
-              {!values.editor && (
+              {isRejected && (
+                <Button
+                  color={'gray'}
+                  data-cy="restore-submission"
+                  onClick={() => restoreOne(values._id)}
+                  disabled={performingAction}
+                >
+                  <Trans ns="submitted">Restore</Trans>
+                </Button>
+              )}
+              {!values.editor && !isRejected && (
                 <Button
                   color={'gray'}
                   data-cy="claim-submission"
@@ -609,7 +669,28 @@ const SubmissionList = ({ data }) => {
     }
 
     return columns;
-  }, [loading, user, claiming, reviewing, dateFilter, selectedRows, allSelected]);
+  }, [loading, user, claiming, reviewing, dateFilter, selectedRows, allSelected, performingAction]);
+
+  const restoreOne = async (submissionId) => {
+    if (!confirm(t('Are you sure you want to restore this submission to the review queue?'))) {
+      return;
+    }
+    setPerformingAction(true);
+    try {
+      await restoreSubmission({ variables: { input: { submission_id: submissionId } } });
+      addToast({
+        message: t('Submission restored to the review queue'),
+        severity: SEVERITY.success,
+      });
+    } catch (error) {
+      addToast({
+        message: t(`There was an error performing this action. Please try again.`),
+        severity: SEVERITY.danger,
+      });
+    } finally {
+      setPerformingAction(false);
+    }
+  };
 
   const [tableState, setTableState] = useState(() => ({
     pageIndex: 0,
@@ -710,7 +791,8 @@ const SubmissionList = ({ data }) => {
   }, [table.state.pageIndex]);
 
   const setSubmissionStatus = async (submission) => {
-    if (submission.status !== STATUS.inReview.name) {
+    // Opening a rejected submission for review leaves it rejected; restoring is explicit.
+    if (submission.status !== STATUS.inReview.name && submission.status !== STATUS.rejected.name) {
       setReviewing({ submissionId: submission._id, value: true });
       try {
         await updateSubmission({
@@ -752,6 +834,7 @@ const SubmissionList = ({ data }) => {
               <option value="claim">{t('Claim')}</option>
               <option value="unclaim">{t('Unclaim')}</option>
               <option value="reject">{t('Reject')}</option>
+              <option value="restore">{t('Restore')}</option>
             </Select>
             <Button
               color="gray"
@@ -765,6 +848,17 @@ const SubmissionList = ({ data }) => {
           </div>
         </div>
       )}
+      <div className="flex items-center gap-2 mb-3">
+        <Checkbox
+          id="show-rejected-submissions"
+          data-testid="show-rejected-submissions"
+          checked={showRejected}
+          onChange={(e) => setShowRejected(e.target.checked)}
+        />
+        <Label htmlFor="show-rejected-submissions">
+          <Trans ns="submitted">Show rejected submissions</Trans>
+        </Label>
+      </div>
       <Table
         table={table}
         data-cy="submissions"

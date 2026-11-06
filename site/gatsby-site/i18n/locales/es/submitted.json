@@ -32,7 +32,6 @@
     "Promoting to issue": "Promoviendo a problema",
     "Adding as incident": "Agregando como incidente",
     "Adding as issue": "Agregando como problema",
-    "Are you sure you want to reject this submission? This will permanently delete the submission.": "¿Estás seguro de que quieres rechazar este envío? Esto eliminará permanentemente el envío.",
     "Changes saved": "Cambios guardados",
     "There was an error claiming this submission. Please try again.": "Hubo un error al asignar este envío. Por favor, inténtelo de nuevo.",
     "Claim": "Asignarme",
@@ -41,7 +40,6 @@
     "No reports found": "No se encontraron informes",
     "Are you sure you want to claim these submissions? This will assign you as the editor on all the selected submissions.": "¿Estás seguro de que quieres asignarte estos envíos? Esto te asignará como editor en todos los envíos seleccionados.",
     "Are you sure you want to unclaim these submissions? This will unassign you as the editor on all the selected submissions.": "¿Estás seguro de que quieres desasignarte estos envíos? Esto eliminará tu asignación como editor en todos los envíos seleccionados.",
-    "Are you sure you want to reject these submissions? This will permanently delete the submissions.": "¿Estás seguro de que quieres rechazar estos envíos? Esto eliminará permanentemente los envíos.",
     "There was an error performing this action. Please try again.": "Hubo un error al realizar esta acción. Por favor, inténtelo de nuevo.",
     "Select All": "Seleccionar todo",
     "Unclaim": "Desasignar",
@@ -61,6 +59,19 @@
     "Successfully unclaimed {{count}} submission": "{{count}} envío desasignado exitosamente",
     "Successfully rejected {{count}} submission": "{{count}} envío rechazado exitosamente",
     "Review": "Revisar",
-    "Unclaiming...": "Desasignando..."
-    
+    "Unclaiming...": "Desasignando...",
+    "Rejected": "Rechazado",
+    "Restore": "Restaurar",
+    "Restore to queue": "Restaurar a la cola",
+    "Restoring...": "Restaurando...",
+    "Rejecting...": "Rechazando...",
+    "Reason for rejecting (optional)": "Motivo del rechazo (opcional)",
+    "Show rejected submissions": "Mostrar envíos rechazados",
+    "Submission restored to the review queue": "Envío restaurado a la cola de revisión",
+    "Are you sure you want to reject this submission? It will be hidden from the review queue and can be restored later.": "¿Estás seguro de que quieres rechazar este envío? Se ocultará de la cola de revisión y podrá restaurarse más tarde.",
+    "Are you sure you want to reject these submissions? They will be hidden from the review queue and can be restored later.": "¿Estás seguro de que quieres rechazar estos envíos? Se ocultarán de la cola de revisión y podrán restaurarse más tarde.",
+    "Are you sure you want to restore this submission to the review queue?": "¿Estás seguro de que quieres restaurar este envío a la cola de revisión?",
+    "Are you sure you want to restore these submissions to the review queue?": "¿Estás seguro de que quieres restaurar estos envíos a la cola de revisión?",
+    "Successfully restored {{count}} submission": "{{count}} envío restaurado exitosamente",
+    "Successfully restored {{count}} submissions": "{{count}} envíos restaurados exitosamente"
 }

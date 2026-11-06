@@ -29,6 +29,7 @@ test.describe('Submitted reports', () => {
                        userId
                     }
                     status
+                    rejection_reason
                     text
                     snippet_max_characters
                 }
@@ -326,15 +327,113 @@ test.describe('Submitted reports', () => {
 
         page.on('dialog', dialog => dialog.accept());
 
-        const deleteResponse = page.waitForResponse((response) => response.request()?.postDataJSON()?.operationName == 'DeleteSubmission');
+        // Rejecting marks the submission and keeps it. SEE: #4085
+        await page.locator('[data-cy="rejection-reason-input"]').fill('Not an AI incident');
+
+        await expect(page.locator('[data-cy="saving-status"]')).toContainText('Changes saved');
+
+        const rejectResponse = page.waitForResponse((response) => response.request()?.postDataJSON()?.operationName == 'RejectSubmission');
 
         await page.locator('[data-cy="reject-button"]').click();
 
-        await deleteResponse;
+        await rejectResponse;
 
         const updated = await getSubmissions();
 
-        expect(updated.find((s) => s._id === submissions[0]._id)).toBeUndefined();
+        expect(updated.find((s) => s._id === submissions[0]._id)).toMatchObject({ status: 'rejected', rejection_reason: 'Not an AI incident' });
+    });
+
+    test('Restores a rejected submission from the edit page', async ({ page, login }) => {
+
+        await init();
+
+        const submissions = await getSubmissions();
+
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+        await page.goto(url + `?editSubmission=${submissions[0]._id}`);
+
+        page.on('dialog', dialog => dialog.accept());
+
+        await page.locator('[data-cy="rejection-reason-input"]').fill('Rejected by mistake');
+
+        await expect(page.locator('[data-cy="saving-status"]')).toContainText('Changes saved');
+
+        const rejectResponse = page.waitForResponse((response) => response.request()?.postDataJSON()?.operationName == 'RejectSubmission');
+
+        await page.locator('[data-cy="reject-button"]').click();
+
+        await rejectResponse;
+
+        // The edit page redirects to the queue; reopen the rejected submission.
+        await page.goto(url + `?editSubmission=${submissions[0]._id}`);
+
+        await expect(page.locator('[data-cy="rejection-notice"]')).toContainText('Rejected');
+        await expect(page.locator('[data-cy="rejection-reason"]')).toHaveText('Rejected by mistake');
+        await expect(page.locator('[data-cy="promote-button"]')).toBeDisabled();
+
+        const restoreResponse = page.waitForResponse((response) => response.request()?.postDataJSON()?.operationName == 'RestoreSubmission');
+
+        await page.locator('[data-cy="restore-button"]').click();
+
+        await restoreResponse;
+
+        await expect(page.locator('[data-cy="status-select"]')).toHaveValue('pendingReview');
+
+        const updated = await getSubmissions();
+
+        expect(updated.find((s) => s._id === submissions[0]._id)).toMatchObject({ status: 'pendingReview', rejection_reason: null });
+    });
+
+    test('Hides rejected submissions by default and shows them on request', async ({ page, login }) => {
+
+        await init();
+
+        const submissions = await getSubmissions();
+
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+        await page.goto(url + `?editSubmission=${submissions[0]._id}`);
+
+        page.on('dialog', dialog => dialog.accept());
+
+        await expect(page.locator('[data-cy="saving-status"]')).toContainText('Changes saved');
+
+        const rejectResponse = page.waitForResponse((response) => response.request()?.postDataJSON()?.operationName == 'RejectSubmission');
+
+        await page.locator('[data-cy="reject-button"]').click();
+
+        await rejectResponse;
+
+        await page.goto(url);
+
+        await expect(page.locator('[data-cy="row"]')).toHaveCount(submissions.length - 1);
+
+        await page.getByTestId('show-rejected-submissions').check({ force: true });
+
+        await expect(page.locator('[data-cy="row"]')).toHaveCount(submissions.length);
+
+        const rejectedRow = page.locator(`[data-cy="row"]:has([data-testid="select-submission-${submissions[0]._id}"])`);
+
+        await expect(rejectedRow).toContainText('Rejected');
+
+        // The queue remembers the choice.
+        await page.reload();
+
+        await expect(page.getByTestId('show-rejected-submissions')).toBeChecked();
+
+        // Restore from the row.
+        const restoreResponse = page.waitForResponse((response) => response.request()?.postDataJSON()?.operationName == 'RestoreSubmission');
+
+        await rejectedRow.locator('[data-cy="restore-submission"]').click();
+
+        await restoreResponse;
+
+        await expect(rejectedRow).toContainText('Pending Review');
+
+        const updated = await getSubmissions();
+
+        expect(updated.find((s) => s._id === submissions[0]._id).status).toBe('pendingReview');
     });
 
     test('Edits a submission - update just a text', async ({ page, login }) => {
@@ -1060,17 +1159,25 @@ test.describe('Submitted reports', () => {
 
         await expect(page.locator('[data-cy="toast"]').first()).toContainText(`Successfully rejected ${submissions.length} submissions`);
 
-
+        // Rejected submissions are kept, marked, and hidden from the queue by default. SEE: #4085
         const { data: { submissions: updatedSubmissions } } = await query({
           query: gql`{
               submissions {
                   _id
+                  status
               }
           }
         `,
         });
 
-        expect(updatedSubmissions.length).toBe(0);
+        expect(updatedSubmissions.length).toBe(submissions.length);
+        expect(updatedSubmissions.every((s) => s.status === 'rejected')).toBe(true);
+
+        await expect(page.locator('[data-cy="row"]')).toHaveCount(0);
+
+        await page.getByTestId('show-rejected-submissions').check({ force: true });
+
+        await expect(page.locator('[data-cy="row"]')).toHaveCount(submissions.length);
     });
 
     test('Should select and claim one submission', async ({ page, login }) => {
@@ -1195,17 +1302,19 @@ test.describe('Submitted reports', () => {
 
     const { data: { submissions: updatedSubmissions } } = await query({
       query: gql`{
-          submissions(filter: { incident_editors: { EQ: "${userId}" }, _id: { EQ: "${firstSubmission._id}" } }) {
+          submissions(filter: { _id: { EQ: "${firstSubmission._id}" } }) {
               _id
-              incident_editors {
-                  userId
-              }
+              status
+              rejected_by
           }
       }
     `,
   });
 
-  expect(updatedSubmissions.length).toBe(0);
+  expect(updatedSubmissions).toEqual([{ _id: firstSubmission._id, status: 'rejected', rejected_by: userId }]);
+
+  // Hidden from the queue until asked for.
+  await expect(page.getByTestId(`select-submission-${firstSubmission._id}`)).toHaveCount(0);
   });
 
 });

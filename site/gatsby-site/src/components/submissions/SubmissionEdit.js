@@ -85,6 +85,14 @@ const SubmissionEdit = ({ id }) => {
         update.incident_editors = { link: userIds };
       }
 
+      // Set and cleared by the reject/restore mutations; an autosave must not
+      // write them back as nulls. SEE: #4085
+      for (const field of ['rejection_reason', 'rejected_at', 'rejected_by']) {
+        if (update[field] == null) {
+          delete update[field];
+        }
+      }
+
       const now = new Date();
 
       const updatedSubmission = {
@@ -121,6 +129,9 @@ const SubmissionEdit = ({ id }) => {
       setSaving(false);
       setSubmission(values);
     } catch (e) {
+      // Otherwise a failed autosave leaves the form marked as saving and the
+      // Accept/Reject buttons disabled until the page is reloaded.
+      setSaving(false);
       addToast({
         message: `Error updating submission ${values._id}`,
         severity: SEVERITY.danger,
