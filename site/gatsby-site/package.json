@@ -205,7 +205,7 @@
     "jest-cli": "^30.4.2",
     "lint-staged": "^16.4.0",
     "mongodb-memory-server": "^11.3.0",
-    "netlify-cli": "^26.2.0",
+    "netlify-cli": "^27.16.2",
     "nunjucks": "^3.2.4",
     "postcss": "^8.5.32",
     "prettier": "^2.8.8",
