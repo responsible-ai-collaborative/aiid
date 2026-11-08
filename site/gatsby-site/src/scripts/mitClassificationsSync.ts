@@ -14,9 +14,11 @@ import { Document, MongoClient, ObjectId } from 'mongodb';
  *    from the taxonomy's by punctuation ("4 Malicious actors" against "4. Malicious Actors &
  *    Misuse"), so domain and subdomain values are matched by their numeric code; everything else
  *    has to match exactly.
- * 2. A stored classification only changes when the export carries a new prompt version for the
- *    incident. A changed value under the same prompt version means the classifier is not
- *    deterministic or the pipeline is broken.
+ * 2. A stored classification only changes when the export carries a new revision for the
+ *    incident. Arcola numbers the classifications of each incident 1, 2, 3 and so on, and every
+ *    re-classification (a new prompt version, a new model, or a person correcting a value) gets
+ *    the next number. A changed value under the revision already stored means the pipeline is
+ *    broken, and so does a revision lower than the stored one.
  * 3. A run that would change more than `MIT_SYNC_MAX_FIELD_UPDATES` field values is refused: a
  *    flood of changes signals a broken pipeline rather than a day's worth of new incidents.
  *
@@ -36,9 +38,19 @@ export const DEFAULT_MAX_FIELD_UPDATES = 500;
 
 export const PROMPT_VERSION_FIELD = 'Prompt Version';
 
-export const MIGRATION_NAME = '2026.11.03T12.00.00.add-mit-arcola-fields.ts';
+export const REVISION_FIELD = 'Revision';
 
-export type FieldKind = 'enum' | 'multi' | 'string';
+export const HUMAN_CORRECTED_FIELD = 'Human Corrected';
+
+/** The migration that adds each field the sync manages beyond the five the taxonomy started with */
+export const FIELD_MIGRATIONS: Record<string, string> = {
+  'Additional Subdomains': '2026.11.03T12.00.00.add-mit-arcola-fields.ts',
+  [PROMPT_VERSION_FIELD]: '2026.11.03T12.00.00.add-mit-arcola-fields.ts',
+  [REVISION_FIELD]: '2026.11.08T12.00.00.add-mit-revision-fields.ts',
+  [HUMAN_CORRECTED_FIELD]: '2026.11.08T12.00.00.add-mit-revision-fields.ts',
+};
+
+export type FieldKind = 'enum' | 'multi' | 'string' | 'int' | 'bool';
 
 export interface ManagedField {
   /** `short_name` of the taxonomy field */
@@ -57,11 +69,13 @@ export const MANAGED_FIELDS: ManagedField[] = [
   { field: 'Intent', column: 'causal_intent', kind: 'enum' },
   { field: 'Additional Subdomains', column: 'additional_subdomains', kind: 'multi' },
   { field: PROMPT_VERSION_FIELD, column: 'prompt_version', kind: 'string' },
+  { field: REVISION_FIELD, column: 'revision', kind: 'int' },
+  { field: HUMAN_CORRECTED_FIELD, column: 'human_corrected', kind: 'bool' },
 ];
 
 export const REQUIRED_COLUMNS = ['aiid_id', ...MANAGED_FIELDS.map((field) => field.column)];
 
-export type FieldValue = string | string[];
+export type FieldValue = string | string[] | number | boolean;
 
 export interface Attribute {
   short_name: string;
@@ -100,7 +114,12 @@ export interface Unmappable {
 
 export interface Violation {
   incident_id: number;
-  promptVersion: string;
+  /** `same-revision`: values changed under the stored revision; `lower-revision`: the export's revision is below the stored one */
+  kind: 'same-revision' | 'lower-revision';
+  /** The revision stored in the database */
+  storedRevision: number;
+  /** The revision in the export */
+  revision: number;
   changes: Change[];
 }
 
@@ -118,6 +137,10 @@ export interface Plan {
   /** Field values a real run would write: every field of a new classification, changed ones of an updated one */
   fieldUpdates: number;
   promptVersions: Record<string, number>;
+  /** Export rows per revision */
+  revisions: Record<string, number>;
+  /** Export rows a person corrected on the Arcola platform */
+  humanCorrected: number;
 }
 
 interface Reporter {
@@ -334,10 +357,14 @@ export const taxonomyPermittedValues = (taxonomy: Document | null): Map<string, 
   }
 
   if (missing.length > 0) {
+    const migrations = [...new Set(missing.map((field) => FIELD_MIGRATIONS[field]))].filter(
+      Boolean
+    );
+
     throw new Error(
-      `The ${NAMESPACE} taxonomy has no ${missing.join(
-        ', '
-      )} field; run migration ${MIGRATION_NAME} before syncing`
+      `The ${NAMESPACE} taxonomy has no ${missing.join(', ')} field; run migration${
+        migrations.length > 1 ? 's' : ''
+      } ${migrations.join(', ')} before syncing`
     );
   }
 
@@ -397,6 +424,32 @@ export const rowToValues = (
           reason: error.message,
         });
       }
+    } else if (kind === 'int') {
+      const value = raw.trim();
+
+      if (!/^[0-9]+$/.test(value) || Number(value) < 1) {
+        unmappable.push({
+          incident_id: row.incident_id,
+          field,
+          value: raw,
+          reason: 'not a positive whole number',
+        });
+      } else {
+        values[field] = Number(value);
+      }
+    } else if (kind === 'bool') {
+      const value = raw.trim();
+
+      if (value !== 'true' && value !== 'false') {
+        unmappable.push({
+          incident_id: row.incident_id,
+          field,
+          value: raw,
+          reason: 'not true or false',
+        });
+      } else {
+        values[field] = value === 'true';
+      }
     } else {
       const value = raw.trim();
 
@@ -441,7 +494,26 @@ export const storedValue = (
     return value === null || value === undefined || value === '' ? [] : [String(value)];
   }
 
-  return value === null || value === undefined || value === '' ? undefined : String(value);
+  if (value === null || value === undefined || value === '') {
+    return undefined;
+  }
+
+  if (kind === 'int') {
+    // Anything that is not a whole number reads as itself, so it differs from every export value
+    return typeof value === 'number' || /^[0-9]+$/.test(String(value))
+      ? Number(value)
+      : String(value);
+  }
+
+  if (kind === 'bool') {
+    if (typeof value === 'boolean') {
+      return value;
+    }
+
+    return value === 'true' ? true : value === 'false' ? false : String(value);
+  }
+
+  return String(value);
 };
 
 export const sameValue = (
@@ -508,6 +580,8 @@ export const buildPlan = ({
     violations: [],
     fieldUpdates: 0,
     promptVersions: {},
+    revisions: {},
+    humanCorrected: 0,
   };
 
   const byIncident = new Map<number, Document[]>();
@@ -528,6 +602,14 @@ export const buildPlan = ({
     const promptVersion = (row.values.prompt_version || '').trim() || '(empty)';
 
     plan.promptVersions[promptVersion] = (plan.promptVersions[promptVersion] || 0) + 1;
+
+    const revisionLabel = (row.values.revision || '').trim() || '(empty)';
+
+    plan.revisions[revisionLabel] = (plan.revisions[revisionLabel] || 0) + 1;
+
+    if ((row.values.human_corrected || '').trim() === 'true') {
+      plan.humanCorrected++;
+    }
 
     if (!incidentIds.has(row.incident_id)) {
       plan.unknownIncidents.push(row.incident_id);
@@ -575,15 +657,37 @@ export const buildPlan = ({
       continue;
     }
 
-    const promptVersionChanged = changes.some((change) => change.field === PROMPT_VERSION_FIELD);
+    const stored = storedValue(classification, REVISION_FIELD, 'int');
 
-    if (!promptVersionChanged) {
-      plan.violations.push({
-        incident_id: row.incident_id,
-        promptVersion: values[PROMPT_VERSION_FIELD] as string,
-        changes,
-      });
-      continue;
+    const storedRevision = typeof stored === 'number' ? stored : undefined;
+
+    const revision = values[REVISION_FIELD] as number;
+
+    // A classification stored before the sync existed has no revision and is brought up to date
+    // (so is one whose stored revision is not a whole number). Otherwise the export has to carry
+    // a higher revision than the one stored for anything to change.
+    if (storedRevision !== undefined) {
+      if (storedRevision === revision) {
+        plan.violations.push({
+          incident_id: row.incident_id,
+          kind: 'same-revision',
+          storedRevision,
+          revision,
+          changes,
+        });
+        continue;
+      }
+
+      if (revision < storedRevision) {
+        plan.violations.push({
+          incident_id: row.incident_id,
+          kind: 'lower-revision',
+          storedRevision,
+          revision,
+          changes,
+        });
+        continue;
+      }
     }
 
     plan.updates.push({
@@ -610,6 +714,17 @@ const describeChanges = (changes: Change[]): string =>
       (change) => `${change.field}: ${describeValue(change.from)} -> ${describeValue(change.to)}`
     )
     .join('; ');
+
+const describeViolation = (violation: Violation): string =>
+  violation.kind === 'same-revision'
+    ? `incident ${violation.incident_id} changed under the same revision ${
+        violation.revision
+      }: ${describeChanges(violation.changes)}`
+    : `incident ${violation.incident_id} has revision ${
+        violation.revision
+      } in the export, below the stored revision ${violation.storedRevision}: ${describeChanges(
+        violation.changes
+      )}`;
 
 const sample = <T>(items: T[], count: number): T[] => items.slice(0, count);
 
@@ -642,10 +757,16 @@ export default class MitClassificationsSync {
   describePlan(plan: Plan): void {
     const { reporter } = this;
 
+    const histogram = (counts: Record<string, number>) =>
+      Object.entries(counts)
+        .sort(([a], [b]) => a.localeCompare(b, 'en', { numeric: true }))
+        .map(([value, count]) => `${value}=${count}`)
+        .join(', ');
+
     reporter.log(
-      `Arcola export: ${plan.rows} rows; prompt versions ${Object.entries(plan.promptVersions)
-        .map(([version, count]) => `${version}=${count}`)
-        .join(', ')}`
+      `Arcola export: ${plan.rows} rows; prompt versions ${histogram(
+        plan.promptVersions
+      )}; revisions ${histogram(plan.revisions)}; ${plan.humanCorrected} human-corrected`
     );
 
     if (plan.unknownIncidents.length > 0) {
@@ -689,11 +810,7 @@ export default class MitClassificationsSync {
     }
 
     for (const violation of sample(plan.violations, 50)) {
-      reporter.error(
-        `  incident ${violation.incident_id} changed under the same prompt version ${
-          violation.promptVersion
-        }: ${describeChanges(violation.changes)}`
-      );
+      reporter.error(`  ${describeViolation(violation)}`);
     }
 
     for (const unmappable of sample(plan.unmappable, 50)) {
@@ -739,14 +856,22 @@ export default class MitClassificationsSync {
     }
 
     if (plan.violations.length > 0) {
+      const sameRevision = plan.violations.filter(
+        (violation) => violation.kind === 'same-revision'
+      ).length;
+
+      const lowerRevision = plan.violations.length - sameRevision;
+
       throw new Error(
-        `MIT sync aborted before writing: ${
-          plan.violations.length
-        } classifications changed without a new prompt version, for example incident ${
-          plan.violations[0].incident_id
-        } (${describeChanges(
-          plan.violations[0].changes
-        )}). A classification may only change when its prompt version changes.`
+        `MIT sync aborted before writing: ${[
+          sameRevision > 0 && `${sameRevision} classifications changed without a new revision`,
+          lowerRevision > 0 &&
+            `${lowerRevision} classifications have a lower revision than the one stored`,
+        ]
+          .filter(Boolean)
+          .join(' and ')}, for example ${describeViolation(
+          plan.violations[0]
+        )}. A classification may only change when the export carries a higher revision for it.`
       );
     }
 

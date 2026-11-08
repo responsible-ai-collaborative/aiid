@@ -4989,7 +4989,7 @@ const items: DBTaxa[] = [
       
            Classifications using this taxonomy were generated automatically through the work of [Simon Mylius](https://simonmylius.com/incident-classification/introduction). This taxonomy description is provisional and adapted from "[The AI Risk Repository: A Comprehensive Meta-Review, Database, and Taxonomy of Risks From Artificial Intelligence](https://arxiv.org/pdf/2408.12622)."
 
-           Since November 2026 these classifications are refreshed automatically from the [Arcola AI](https://platform.arcolaai.com/) platform's classifier. The Prompt Version field records which generation of the classifier produced an incident's classification, and Additional Subdomains lists the further subdomains the classifier found to apply.
+           Since November 2026 these classifications are refreshed automatically from the [Arcola AI](https://platform.arcolaai.com/) platform's classifier. Additional Subdomains lists the further subdomains the classifier found to apply, Prompt Version records which version of the classifier prompt produced the classification, Revision counts the classifications of the incident (1 for the first, one higher for each re-classification), and Human Corrected says whether a person set any of its values by hand.
         `),
         dummy_fields: [],
         field_list: [
@@ -5262,9 +5262,41 @@ const items: DBTaxa[] = [
                 short_description:
                     'The version of the automated classifier prompt that produced this classification.',
                 long_description:
-                    "The version of the classifier prompt that produced the incident's MIT classification, for example `aiid.v2`. The classifications are refreshed automatically from the Arcola AI platform, and a stored classification is only replaced when the platform has re-classified the incident under a new prompt version, so this field records which generation of the classifier the other fields come from.",
+                    "The version of the classifier prompt that produced the incident's MIT classification, for example `aiid.v2`. An incident can be re-classified under the same prompt version, for example by a different model or after a person corrected a value; the Revision field counts every re-classification.",
                 display_type: 'string',
                 mongo_type: 'string',
+                default: '',
+                weight: 1,
+                instant_facet: false,
+                required: false,
+                public: true,
+                permitted_values: [],
+            },
+            {
+                short_name: 'Revision',
+                long_name: 'Revision',
+                short_description:
+                    'The revision of the automated classification: 1 for the first classification of the incident, one higher for each later one.',
+                long_description:
+                    "The revision number the Arcola AI platform gives the incident's MIT classification: 1 for the first time the incident was classified, and one higher each time it is re-classified, whether under a new prompt version, by a different model or because a person corrected a value. The classifications are refreshed automatically, and a stored classification only changes when the platform publishes a higher revision for the incident.",
+                display_type: 'int',
+                mongo_type: 'int',
+                default: '',
+                weight: 1,
+                instant_facet: false,
+                required: false,
+                public: true,
+                hide_search: true,
+                permitted_values: [],
+            },
+            {
+                short_name: 'Human Corrected',
+                long_name: 'Human Corrected',
+                short_description: 'Whether a person corrected a value of the automated classification.',
+                long_description:
+                    "Whether a person set any of the values of the incident's MIT classification by hand on the Arcola AI platform, rather than leaving every value to the automated classifier. A correction is published as a new Revision of the classification.",
+                display_type: 'bool',
+                mongo_type: 'bool',
                 default: '',
                 weight: 1,
                 instant_facet: false,

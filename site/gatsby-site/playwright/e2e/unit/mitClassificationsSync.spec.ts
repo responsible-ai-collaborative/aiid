@@ -10,6 +10,8 @@ import MitClassificationsSync, {
   parseAdditionalSubdomains,
   parseExport,
   parseMaxFieldUpdates,
+  sameValue,
+  storedValue,
 } from '../../../src/scripts/mitClassificationsSync';
 import {
   ADDITIONAL_SUBDOMAINS_FIELD,
@@ -19,6 +21,13 @@ import {
   additionalSubdomainsField,
   promptVersionField,
 } from '../../../migrations/2026.11.03T12.00.00.add-mit-arcola-fields';
+import {
+  HUMAN_CORRECTED_FIELD,
+  REVISION_FIELD,
+  addRevisionFields,
+  humanCorrectedField,
+  revisionField,
+} from '../../../migrations/2026.11.08T12.00.00.add-mit-revision-fields';
 import seeds from '../../seeds/aiidprod/taxa';
 
 const subdomains = [
@@ -57,6 +66,8 @@ const taxonomy = {
     },
     additionalSubdomainsField(subdomains),
     promptVersionField,
+    revisionField,
+    humanCorrectedField,
   ],
 };
 
@@ -71,6 +82,9 @@ const columns = [
   'additional_subdomains',
   'prompt_version',
   'classified_at',
+  // Appended to the export in version 1.1.0 of the API
+  'revision',
+  'human_corrected',
 ];
 
 const quote = (value: string) => `"${value.replace(/"/g, '""')}"`;
@@ -96,6 +110,8 @@ const row = (overrides: Record<string, string> = {}): Record<string, string> => 
   ]),
   prompt_version: 'aiid.v2',
   classified_at: '2026-07-18 15:59:10.018+00',
+  revision: '2',
+  human_corrected: 'false',
   ...overrides,
 });
 
@@ -108,6 +124,8 @@ const mappedValues = {
   Intent: 'Unintentional',
   'Additional Subdomains': ['7.3. Lack of capability or robustness', '6.5. Governance failure'],
   'Prompt Version': 'aiid.v2',
+  Revision: 2,
+  'Human Corrected': false,
 };
 
 const attributesOf = (values: Record<string, unknown>) =>
@@ -228,6 +246,13 @@ test('MIT sync - parseExport rejects an export without the columns it needs', ()
   expect(() => parseExport(csvFrom([row()], header))).toThrow(
     /missing the column\(s\) prompt_version/
   );
+
+  // An export from before version 1.1.0 of the API has neither revision column
+  const before = columns.filter((column) => !['revision', 'human_corrected'].includes(column));
+
+  expect(() => parseExport(csvFrom([row()], before))).toThrow(
+    /missing the column\(s\) revision, human_corrected/
+  );
 });
 
 test('MIT sync - parseExport rejects more than one row per incident', () => {
@@ -326,9 +351,9 @@ test('MIT sync - leaves a classification alone when the export carries the same 
   sinon.assert.notCalled(mocks.classificationsCollection.bulkWrite);
 });
 
-test('MIT sync - updates a classification whose prompt version changed, keeping attributes it does not manage', async () => {
+test('MIT sync - updates a classification whose revision went up, keeping attributes it does not manage', async () => {
   const mocks = createMocks({
-    csv: csvFrom([row({ causal_entity: 'Human', prompt_version: 'aiid.v2.1' })]),
+    csv: csvFrom([row({ causal_entity: 'Human', prompt_version: 'aiid.v2.1', revision: '3' })]),
     classifications: [stored(1, { ...mappedValues, Reviewer: 'someone' })],
   });
 
@@ -338,8 +363,9 @@ test('MIT sync - updates a classification whose prompt version changed, keeping 
   expect(plan.updates[0].changes).toEqual([
     { field: 'Entity', from: 'AI', to: 'Human' },
     { field: 'Prompt Version', from: 'aiid.v2', to: 'aiid.v2.1' },
+    { field: 'Revision', from: 2, to: 3 },
   ]);
-  expect(plan.fieldUpdates).toBe(2);
+  expect(plan.fieldUpdates).toBe(3);
 
   const [operations] = mocks.classificationsCollection.bulkWrite.firstCall.args;
 
@@ -354,19 +380,79 @@ test('MIT sync - updates a classification whose prompt version changed, keeping 
               Reviewer: 'someone',
               Entity: 'Human',
               'Prompt Version': 'aiid.v2.1',
+              Revision: 3,
             }),
           },
         },
       },
     },
   ]);
+
+  // Revisions and booleans are stored as JSON numbers and booleans, like the CSET int and bool fields
+  const attributes = operations[0].updateOne.update.$set.attributes;
+
+  expect(attributes.find((a: any) => a.short_name === 'Revision').value_json).toBe('3');
+  expect(attributes.find((a: any) => a.short_name === 'Human Corrected').value_json).toBe('false');
 });
 
-test('MIT sync - a classification without a prompt version is brought up to date on the first run', async () => {
+test('MIT sync - updates a classification re-classified under the same prompt version when the revision went up', async () => {
+  // The export has hundreds of these: aiid.v2 at revision 2 and again at revision 3
+  const mocks = createMocks({
+    csv: csvFrom([row({ causal_intent: 'Intentional', revision: '3' })]),
+    classifications: [stored(1, mappedValues)],
+  });
+
+  const plan = await createSync(mocks).run();
+
+  expect(plan.updates[0].changes).toEqual([
+    { field: 'Intent', from: 'Unintentional', to: 'Intentional' },
+    { field: 'Revision', from: 2, to: 3 },
+  ]);
+
+  sinon.assert.calledOnce(mocks.classificationsCollection.bulkWrite);
+});
+
+test('MIT sync - records a new revision even when every other value is the same', async () => {
+  const mocks = createMocks({
+    csv: csvFrom([row({ revision: '3' })]),
+    classifications: [stored(1, mappedValues)],
+  });
+
+  const plan = await createSync(mocks).run();
+
+  expect(plan.updates[0].changes).toEqual([{ field: 'Revision', from: 2, to: 3 }]);
+  expect(plan.fieldUpdates).toBe(1);
+
+  sinon.assert.calledOnce(mocks.classificationsCollection.bulkWrite);
+});
+
+test('MIT sync - records a human correction that comes with a new revision', async () => {
+  const mocks = createMocks({
+    csv: csvFrom([
+      row({ causal_timing: 'Pre-deployment', human_corrected: 'true', revision: '3' }),
+    ]),
+    classifications: [stored(1, mappedValues)],
+  });
+
+  const plan = await createSync(mocks).run();
+
+  expect(plan.humanCorrected).toBe(1);
+  expect(plan.updates[0].changes).toEqual([
+    { field: 'Timing', from: 'Post-deployment', to: 'Pre-deployment' },
+    { field: 'Revision', from: 2, to: 3 },
+    { field: 'Human Corrected', from: false, to: true },
+  ]);
+
+  sinon.assert.calledOnce(mocks.classificationsCollection.bulkWrite);
+});
+
+test('MIT sync - a classification without a revision is brought up to date on the first run', async () => {
   const legacy = { ...mappedValues } as Record<string, unknown>;
 
   delete legacy['Prompt Version'];
   delete legacy['Additional Subdomains'];
+  delete legacy.Revision;
+  delete legacy['Human Corrected'];
   legacy.Intent = 'Intentional';
 
   const mocks = createMocks({ classifications: [stored(1, legacy)] });
@@ -381,41 +467,157 @@ test('MIT sync - a classification without a prompt version is brought up to date
       to: ['7.3. Lack of capability or robustness', '6.5. Governance failure'],
     },
     { field: 'Prompt Version', from: undefined, to: 'aiid.v2' },
+    { field: 'Revision', from: undefined, to: 2 },
+    { field: 'Human Corrected', from: undefined, to: false },
   ]);
 
   sinon.assert.calledOnce(mocks.classificationsCollection.bulkWrite);
 });
 
-test('MIT sync - refuses to change a classification under the same prompt version, writing nothing', async () => {
+test('MIT sync - a classification written before the revision fields existed gains them', async () => {
+  const withoutRevision = { ...mappedValues } as Record<string, unknown>;
+
+  delete withoutRevision.Revision;
+  delete withoutRevision['Human Corrected'];
+
+  const mocks = createMocks({ classifications: [stored(1, withoutRevision)] });
+
+  const plan = await createSync(mocks).run();
+
+  expect(plan.violations).toEqual([]);
+  expect(plan.updates[0].changes).toEqual([
+    { field: 'Revision', from: undefined, to: 2 },
+    { field: 'Human Corrected', from: undefined, to: false },
+  ]);
+});
+
+test('MIT sync - refuses to change a classification under the same revision, writing nothing', async () => {
   const mocks = createMocks({
     csv: csvFrom([row({ aiid_id: '2' }), row({ causal_entity: 'Human' })]),
     classifications: [stored(1, mappedValues)],
   });
 
   await expect(createSync(mocks).run()).rejects.toThrow(
-    /1 classifications changed without a new prompt version, for example incident 1 \(Entity: "AI" -> "Human"\)/
+    /1 classifications changed without a new revision, for example incident 1 changed under the same revision 2: Entity: "AI" -> "Human"\. A classification may only change when the export carries a higher revision for it\./
   );
 
   // Incident 2 would have been created, but nothing is written when any rule fails
   sinon.assert.notCalled(mocks.classificationsCollection.bulkWrite);
   sinon.assert.calledWithMatch(
     mocks.reporter.error,
-    /incident 1 changed under the same prompt version aiid.v2/
+    /incident 1 changed under the same revision 2: Entity/
   );
+});
+
+test('MIT sync - a new prompt version or a human correction under the same revision is refused too', async () => {
+  const cases: Record<string, string>[] = [
+    { prompt_version: 'aiid.v3' },
+    { human_corrected: 'true' },
+  ];
+
+  for (const overrides of cases) {
+    const mocks = createMocks({
+      csv: csvFrom([row(overrides)]),
+      classifications: [stored(1, mappedValues)],
+    });
+
+    await expect(createSync(mocks).run()).rejects.toThrow(
+      /1 classifications changed without a new revision/
+    );
+
+    sinon.assert.notCalled(mocks.classificationsCollection.bulkWrite);
+  }
+});
+
+test('MIT sync - refuses a revision lower than the one stored, writing nothing', async () => {
+  const mocks = createMocks({
+    csv: csvFrom([row({ aiid_id: '2' }), row({ causal_entity: 'Human', revision: '1' })]),
+    classifications: [stored(1, { ...mappedValues, Revision: 3 })],
+  });
+
+  await expect(createSync(mocks).run()).rejects.toThrow(
+    /1 classifications have a lower revision than the one stored, for example incident 1 has revision 1 in the export, below the stored revision 3: Entity: "AI" -> "Human"; Revision: 3 -> 1/
+  );
+
+  sinon.assert.notCalled(mocks.classificationsCollection.bulkWrite);
+
+  // Even when nothing but the revision differs
+  const sameValues = createMocks({
+    csv: csvFrom([row({ revision: '1' })]),
+    classifications: [stored(1, mappedValues)],
+  });
+
+  await expect(createSync(sameValues).run()).rejects.toThrow(/lower revision than the one stored/);
+});
+
+test('MIT sync - reports both kinds of revision violation in one error', async () => {
+  const mocks = createMocks({
+    csv: csvFrom([row({ causal_entity: 'Human' }), row({ aiid_id: '2', revision: '1' })]),
+    classifications: [stored(1, mappedValues), stored(2, mappedValues, '650000000000000000000002')],
+  });
+
+  await expect(createSync(mocks).run()).rejects.toThrow(
+    /1 classifications changed without a new revision and 1 classifications have a lower revision than the one stored/
+  );
+});
+
+test('MIT sync - refuses a row whose revision or human_corrected is not valid', async () => {
+  const cases: [Record<string, string>, RegExp][] = [
+    [{ revision: '0' }, /Revision "0" \(not a positive whole number\)/],
+    [{ revision: '1.5' }, /Revision "1.5" \(not a positive whole number\)/],
+    [{ revision: '' }, /Revision "" \(not a positive whole number\)/],
+    [{ human_corrected: 'yes' }, /Human Corrected "yes" \(not true or false\)/],
+    [{ human_corrected: '' }, /Human Corrected "" \(not true or false\)/],
+  ];
+
+  for (const [overrides, message] of cases) {
+    const mocks = createMocks({ csv: csvFrom([row(overrides)]) });
+
+    await expect(createSync(mocks).run()).rejects.toThrow(message);
+
+    sinon.assert.notCalled(mocks.classificationsCollection.bulkWrite);
+  }
+});
+
+test('MIT sync - stored revisions and booleans compare by value', () => {
+  const classification = {
+    attributes: [
+      { short_name: 'Revision', value_json: '3' },
+      { short_name: 'Human Corrected', value_json: 'true' },
+      { short_name: 'Old Revision', value_json: '"2"' },
+      { short_name: 'Old Flag', value_json: '"false"' },
+      { short_name: 'Empty', value_json: 'null' },
+    ],
+  };
+
+  expect(storedValue(classification, 'Revision', 'int')).toBe(3);
+  expect(storedValue(classification, 'Human Corrected', 'bool')).toBe(true);
+  expect(storedValue(classification, 'Old Revision', 'int')).toBe(2);
+  expect(storedValue(classification, 'Old Flag', 'bool')).toBe(false);
+  expect(storedValue(classification, 'Empty', 'int')).toBeUndefined();
+  expect(storedValue(classification, 'Missing', 'bool')).toBeUndefined();
+
+  expect(sameValue('int', 3, 3)).toBe(true);
+  expect(sameValue('int', 3, 4)).toBe(false);
+  expect(sameValue('bool', false, false)).toBe(true);
+  expect(sameValue('bool', undefined, false)).toBe(false);
 });
 
 test('MIT sync - refuses a run that would write more field values than the limit', async () => {
   const mocks = createMocks({ csv: csvFrom([row(), row({ aiid_id: '2' })]) });
 
-  await expect(createSync(mocks, { maxFieldUpdates: 13 }).run()).rejects.toThrow(
-    /would write 14 field values, above the MIT_SYNC_MAX_FIELD_UPDATES limit of 13/
+  // Two new classifications of nine fields each
+  expect(MANAGED_FIELDS).toHaveLength(9);
+
+  await expect(createSync(mocks, { maxFieldUpdates: 17 }).run()).rejects.toThrow(
+    /would write 18 field values, above the MIT_SYNC_MAX_FIELD_UPDATES limit of 17/
   );
 
   sinon.assert.notCalled(mocks.classificationsCollection.bulkWrite);
 
   const relaxed = createMocks({ csv: csvFrom([row(), row({ aiid_id: '2' })]) });
 
-  await createSync(relaxed, { maxFieldUpdates: 14 }).run();
+  await createSync(relaxed, { maxFieldUpdates: 18 }).run();
 
   sinon.assert.calledOnce(relaxed.classificationsCollection.bulkWrite);
 });
@@ -460,7 +662,15 @@ test('MIT sync - refuses to run against a taxonomy without the sync fields', asy
   });
 
   await expect(createSync(mocks).run()).rejects.toThrow(
-    /has no Additional Subdomains, Prompt Version field; run migration 2026.11.03T12.00.00.add-mit-arcola-fields.ts/
+    'has no Additional Subdomains, Prompt Version, Revision, Human Corrected field; run migrations 2026.11.03T12.00.00.add-mit-arcola-fields.ts, 2026.11.08T12.00.00.add-mit-revision-fields.ts before syncing'
+  );
+
+  const withoutRevision = createMocks({
+    taxonomyDoc: { ...taxonomy, field_list: taxonomy.field_list.slice(0, 7) },
+  });
+
+  await expect(createSync(withoutRevision).run()).rejects.toThrow(
+    'has no Revision, Human Corrected field; run migration 2026.11.08T12.00.00.add-mit-revision-fields.ts before syncing'
   );
 });
 
@@ -478,7 +688,7 @@ test('MIT sync - refuses to run while an incident holds two MIT classifications'
 
 test('MIT sync - a dry run applies every rule and writes nothing', async () => {
   const mocks = createMocks({
-    csv: csvFrom([row(), row({ aiid_id: '2', prompt_version: 'aiid.v2.1' })]),
+    csv: csvFrom([row(), row({ aiid_id: '2', revision: '3' })]),
     classifications: [stored(2, { ...mappedValues, Entity: 'Human' })],
   });
 
@@ -491,7 +701,7 @@ test('MIT sync - a dry run applies every rule and writes nothing', async () => {
   sinon.assert.calledWithMatch(mocks.reporter.warn, /Dry run/);
   sinon.assert.calledWithMatch(
     mocks.reporter.log,
-    /Dry run complete: 1 classifications would be created and 1 updated \(9 field values\); nothing was written/
+    /Dry run complete: 1 classifications would be created and 1 updated \(11 field values\); nothing was written/
   );
   sinon.assert.calledOnce(mocks.mongoClient.close);
 
@@ -501,13 +711,17 @@ test('MIT sync - a dry run applies every rule and writes nothing', async () => {
   });
 
   await expect(createSync(violating, { dryRun: true }).run()).rejects.toThrow(
-    /without a new prompt version/
+    /without a new revision/
   );
 });
 
-test('MIT sync - buildPlan counts prompt versions and reports the plan it would write', () => {
+test('MIT sync - buildPlan counts prompt versions, revisions and corrections and reports the plan it would write', () => {
   const rows = parseExport(
-    csvFrom([row(), row({ aiid_id: '2', prompt_version: 'aiid.v2.1' }), row({ aiid_id: '3' })])
+    csvFrom([
+      row(),
+      row({ aiid_id: '2', prompt_version: 'aiid.v2.1', revision: '1' }),
+      row({ aiid_id: '3', revision: '10', human_corrected: 'true' }),
+    ])
   );
 
   const permitted = new Map(
@@ -526,9 +740,27 @@ test('MIT sync - buildPlan counts prompt versions and reports the plan it would 
     unchanged: 1,
     unknownIncidents: [3],
     promptVersions: { 'aiid.v2': 2, 'aiid.v2.1': 1 },
+    revisions: { '1': 1, '2': 1, '10': 1 },
+    humanCorrected: 1,
     fieldUpdates: MANAGED_FIELDS.length,
   });
   expect(plan.creates.map((create) => create.incident_id)).toEqual([2]);
+});
+
+test('MIT sync - the plan summary lists revisions in numeric order and the corrected rows', async () => {
+  const mocks = createMocks({
+    csv: csvFrom([
+      row({ revision: '10' }),
+      row({ aiid_id: '2', revision: '2', human_corrected: 'true' }),
+    ]),
+  });
+
+  await createSync(mocks, { dryRun: true }).run();
+
+  sinon.assert.calledWithMatch(
+    mocks.reporter.log,
+    'Arcola export: 2 rows; prompt versions aiid.v2=2; revisions 2=1, 10=1; 1 human-corrected'
+  );
 });
 
 test('MIT sync - fetchArcolaExport sends the API key and rejects anything but a 200', async () => {
@@ -557,7 +789,7 @@ test('MIT sync - fetchArcolaExport sends the API key and rejects anything but a 
   );
 });
 
-test('MIT sync - the migration turns the taxonomy from before the sync into the seed the end-to-end tests use', async () => {
+test('MIT sync - the migrations turn the taxonomy from before the sync into the seed the end-to-end tests use', async () => {
   const seed = (seeds as any[]).find((entry) => entry.namespace === 'MIT');
 
   // The seed with the migration's additions undone
@@ -565,7 +797,13 @@ test('MIT sync - the migration turns the taxonomy from before the sync into the 
 
   before._id = new ObjectId('67c0c38a1d748d386e090c07');
   before.field_list = before.field_list.filter(
-    (field: any) => ![ADDITIONAL_SUBDOMAINS_FIELD, PROMPT_VERSION_FIELD].includes(field.short_name)
+    (field: any) =>
+      ![
+        ADDITIONAL_SUBDOMAINS_FIELD,
+        PROMPT_VERSION_FIELD,
+        REVISION_FIELD,
+        HUMAN_CORRECTED_FIELD,
+      ].includes(field.short_name)
   );
 
   const subdomain = before.field_list.find((field: any) => field.short_name === 'Risk Subdomain');
@@ -588,9 +826,19 @@ test('MIT sync - the migration turns the taxonomy from before the sync into the 
   expect(before.field_list).toHaveLength(5);
   expect(before.description).not.toContain('Arcola');
 
+  // A one-document taxa collection, so the second migration reads what the first one wrote
+  let document = before;
+
   const taxa = {
-    findOne: sinon.stub().resolves(before),
-    updateOne: sinon.stub().resolves({ modifiedCount: 1 }),
+    findOne: sinon
+      .stub()
+      .callsFake(async () => ({ ...JSON.parse(JSON.stringify(document)), _id: document._id })),
+    updateOne: sinon.stub().callsFake(async (filter: any, update: any) => {
+      expect(filter).toEqual({ _id: before._id });
+      document = { ...document, ...update.$set };
+
+      return { modifiedCount: 1 };
+    }),
   };
 
   expect(await addArcolaFields(taxa as any)).toEqual({
@@ -598,9 +846,12 @@ test('MIT sync - the migration turns the taxonomy from before the sync into the 
     subdomainAdded: true,
   });
 
-  const [filter, update] = taxa.updateOne.firstCall.args;
+  expect(await addRevisionFields(taxa as any)).toEqual({
+    added: [REVISION_FIELD, HUMAN_CORRECTED_FIELD],
+  });
 
-  expect(filter).toEqual({ _id: before._id });
-  expect(update.$set.field_list).toEqual(seed.field_list);
-  expect(update.$set.description).toEqual(seed.description);
+  sinon.assert.calledTwice(taxa.updateOne);
+
+  expect(document.field_list).toEqual(seed.field_list);
+  expect(document.description).toEqual(seed.description);
 });
