@@ -196,24 +196,38 @@ const SubmissionList = ({ data }) => {
     }, [id, preFilteredRows]);
 
     return (
-      <Select
-        style={{ width: '100%' }}
-        className="mt-2"
-        value={filterValue || 'All'}
-        onChange={(e) => {
-          if (e.target.value === STATUS.rejected.name) {
-            setShowRejected(true);
-          }
-          setFilter(e.target.value || undefined);
-        }}
-      >
-        <option value="">All</option>
-        {options.map((option, i) => (
-          <option key={i} value={option.name}>
-            {option.text}
-          </option>
-        ))}
-      </Select>
+      <>
+        <Select
+          style={{ width: '100%' }}
+          className="mt-2"
+          value={filterValue || 'All'}
+          onChange={(e) => {
+            if (e.target.value === STATUS.rejected.name) {
+              setShowRejected(true);
+            }
+            setFilter(e.target.value || undefined);
+          }}
+        >
+          <option value="">All</option>
+          {options.map((option, i) => (
+            <option key={i} value={option.name}>
+              {option.text}
+            </option>
+          ))}
+        </Select>
+        {/* The rejected toggle lives with the status filter it qualifies. SEE: #4180 */}
+        <div className="flex items-center gap-2 mt-2">
+          <Checkbox
+            id="show-rejected-submissions"
+            data-testid="show-rejected-submissions"
+            checked={showRejected}
+            onChange={(e) => setShowRejected(e.target.checked)}
+          />
+          <Label htmlFor="show-rejected-submissions" className="normal-case font-normal">
+            <Trans ns="submitted">Show rejected submissions</Trans>
+          </Label>
+        </div>
+      </>
     );
   }
 
@@ -669,7 +683,17 @@ const SubmissionList = ({ data }) => {
     }
 
     return columns;
-  }, [loading, user, claiming, reviewing, dateFilter, selectedRows, allSelected, performingAction]);
+  }, [
+    loading,
+    user,
+    claiming,
+    reviewing,
+    dateFilter,
+    showRejected,
+    selectedRows,
+    allSelected,
+    performingAction,
+  ]);
 
   const restoreOne = async (submissionId) => {
     if (!confirm(t('Are you sure you want to restore this submission to the review queue?'))) {
@@ -848,17 +872,6 @@ const SubmissionList = ({ data }) => {
           </div>
         </div>
       )}
-      <div className="flex items-center gap-2 mb-3">
-        <Checkbox
-          id="show-rejected-submissions"
-          data-testid="show-rejected-submissions"
-          checked={showRejected}
-          onChange={(e) => setShowRejected(e.target.checked)}
-        />
-        <Label htmlFor="show-rejected-submissions">
-          <Trans ns="submitted">Show rejected submissions</Trans>
-        </Label>
-      </div>
       <Table
         table={table}
         data-cy="submissions"

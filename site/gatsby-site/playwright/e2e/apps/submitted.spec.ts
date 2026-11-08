@@ -409,7 +409,10 @@ test.describe('Submitted reports', () => {
 
         await expect(page.locator('[data-cy="row"]')).toHaveCount(submissions.length - 1);
 
-        await page.getByTestId('show-rejected-submissions').check({ force: true });
+        // The toggle sits in the Status column header. SEE: #4180
+        await expect(page.locator('[data-cy="header-status"]')).toContainText('Show rejected submissions');
+
+        await page.locator('[data-cy="header-status"]').getByTestId('show-rejected-submissions').check({ force: true });
 
         await expect(page.locator('[data-cy="row"]')).toHaveCount(submissions.length);
 
@@ -420,7 +423,7 @@ test.describe('Submitted reports', () => {
         // The queue remembers the choice.
         await page.reload();
 
-        await expect(page.getByTestId('show-rejected-submissions')).toBeChecked();
+        await expect(page.locator('[data-cy="header-status"]').getByTestId('show-rejected-submissions')).toBeChecked();
 
         // Restore from the row.
         const restoreResponse = page.waitForResponse((response) => response.request()?.postDataJSON()?.operationName == 'RestoreSubmission');
@@ -1175,7 +1178,7 @@ test.describe('Submitted reports', () => {
 
         await expect(page.locator('[data-cy="row"]')).toHaveCount(0);
 
-        await page.getByTestId('show-rejected-submissions').check({ force: true });
+        await page.locator('[data-cy="header-status"]').getByTestId('show-rejected-submissions').check({ force: true });
 
         await expect(page.locator('[data-cy="row"]')).toHaveCount(submissions.length);
     });
