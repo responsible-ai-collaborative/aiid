@@ -16,7 +16,9 @@
   "Wordcounts": "Contadores de Palabras",
   "wordcountsDescription": "Estas son las palabras arraigadas y derivadas más comunes en todos los informes de incidentes. Hay más detalles disponibles en su <2>página de resumen de datos</2>.",
   "Random Reports": "Informes Aleatorios",
-  "raicDescription": "La base de datos de incidentes de IA es un proyecto de Responsible AI Collaborative, una organización autorizada para promover la base de datos de incidentes de IA. La gobernanza de la Colaborativa se estructura en torno a la participación en su programación de impacto. Para obtener más detalles, lo invitamos a leer el <2>informe de fundación</2> y obtener más información sobre nuestro <4>tablero y colaboradores</4>.",
+  "raicDescription": "La base de datos de incidentes de IA es un proyecto de <2>Responsible AI Collaborative</2>, una organización constituida para promover la base de datos de incidentes de IA. La gobernanza de la Colaborativa se estructura en torno a la participación en su programación de impacto. Para obtener más detalles, lo invitamos a leer sobre nuestro <5>consejo y colaboradores</5>.",
+  "raicContributors": "La AIID depende de muchísimas organizaciones y personas afines a su misión. Celebramos a los <1>colaboradores</1> del <4>conjunto de datos</4> en la <7>tabla de clasificación</7>. También puede ver quién está <10>contribuyendo al código en GitHub</10>.",
+  "raicFinancials": "Vea el <2>Formulario 990</2> de la Colaborativa de IA Responsable y la <6>solicitud de exención de impuestos.</6> Solicitamos amablemente su apoyo financiero mediante <10>una donación.</10> Todos los fondos donados a la base de datos de incidentes mejoran la cobertura de incidentes, la calidad de la presentación y la profundidad del análisis. Dedicamos muy poco de nuestro tiempo y nada de nuestro presupuesto a la recaudación de fondos.",
   "The Responsible AI Collaborative": "El Colaborativo de IA Responsable",
   "Database Founding Sponsor": "Patrocinador fundador de la base de datos",
   "In-Kind Sponsors": "Patrocinadores",
@@ -27,6 +29,5 @@
   "The AI Incident Briefing": "El Informe de Incidentes de IA",
   "Random Incidents": "Incidentes Aleatorios",
   "Sign Up": "Registrarse",
-  "With an account, you can follow specific <2>incidents</2> and <5>entities</5> of interest to you.": "Con una cuenta, puede seguir <2>incidentes</2> y <5>entidades</5> específicas de su interés.",
-  "View the Responsible AI Collaborative's <2>Form 990</2> and <6>tax-exempt application.</6> We kindly request your financial support with a <7>donation.</7>": "Vea el <2>Formulario 990</2> de la Colaborativa de IA Responsable y la <6>solicitud de exención de impuestos.</6> Solicitamos amablemente su apoyo financiero mediante <7>una donación.</7>"
+  "With an account, you can follow specific <2>incidents</2> and <5>entities</5> of interest to you.": "Con una cuenta, puede seguir <2>incidentes</2> y <5>entidades</5> específicas de su interés."
 }
