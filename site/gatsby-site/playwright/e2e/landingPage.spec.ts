@@ -27,6 +27,37 @@ test.describe('The Landing page', () => {
     await expect(page.locator('[data-cy="sponsor-modal"] h5', { hasText: 'Waking Up Foundation' })).toBeVisible();
   });
 
+  test('Links the Collaborative, its contributors and its financials', async ({ page }) => {
+    await page.goto('/');
+
+    await expect(page.locator('a[href="https://raicollab.org/"]')).toHaveText('Responsible AI Collaborative');
+
+    // The founding report is no longer featured. SEE: #4180
+    await expect(page.locator('img[src="/images/reportcover.png"]')).toHaveCount(0);
+
+    const contributors = page.locator('[data-cy="raic-contributors"]');
+
+    await expect(contributors.locator('a[href="/summaries/contributorCalendar/"]')).toHaveText('contributors');
+    await expect(contributors.locator('a[href="/summaries/mediaLandscape/"]')).toHaveText('dataset');
+    await expect(contributors.locator('a[href="/summaries/leaderboard/"]')).toHaveText('leaderboard');
+    await expect(contributors.locator('a[href="https://github.com/responsible-ai-collaborative/aiid/graphs/contributors"]')).toHaveText('contributing to the codebase on GitHub');
+
+    const financials = page.locator('[data-cy="raic-financials"]');
+
+    await expect(financials.locator('a[href="https://projects.propublica.org/nonprofits/organizations/881046583"]')).toHaveText('Form 990');
+    await expect(financials.locator('a[href="https://donate.stripe.com/28E7sDbq18xN82kbJ8bQY00"]')).toHaveText('donation.');
+    await expect(financials).toContainText('none of our budget on fundraising');
+  });
+
+  test('Translates the Collaborative paragraphs with their links in place', async ({ page }) => {
+    await page.goto('/es/');
+
+    const financials = page.locator('[data-cy="raic-financials"]');
+
+    await expect(financials.locator('a[href="https://donate.stripe.com/28E7sDbq18xN82kbJ8bQY00"]')).toHaveText('una donación.');
+    await expect(page.locator('[data-cy="raic-contributors"] a[href="/es/summaries/leaderboard/"]')).toHaveText('tabla de clasificación');
+  });
+
   test.skip('Should redirect to the account page when logged in',
     async ({ page, skipOnEmptyEnvironment, login }) => {
       await login();

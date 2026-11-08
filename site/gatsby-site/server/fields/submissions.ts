@@ -14,6 +14,34 @@ import { ObjectIdScalar } from '../scalars';
 import { isRole } from '../rules';
 import { createNotificationsOnNewIncident, linkReportsToIncidents } from './common';
 import { SubmissionType } from '../types/submission';
+import { GraphQLString } from 'graphql';
+
+/**
+ * Submission `status` values. A missing status means `pendingReview`.
+ * Rejected submissions stay in the collection, marked with the rationale,
+ * date and editor, so the review queue can hide them by default and an
+ * editor can restore one rejected by mistake. SEE: #4085
+ */
+export const SUBMISSION_STATUS = {
+    pendingReview: 'pendingReview',
+    inReview: 'inReview',
+    rejected: 'rejected',
+} as const;
+
+const RejectSubmissionInput = new GraphQLInputObjectType({
+    name: 'RejectSubmissionInput',
+    fields: {
+        submission_id: { type: new GraphQLNonNull(ObjectIdScalar) },
+        reason: { type: GraphQLString },
+    },
+});
+
+const RestoreSubmissionInput = new GraphQLInputObjectType({
+    name: 'RestoreSubmissionInput',
+    fields: {
+        submission_id: { type: new GraphQLNonNull(ObjectIdScalar) },
+    },
+});
 
 
 export const queryFields: GraphQLFieldConfigMap<any, Context> = {
@@ -48,6 +76,68 @@ function getUnixTime(dateString: string) {
 export const mutationFields: GraphQLFieldConfigMap<any, Context> = {
 
     ...generateMutationFields({ collectionName: 'submissions', Type: SubmissionType, generateFields: ['deleteOne', 'updateOne', 'insertOne'] }),
+
+    /**
+     * Marks a submission as rejected instead of deleting it. SEE: #4085
+     */
+    rejectSubmission: {
+        type: new GraphQLNonNull(SubmissionType),
+        args: {
+            input: { type: new GraphQLNonNull(RejectSubmissionInput) },
+        },
+        resolve: async (_source, { input }, context) => {
+
+            const submissions = context.client.db('aiidprod').collection<DBSubmission>("submissions");
+
+            const target = await submissions.findOne({ _id: input.submission_id });
+
+            if (!target) {
+                throw new Error('Submission not found');
+            }
+
+            await submissions.updateOne({ _id: input.submission_id }, {
+                $set: {
+                    status: SUBMISSION_STATUS.rejected,
+                    rejection_reason: (input.reason ?? '').trim(),
+                    rejected_at: new Date(),
+                    rejected_by: context.user?.id ?? null,
+                }
+            });
+
+            return submissions.findOne({ _id: input.submission_id });
+        }
+    },
+
+    /**
+     * Returns a rejected submission to the review queue. SEE: #4085
+     */
+    restoreSubmission: {
+        type: new GraphQLNonNull(SubmissionType),
+        args: {
+            input: { type: new GraphQLNonNull(RestoreSubmissionInput) },
+        },
+        resolve: async (_source, { input }, context) => {
+
+            const submissions = context.client.db('aiidprod').collection<DBSubmission>("submissions");
+
+            const target = await submissions.findOne({ _id: input.submission_id });
+
+            if (!target) {
+                throw new Error('Submission not found');
+            }
+
+            if (target.status !== SUBMISSION_STATUS.rejected) {
+                throw new Error('Submission is not rejected');
+            }
+
+            await submissions.updateOne({ _id: input.submission_id }, {
+                $set: { status: SUBMISSION_STATUS.pendingReview },
+                $unset: { rejection_reason: '', rejected_at: '', rejected_by: '' },
+            });
+
+            return submissions.findOne({ _id: input.submission_id });
+        }
+    },
 
     promoteSubmissionToReport: {
         type: new GraphQLNonNull(PromoteSubmissionToReportPayload),
@@ -291,7 +381,10 @@ export const permissions = {
         // Anyone may put a report into the review queue...
         insertOneSubmission: allow,
 
-        // ...but only an editor may publish one out of it.
+        // ...but only an editor may publish one out of it, reject it, or
+        // restore a rejected one. SEE: #4085
         promoteSubmissionToReport: isRole('incident_editor'),
+        rejectSubmission: isRole('incident_editor'),
+        restoreSubmission: isRole('incident_editor'),
     }
 }

@@ -8,6 +8,30 @@ export const DELETE_SUBMISSION = gql(`
   }
 `);
 
+export const REJECT_SUBMISSION = gql(`
+  mutation RejectSubmission($input: RejectSubmissionInput!) {
+    rejectSubmission(input: $input) {
+      _id
+      status
+      rejection_reason
+      rejected_at
+      rejected_by
+    }
+  }
+`);
+
+export const RESTORE_SUBMISSION = gql(`
+  mutation RestoreSubmission($input: RestoreSubmissionInput!) {
+    restoreSubmission(input: $input) {
+      _id
+      status
+      rejection_reason
+      rejected_at
+      rejected_by
+    }
+  }
+`);
+
 export const FIND_SUBMISSIONS = gql(`
   query FindSubmissions {
     submissions {
@@ -56,6 +80,9 @@ export const FIND_SUBMISSIONS = gql(`
         name
       }
       status
+      rejection_reason
+      rejected_at
+      rejected_by
       user {
         userId
       }
@@ -116,6 +143,9 @@ export const FIND_SUBMISSION = gql(`
       editor_similar_incidents
       editor_dissimilar_incidents
       status
+      rejection_reason
+      rejected_at
+      rejected_by
       quiet
       implicated_systems {
         entity_id
@@ -172,6 +202,10 @@ export const UPDATE_SUBMISSION = gql(`
       }
       editor_similar_incidents
       editor_dissimilar_incidents
+      status
+      rejection_reason
+      rejected_at
+      rejected_by
       implicated_systems {
         entity_id
         name

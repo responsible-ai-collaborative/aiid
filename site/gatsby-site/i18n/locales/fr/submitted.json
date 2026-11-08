@@ -32,7 +32,6 @@
     "Promoting to issue": "Promouvoir en tant que problème",
     "Adding as incident": "Ajout en tant qu'incident",
     "Adding as issue": "Ajout en tant que problème",
-    "Are you sure you want to reject this submission? This will permanently delete the submission.": "Voulez-vous vraiment rejeter cette soumission? Cela supprimera définitivement la soumission.",
     "Changes saved": "Modifications enregistrées",
     "There was an error claiming this submission. Please try again.": "Une erreur s'est produite lors de l'l'attribution de cette soumission. Veuillez réessayer.",
     "Claim": "S'attribuer",
@@ -41,7 +40,6 @@
     "No reports found": "Aucun rapport trouvé",
     "Are you sure you want to claim these submissions? This will assign you as the editor on all the selected submissions.": "Êtes-vous sûr de vouloir vous attribuer ces soumissions ? Cela vous assignera comme éditeur pour toutes les soumissions sélectionnées.",
     "Are you sure you want to unclaim these submissions? This will unassign you as the editor on all the selected submissions.": "Êtes-vous sûr de vouloir vous désattribuer ces soumissions ? Cela vous retirera en tant qu'éditeur sur toutes les soumissions sélectionnées.",
-    "Are you sure you want to reject these submissions? This will permanently delete the submissions.": "Êtes-vous sûr de vouloir rejeter ces soumissions ? Cela supprimera définitivement les soumissions.",
     "There was an error performing this action. Please try again.": "Une erreur s'est produite lors de cette action. Veuillez réessayer.",
     "Select All": "Tout sélectionner",
     "Unclaim": "Désattribuer",
@@ -61,6 +59,19 @@
     "Successfully unclaimed {{count}} submissions": "{{count}} soumissions désattribuée avec succès",
     "Successfully rejected {{count}} submissions": "{{count}} soumissions rejetées avec succès",
     "Review": "Examiner",
-    "Unclaiming...": "Désattribution en cours......"
-
+    "Unclaiming...": "Désattribution en cours......",
+    "Rejected": "Rejeté",
+    "Restore": "Restaurer",
+    "Restore to queue": "Restaurer dans la file",
+    "Restoring...": "Restauration...",
+    "Rejecting...": "Rejet...",
+    "Reason for rejecting (optional)": "Motif du rejet (facultatif)",
+    "Show rejected submissions": "Afficher les soumissions rejetées",
+    "Submission restored to the review queue": "Soumission restaurée dans la file de révision",
+    "Are you sure you want to reject this submission? It will be hidden from the review queue and can be restored later.": "Êtes-vous sûr de vouloir rejeter cette soumission ? Elle sera masquée de la file de révision et pourra être restaurée plus tard.",
+    "Are you sure you want to reject these submissions? They will be hidden from the review queue and can be restored later.": "Êtes-vous sûr de vouloir rejeter ces soumissions ? Elles seront masquées de la file de révision et pourront être restaurées plus tard.",
+    "Are you sure you want to restore this submission to the review queue?": "Êtes-vous sûr de vouloir restaurer cette soumission dans la file de révision ?",
+    "Are you sure you want to restore these submissions to the review queue?": "Êtes-vous sûr de vouloir restaurer ces soumissions dans la file de révision ?",
+    "Successfully restored {{count}} submission": "{{count}} soumission restaurée avec succès",
+    "Successfully restored {{count}} submissions": "{{count}} soumissions restaurées avec succès"
 }

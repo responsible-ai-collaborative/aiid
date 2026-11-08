@@ -1,4 +1,4 @@
-import { Badge, Button, Card, Checkbox, Dropdown, Label, Select } from 'flowbite-react';
+import { Badge, Button, Card, Checkbox, Dropdown, Label, Select, Textarea } from 'flowbite-react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import SubmissionForm from './SubmissionForm';
@@ -6,13 +6,18 @@ import { useFormikContext } from 'formik';
 import RelatedIncidents from 'components/RelatedIncidents';
 import useToastContext, { SEVERITY } from 'hooks/useToast';
 import { useMutation } from '@apollo/client';
-import { DELETE_SUBMISSION, PROMOTE_SUBMISSION } from '../../graphql/submissions';
+import {
+  PROMOTE_SUBMISSION,
+  REJECT_SUBMISSION,
+  RESTORE_SUBMISSION,
+} from '../../graphql/submissions';
 import { incidentSchema, issueSchema, reportSchema } from './schemas';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBarsProgress,
   faCheck,
   faPlusSquare,
+  faRotateLeft,
   faUser,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
@@ -63,17 +68,15 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
 
   const [subscribeToNewReportsMutation] = useMutation(UPSERT_SUBSCRIPTION);
 
-  const [deleteSubmission] = useMutation(DELETE_SUBMISSION, {
-    update: (cache, { data }) => {
-      // Apollo expects a `deleted` boolean field otherwise manual cache manipulation is needed
-      cache.evict({
-        id: cache.identify({
-          __typename: data.deleteOneSubmission.__typename,
-          id: data.deleteOneSubmission._id,
-        }),
-      });
-    },
-  });
+  // Rejecting keeps the submission, marked with the rationale; it can be
+  // restored from here or from the queue. SEE: #4085
+  const [rejectSubmission] = useMutation(REJECT_SUBMISSION);
+
+  const [restoreSubmission] = useMutation(RESTORE_SUBMISSION);
+
+  const [restoring, setRestoring] = useState(false);
+
+  const isRejected = values.status === STATUS.rejected.name;
 
   const promoteSubmission = ({ submission, variables }) =>
     promoteSubmissionToReport({
@@ -287,8 +290,47 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
   }, [values]);
 
   const rejectReport = async () => {
-    await deleteSubmission({ variables: { _id: values._id } });
+    await rejectSubmission({
+      variables: {
+        input: { submission_id: values._id, reason: values.rejection_reason || '' },
+      },
+    });
   };
+
+  const restore = async () => {
+    if (!confirm(t('Are you sure you want to restore this submission to the review queue?'))) {
+      return;
+    }
+    setRestoring(true);
+    try {
+      const { data } = await restoreSubmission({
+        variables: { input: { submission_id: values._id } },
+      });
+
+      for (const field of ['status', 'rejection_reason', 'rejected_at', 'rejected_by']) {
+        setFieldValue(field, data.restoreSubmission[field]);
+      }
+
+      addToast({
+        message: t('Submission restored to the review queue'),
+        severity: SEVERITY.success,
+      });
+    } catch (e) {
+      addToast({
+        message: t('There was an error performing this action. Please try again.'),
+        severity: SEVERITY.danger,
+        error: e,
+      });
+    } finally {
+      setRestoring(false);
+    }
+  };
+
+  const rejectedBy = userData?.users?.find((u) => u.userId === values.rejected_by);
+
+  const rejectedByName = rejectedBy
+    ? `${rejectedBy.first_name || ''} ${rejectedBy.last_name || ''}`.trim()
+    : values.rejected_by;
 
   const promote = () => {
     if (promoType === 'incident') {
@@ -302,7 +344,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
     if (
       !confirm(
         t(
-          'Are you sure you want to reject this submission? This will permanently delete the submission.'
+          'Are you sure you want to reject this submission? It will be hidden from the review queue and can be restored later.'
         )
       )
     ) {
@@ -401,27 +443,49 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
                 Status
               </Trans>
             </Label>
-            <Select
-              className="w-full"
-              value={values.status || 'inReview'}
-              onChange={(e) => {
-                setSaving(true);
-                saveChanges({ ...values, status: e.target.value });
-                setFieldValue('status', e.target.value);
-              }}
-              data-cy="status-select"
-            >
-              <option value={STATUS.inReview.name} data-cy="status-in-review">
-                <Trans i18n={i18n} ns="submitted">
-                  {STATUS.inReview.text}
-                </Trans>
-              </option>
-              <option value={STATUS.pendingReview.name} data-cy="status-pending-review">
-                <Trans i18n={i18n} ns="submitted">
-                  {STATUS.pendingReview.text}
-                </Trans>
-              </option>
-            </Select>
+            {isRejected ? (
+              <div
+                className="w-full rounded-lg border border-red-200 bg-red-50 p-3 text-sm"
+                data-cy="rejection-notice"
+              >
+                <div>
+                  <Trans i18n={i18n} ns="submitted">
+                    Rejected
+                  </Trans>
+                  {values.rejected_at && (
+                    <> · {new Date(values.rejected_at).toISOString().slice(0, 10)}</>
+                  )}
+                  {rejectedByName && <> · {rejectedByName}</>}
+                </div>
+                {values.rejection_reason && (
+                  <div className="mt-1 whitespace-pre-wrap" data-cy="rejection-reason">
+                    {values.rejection_reason}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Select
+                className="w-full"
+                value={values.status || 'inReview'}
+                onChange={(e) => {
+                  setSaving(true);
+                  saveChanges({ ...values, status: e.target.value });
+                  setFieldValue('status', e.target.value);
+                }}
+                data-cy="status-select"
+              >
+                <option value={STATUS.inReview.name} data-cy="status-in-review">
+                  <Trans i18n={i18n} ns="submitted">
+                    {STATUS.inReview.text}
+                  </Trans>
+                </option>
+                <option value={STATUS.pendingReview.name} data-cy="status-pending-review">
+                  <Trans i18n={i18n} ns="submitted">
+                    {STATUS.pendingReview.text}
+                  </Trans>
+                </option>
+              </Select>
+            )}
           </div>
         </div>
         <Card className="w-full mt-4">
@@ -429,7 +493,7 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
             <div className="flex flex-col gap-2 w-full mb-2">
               <Button
                 onClick={promoteToReport}
-                disabled={!canEditSubmissions || deleting || promoting || saving}
+                disabled={!canEditSubmissions || deleting || promoting || saving || isRejected}
                 data-cy="promote-to-report-button"
               >
                 <FontAwesomeIcon className="mr-2" icon={faCheck} />
@@ -469,7 +533,12 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
             <Button
               onClick={promote}
               disabled={
-                !canEditSubmissions || deleting || promoting || saving || promoType === 'none'
+                !canEditSubmissions ||
+                deleting ||
+                promoting ||
+                saving ||
+                promoType === 'none' ||
+                isRejected
               }
               data-cy="promote-button"
             >
@@ -479,17 +548,40 @@ const SubmissionEditForm = ({ handleSubmit, saving, setSaving, userLoading, user
               </Trans>
             </Button>
 
-            <Button
-              color={'failure'}
-              onClick={reject}
-              disabled={!canEditSubmissions || deleting || promoting || saving}
-              data-cy="reject-button"
-            >
-              <FontAwesomeIcon className="mr-2" icon={faXmark} />
-              <Trans i18n={i18n} ns="submitted">
-                {deleting ? 'Deleting...' : 'Reject'}
-              </Trans>
-            </Button>
+            {isRejected ? (
+              <Button
+                color={'gray'}
+                onClick={restore}
+                disabled={!canEditSubmissions || restoring || saving}
+                data-cy="restore-button"
+              >
+                <FontAwesomeIcon className="mr-2" icon={faRotateLeft} />
+                <Trans i18n={i18n} ns="submitted">
+                  {restoring ? 'Restoring...' : 'Restore to queue'}
+                </Trans>
+              </Button>
+            ) : (
+              <>
+                <Textarea
+                  rows={2}
+                  placeholder={t('Reason for rejecting (optional)')}
+                  value={values.rejection_reason || ''}
+                  onChange={(e) => setFieldValue('rejection_reason', e.target.value)}
+                  data-cy="rejection-reason-input"
+                />
+                <Button
+                  color={'failure'}
+                  onClick={reject}
+                  disabled={!canEditSubmissions || deleting || promoting || saving}
+                  data-cy="reject-button"
+                >
+                  <FontAwesomeIcon className="mr-2" icon={faXmark} />
+                  <Trans i18n={i18n} ns="submitted">
+                    {deleting ? 'Rejecting...' : 'Reject'}
+                  </Trans>
+                </Button>
+              </>
+            )}
           </div>
           {promoting !== '' && (
             <Trans i18n={i18n} ns="submitted">

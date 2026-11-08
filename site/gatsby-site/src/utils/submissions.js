@@ -13,6 +13,13 @@ module.exports.STATUS = {
     text: 'Pending Review',
     color: 'bg-orange-100 text-orange-800 dark:bg-orange-200 dark:text-orange-900',
   },
+  // Kept in the collection with the rationale, date and editor; hidden from
+  // the queue by default and restorable. SEE: #4085
+  rejected: {
+    name: 'rejected',
+    text: 'Rejected',
+    color: 'bg-red-100 text-red-800 dark:bg-red-200 dark:text-red-900',
+  },
 };
 
 module.exports.getRowCompletionStatus = (properties) => {

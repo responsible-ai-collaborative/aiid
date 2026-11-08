@@ -98,6 +98,15 @@ Administering data requires administrative access to the database. This access i
 
 [site/realm/data_sources/mongodb-atlas/aiidprod/submissions/schema.json](site/realm/data_sources/mongodb-atlas/aiidprod/submissions/schema.json)
 
+### Status
+
+* `status`: String. One of `pendingReview` (the default when the field is missing), `inReview` (an editor opened it from the queue), or `rejected`.
+* `rejection_reason`: String. The editor's rationale, possibly empty. Set by the `rejectSubmission` mutation.
+* `rejected_at`: Date. When the submission was rejected.
+* `rejected_by`: String. `userId` of the editor who rejected it.
+
+Rejecting a submission (`rejectSubmission`) marks it rather than deleting it, so the record and its history stay in this collection; the review queue hides rejected submissions by default and shows them on request. `restoreSubmission` returns a rejected submission to `pendingReview` and clears the three rejection fields. Promoting a submission still removes it from the collection. `deleteOneSubmission` remains available to editors through the API but is no longer used by the review queue.
+
 ## Duplicates Collection Details
 
 Systems

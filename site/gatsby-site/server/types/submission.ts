@@ -2,7 +2,7 @@ import { GraphQLBoolean, GraphQLFloat, GraphQLInt, GraphQLList, GraphQLNonNull, 
 import { getListRelationshipConfig, getRelationshipConfig } from "../utils";
 import { NlpSimilarIncidentType } from "./types";
 import { EntityType } from "../types/entity";
-import { GraphQLLong } from "graphql-scalars";
+import { GraphQLDateTime, GraphQLLong } from "graphql-scalars";
 import { ObjectIdScalar } from "../scalars";
 import { UserType } from "./user";
 
@@ -51,6 +51,10 @@ export const SubmissionType = new GraphQLObjectType({
         url: { type: new GraphQLNonNull(GraphQLString) },
         user: getRelationshipConfig(UserType, GraphQLString, 'user', 'userId', 'users', 'customData'),
         status: { type: GraphQLString },
+        // Set by `rejectSubmission`, cleared by `restoreSubmission` (SEE: #4085).
+        rejection_reason: { type: GraphQLString },
+        rejected_at: { type: GraphQLDateTime },
+        rejected_by: { type: GraphQLString },
         snippet_max_characters: { type: GraphQLInt },
         quiet: { type: GraphQLBoolean },
         implicated_systems: getListRelationshipConfig(EntityType, GraphQLString, 'implicated_systems', 'entity_id', 'entities', 'aiidprod'),

@@ -7,7 +7,7 @@
   "Latest Incident Reports": "最新のインシデントレポート",
   "About the Database": "データベースについて",
   "Latest Blog Post": "最新のブログ投稿",
-    "aboutLine1": "AIインシデントデータベースは人工知能システムによって現実世界が被った損失、もしくは被る可能性のあった損失の記録です。航空機事故やコンピューターセキュリティの分野にも同種のデータベースがありますが、それらと同様に、AIインシデントデータベースも過去から学び、不適切な結果にならないように考慮したり、発生したインシデントに対処できるようになることを目的としています。",
+  "aboutLine1": "AIインシデントデータベースは人工知能システムによって現実世界が被った損失、もしくは被る可能性のあった損失の記録です。航空機事故やコンピューターセキュリティの分野にも同種のデータベースがありますが、それらと同様に、AIインシデントデータベースも過去から学び、不適切な結果にならないように考慮したり、発生したインシデントに対処できるようになることを目的としています。",
   "aboutLine2": "インシデントレポートを<1>投稿</1>しましょう。投稿はすぐに登録され、世界中の人から<4>閲覧可能</4>になります。情報を集約し、失敗から学ぶことなしに、人工知能は人類や社会にとって有益なものになることはできません。<6>（もっと読む）</6>",
   "The Database in Print": "データベースの紹介",
   "readAboutTheDatabase": "<2>Time Magazine</2>、<5>Vice News</5>、<8>TechTalks</8>、<11>Wired</11>、<14>Bulletin of the Atomic Scientists</14>やその他の記事でこのデータベースが紹介されています。",
@@ -16,7 +16,9 @@
   "Wordcounts": "文字数",
   "wordcountsDescription": "すべてのインシデントレポートの中で最もよく使われている語幹です。詳細については<2>データサマリーページ</2>を参照してください。",
   "Random Reports": "ランダムレポート",
-  "raicDescription": "インシデントデータベースはAIインシデントデータベースの推進を目的として設立されたResponsible AI Collaborativeによるプロジェクトです。Collaborativeのガバナンスはこの重要なプログラムの参加者を中心に構成されています。詳細については<2>設立レポート</2>を読んでください。さらに詳しい情報は<4>委員会と貢献者</4>にあります",
+  "raicDescription": "AIインシデントデータベースは、AIインシデントデータベースの推進を目的として設立された<2>Responsible AI Collaborative</2>によるプロジェクトです。Collaborativeのガバナンスはこの重要なプログラムの参加者を中心に構成されています。詳細については<5>委員会と貢献者</5>をご覧ください。",
+  "raicContributors": "AIIDは、使命を共有する数多くの組織と人々に支えられています。<4>データセット</4>への<1>貢献者</1>を<7>リーダーボード</7>で称えています。<10>GitHubでコードベースに貢献している人</10>も見ることができます。",
+  "raicFinancials": "Responsible AI Collaborativeの<2>Form 990</2>と<6>免税申請</6>をご覧ください。<10>ご寄付</10>による財政的なご支援をお願い申し上げます。インシデントデータベースへのご寄付はすべて、インシデントの網羅性、表示の質、洞察の深さの向上に充てられます。私たちは募金活動に時間をほとんど費やしておらず、予算は一切使っていません。",
   "The Responsible AI Collaborative": "Responsible AI Collaborative",
   "Database Founding Sponsor": "データベースの協賛スポンサー",
   "In-Kind Sponsors": "協力スポンサー",
@@ -27,6 +29,5 @@
   "The AI Incident Briefing": "AIインシデントブリーフィング",
   "Random Incidents": "ランダムインシデント",
   "Sign Up": "サインアップ",
-  "View the Responsible AI Collaborative's <2>Form 990</2> and <6>tax-exempt application.</6> We kindly request your financial support with a <7>donation.</7>": "Responsible AI Collaborativeの<2>Form 990</2>と<6>免税申請をご覧</6>。<7>皆様のご寄付による財政的なご支援をお願い申し上げます。</7>",
   "With an account, you can follow specific <2>incidents</2> and <5>entities</5> of interest to you.": "アカウントを作成すると、特定の<2>インシデント</2>や<5>エンティティ</5>をフォローできます。"
 }

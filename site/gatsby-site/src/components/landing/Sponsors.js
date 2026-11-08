@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Link from 'components/ui/Link';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { StyledImage, StyledImageCover, StyledImageModal } from '../../elements/StyledImage';
+import { StyledImage, StyledImageModal } from '../../elements/StyledImage';
 import { Button, Card, Modal } from 'flowbite-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuoteLeft } from '@fortawesome/free-solid-svg-icons';
@@ -138,29 +138,37 @@ export default function Sponsors() {
               />
               <p className="italic">
                 <Trans i18nKey="raicDescription" ns="landing">
-                  The AI Incident Database is a project of the Responsible AI Collaborative, an
-                  organization chartered to advance the AI Incident Database. The governance of the
-                  Collaborative is architected around the participation in its impact programming.
-                  For more details, we invite you to read the{' '}
-                  <a href="https://asset.cloudinary.com/pai/cf01cce1af65f5fbb3d71fa092d001db">
-                    founding report
-                  </a>{' '}
-                  and learn more on our{' '}
+                  The AI Incident Database is a project of the{' '}
+                  <a href="https://raicollab.org/" target="_blank" rel="noreferrer">
+                    Responsible AI Collaborative
+                  </a>
+                  , an organization chartered to advance the AI Incident Database. The governance of
+                  the Collaborative is architected around the participation in its impact
+                  programming. For more details, we invite you to read about our{' '}
                   <Link to="/about?lang=en#boardofdirectors">board and contributors</Link>.
                 </Trans>
               </p>
-              <a
-                href="https://asset.cloudinary.com/pai/cf01cce1af65f5fbb3d71fa092d001db"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <StyledImageCover src="/images/reportcover.png" className="border-1" />
-              </a>
-              <p className="italic">
-                <Trans ns="landing">
+              <p className="italic" data-cy="raic-contributors">
+                <Trans i18nKey="raicContributors" ns="landing">
+                  The AIID depends on a great many mission-aligned organizations and people. We
+                  celebrate <Link to="/summaries/contributorCalendar/">contributors</Link> to the{' '}
+                  <Link to="/summaries/mediaLandscape/">dataset</Link> on the{' '}
+                  <Link to="/summaries/leaderboard/">leaderboard</Link>. You can also see who is{' '}
+                  <a
+                    href="https://github.com/responsible-ai-collaborative/aiid/graphs/contributors"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    contributing to the codebase on GitHub
+                  </a>
+                  .
+                </Trans>
+              </p>
+              <p className="italic" data-cy="raic-financials">
+                <Trans i18nKey="raicFinancials" ns="landing">
                   View the Responsible AI Collaborative&apos;s{' '}
                   <a
-                    href="https://res.cloudinary.com/pai/image/upload/v1744386442/2024_Tax_Return_Documents_RESPONSIBLE_AI_COLLABORATIVE_INC_wpw5hb.pdf"
+                    href="https://projects.propublica.org/nonprofits/organizations/881046583"
                     target="_blank"
                     rel="noreferrer"
                   >
@@ -181,7 +189,10 @@ export default function Sponsors() {
                     rel="noreferrer"
                   >
                     donation.
-                  </a>
+                  </a>{' '}
+                  All funds donated to the incident database improve incident coverage, quality of
+                  presentation, and depth of insight. We spend very little of our time and none of
+                  our budget on fundraising.
                 </Trans>
               </p>
             </span>
