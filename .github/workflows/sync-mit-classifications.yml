@@ -1,0 +1,75 @@
+name: Sync MIT classifications
+description: Refreshes the MIT taxonomy classifications from the Arcola AI platform's export. The daily backup workflow calls it after a successful backup; it can also be dispatched by hand to rehearse or force a run.
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: The Github environment to load secrets from
+        type: string
+        required: true
+      dry_run:
+        description: "'true' or 'false'. Empty uses the environment's MIT_SYNC_DRY_RUN variable; unset means dry run."
+        type: string
+        required: false
+        default: ''
+      max_field_updates:
+        description: Field values above which the run refuses to write. Empty uses the environment's MIT_SYNC_MAX_FIELD_UPDATES variable (default 500).
+        type: string
+        required: false
+        default: ''
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: The Github environment to load secrets from
+        type: choice
+        options:
+          - staging
+          - production
+        default: staging
+      dry_run:
+        description: Report what would be written without writing it
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+        default: 'true'
+      max_field_updates:
+        description: Field values above which the run refuses to write. Empty uses the environment's MIT_SYNC_MAX_FIELD_UPDATES variable (default 500).
+        type: string
+        required: false
+        default: ''
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  sync:
+    name: Sync MIT classifications
+    environment: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: lts/*
+
+      - name: Install NPM dependencies
+        run: npm ci
+        working-directory: site/gatsby-site
+
+      - name: Sync MIT classifications from Arcola
+        # Every integrity rule applies in a dry run too, so a dry run that fails would also have
+        # failed for real; only the final write is skipped.
+        run: npm run sync-mit-classifications:ci
+        working-directory: site/gatsby-site
+        env:
+          API_MONGODB_CONNECTION_STRING: ${{ secrets.API_MONGODB_CONNECTION_STRING }}
+          ARCOLA_API_KEY: ${{ secrets.ARCOLA_API_KEY }}
+          MIT_SYNC_DRY_RUN: ${{ inputs.dry_run || vars.MIT_SYNC_DRY_RUN }}
+          MIT_SYNC_MAX_FIELD_UPDATES: ${{ inputs.max_field_updates || vars.MIT_SYNC_MAX_FIELD_UPDATES }}
