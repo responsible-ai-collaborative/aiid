@@ -12,6 +12,7 @@ import { Context } from '../../server/interfaces';
 import { apiUsagePlugin } from '../../server/apiUsage';
 import { isApiAccessDenialCode } from '../../server/apiAccess';
 import { hasApiTokenHeader } from '../../server/apiTokens';
+import { validateOrigin } from '../../server/requestOrigin';
 
 const sentryPlugin: ApolloServerPlugin<Context> = {
     async requestDidStart(requestContext) {
@@ -79,11 +80,6 @@ const graphqlHandler = startServerAndCreateLambdaHandler(
     ]
 });
 
-const ALLOWED_ORIGINS = [
-    'https://incidentdatabase.ai',
-    'https://staging-aiid.netlify.app',
-];
-
 const BLOCKED_AGENTS = [
     'python-requests',
     'python-urllib',
@@ -96,25 +92,6 @@ const BLOCKED_AGENTS = [
     'java/',
     'okhttp',
 ];
-
-// Validates Origin/Referer headers to ensure requests come from allowed domains only
-const validateOrigin = (event: HandlerEvent) => {
-    const origin = event.headers.origin || event.headers.referer || '';
-
-    const isAllowedOrigin = origin !== '' && ALLOWED_ORIGINS.some(allowed => origin.startsWith(allowed));
-
-    if (!isAllowedOrigin) {
-        return {
-            statusCode: 403,
-            body: JSON.stringify({
-                error: 'Forbidden - Invalid origin',
-                message: 'API access is restricted to authorized domains'
-            }),
-        };
-    }
-
-    return null;
-};
 
 // Validates User-Agent header to block automated tools and non-browser clients
 const validateUserAgent = (event: HandlerEvent) => {
