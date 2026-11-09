@@ -30,7 +30,7 @@
     "@postlight/parser": "^2.2.3",
     "@prismicio/react": "^3.4.2",
     "@sentry/aws-serverless": "^11.10.0",
-    "@sentry/react": "^11.10.0",
+    "@sentry/react": "^11.11.0",
     "algoliasearch": "^4.27.0",
     "async": "^3.2.6",
     "billboard.js": "^3.18.0",
