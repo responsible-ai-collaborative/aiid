@@ -140,8 +140,8 @@ const overflowBudget = (error: unknown, currentBudget: number): number | null =>
 };
 
 const main = async (): Promise<number> => {
-  const connectionString = process.env.MONGODB_CONNECTION_STRING;
-  if (!connectionString) throw new Error('MONGODB_CONNECTION_STRING is required.');
+  const connectionString = process.env.MONGODB_EMBEDDINGS_CONNECTION_STRING;
+  if (!connectionString) throw new Error('MONGODB_EMBEDDINGS_CONNECTION_STRING is required.');
 
   if (argv.limit !== undefined) assertPositiveInteger(argv.limit, '--limit');
   for (const id of argv['incident-id'] || []) assertPositiveInteger(id, '--incident-id');

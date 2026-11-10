@@ -152,11 +152,14 @@ You can choose to have one user access the entire database or have multiple user
 
 ```
 MONGODB_CONNECTION_STRING
+MONGODB_EMBEDDINGS_CONNECTION_STRING
 MONGODB_MIGRATIONS_CONNECTION_STRING
 MONGODB_REPLICA_SET
 MONGODB_TRANSLATIONS_CONNECTION_STRING
 API_MONGODB_CONNECTION_STRING
 ```
+
+`MONGODB_EMBEDDINGS_CONNECTION_STRING` needs `read` on `aiidprod.incidents` and `aiidprod.reports`, and `readWrite` on `aiidprod.incident_embeddings`. See [Incident Embeddings](../gatsby-site/src/utils/embeddings/README.md#database-access).
 
 
 >You need to add the `0.0.0.0` IP to the MongoDB whitelist because it is currently not possible to obtain the IP of the Netlify server hosting the API functions. Ensure you whitelist the IP of your Netlify server or any other necessary IP addresses.
@@ -276,6 +279,7 @@ GOOGLE_MAPS_API_KEY
 GOOGLE_TRANSLATE_API_KEY
 MAILERSEND_API_KEY
 MONGODB_CONNECTION_STRING
+MONGODB_EMBEDDINGS_CONNECTION_STRING
 MONGODB_MIGRATIONS_CONNECTION_STRING
 MONGODB_REPLICA_SET
 MONGODB_TRANSLATIONS_CONNECTION_STRING
