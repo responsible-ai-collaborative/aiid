@@ -87,7 +87,7 @@ vector is empty or contains non-finite values. Large incidents are sent in bound
 Set these values in `site/gatsby-site/.env`:
 
 ```bash
-MONGODB_CONNECTION_STRING=mongodb://127.0.0.1:4110
+MONGODB_EMBEDDINGS_CONNECTION_STRING=mongodb://127.0.0.1:4110
 EMBEDDING_API_KEY=your-key-here
 ```
 
@@ -117,7 +117,8 @@ Node 22 and passes its typed inputs through environment variables and a Bash arg
 
 The selected environment needs:
 
-- `MONGODB_CONNECTION_STRING` as a secret, for a user with `readWrite` on `aiidprod`.
+- `MONGODB_EMBEDDINGS_CONNECTION_STRING` as a secret, for a user with `readWrite` on `aiidprod`.
+  The `MONGODB_CONNECTION_STRING` user is read-only, so it cannot run this job.
 - `EMBEDDING_API_KEY` as a secret.
 - Network access from the runner to MongoDB. Prefer a self-hosted runner with fixed egress or a
   maintained allowlist of GitHub's published Actions ranges; do not open Atlas to `0.0.0.0/0`.

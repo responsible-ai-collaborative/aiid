@@ -69,7 +69,7 @@ jobs:
         # first and a secret second, so either place works, and a value set as a secret
         # is masked in the log. Unset on both falls back to the code default.
         env:
-          MONGODB_CONNECTION_STRING: ${{ secrets.MONGODB_CONNECTION_STRING }}
+          MONGODB_EMBEDDINGS_CONNECTION_STRING: ${{ secrets.MONGODB_EMBEDDINGS_CONNECTION_STRING }}
           EMBEDDING_API_KEY: ${{ secrets.EMBEDDING_API_KEY }}
           EMBEDDING_API_BASE_URL: ${{ vars.EMBEDDING_API_BASE_URL || secrets.EMBEDDING_API_BASE_URL }}
           EMBEDDING_MODEL: ${{ vars.EMBEDDING_MODEL || secrets.EMBEDDING_MODEL }}
