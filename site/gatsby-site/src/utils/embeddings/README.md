@@ -117,8 +117,9 @@ Node 22 and passes its typed inputs through environment variables and a Bash arg
 
 The selected environment needs:
 
-- `MONGODB_EMBEDDINGS_CONNECTION_STRING` as a secret, for a user with `readWrite` on `aiidprod`.
-  The `MONGODB_CONNECTION_STRING` user is read-only, so it cannot run this job.
+- `MONGODB_EMBEDDINGS_CONNECTION_STRING` as a secret, for a user with the access listed under
+  [Database access](#database-access). The `MONGODB_CONNECTION_STRING` user is read-only, so it
+  cannot run this job.
 - `EMBEDDING_API_KEY` as a secret.
 - Network access from the runner to MongoDB. Prefer a self-hosted runner with fixed egress or a
   maintained allowlist of GitHub's published Actions ranges; do not open Atlas to `0.0.0.0/0`.
@@ -130,6 +131,19 @@ The workflow also runs every night at 08:37 UTC (12:37 AM US Pacific Standard Ti
 against the `production` environment with `--skip-unchanged`, so it only embeds new or changed
 incidents. If the provider's quota runs out, the run stops early and the next night continues where
 it left off. GitHub only runs schedules from the workflow file on the repository's default branch.
+
+### Database access
+
+The job only uses these three collections:
+
+| Collection                     | Role        | Why                                             |
+| ------------------------------ | ----------- | ----------------------------------------------- |
+| `aiidprod.incidents`           | `read`      | Loads titles, descriptions and report lists     |
+| `aiidprod.reports`             | `read`      | Loads report text                               |
+| `aiidprod.incident_embeddings` | `readWrite` | Creates its index, reads and upserts embeddings |
+
+`readWrite` on all of `aiidprod` also works, but it lets the job write to every collection,
+including `incidents` and `reports`.
 
 ## Configuration
 
