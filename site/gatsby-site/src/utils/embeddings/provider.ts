@@ -126,7 +126,16 @@ const validateVectors = (data: unknown, expectedCount: number): number[][] => {
   return ordered;
 };
 
-export const createEmbeddingProvider = (): EmbeddingProvider => {
+export interface ProviderOptions {
+  timeoutMs?: number;
+  maxAttempts?: number;
+}
+
+/**
+ * Builds a provider from the EMBEDDING_* environment variables. Every setting except the API key
+ * has a working default. Caller options take precedence so an interactive request can fail fast.
+ */
+export const createEmbeddingProvider = (options: ProviderOptions = {}): EmbeddingProvider => {
   const baseUrl = (process.env.EMBEDDING_API_BASE_URL || 'https://openrouter.ai/api/v1').replace(
     /\/+$/,
     ''
@@ -136,8 +145,16 @@ export const createEmbeddingProvider = (): EmbeddingProvider => {
 
   if (!apiKey) throw new Error('EMBEDDING_API_KEY is required.');
 
-  const timeoutMs = positiveInteger(process.env.EMBEDDING_TIMEOUT_MS, 120_000);
-  const maxAttempts = positiveInteger(process.env.EMBEDDING_MAX_ATTEMPTS, 6);
+  const timeoutMs = positiveInteger(
+    options.timeoutMs === undefined ? process.env.EMBEDDING_TIMEOUT_MS : String(options.timeoutMs),
+    120_000
+  );
+  const maxAttempts = positiveInteger(
+    options.maxAttempts === undefined
+      ? process.env.EMBEDDING_MAX_ATTEMPTS
+      : String(options.maxAttempts),
+    6
+  );
   const profile = resolveEmbeddingProfile(model);
 
   const embed = async (

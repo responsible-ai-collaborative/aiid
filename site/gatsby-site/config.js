@@ -89,6 +89,12 @@ const config = {
       { title: 'Random Incident', label: 'random', url: '/random/', items: [] },
       { title: 'Blog', label: 'blog', url: '/blog/', items: [] },
       { title: 'AI News Digest', label: 'newsdigest', url: '/apps/newsdigest/', items: [] },
+      {
+        title: 'Semantic Search',
+        label: 'semanticsearch',
+        url: '/apps/semantic-search/',
+        items: [],
+      },
     ],
     frontline: true,
     ignoreIndex: false,
