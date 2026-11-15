@@ -10,6 +10,7 @@ import {
   faDice,
   faDoorOpen,
   faList,
+  faMagnifyingGlassChart,
   faMedal,
   faNewspaper,
   faPlusCircle,
@@ -173,6 +174,13 @@ function getIcon(label, current = false) {
         <FontAwesomeIcon titleId="checklists" icon={faSquareCheck} className={fontAwesomeStyles} />
       ),
       random: <FontAwesomeIcon titleId="random" icon={faDice} className={fontAwesomeStyles} />,
+      semanticsearch: (
+        <FontAwesomeIcon
+          titleId="semanticsearch"
+          icon={faMagnifyingGlassChart}
+          className={fontAwesomeStyles}
+        />
+      ),
       spatial: (
         <svg
           xmlns="http://www.w3.org/2000/svg"

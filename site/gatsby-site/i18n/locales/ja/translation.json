@@ -121,7 +121,7 @@
   "Color by incident classifications from taxonomies": "分類法に基づいてインシデントクラスによって色付け",
   "This Incident in Semantic Space": "意味空間でのこのインシデント",
   "The visualization below shows incidents closer together when a <2>natural language processing system</2> identifies their text as being semantically similar.": "以下の可視化では<2>自然言語処理システム</2>によってテキストの意味が類似していると判断されたインシデント同士が近くに表示されます",
-  "tsneDescription": "上の空間ビューはデータベース内のそれぞれのインシデントがそのインシデントID番号を含む点として表示されます。インシデントはレポートのテキストが似ているもの同士が近くなるように配置されます。例えば、自動運転車に関係するインシデントは密なクラスタを構成します。インシデントの類似度は自然言語処理システムを使用して求められます。詳細については<1>その開始に関するブログ記事</1>を参照してください",
+  "tsneDescription": "上の空間ビューはデータベース内のそれぞれのインシデントがそのインシデントID番号を含む点として表示されます。インシデントはタイトルと説明が似ているもの同士が近くなるように配置されます。例えば、自動運転車に関係するインシデントは密なクラスタを構成します。インシデントの類似度は、各インシデントのタイトルと説明のテキスト埋め込みを比較して求められます。",
   "review": "レビュー",
   "Loading...": "読み込み中...",
   "Incident report {{reportNumber}} updated successfully. <4>View Incident {{incidentId}}</4>.": "インシデントレポート {{reportNumber}}を更新しました。<4>インシデント {{incidentId}}を表示する</4>.",

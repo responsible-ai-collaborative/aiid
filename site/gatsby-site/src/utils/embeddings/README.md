@@ -75,7 +75,7 @@ POST {baseUrl}/embeddings  {model, input}
 ```
 
 The model name selects an optional local request profile. The Nemotron embedding profile adds
-`input_type: passage` for pipeline inputs (and supports `query` for a future query caller).
+`input_type: passage` for pipeline inputs and `input_type: query` for semantic-search input.
 Unrecognized models add no vendor-specific fields, so switching an OpenAI-compatible model normally
 requires only changing `EMBEDDING_MODEL` and, if necessary, `EMBEDDING_API_BASE_URL`.
 
@@ -90,6 +90,10 @@ Set these values in `site/gatsby-site/.env`:
 MONGODB_CONNECTION_STRING=mongodb://127.0.0.1:4110
 EMBEDDING_API_KEY=your-key-here
 ```
+
+To use NVIDIA's OpenAI-compatible endpoint directly, set `EMBEDDING_API_BASE_URL` to
+`https://integrate.api.nvidia.com/v1`, `EMBEDDING_MODEL` to `nvidia/nemotron-3-embed-1b` and
+`EMBEDDING_API_KEY` to the NVIDIA key.
 
 Then run from `site/gatsby-site`:
 
@@ -163,3 +167,32 @@ unchanged documents should be reported as skipped and retain their original `gen
 
 Atlas vector-search index creation and the search/ranking code belong to the retrieval change, not
 this pipeline PR.
+
+## Similar-incident suggestions
+
+The submit form's "most semantically similar incidents" call `POST /api/semanticallyRelated` with
+`{text, num}` (`num` defaults to 3). The function embeds the first 8,000 characters as a query, ranks
+incidents with `rankIncidentVectors` in `vectors.ts` (0.65 × overview + 0.35 × best passage, minimum
+0.15) and returns `{incidents: [{incident_id, similarity}]}`. It only compares against rows written
+by the same `EMBEDDING_MODEL`, makes one attempt with an 8-second timeout, and returns 429 when the
+provider quota is exhausted and 503 for any other failure.
+
+The function reads `EMBEDDING_API_KEY`, `EMBEDDING_API_BASE_URL` and `EMBEDDING_MODEL` from the
+Netlify site environment. Set them to the same values as the nightly embedding run.
+
+## Stored similar incidents
+
+Each incident's `nlp_similar_incidents` (shown on its citation page) is recomputed by
+`npm run refresh-incident-neighbors`, which ranks every incident's overview against the others with
+the same scoring and keeps the top 3. It makes no provider calls and only writes lists that changed.
+Incidents not embedded yet keep their stored list. The Embed Incidents workflow runs it after every
+run without a `limit`; add `-- --dry-run` locally to see the counts without writing. It connects with
+`MONGODB_EMBEDDINGS_CONNECTION_STRING`, the embedding job's user, which also needs `readWrite` on
+`aiidprod.incidents` to save the lists.
+
+## Spatial view
+
+During the site build, `src/utils/updateTsne.js` reads every overview vector, scales each to unit
+length so distance on the map tracks cosine similarity, runs t-SNE and writes `incidents.tsne`. It
+needs no `EMBEDDING_*` settings: it plots whichever vector size most rows have, so a half-finished
+switch to a new model never mixes sizes.

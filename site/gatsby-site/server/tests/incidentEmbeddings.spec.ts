@@ -58,7 +58,7 @@ describe('embedding provider profiles and validation', () => {
     global.fetch = originalFetch;
   });
 
-  it('adds input_type only for the Nemotron profile', async () => {
+  it('uses the Nemotron document input type for indexed content', async () => {
     process.env.EMBEDDING_MODEL = 'nvidia/nemotron-3-embed-1b:free';
     const fetchMock = jest.fn().mockResolvedValue(
       new Response(JSON.stringify({ data: [{ index: 0, embedding: [0.1, 0.2] }] }), {
@@ -78,6 +78,26 @@ describe('embedding provider profiles and validation', () => {
     });
   });
 
+  it('uses the Nemotron query input type for search text', async () => {
+    process.env.EMBEDDING_MODEL = 'nvidia/nemotron-3-embed-1b:free';
+    const fetchMock = jest.fn().mockResolvedValue(
+      new Response(JSON.stringify({ data: [{ index: 0, embedding: [0.1, 0.2] }] }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    );
+    global.fetch = fetchMock;
+
+    await createEmbeddingProvider().embed(['query'], 'query');
+
+    const request = JSON.parse(fetchMock.mock.calls[0][1].body);
+    expect(request).toEqual({
+      model: 'nvidia/nemotron-3-embed-1b:free',
+      input: ['query'],
+      input_type: 'query',
+    });
+  });
+
   it('keeps the generic request portable for an unknown model', async () => {
     process.env.EMBEDDING_MODEL = 'vendor/new-model';
     const fetchMock = jest.fn().mockResolvedValue(
@@ -93,6 +113,28 @@ describe('embedding provider profiles and validation', () => {
     const request = JSON.parse(fetchMock.mock.calls[0][1].body);
     expect(request).toEqual({ model: 'vendor/new-model', input: ['query'] });
     expect(resolveEmbeddingProfile('vendor/new-model').id).toBe('openai-compatible-v1');
+  });
+
+  it('lets the caller set the timeout and attempt limit', async () => {
+    process.env.EMBEDDING_MODEL = 'vendor/new-model';
+    global.fetch = jest
+      .fn()
+      .mockResolvedValueOnce(
+        new Response('try again', { status: 429, headers: { 'Retry-After': '0' } })
+      )
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ data: [{ index: 0, embedding: [0.1, 0.2] }] }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      );
+
+    const provider = createEmbeddingProvider({ timeoutMs: 8000, maxAttempts: 2 });
+    const result = await provider.embed(['query'], 'query');
+
+    expect(provider.timeoutMs).toBe(8000);
+    expect(provider.maxAttempts).toBe(2);
+    expect(result.attempts).toBe(2);
   });
 
   it('rejects duplicate response indices', async () => {
@@ -116,14 +158,12 @@ describe('embedding provider profiles and validation', () => {
 
   it('rejects non-finite vector values', async () => {
     process.env.EMBEDDING_MODEL = 'vendor/new-model';
-    global.fetch = jest
-      .fn()
-      .mockResolvedValue(
-        new Response(JSON.stringify({ data: [{ index: 0, embedding: [0.1, null] }] }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
-      );
+    global.fetch = jest.fn().mockResolvedValue(
+      new Response(JSON.stringify({ data: [{ index: 0, embedding: [0.1, null] }] }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    );
 
     await expect(createEmbeddingProvider().embed(['one'])).rejects.toThrow(
       'empty or contains non-numbers'

@@ -117,9 +117,8 @@ function IncidentHistoryPage() {
           changes: undefined,
           date_modified: new Date(),
           editor_notes: version.editor_notes ? version.editor_notes : '',
-          embedding: version.embedding
-            ? { ...version.embedding, __typename: undefined }
-            : undefined,
+          // Old versions may carry a Longformer vector; restoring must not bring it back.
+          embedding: undefined,
         };
 
         await updateReport({
