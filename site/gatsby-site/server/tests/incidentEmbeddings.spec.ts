@@ -115,9 +115,8 @@ describe('embedding provider profiles and validation', () => {
     expect(resolveEmbeddingProfile('vendor/new-model').id).toBe('openai-compatible-v1');
   });
 
-  it('supports validated caller limits and opt-in retry reporting', async () => {
+  it('lets the caller set the timeout and attempt limit', async () => {
     process.env.EMBEDDING_MODEL = 'vendor/new-model';
-    const onRetry = jest.fn();
     global.fetch = jest
       .fn()
       .mockResolvedValueOnce(
@@ -130,13 +129,12 @@ describe('embedding provider profiles and validation', () => {
         })
       );
 
-    const provider = createEmbeddingProvider({ timeoutMs: 8000, maxAttempts: 2, onRetry });
+    const provider = createEmbeddingProvider({ timeoutMs: 8000, maxAttempts: 2 });
     const result = await provider.embed(['query'], 'query');
 
     expect(provider.timeoutMs).toBe(8000);
     expect(provider.maxAttempts).toBe(2);
     expect(result.attempts).toBe(2);
-    expect(onRetry).toHaveBeenCalledTimes(1);
   });
 
   it('rejects duplicate response indices', async () => {

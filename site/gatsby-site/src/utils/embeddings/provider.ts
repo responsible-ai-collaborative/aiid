@@ -129,13 +129,11 @@ const validateVectors = (data: unknown, expectedCount: number): number[][] => {
 export interface ProviderOptions {
   timeoutMs?: number;
   maxAttempts?: number;
-  onRetry?: (message: string) => void;
 }
 
 /**
  * Builds a provider from the EMBEDDING_* environment variables. Every setting except the API key
- * has a working default. Caller options take precedence so an interactive request can fail fast,
- * while retry reporting stays opt-in for command-line jobs.
+ * has a working default. Caller options take precedence so an interactive request can fail fast.
  */
 export const createEmbeddingProvider = (options: ProviderOptions = {}): EmbeddingProvider => {
   const baseUrl = (process.env.EMBEDDING_API_BASE_URL || 'https://openrouter.ai/api/v1').replace(
@@ -158,7 +156,6 @@ export const createEmbeddingProvider = (options: ProviderOptions = {}): Embeddin
     6
   );
   const profile = resolveEmbeddingProfile(model);
-  const onRetry = options.onRetry || (() => undefined);
 
   const embed = async (
     texts: string[],
@@ -219,7 +216,7 @@ export const createEmbeddingProvider = (options: ProviderOptions = {}): Embeddin
 
         if (attempt < maxAttempts) {
           const waitMs = retryAfter ?? backoffDelay(attempt);
-          onRetry(
+          console.warn(
             `attempt ${attempt}/${maxAttempts} status=${response.status}` +
               `${retryAfter === null ? '' : ` retry_after=${seconds(retryAfter)}`}` +
               ` waiting ${seconds(waitMs)}`
@@ -236,7 +233,9 @@ export const createEmbeddingProvider = (options: ProviderOptions = {}): Embeddin
 
         if (attempt < maxAttempts) {
           const waitMs = backoffDelay(attempt);
-          onRetry(`attempt ${attempt}/${maxAttempts} ${lastMessage} waiting ${seconds(waitMs)}`);
+          console.warn(
+            `attempt ${attempt}/${maxAttempts} ${lastMessage} waiting ${seconds(waitMs)}`
+          );
           await sleep(waitMs);
         }
       } finally {
