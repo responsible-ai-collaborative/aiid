@@ -12,65 +12,116 @@ export interface IncidentVectors {
   passages: Float32Array[];
 }
 
-const normalise = (vector: Float32Array): Float32Array | null => {
-  let magnitude = 0;
-  for (const component of vector) magnitude += component * component;
-  magnitude = Math.sqrt(magnitude);
-  if (!Number.isFinite(magnitude) || magnitude === 0) return null;
-  for (let i = 0; i < vector.length; i++) vector[i] /= magnitude;
-  return vector;
+interface VectorCache {
+  key: string;
+  incidents: IncidentVectors[];
+  loadedAt: number;
+}
+
+let cache: VectorCache | null = null;
+
+export const resetIncidentVectorCache = () => {
+  cache = null;
 };
 
-/** Decodes a stored BSON vector to unit length, or null if it is missing or malformed. */
+/** Converts BSON Float32 vector data to a unit vector, rejecting malformed values. */
 export const normaliseBinaryVector = (value: unknown, dimensions: number): Float32Array | null => {
   if (!(value instanceof Binary)) return null;
+
+  let vector: Float32Array;
+
   try {
-    const vector = value.toFloat32Array();
-    return vector.length === dimensions ? normalise(vector) : null;
+    vector = value.toFloat32Array();
   } catch {
     return null;
   }
+
+  if (vector.length !== dimensions) return null;
+
+  let magnitudeSquared = 0;
+
+  for (const component of vector) {
+    if (!Number.isFinite(component)) return null;
+    magnitudeSquared += component * component;
+  }
+
+  const magnitude = Math.sqrt(magnitudeSquared);
+  if (magnitude === 0) return null;
+
+  for (let index = 0; index < vector.length; index++) vector[index] /= magnitude;
+
+  return vector;
+};
+
+const normaliseQueryVector = (value: number[]): Float32Array | null => {
+  if (value.length === 0 || value.some((component) => !Number.isFinite(component))) return null;
+
+  const vector = Float32Array.from(value);
+  let magnitudeSquared = 0;
+
+  for (const component of vector) magnitudeSquared += component * component;
+
+  const magnitude = Math.sqrt(magnitudeSquared);
+  if (magnitude === 0) return null;
+
+  for (let index = 0; index < vector.length; index++) vector[index] /= magnitude;
+
+  return vector;
 };
 
 const dot = (left: Float32Array, right: Float32Array): number => {
   let score = 0;
-  for (let i = 0; i < left.length; i++) score += left[i] * right[i];
+
+  for (let index = 0; index < left.length; index++) score += left[index] * right[index];
+
   return score;
 };
 
-/** Scores each incident as 0.65 × overview cosine + 0.35 × best passage cosine, best first. */
+/** Ranks the cached overview and passage vectors without allocating per-vector number arrays. */
 export const rankIncidentVectors = (
-  incidents: readonly IncidentVectors[],
-  query: readonly number[],
-  limit: number
+  incidents: IncidentVectors[],
+  query: number[],
+  limit: number,
+  minimumScore = MIN_SCORE
 ): { incident_id: number; score: number }[] => {
-  const normalisedQuery = normalise(Float32Array.from(query));
+  const normalisedQuery = normaliseQueryVector(query);
   if (!normalisedQuery) return [];
 
   const hits: { incident_id: number; score: number }[] = [];
+
   for (const incident of incidents) {
+    if (incident.overview.length !== normalisedQuery.length) continue;
+
     const overviewScore = dot(incident.overview, normalisedQuery);
-    let passageScore = incident.passages.length > 0 ? -Infinity : overviewScore;
+    let passageScore = overviewScore;
+    let foundPassage = false;
+
     for (const passage of incident.passages) {
-      passageScore = Math.max(passageScore, dot(passage, normalisedQuery));
+      if (passage.length !== normalisedQuery.length) continue;
+      const candidate = dot(passage, normalisedQuery);
+      passageScore = foundPassage ? Math.max(passageScore, candidate) : candidate;
+      foundPassage = true;
     }
+
     const score = OVERVIEW_WEIGHT * overviewScore + PASSAGE_WEIGHT * passageScore;
-    if (score >= MIN_SCORE) hits.push({ incident_id: incident.incidentId, score });
+    if (score >= minimumScore) hits.push({ incident_id: incident.incidentId, score });
   }
+
   return hits.sort((left, right) => right.score - left.score).slice(0, limit);
 };
 
-let cache: { key: string; incidents: IncidentVectors[]; loadedAt: number } | null = null;
-
-/** Loads the vectors written by the same model, cached for ten minutes per warm function. */
+/** Streams schema-v2 BSON vectors into a compact warm-function cache. */
 export const loadIncidentVectors = async (
   client: MongoClient,
   model: string,
   profileId: string,
   dimensions: number
 ): Promise<IncidentVectors[]> => {
-  const key = `${model}:${profileId}:${dimensions}`;
-  if (cache?.key === key && Date.now() - cache.loadedAt < CACHE_TTL_MS) return cache.incidents;
+  const key = `${EMBEDDING_SCHEMA_VERSION}:${model}:${profileId}:${dimensions}`;
+
+  if (cache?.key === key && Date.now() - cache.loadedAt < CACHE_TTL_MS) {
+    return cache.incidents;
+  }
 
   const cursor = client
     .db('aiidprod')
@@ -82,23 +133,33 @@ export const loadIncidentVectors = async (
         model,
         dims: dimensions,
       },
-      { projection: { _id: 0, incident_id: 1, 'overview.vector': 1, 'passages.vector': 1 } }
-    );
+      {
+        projection: {
+          _id: 0,
+          incident_id: 1,
+          'overview.vector': 1,
+          'passages.vector': 1,
+        },
+      }
+    )
+    .sort({ incident_id: 1 });
 
   const incidents: IncidentVectors[] = [];
+
   for await (const document of cursor) {
     const overview = normaliseBinaryVector(document.overview?.vector, dimensions);
     if (!overview) continue;
-    const passages = (document.passages || [])
-      .map((passage: any) => normaliseBinaryVector(passage?.vector, dimensions))
-      .filter((vector: Float32Array | null): vector is Float32Array => vector !== null);
+
+    const passages = Array.isArray(document.passages)
+      ? document.passages
+          .map((passage: any) => normaliseBinaryVector(passage?.vector, dimensions))
+          .filter((vector): vector is Float32Array => vector !== null)
+      : [];
+
     incidents.push({ incidentId: document.incident_id, overview, passages });
   }
 
   if (incidents.length > 0) cache = { key, incidents, loadedAt: Date.now() };
-  return incidents;
-};
 
-export const resetIncidentVectorCache = () => {
-  cache = null;
+  return incidents;
 };

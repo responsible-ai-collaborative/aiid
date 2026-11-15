@@ -2,11 +2,8 @@ import { ApolloServer } from '@apollo/server';
 import * as Sentry from '@sentry/aws-serverless';
 import { Binary } from 'mongodb';
 import { API_LOGIN_REQUIRED } from '../apiAccess';
-import {
-  normaliseBinaryVector,
-  rankIncidentVectors,
-  resetSemanticSearchCache,
-} from '../fields/semanticSearch';
+import { resetSemanticSearchCache } from '../fields/semanticSearch';
+import { normaliseBinaryVector, rankIncidentVectors } from '../../src/utils/embeddings/vectors';
 import {
   makeRequest,
   mockAnonymousSession,
