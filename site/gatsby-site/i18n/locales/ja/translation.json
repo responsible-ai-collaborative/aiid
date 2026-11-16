@@ -622,5 +622,15 @@
   "Refused while blocked": "ブロック中に拒否されたリクエスト",
   "First request": "最初のリクエスト",
   "Last request": "最後のリクエスト",
-  "Could not load taxonomies": "分類法を読み込めませんでした"
+  "Could not load taxonomies": "分類法を読み込めませんでした",
+  "Find an incident": "インシデントを検索",
+  "ID or words from the title": "IDまたはタイトルの語句",
+  "No matching incidents": "一致するインシデントはありません",
+  "Color by": "色分けの基準",
+  "Hide all": "すべて非表示",
+  "Zoom in": "拡大",
+  "Zoom out": "縮小",
+  "Reset view": "表示をリセット",
+  "Showing {{shown}} of {{total}} incidents.": "{{total}}件中{{shown}}件のインシデントを表示しています。",
+  "Scroll or pinch to zoom and drag to move. Click a dot to open its incident.": "スクロールまたはピンチで拡大・縮小し、ドラッグで移動します。点をクリックするとそのインシデントが開きます。"
 }

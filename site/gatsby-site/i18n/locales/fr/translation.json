@@ -626,5 +626,15 @@
   "Refused while blocked": "Refusées pendant le blocage",
   "First request": "Première requête",
   "Last request": "Dernière requête",
-  "Could not load taxonomies": "Impossible de charger les taxonomies"
+  "Could not load taxonomies": "Impossible de charger les taxonomies",
+  "Find an incident": "Trouver un incident",
+  "ID or words from the title": "ID ou mots du titre",
+  "No matching incidents": "Aucun incident correspondant",
+  "Color by": "Colorer par",
+  "Hide all": "Tout masquer",
+  "Zoom in": "Zoom avant",
+  "Zoom out": "Zoom arrière",
+  "Reset view": "Réinitialiser la vue",
+  "Showing {{shown}} of {{total}} incidents.": "{{shown}} incidents affichés sur {{total}}.",
+  "Scroll or pinch to zoom and drag to move. Click a dot to open its incident.": "Faites défiler ou pincez pour zoomer, et faites glisser pour vous déplacer. Cliquez sur un point pour ouvrir son incident."
 }
