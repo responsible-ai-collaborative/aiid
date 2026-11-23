@@ -1,4 +1,4 @@
-import { GraphQLScalarType, Kind } from "graphql";
+import { GraphQLScalarType, Kind, ValueNode } from "graphql";
 import { ObjectId } from "mongodb";
 
 export const ObjectIdScalar = new GraphQLScalarType({
@@ -22,5 +22,39 @@ export const ObjectIdScalar = new GraphQLScalarType({
         }
 
         return null;
+    },
+});
+
+function parseLiteralValue(ast: ValueNode): any {
+    switch (ast.kind) {
+        case Kind.STRING:
+        case Kind.BOOLEAN:
+            return ast.value;
+        case Kind.INT:
+            return parseInt(ast.value, 10);
+        case Kind.FLOAT:
+            return parseFloat(ast.value);
+        case Kind.LIST:
+            return ast.values.map(parseLiteralValue);
+        case Kind.OBJECT:
+            return Object.fromEntries(ast.fields.map(f => [f.name.value, parseLiteralValue(f.value)]));
+        case Kind.NULL:
+            return null;
+        default:
+            return null;
+    }
+}
+
+export const AttributeValueScalar = new GraphQLScalarType({
+    name: 'AttributeValue',
+    description: 'Value of classification attribute as typed data',
+    serialize(value: unknown) {
+        return value;
+    },
+    parseValue(value: unknown) {
+        return value;
+    },
+    parseLiteral(ast) {
+        return parseLiteralValue(ast);
     },
 });
