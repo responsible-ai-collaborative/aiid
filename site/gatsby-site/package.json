@@ -78,7 +78,7 @@
     "graphql-shield": "^7.6.5",
     "graphql-tag": "^2.12.7",
     "graphql-to-mongodb": "^1.6.5",
-    "i18next": "^20.6.1",
+    "i18next": "^27.2.6",
     "i18next-scanner": "^4.6.0",
     "is-absolute-url": "^5.0.0",
     "json-bigint-patch": "^0.0.9",
