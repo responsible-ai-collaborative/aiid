@@ -1,5 +1,5 @@
 import { GraphQLBoolean, GraphQLFieldConfigMap, GraphQLInputObjectType, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLString } from "graphql";
-import { allow } from "graphql-shield";
+import { allow } from "graphql-guard";
 import { generateMutationFields, generateQueryFields, getQueryResolver } from "../utils";
 import { Context, DBIncident } from "../interfaces";
 import { isRole } from "../rules";

@@ -34,7 +34,7 @@ export const UserType = new GraphQLObjectType({
                 // whole table.
                 let response: UserAdminData | null = null;
 
-                // `user` is null for anonymous callers. The `notQueriesAdminData` shield
+                // `user` is null for anonymous callers. The `notQueriesAdminData` guard
                 // rule only inspects direct field selections, so a query that reaches
                 // `adminData` through a fragment spread gets here unauthenticated —
                 // dereferencing `user!` threw a TypeError instead of returning nothing.

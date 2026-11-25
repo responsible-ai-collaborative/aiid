@@ -9,7 +9,7 @@ import {
 } from 'graphql';
 import { generateMutationFields, generateQueryFields } from '../utils';
 import { Context, DBIncident, DBNotification, DBSubmission } from '../interfaces';
-import { allow, or } from 'graphql-shield';
+import { allow, or } from 'graphql-guard';
 import { ObjectIdScalar } from '../scalars';
 import { isRole } from '../rules';
 import { createNotificationsOnNewIncident, linkReportsToIncidents } from './common';

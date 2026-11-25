@@ -1,5 +1,5 @@
 import { GraphQLFieldConfigMap } from "graphql";
-import { allow } from "graphql-shield";
+import { allow } from "graphql-guard";
 import { generateMutationFields, generateQueryFields } from "../utils";
 import { ClassificationType } from "../types/classification";
 import { isRole } from "../rules";

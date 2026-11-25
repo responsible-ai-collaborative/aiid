@@ -159,7 +159,7 @@ users: {
 - `taxonomy_editor_{name}` - Can edit specific taxonomy
 
 ### Authorization Rules
-GraphQL-level authorization using `graphql-shield`:
+GraphQL-level authorization using `graphql-guard`:
 - **Role checks**: `isRole('admin')`, `isRole('subscriber')`
 - **Ownership**: `isSelf()`, `isSubscriptionOwner()`, `isChecklistsOwner()`
 - **Special**: `notQueriesAdminData()`, `hasHeaderSecret()`
@@ -216,7 +216,7 @@ async signIn({ user }) {
 
 ### Authorization Layers
 1. **NextAuth Session** - Basic authentication
-2. **GraphQL Shield** - Field-level authorization
+2. **GraphQL Guard** - Field-level authorization
 3. **Role-based Access** - Granular permissions
 4. **Ownership Validation** - Users can only access their own data
 

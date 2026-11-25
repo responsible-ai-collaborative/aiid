@@ -29,7 +29,7 @@ be counted, and the account can be blocked.
 schema in `server/local.ts`:
 
 ```ts
-const schemaWithAuth = applyMiddleware(schema, apiAccessMiddleware, permissions)
+const schemaWithAuth = applyMiddleware(guardedSchema, apiAccessMiddleware, userFieldVisibilityMiddleware)
 ```
 
 It is a single gate over `Query` and `Mutation` rather than a change to the per-module

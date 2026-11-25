@@ -1,4 +1,4 @@
-import { rule } from "graphql-shield";
+import { rule } from "graphql-guard";
 import { SelectionSetNode } from "graphql";
 import { Context, DBChecklist, DBSubscription, DBUser } from "./interfaces";
 import { getMongoDbFilter } from "graphql-to-mongodb";
