@@ -53,6 +53,30 @@ export default function IncidentsField({ id, name, placeHolder = '', multiple = 
     }
   }, [data]);
 
+  // Keep the chips in step with the form value when it changes from outside this
+  // field, e.g. when the submission form resets after a successful submit.
+  useEffect(() => {
+    const ids = value || [];
+
+    setSelected((selected) => {
+      const sameIds =
+        selected.length === ids.length && selected.every(({ id }) => ids.some((v) => v == id));
+
+      if (sameIds) {
+        return selected;
+      }
+
+      return ids.map((id) => {
+        const title =
+          selected.find((s) => s.id == id)?.title ??
+          data?.incidents?.find((incident) => incident.incident_id == id)?.title ??
+          '';
+
+        return { id, title };
+      });
+    });
+  }, [value]);
+
   const handleSearch = useCallback(
     async (text) => {
       const options = data?.incidents
