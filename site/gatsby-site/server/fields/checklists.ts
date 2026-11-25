@@ -1,5 +1,5 @@
 import { GraphQLFieldConfigMap, GraphQLList } from "graphql";
-import { allow, or } from "graphql-shield";
+import { allow, or } from "graphql-guard";
 import { generateMutationFields, generateQueryFields, getQueryArgs, getQueryResolver } from "../utils";
 import { ChecklistType, RisksInputType, RiskType } from "../types/checklist";
 import { isAdmin, isChecklistsOwner, isSubscriber } from "../rules";

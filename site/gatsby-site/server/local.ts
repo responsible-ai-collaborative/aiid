@@ -1,5 +1,5 @@
 import { GraphQLObjectType, GraphQLSchema } from 'graphql';
-import { shield, deny } from 'graphql-shield';
+import { guard, deny } from 'graphql-guard';
 import { applyMiddleware } from 'graphql-middleware';
 import { ObjectIdScalar } from './scalars';
 import { apiAccessMiddleware } from './apiAccess';
@@ -161,9 +161,9 @@ export const getSchema = () => {
     })
 
     /**
-     * Configures permissions for the GraphQL API using graphql-shield.
+     * Configures permissions for the GraphQL API using graphql-guard.
      * 
-     * The `shield` function is used to define the permissions for queries and mutations, with default access set to deny (`deny`).
+     * The `guard` function applies the permissions for queries and mutations to the schema, with default access set to deny (`deny`).
      * Permissions are then selectively granted using specific permissions configurations (e.g., `quickAddsPermissions`, `reportsPermissions`).
      * 
      * @constant
@@ -171,10 +171,11 @@ export const getSchema = () => {
      * 
      * @property {Object} Query - Permissions for Query fields. All fields are denied access by default, with specific permissions set explicitly.
      * @property {Object} Mutation - Permissions for Mutation fields. All fields are denied access by default, with specific permissions set explicitly.
-     * @property {boolean} allowExternalErrors - Determines whether to allow external errors to be displayed. Set to `true` or based on the environment.
-     *                                           This helps in debugging by providing more detailed error messages during development.
+     * @property {boolean} suppressResolverError - Replaces errors thrown by resolvers with the generic "Not Authorised!" error.
+     *                                             Only set in production, so development shows the detailed error messages.
      */
-    const permissions = shield(
+    const guardedSchema = guard(
+        schema,
         {
             Query: {
                 "*": deny,
@@ -214,24 +215,24 @@ export const getSchema = () => {
             },
         },
         {
-            allowExternalErrors: process.env.NODE_ENV !== 'production',
+            suppressResolverError: process.env.NODE_ENV === 'production',
         }
     );
 
     /**
-     * `apiAccessMiddleware` is listed first so it wraps `permissions`: the login
-     * requirement is evaluated before any role rule, and a logged-out caller
-     * gets the actionable `API_LOGIN_REQUIRED` error instead of shield's generic
-     * "not authorized". It also means shield's `allowExternalErrors` setting,
-     * which governs errors raised inside its own chain, cannot mask it in
-     * production.
+     * `apiAccessMiddleware` is applied over the guarded schema so it wraps the
+     * permission rules: the login requirement is evaluated before any role rule,
+     * and a logged-out caller gets the actionable `API_LOGIN_REQUIRED` error
+     * instead of the guard's generic "not authorized". It also means the guard's
+     * `suppressResolverError` setting, which governs errors raised inside its own
+     * chain, cannot mask it in production.
      *
      * `userFieldVisibilityMiddleware` wraps individual `User` fields rather than
-     * root fields, so its position relative to the other two does not matter;
+     * root fields, so its position relative to the other layers does not matter;
      * it withholds an account's API-block state from other non-admin users.
      * SEE: server/userFieldVisibility.ts
      */
-    const schemaWithAuth = applyMiddleware(schema, apiAccessMiddleware, userFieldVisibilityMiddleware, permissions)
+    const schemaWithAuth = applyMiddleware(guardedSchema, apiAccessMiddleware, userFieldVisibilityMiddleware)
 
     return schemaWithAuth;
 }

@@ -1,5 +1,5 @@
 import { GraphQLFieldConfigMap } from "graphql";
-import { allow } from "graphql-shield";
+import { allow } from "graphql-guard";
 import { generateQueryFields } from "../utils";
 import { EntityDuplicateType } from "../types/entityDuplicate";
 

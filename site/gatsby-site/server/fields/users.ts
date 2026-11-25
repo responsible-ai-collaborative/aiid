@@ -1,11 +1,11 @@
 import { GraphQLFieldConfigMap, GraphQLNonNull, GraphQLString } from "graphql";
-import { rule } from "graphql-shield";
+import { rule } from "graphql-guard";
 import { regenerateUserApiToken } from "../apiTokens";
 import { generateMutationFields, generateQueryFields } from "../utils";
 import { Context } from "../interfaces";
 import { notQueriesAdminData, isRole, isSelf, canEditProtectedUserFields, notFiltersByApiAccessFields } from "../rules";
 import { UserType } from "../types/user";
-import { and, or } from "graphql-shield";
+import { and, or } from "graphql-guard";
 
 export const queryFields: GraphQLFieldConfigMap<any, Context> = {
 

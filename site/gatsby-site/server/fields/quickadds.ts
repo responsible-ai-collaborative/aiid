@@ -1,5 +1,5 @@
 import { GraphQLFieldConfigMap, GraphQLInt, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
-import { allow } from "graphql-shield";
+import { allow } from "graphql-guard";
 import { isAdmin } from "../rules";
 import { ObjectIdScalar } from "../scalars";
 import { generateMutationFields, generateQueryFields } from "../utils";

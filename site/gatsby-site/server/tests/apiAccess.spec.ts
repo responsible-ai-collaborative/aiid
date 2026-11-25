@@ -166,9 +166,9 @@ describe('API access gate', () => {
 
         mockAnonymousSession();
 
-        // `notifications` is admin-only under graphql-shield. The gate is installed
-        // outside the shield layer (SEE: server/local.ts), so the caller is told the
-        // actionable reason — log in — rather than shield's generic 'not authorized',
+        // `notifications` is admin-only under graphql-guard. The gate is installed
+        // outside the guard layer (SEE: server/local.ts), so the caller is told the
+        // actionable reason — log in — rather than the guard's generic 'not authorized',
         // which would be a role complaint against someone who has no roles yet.
         const response = await makeRequest(url, {
             query: `query OrderingProbe { notifications { _id } }`,
