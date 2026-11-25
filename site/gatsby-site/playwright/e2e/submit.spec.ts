@@ -1337,6 +1337,53 @@ test.describe('The Submit form', () => {
         await submitForm();
     });
 
+    test('Should clear the selected incident ID after a successful submission', async ({ page }) => {
+
+        await trackRequest(
+            page,
+            '**/graphql',
+            (req) => req.postDataJSON().operationName == 'FindSubmissions',
+            'findSubmissions'
+        );
+
+        await page.goto(url);
+
+        await waitForRequest('findSubmissions');
+
+        await conditionalIntercept(
+            page,
+            '**/parseNews**',
+            () => true,
+            parseNews,
+            'parseNews',
+        );
+
+        await page.locator('input[name="url"]').fill(
+            `https://www.arstechnica.com/gadgets/2017/11/youtube-to-crack-down-on-inappropriate-content-masked-as-kids-cartoons/`
+        );
+
+        await page.locator('[data-cy="fetch-info"]').click();
+
+        await waitForRequest('parseNews');
+
+        await page.locator('input[name="authors"]').fill('Something');
+
+        await page.locator('input[name="incident_ids"]').fill('1');
+        await page.locator('[role="option"]').first().click();
+
+        const chips = page.locator('.incident-ids-field [data-cy="token"]');
+
+        await expect(chips).toHaveCount(1);
+        await expect(page.locator('input[name="incident_date"]')).not.toBeVisible();
+
+        await page.locator('[data-cy="submit-step-1"]').click();
+
+        await expect(page.locator('.tw-toast:has-text("Report successfully added to review queue. You can see your submission")')).toBeVisible();
+
+        await expect(chips).toHaveCount(0);
+        await expect(page.locator('input[name="incident_date"]')).toBeVisible();
+    });
+
     test('Should fetch the news if the url param is in the querystring', async ({ page }) => {
         await conditionalIntercept(
             page,
