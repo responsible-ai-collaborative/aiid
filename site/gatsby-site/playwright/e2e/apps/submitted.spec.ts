@@ -314,6 +314,55 @@ test.describe('Submitted reports', () => {
         await expect(datesHeader.locator('select')).toHaveValue('date_published');
     });
 
+    test('Remembers the page size across reloads', async ({ page, login }) => {
+
+        // The page-size menu used to reset to "Show 10" on every visit. SEE: #4179 and
+        // src/components/submissions/SubmissionList.js
+
+        await init();
+
+        await login({ customData: { first_name: 'Test', last_name: 'User', roles: ['incident_editor'] } });
+
+        await page.goto(url);
+
+        await expect(page.locator('[data-cy="submissions"] [data-cy="row"]').first()).toBeVisible();
+
+        const pagination = page.locator('[data-cy="submissions"] .pagination');
+
+        // Defaults to Show 10 when nothing has been saved.
+        await expect(pagination.getByRole('button', { name: 'Show 10' })).toBeVisible();
+
+        await pagination.getByRole('button', { name: 'Show 10' }).click();
+
+        await page.getByRole('menuitem', { name: 'Show all' }).click();
+
+        await expect(pagination.getByRole('button', { name: 'Show all' })).toBeVisible();
+
+        await page.reload();
+
+        await expect(page.locator('[data-cy="submissions"] [data-cy="row"]').first()).toBeVisible();
+
+        await expect(pagination.getByRole('button', { name: 'Show all' })).toBeVisible();
+
+        // Leaving and coming back keeps it too.
+        await page.goto('/');
+
+        await page.goto(url);
+
+        await expect(page.locator('[data-cy="submissions"] [data-cy="row"]').first()).toBeVisible();
+
+        await expect(pagination.getByRole('button', { name: 'Show all' })).toBeVisible();
+
+        // Choosing another size replaces the saved one.
+        await pagination.getByRole('button', { name: 'Show all' }).click();
+
+        await page.getByRole('menuitem', { name: 'Show 50' }).click();
+
+        await page.reload();
+
+        await expect(pagination.getByRole('button', { name: 'Show 50' })).toBeVisible();
+    });
+
     test('Rejects a submission', async ({ page, login }) => {
 
         await init();
