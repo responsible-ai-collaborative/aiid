@@ -37,7 +37,13 @@ const STORAGE_KEYS = {
   sortBy: 'submissionsTable.sortBy',
   dateFilter: 'submissionsTable.dateFilter',
   showRejected: 'submissionsTable.showRejected',
+  pageSize: 'submissionsTable.pageSize',
 };
+
+// Must match the options offered by the page-size menu in components/ui/Table.js.
+const PAGE_SIZES = [10, 50, 100, 9999];
+
+const DEFAULT_PAGE_SIZE = 10;
 
 const readStoredSetting = (key, fallback) => {
   if (typeof window === 'undefined') return fallback;
@@ -722,6 +728,12 @@ const SubmissionList = ({ data }) => {
     sortBy: readStoredSetting(STORAGE_KEYS.sortBy, []),
   }));
 
+  const [initialPageSize] = useState(() => {
+    const stored = Number(readStoredSetting(STORAGE_KEYS.pageSize, DEFAULT_PAGE_SIZE));
+
+    return PAGE_SIZES.includes(stored) ? stored : DEFAULT_PAGE_SIZE;
+  });
+
   const table = useTable(
     {
       columns,
@@ -731,6 +743,7 @@ const SubmissionList = ({ data }) => {
         pageIndex: tableState.pageIndex,
         filters: tableState.filters,
         sortBy: tableState.sortBy,
+        pageSize: initialPageSize,
       },
     },
     useFilters,
@@ -744,6 +757,10 @@ const SubmissionList = ({ data }) => {
     setTableState({ pageIndex: 0, filters: table.state.filters, sortBy: table.state.sortBy });
     writeStoredSetting(STORAGE_KEYS.sortBy, table.state.sortBy);
   }, [table.state.filters, table.state.sortBy]);
+
+  useEffect(() => {
+    writeStoredSetting(STORAGE_KEYS.pageSize, table.state.pageSize);
+  }, [table.state.pageSize]);
 
   useEffect(() => {
     table.gotoPage(tableState.pageIndex);
